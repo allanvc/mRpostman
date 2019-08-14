@@ -3,7 +3,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit .Rmd file -->
 
-# mRpostman <img src="man/figures/logo.png" align="right" width="120" />
+# mRpostman <img src="man/figures/logo.png" align="right" width="150" />
 
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 
