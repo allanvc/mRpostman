@@ -30,11 +30,11 @@ Before using **mRpostman**, it is essential to configure your mail
 account. Many mail providers today require authorizing **“less secure
 apps”** to access your account from a third part app.
 
-See how to do it for GMail, Yahoo Mail and AOL Mail.
+See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
-### GMail
+### Gmail
 
-1)  Go to GMail website and logon with your credentials.
+1)  Go to Gmail website and logon with your credentials.
 
 2)  Then, go to
     <https://myaccount.google.com/u/1/lesssecureapps?pageId=none>
