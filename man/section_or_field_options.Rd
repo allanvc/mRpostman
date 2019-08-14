@@ -48,7 +48,7 @@ Freed, N. and N. Borenstein, "Multipurpose Internet Mail
 
 Resnick, P., Ed., "Internet Message Format", RFC 2822,
     \doi{10.17487/RFC2822}, April 2001,
-    \url{<https://www.rfc-editor.org/info/rfc2822}.
+    \url{https://www.rfc-editor.org/info/rfc2822}.
 
 Crocker, D., "STANDARD FOR THE FORMAT OF ARPA INTERNET TEXT
     MESSAGES", STD 11, RFC 822, \doi{10.17487/RFC0822},

@@ -31,7 +31,7 @@ IMAP Tools for R in a Tidy Way
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol) commands 
-based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), its updates, 
+based on the RFC 3501 manual (Crispin, 2003), its updates, 
 and other related documents.
 
 mRpostman website: https://allanvc.github.io/mRpostman
@@ -50,7 +50,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
-<img src="man/figures/gmail1.PNG">
+<img src="man/figures/gmail1.png">
 
 3) Set "Allow less secure apps" to **ON**.
 
@@ -61,15 +61,15 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Click on "Account Info".
 
-<img src="man/figures/yahoo1.PNG">
+<img src="man/figures/yahoo1.png">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="man/figures/yahoo2.PNG">
+<img src="man/figures/yahoo2.png">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
-<img src="man/figures/yahoo3.PNG">
+<img src="man/figures/yahoo3.png">
 
 ### AOL Mail
 
@@ -77,15 +77,15 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Click on "Options" and then on "Account Info".
 
-<img src="man/figures/aol1.PNG">
+<img src="man/figures/aol1.png">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="man/figures/aol2.PNG">
+<img src="man/figures/aol2.png">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
-<img src="man/figures/aol3.PNG">
+<img src="man/figures/aol3.png">
 
 
 ## Introduction
@@ -212,4 +212,4 @@ This package is licensed under the terms of the GPL-3 License.
 ## References
 
 Crispin, M., *"INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1"*, RFC 3501, 
-doi:10.17487/RFC3501, March 2003, https://www.rfc-editor.org/info/rfc3501.
+DOI: 10.17487/RFC3501, March 2003, https://www.rfc-editor.org/info/rfc3501.
