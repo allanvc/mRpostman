@@ -9,7 +9,7 @@
 #'     \code{FALSE}.
 #' @param use_ssl A Logical indicating the use or not of Secure Sockets Layer
 #'     encryption when connecting to IMAP server. Default is \code{TRUE}.
-#' @param verbose If \code{TRUE}, mutes the output from the server. Default is
+#' @param verbose If \code{FALSE}, mutes the output from the server. Default is
 #'     \code{FALSE}.
 #' @param buffersize The size in bytes for curl's receive buffer. Default is
 #'     16000 bytes or 16kb, which means it will use the default value of libcurl.
@@ -46,7 +46,7 @@
 #' @export
 #'
 configureIMAP <- function(url, username, password, show_pass = FALSE, use_ssl = TRUE,
-                        verbose = TRUE,
+                        verbose = FALSE,
                         buffersize = 16000, fresh_connect = FALSE,
                         timeout_ms = 5000, ...){
   # suggests only most common options

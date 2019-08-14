@@ -40,8 +40,6 @@
 <meta property="og:title" content="IMAP Settings — configureIMAP" />
 
 <meta property="og:description" content="Configure IMAP server settings." />
-
-<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -130,7 +128,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>configureIMAP</span>(<span class='no'>url</span>, <span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>show_pass</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>use_ssl</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>buffersize</span> <span class='kw'>=</span> <span class='fl'>16000</span>,
+  <span class='kw'>use_ssl</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>buffersize</span> <span class='kw'>=</span> <span class='fl'>16000</span>,
   <span class='kw'>fresh_connect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeout_ms</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -160,7 +158,7 @@ encryption when connecting to IMAP server. Default is <code>TRUE</code>.</p></td
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>If <code>TRUE</code>, mutes the output from the server. Default is
+      <td><p>If <code>FALSE</code>, mutes the output from the server. Default is
 <code>FALSE</code>.</p></td>
     </tr>
     <tr>
