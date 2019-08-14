@@ -195,14 +195,29 @@
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># IMAP settings</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configureIMAP.html">configureIMAP</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                          <span class="dt">password =</span> <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                          )</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co"># Listing</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="st">  </span><span class="kw"><a href="reference/listMailboxes.html">listMailboxes</a></span>()</a></code></pre></div>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Gmail</span></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configureIMAP.html">configureIMAP</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">                          )</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># Yahoo Mail</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># AOL Mail</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># you can try another IMAP server</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co"># Listing</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26">imapconf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw"><a href="reference/listMailboxes.html">listMailboxes</a></span>()</a></code></pre></div>
 </div>
 <div id="examining-a-mailbox" class="section level3">
 <h3 class="hasAnchor">

@@ -117,10 +117,25 @@ devtools::install_github("allanvc/mRpostman")
 library(mRpostman)
 
 # IMAP settings
+# Gmail
 imapconf <- configureIMAP(url="imaps://imap.gmail.com",
                           username="your_user",
-                          password = password=rstudioapi::askForPassword()
+                          password=rstudioapi::askForPassword()
                           )
+
+# Yahoo Mail
+# imapconf <- configureIMAP(url="imaps://export.imap.aol.com/",
+#                           username="your_user",
+#                           password=rstudioapi::askForPassword()
+#                           )
+
+# AOL Mail
+# imapconf <- configureIMAP(url="imaps://export.imap.aol.com/",
+#                           username="your_user",
+#                           password=rstudioapi::askForPassword()
+#                           )
+
+# you can try another IMAP server
 
 # Listing
 imapconf %>%
