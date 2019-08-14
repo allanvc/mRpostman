@@ -109,7 +109,7 @@
 <li><p>Go to GMail website and logon with your credentials.</p></li>
 <li><p>Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p></li>
 </ol>
-<p><img src="figures/gmail_LSA.png" width="500" height="100"></p>
+<p><img src="figures/gmail1.PNG"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Set “Allow less secure apps” to <strong>ON</strong>.</li>
 </ol>
@@ -121,15 +121,16 @@
 <li><p>Go to Yahoo Mail website and logon with your credentials.</p></li>
 <li><p>Click on “Account Info”.</p></li>
 </ol>
-<p><img src="figures/yahoo1.png" width="500" height="100"></p>
+<p><img src="figures/yahoo1.PNG"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="figures/yahoo2.png" width="500" height="300"></p>
+<p><img src="figures/yahoo2.PNG"></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
 </ol>
+<p><img src="figures/yahoo3.PNG"></p>
 </div>
 <div id="aol-mail" class="section level3">
 <h3 class="hasAnchor">
@@ -138,15 +139,16 @@
 <li><p>Go to AOL Mail website and logon with your credentials.</p></li>
 <li><p>Click on “Options” and then on “Account Info”.</p></li>
 </ol>
-<p><img src="figures/aol1.png" width="500" height="100"></p>
+<p><img src="figures/aol1.PNG"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="figures/aol2.png" width="500" height="300"></p>
+<p><img src="figures/aol2.PNG"></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
 </ol>
+<p><img src="figures/aol3.PNG"></p>
 </div>
 </div>
 <div id="package-structure" class="section level2">
@@ -253,13 +255,13 @@
 </div>
 <div id="search" class="section level2">
 <h2 class="hasAnchor">
-<a href="#search" class="anchor"></a>4) SEARCH</h2>
+<a href="#search" class="anchor"></a>4) Search</h2>
 <p>All search functions will return a list with an imapconf object and a vector “msg_id” containing the ids resulted from search. The first object will be important when you want to put all the commands in a chain and perform a fetch after searching for messages. You will need the IMAP configuration and the message’s ids.</p>
 <p>You can also <strong>NEGATE</strong> all serach expressions by setting <code>negate = TRUE</code>.</p>
 <p>If your server supports <strong>ESEARCH</strong>, use it. It will prevent your results form being stripped. For instance, if your search will return the first 1000 messages, intead of returning a sequence of <code>1, 2, 3, 4, 5, 6, ... 1000</code>, the results will be condensed to groups of sequence similar to what R does: <code>1:10</code>. If you can’t use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configureIMAP.html">configureIMAP()</a></code> in order to avoid stripping. This is related to curl’s buffersize.</p>
 <div id="search-by-date" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-date" class="anchor"></a>4.1) Search by DATE</h3>
+<a href="#search-by-date" class="anchor"></a>4.1) Search by Date</h3>
 <p><code><a href="../reference/searchBefore.html">searchBefore()</a></code>, <code><a href="../reference/searchSince.html">searchSince()</a></code>, <code><a href="../reference/searchOn.html">searchOn()</a></code>, and <code><a href="../reference/searchPeriod.html">searchPeriod()</a></code> use internal date, which reflects the moment when the message was received. <code><a href="../reference/searchSentBefore.html">searchSentBefore()</a></code>, <code><a href="../reference/searchSentSince.html">searchSentSince()</a></code>, <code><a href="../reference/searchSentOn.html">searchSentOn()</a></code>, and <code><a href="../reference/searchSentPeriod.html">searchSentPeriod()</a></code> use RFC-2822 date header (origination date), which “specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail delivery system” (Resnick, 2008). Dates in both methods must be the same most of time. Nonetheless, using internal date for search is faster (Babcock, 2016).</p>
 <div id="by-internal-date" class="section level4">
 <h4 class="hasAnchor">
@@ -390,7 +392,7 @@
 </div>
 <div id="search-by-string" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-string" class="anchor"></a>4.2) Search by STRING</h3>
+<a href="#search-by-string" class="anchor"></a>4.2) Search by String</h3>
 <p>You can search for a simple or compound string either in the whole message, in a section, or in a specific header field. You can also <strong>NEGATE</strong> the statement and search for messages (or specific part of a message) not containing that string.</p>
 <p>When searching by string, it is not possible to use flags.</p>
 <p>Searching “TO” field:</p>
@@ -412,7 +414,7 @@
 </div>
 <div id="search-by-flag" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-flag" class="anchor"></a>4.3) Search by FLAG</h3>
+<a href="#search-by-flag" class="anchor"></a>4.3) Search by Flag</h3>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb27-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb27-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchFlag.html">searchFlag</a></span>(<span class="dt">flag =</span> <span class="st">"RECENT"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>)</a></code></pre></div>
@@ -420,7 +422,7 @@
 </div>
 <div id="search-by-size" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-size" class="anchor"></a>4.4) Search by SIZE</h3>
+<a href="#search-by-size" class="anchor"></a>4.4) Search by Size</h3>
 <p>The size is specified in bytes.</p>
 <div id="smaller-than" class="section level4">
 <h4 class="hasAnchor">
@@ -439,8 +441,8 @@
 </div>
 <div id="search-by-within-extension" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-within-extension" class="anchor"></a>4.5) Search by WITHIN EXTENSION</h3>
-<p>Severs who support WITHIN EXTENSION accept searching for messages within a span of time, i.e. younger than X seconds, or older than X seconds.</p>
+<a href="#search-by-within-extension" class="anchor"></a>4.5) Search by Within Extension</h3>
+<p>Severs who support “WITHIN EXTENSION” enable searching for messages within a span of time, i.e. younger than “x” seconds, or older than “x” seconds.</p>
 <div id="younger-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#younger-than" class="anchor"></a>4.5.1) Younger Than</h4>
@@ -492,7 +494,7 @@
 </div>
 <div id="fetch" class="section level2">
 <h2 class="hasAnchor">
-<a href="#fetch" class="anchor"></a>5) FETCH</h2>
+<a href="#fetch" class="anchor"></a>5) Fetch</h2>
 <p>You can fetch full messages, only message headers, only message texts, or only a field of message metadata.</p>
 <p>We usually fetch messages after a search. Given the output of search functions in <strong>mRpostman</strong>, you will have to use the <strong>exposition pipe</strong> <code>%$%</code> in order to retrieve and correctly map the <code>imapconf</code> object and <code>msg_id</code> (search results).</p>
 <p>You can also choose to save fetch results in memory or to disk (working directory). If you choose to do so, <strong>mRpostman</strong> creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.</p>
@@ -537,7 +539,7 @@
 </div>
 <div id="miscellanea" class="section level2">
 <h2 class="hasAnchor">
-<a href="#miscellanea" class="anchor"></a>6) MISCELLANEA</h2>
+<a href="#miscellanea" class="anchor"></a>6) Miscellanea</h2>
 <p>Here we present other functions to perform useful IMAP operations.</p>
 <div id="copy-messages" class="section level3">
 <h3 class="hasAnchor">
@@ -656,9 +658,9 @@
       <li><a href="#configuration">1) Configuration</a></li>
       <li><a href="#mailbox-commands">2) Mailbox Commands</a></li>
       <li><a href="#options-listing">3) Options Listing</a></li>
-      <li><a href="#search">4) SEARCH</a></li>
-      <li><a href="#fetch">5) FETCH</a></li>
-      <li><a href="#miscellanea">6) MISCELLANEA</a></li>
+      <li><a href="#search">4) Search</a></li>
+      <li><a href="#fetch">5) Fetch</a></li>
+      <li><a href="#miscellanea">6) Miscellanea</a></li>
       <li><a href="#references">References</a></li>
       </ul>
 </div>
