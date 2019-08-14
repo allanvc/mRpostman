@@ -15,9 +15,9 @@
 #'     only message ids.
 #'
 #' @note IMAP queries follows Polish notation, i.e. operators such as \code{OR}
-#'     come before arguments, e.g. "OR argument1 argument2". That said, the
-#'     relational operators functions in this package should be used following
-#'     the examples: \code{OR(Before("17-Apr-2015"), String("FROM", "Jim"))}.
+#'     come before arguments, e.g. "OR argument1 argument2". Therefore, the
+#'     relational operators functions in this package should be used like the
+#'     following examples: \code{OR(Before("17-Apr-2015"), String("FROM", "Jim"))}.
 #'     Even though there is no "AND" operator in IMAP, this package adds a helper
 #'     funcion \link{AND} to indicate multiples arguments that must be searched
 #'     together, e.g. \code{AND(Since("01-Jul-2018"), Size(16000))}.
