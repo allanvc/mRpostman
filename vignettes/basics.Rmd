@@ -18,12 +18,10 @@ vignette: >
 The goal of **mRpostman** is to make it easy to connect to your IMAP 
 (Internet Message Access Protocol) server and execute commands,
 such as listing mailboxes, searching and fetching messages using various 
-criteria based on the RFC 3501 manual (Crispin, 2003, \doi{10.17487/RFC3501}), 
-its updates, and other related manuals.
+criteria.
 
-In this vignette we will present you all the functions that come with the package,
-but not all the possiilities one can use. We selected only few examples to present
-the output with the code. 
+In this vignette we will present all the functions that come with this package,
+but not all the possiilities one can explore.
 
 ## First things first - Allowing Less Secure Apps Access
 
@@ -40,7 +38,7 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
-<img src="figures/gmail_LSA.png" width="800" height="500">
+<img src="figures/gmail_LSA.png" width="500" height="100">
 
 3) Set "Allow less secure apps" to **ON**.
 
@@ -51,11 +49,11 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Click on "Account Info".
 
-<img src="figures/yahoo1.png" width="800" height="500">
+<img src="figures/yahoo1.png" width="500" height="100">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/yahoo2.png" width="800" height="500">
+<img src="figures/yahoo2.png" width="500" height="300">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
@@ -66,11 +64,11 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Click on "Options" and then on "Account Info".
 
-<img src="figures/aol1.png" width="800" height="500">
+<img src="figures/aol1.png" width="500" height="100">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/aol2.png" width="800" height="500">
+<img src="figures/aol2.png" width="500" height="300">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
