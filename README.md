@@ -24,6 +24,8 @@ mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org
 commands based on the RFC 3501 manual (Crispin, 2003,
 <doi:10.17487/RFC3501>), its updates, and other related manuals.
 
+mRpostman website: <https://allanvc.github.io/mRpostman>
+
 ## First things first …
 
 Before using **mRpostman**, it is essential to configure your mail
