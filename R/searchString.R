@@ -1,4 +1,4 @@
-#' @title Search By tring
+#' @title Search By String
 #'
 #' @description Searches for messages containing a string in an specific
 #'     section or field.
