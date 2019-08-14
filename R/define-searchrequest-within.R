@@ -1,0 +1,54 @@
+#' @title Within Search Request
+#'
+#' @inherit define_searchrequest_date description return
+#'
+#' @param operation A character indicating which custom operation to execute.
+#' @inheritParams check_args_searchWithin
+#' @param handle A curl handle object.
+#'
+#' @return A curl handle object containing the custom request.
+#'
+#' @family search helper
+#' @family define searchrequest
+#'
+#' @keywords internal
+#'
+define_searchrequest_within <- function(operation, seconds, negate, by, flag,
+                                      esearch, handle){
+
+  # esearch
+  if (isTRUE(esearch)) {
+    esearch_string = "RETURN () "
+  } else {
+    esearch_string = NULL
+  }
+
+  # flag
+  if (!is.null(flag)) {
+    flag_string = paste0(flag, " ")
+  } else {
+    flag_string = NULL
+  }
+
+  # by
+  if (by == "UID") {
+    by_string = "UID "
+  } else {
+    by_string = NULL
+  }
+
+  # negate
+  if (isTRUE(negate)) {
+    negate_string = "NOT "
+  } else {
+    negate_string = NULL
+  }
+
+  curl::handle_setopt(
+    handle = handle,
+    customrequest = paste0(by_string, "SEARCH ", esearch_string, flag_string,
+                           negate_string, operation, ' ', seconds))
+
+
+  return(handle)
+}
