@@ -113,7 +113,7 @@ library(mRpostman)
 
 # IMAP settings
 imapconf <- configureIMAP(url="imaps://imap.gmail.com",
-                          username="allanvcq",
+                          username="your_user",
                           password = password=rstudioapi::askForPassword()
                           )
 
