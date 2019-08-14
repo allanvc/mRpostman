@@ -209,9 +209,9 @@ is <code>2</code>.</p></td>
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>IMAP queries follows Polish notation, i.e. operators such as <code>OR</code>
-    come before arguments, e.g. "OR argument1 argument2". That said, the
-    relational operators functions in this package should be used following
-    the examples: <code><a href='OR.html'>OR(Before("17-Apr-2015"), String("FROM", "Jim"))</a></code>.
+    come before arguments, e.g. "OR argument1 argument2". Therefore, the
+    relational operators functions in this package should be used like the
+    following examples: <code><a href='OR.html'>OR(Before("17-Apr-2015"), String("FROM", "Jim"))</a></code>.
     Even though there is no "AND" operator in IMAP, this package adds a helper
     funcion <a href='AND.html'>AND</a> to indicate multiples arguments that must be searched
     together, e.g. <code><a href='AND.html'>AND(Since("01-Jul-2018"), Size(16000))</a></code>.</p>

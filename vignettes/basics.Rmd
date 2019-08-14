@@ -524,7 +524,7 @@ These are the helper functions you can use inside `customSearch()`:
 2) Criteria definition: `Before()`, `Since()`, `On()`, `sentBefore()`,
 `sentSince()`, `sentOn()`, `String()`, `Flag()`, `smallerThan()`, `largerThan()`, `youngerThan()`, and `olderThan()`.
 
-NOTE: IMAP queries follows Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". That said, the relational operators functions in this package should be used following the examples: `OR(Before("17-Apr-2015"), String("FROM", "Jim"))`. Even though there is no "AND" operator in IMAP, this package adds a helper funcion `AND` to indicate multiples arguments that must be searched together, e.g. `AND(Since("01-Jul-2018"), Size(16000))`.
+NOTE: IMAP queries follows Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". Therefore, the relational operators functions in this package should be used like the following examples: `OR(Before("17-Apr-2015"), String("FROM", "Jim"))`. Even though there is no "AND" operator in IMAP, this package adds a helper funcion `AND` to indicate multiples arguments that must be searched together, e.g. `AND(Since("01-Jul-2018"), Size(16000))`.
 
 Example 1: Searching for messages containing the string "toronto" in the "FROM" field
 and that were received before "12-Apr-2019".
