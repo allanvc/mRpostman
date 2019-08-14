@@ -86,7 +86,7 @@ The package is divided in 6 groups of functions:
   - **configuration**: `configureIMAP()`;
   - **mailboxes commands**: `listMailboxes()`, `selectMailbox()`,
     `examineMailbox()`, `renameMailbox();`
-  - **options listing**: `listServerCapabilities()`,`flag_options`,
+  - **options listing**: `listServerCapabilities()`,`flag_options()`,
     `section_or_field_options()`, `metadata_options()`;
   - **search**: `searchBefore()`, `searchSince()`, `searchPeriod()`,
     `searchOn()`, `searchSentBefore()`,`searchSentSince()`,
