@@ -18,19 +18,21 @@ Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://trav
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
 
+IMAP Tools for R in a Tidy Way
+
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol)
 commands based on the RFC 3501 manual (Crispin, 2003,
-<doi:10.17487/RFC3501>), its updates, and other related manuals.
+<doi:10.17487/RFC3501>), its updates, and other related documents.
 
 mRpostman website: <https://allanvc.github.io/mRpostman>
 
 ## First things first …
 
 Before using **mRpostman**, it is essential to configure your mail
-account. Many mail providers today require authorizing **“less secure
-apps”** to access your account from a third part app.
+account. Many mail providers require authorizing **“less secure apps”**
+to access your account from a third part app.
 
 See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
@@ -148,11 +150,11 @@ imapconf %>%
 
 # examine mailbox -- number of existent and recent messages
 imapconf %>%
-  selectMailbox(mbox = "UC Riverside") %>% # be careful - case sensitive
+  selectMailbox(mbox = "UC Riverside") %>% # mbox names are case sensitive
   examineMailbox()
 ```
 
-### 3\) Search by Period using a flag
+### 3\) Searching by period using a flag
 
 ``` r
 
@@ -166,7 +168,7 @@ results <- imapconf %>%
 results$msg_id
 ```
 
-### 4\) Search for a String in the “Text” section of messages
+### 4\) Searching for a string in the “Text” section of messages
 
 ``` r
 
@@ -178,13 +180,13 @@ results <- imapconf %>%
 results$msg_id
 ```
 
-### 5\) Fetch Headers after a search
+### 5\) Fetch headers after searching
 
 ``` r
 
 results <- imapconf %>%
   selectMailbox(mbox = "UC Riverside") %>%
-  searchString(section_or_field = "TEXT", string = "Welcome!") %$% # be careful - exposition pipe, not %>%!!
+  searchString(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
   fetchMsgHeader(imapconf = imapconf, msg_id = msg_id, 
                  fields = c("DATE", "SUBJECT"))
 

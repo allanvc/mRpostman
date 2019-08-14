@@ -1,6 +1,6 @@
 Package: mRpostman
 Type: Package
-Title: IMAP Tools for R
+Title: IMAP Tools for R in a Tidy Way
 Version: 0.1.0
 Date: 2019-08-13
 Authors@R: c(
@@ -8,7 +8,7 @@ Authors@R: c(
     role = c("aut", "cre")))
 Description: Provides multiple IMAP (Internet Message Access Protocol) commands 
     based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), 
-    its updates, and other related manuals. 
+    its updates, and other related documents. 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
