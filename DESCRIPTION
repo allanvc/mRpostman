@@ -6,9 +6,8 @@ Date: 2019-08-13
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))
-Description: Provides multiple IMAP (Internet Message Access Protocol) commands,
-    such as listing mailboxes, searching and fetching messages by several 
-    criteria based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), 
+Description: Provides multiple IMAP (Internet Message Access Protocol) commands 
+    based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), 
     its updates, and other related manuals. 
 License: GPL-3
 Encoding: UTF-8

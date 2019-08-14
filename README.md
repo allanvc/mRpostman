@@ -21,9 +21,8 @@ mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol)
-commands, such as listing mailboxes, searching and fetching messages by
-several criteria based on the RFC 3501 manual (Crispin, 2003, ), its
-updates, and other related manuals.
+commands based on the RFC 3501 manual (Crispin, 2003,
+<doi:10.17487/RFC3501>), its updates, and other related manuals.
 
 ## First things first …
 
@@ -40,7 +39,7 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 2)  Then, go to
     <https://myaccount.google.com/u/1/lesssecureapps?pageId=none>
 
-<img src="man/figures/gmail_LSA.png" width="800" height="500">
+<img src="man/figures/gmail_LSA.png">
 
 3)  Set “Allow less secure apps” to **ON**.
 
@@ -50,11 +49,11 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Account Info”.
 
-<img src="man/figures/yahoo1.png" width="800" height="500">
+<img src="man/figures/yahoo1.png">
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/yahoo2.png" width="800" height="500">
+<img src="man/figures/yahoo2.png" width="700" height="400">
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
 
@@ -64,11 +63,11 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Options” and then on “Account Info”.
 
-<img src="man/figures/aol1.png" width="800" height="500">
+<img src="man/figures/aol1.png">
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/aol2.png" width="800" height="500">
+<img src="man/figures/aol2.png" width="700" height="400">
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
 
