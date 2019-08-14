@@ -185,7 +185,30 @@
 <a class="sourceLine" id="cb1-4" data-line-number="4">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configureIMAP.html">configureIMAP</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
 <a class="sourceLine" id="cb1-6" data-line-number="6">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">                          )</a></code></pre></div>
+<a class="sourceLine" id="cb1-7" data-line-number="7">                          )</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># IMAP settings</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co"># Gmail</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configureIMAP.html">configureIMAP</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">                          )</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co"># Yahoo Mail</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co"># AOL Mail</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co"># you can try another IMAP server</span></a></code></pre></div>
 </div>
 <div id="mailbox-commands" class="section level2">
 <h2 class="hasAnchor">
