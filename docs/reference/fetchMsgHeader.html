@@ -8,6 +8,13 @@
 
 <title>Fetch Message Headers — fetchMsgHeader • mRpostman</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
@@ -212,7 +219,7 @@ is <code>2</code>.</p></td>
 <span class='co'># fetching</span>
 <span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='selectMailbox.html'>selectMailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"TAM"</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='searchBefore.html'>searchBefore</a></span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"10-may-2012"</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"UID"</span>) <span class='kw'>%$%</span> <span class='co'>#exposition pipe operator - pass two argg</span>
+    <span class='fu'><a href='searchBefore.html'>searchBefore</a></span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"10-may-2012"</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"UID"</span>) <span class='kw'>%$%</span> <span class='co'>#exposition pipe - two argg</span>
     <span class='fu'>fetchMsgHeader</span>(<span class='kw'>imapconf</span> <span class='kw'>=</span> <span class='no'>imapconf</span>, <span class='kw'>msg_id</span> <span class='kw'>=</span> <span class='no'>msg_id</span>, <span class='kw'>fields</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"From"</span>, <span class='st'>"To"</span>))
 
 <span class='co'># }</span><div class='input'>

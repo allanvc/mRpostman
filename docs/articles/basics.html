@@ -6,6 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mRpostman Basics • mRpostman</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
@@ -88,8 +94,8 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The goal of <strong>mRpostman</strong> is to make it easy to connect to your IMAP (Internet Message Access Protocol) server and execute commands, such as listing mailboxes, searching and fetching messages using various criteria based on the RFC 3501 manual (Crispin, 2003, ), its updates, and other related manuals.</p>
-<p>In this vignette we will present you all the functions that come with the package, but not all the possiilities one can use. We selected only few examples to present the output with the code.</p>
+<p>The goal of <strong>mRpostman</strong> is to make it easy to connect to your IMAP (Internet Message Access Protocol) server and execute commands, such as listing mailboxes, searching and fetching messages using various criteria.</p>
+<p>In this vignette we will present all the functions that come with this package, but not all the possiilities one can explore.</p>
 </div>
 <div id="first-things-first---allowing-less-secure-apps-access" class="section level2">
 <h2 class="hasAnchor">
@@ -103,7 +109,7 @@
 <li><p>Go to GMail website and logon with your credentials.</p></li>
 <li><p>Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p></li>
 </ol>
-<p><img src="figures/gmail_LSA.png" width="800" height="500"></p>
+<p><img src="figures/gmail_LSA.png" width="500" height="100"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Set “Allow less secure apps” to <strong>ON</strong>.</li>
 </ol>
@@ -115,11 +121,11 @@
 <li><p>Go to Yahoo Mail website and logon with your credentials.</p></li>
 <li><p>Click on “Account Info”.</p></li>
 </ol>
-<p><img src="figures/yahoo1.png" width="800" height="500"></p>
+<p><img src="figures/yahoo1.png" width="500" height="100"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="figures/yahoo2.png" width="800" height="500"></p>
+<p><img src="figures/yahoo2.png" width="500" height="300"></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
@@ -132,11 +138,11 @@
 <li><p>Go to AOL Mail website and logon with your credentials.</p></li>
 <li><p>Click on “Options” and then on “Account Info”.</p></li>
 </ol>
-<p><img src="figures/aol1.png" width="800" height="500"></p>
+<p><img src="figures/aol1.png" width="500" height="100"></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="figures/aol2.png" width="800" height="500"></p>
+<p><img src="figures/aol2.png" width="500" height="300"></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
