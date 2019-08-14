@@ -39,7 +39,7 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 2)  Then, go to
     <https://myaccount.google.com/u/1/lesssecureapps?pageId=none>
 
-<img src="man/figures/gmail_LSA.png">
+<img src="man/figures/gmail1.PNG">
 
 3)  Set “Allow less secure apps” to **ON**.
 
@@ -49,13 +49,15 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Account Info”.
 
-<img src="man/figures/yahoo1.png">
+<img src="man/figures/yahoo1.PNG">
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/yahoo2.png" width="700" height="400">
+<img src="man/figures/yahoo2.PNG">
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
+
+<img src="man/figures/yahoo3.PNG">
 
 ### AOL Mail
 
@@ -63,13 +65,15 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Options” and then on “Account Info”.
 
-<img src="man/figures/aol1.png">
+<img src="man/figures/aol1.PNG">
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/aol2.png" width="700" height="400">
+<img src="man/figures/aol2.PNG">
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
+
+<img src="man/figures/aol3.PNG">
 
 ## Introduction
 
@@ -104,7 +108,7 @@ devtools::install_github("allanvc/mRpostman")
 
 ## Basic Usage
 
-### 1\) Configuring IMAP and listing a mailboxes
+### 1\) Configuring IMAP and listing mailboxes
 
 ``` r
 
@@ -131,7 +135,7 @@ imapconf %>%
   examineMailbox()
 ```
 
-### 3\) Search By Period using a flag
+### 3\) Search by Period using a flag
 
 ``` r
 
@@ -145,7 +149,7 @@ results <- imapconf %>%
 results$msg_id
 ```
 
-### 4\) Search for a String in messages’ TEXT section
+### 4\) Search for a String in the “Text” section of messages
 
 ``` r
 

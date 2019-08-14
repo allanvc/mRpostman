@@ -38,7 +38,7 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
-<img src="figures/gmail_LSA.png" width="500" height="100">
+<img src="figures/gmail1.PNG">
 
 3) Set "Allow less secure apps" to **ON**.
 
@@ -49,14 +49,15 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Click on "Account Info".
 
-<img src="figures/yahoo1.png" width="500" height="100">
+<img src="figures/yahoo1.PNG">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/yahoo2.png" width="500" height="300">
+<img src="figures/yahoo2.PNG">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
+<img src="figures/yahoo3.PNG">
 
 ### AOL Mail
 
@@ -64,13 +65,15 @@ See how to do it for GMail, Yahoo Mail and AOL Mail.
 
 2) Click on "Options" and then on "Account Info".
 
-<img src="figures/aol1.png" width="500" height="100">
+<img src="figures/aol1.PNG">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/aol2.png" width="500" height="300">
+<img src="figures/aol2.PNG">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
+
+<img src="figures/aol3.PNG">
 
 
 ## Package Structure
@@ -196,7 +199,7 @@ metadata_options()
 ```
 
 
-## 4) SEARCH
+## 4) Search
 
 All search functions will return a list with an imapconf object and a vector "msg_id" 
 containing the ids resulted from search. The first object will be important when 
@@ -208,7 +211,7 @@ You can also **NEGATE** all serach expressions by setting `negate = TRUE`.
 If your server supports **ESEARCH**, use it. It will prevent your results form being
 stripped. For instance, if your search will return the first 1000 messages, intead of returning a sequence of `1, 2, 3, 4, 5, 6, ... 1000`, the results will be condensed to groups of sequence similar to what R does: `1:10`. If you can't use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in `configureIMAP()` in order to avoid stripping. This is related to curl's buffersize.
 
-### 4.1) Search by DATE
+### 4.1) Search by Date
 
 `searchBefore()`, `searchSince()`, `searchOn()`, and `searchPeriod()`
 use internal date, which reflects the moment when the message was received.
@@ -390,7 +393,7 @@ results <- imapconf %>%
 
 ```
 
-### 4.2) Search by STRING
+### 4.2) Search by String
 
 You can search for a simple or compound string either in the whole message, in a section, or in a specific header field. You can also **NEGATE** the statement and search for messages (or specific part of a message) not containing that string.
 
@@ -429,7 +432,7 @@ selectMailbox(mbox = "UC Riverside") %>%
 Check `section_or_fields_options()` to see which fields and sections you can specify.
 
 
-### 4.3) Search by FLAG
+### 4.3) Search by Flag
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
@@ -441,7 +444,7 @@ results <- imapconf %>%
 Check `flag_options()` to see which flags you can specify.
 
 
-### 4.4) Search by SIZE
+### 4.4) Search by Size
 
 The size is specified in bytes.
 
@@ -463,10 +466,10 @@ results <- imapconf %>%
 
 ```
 
-### 4.5) Search by WITHIN EXTENSION
+### 4.5) Search by Within Extension
 
-Severs who support WITHIN EXTENSION accept searching for messages within a span
-of time, i.e. younger than X seconds, or older than X seconds.
+Severs who support "WITHIN EXTENSION" enable searching for messages within a span
+of time, i.e. younger than "x" seconds, or older than "x" seconds.
 
 #### 4.5.1) Younger Than
 
@@ -536,7 +539,7 @@ results$msg_id
 
 ```
 
-## 5) FETCH
+## 5) Fetch
 
 You can fetch full messages, only message headers, only message texts, or only a field of message metadata.
 
@@ -597,7 +600,7 @@ results <- imapconf %>%
 You can check metadata options with `metadata_options()`.
 
 
-## 6) MISCELLANEA
+## 6) Miscellanea
 
 Here we present other functions to perform useful IMAP operations.
 
