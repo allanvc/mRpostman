@@ -46,7 +46,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 ### Gmail
 
-1) Go to Gmail website and logon with your credentials.
+1) Go to Gmail website and log in with your credentials.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
@@ -57,7 +57,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 ### Yahoo Mail
 
-1) Go to Yahoo Mail website and logon with your credentials.
+1) Go to Yahoo Mail website and log in with your credentials.
 
 2) Click on "Account Info".
 
@@ -73,7 +73,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 ### AOL Mail
 
-1) Go to AOL Mail website and logon with your credentials.
+1) Go to AOL Mail website and log in with your credentials.
 
 2) Click on "Options" and then on "Account Info".
 
