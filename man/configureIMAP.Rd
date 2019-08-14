@@ -5,7 +5,7 @@
 \title{IMAP Settings}
 \usage{
 configureIMAP(url, username, password, show_pass = FALSE,
-  use_ssl = TRUE, verbose = TRUE, buffersize = 16000,
+  use_ssl = TRUE, verbose = FALSE, buffersize = 16000,
   fresh_connect = FALSE, timeout_ms = 5000, ...)
 }
 \arguments{
@@ -21,7 +21,7 @@ configureIMAP(url, username, password, show_pass = FALSE,
 \item{use_ssl}{A Logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to IMAP server. Default is \code{TRUE}.}
 
-\item{verbose}{If \code{TRUE}, mutes the output from the server. Default is
+\item{verbose}{If \code{FALSE}, mutes the output from the server. Default is
 \code{FALSE}.}
 
 \item{buffersize}{The size in bytes for curl's receive buffer. Default is
