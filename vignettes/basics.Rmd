@@ -3,8 +3,6 @@ title: "mRpostman Basics"
 output: 
   rmarkdown::html_vignette:
     toc: yes
-params:
-  password: "to complete interactively"
 vignette: >
   %\VignetteIndexEntry{mRpostman Basics}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,8 +15,7 @@ vignette: >
 
 The goal of **mRpostman** is to make it easy to connect to your IMAP 
 (Internet Message Access Protocol) server and execute commands,
-such as listing mailboxes, searching and fetching messages using various 
-criteria.
+such as listing mailboxes, searching and fetching messages in a tidy way.
 
 In this vignette we will present all the functions that come with this package,
 but not all the possiilities one can explore.
@@ -176,20 +173,19 @@ imapconf %>%
 
 ## 3) Options Listing
 
-Before executing search and fetch commands, it is good to check which are your 
-options regarding to flags, message's section and fields, and you server capabilities
+Before executing search and fetch commands, it is recommended to check which are your options regarding to flags, message's section and fields, and you server capabilities
 as well.
 
 ### 3.1) Server capabilities
 
-Knowing you server capabilities is important when doing search because you can
-execute a optimized search using "ESEARCH" extension. Also, if your server has the
-"WITHIN" extension, you can use the functions `searchYoungerThan()` and `searchOlderThan()`.
+Knowing you server capabilities is important when searching because you can
+execute an optimized search using "ESEARCH" extension. Also, if your server has the
+"WITHIN" extension, you can use `searchYoungerThan()` and `searchOlderThan()` functions.
 
 If your server provides "MOVE" capabilities, you can use `moveMsg()` for moving
-mesages between two mailboxes.
+messages between two mailboxes.
 
-Note that Gmail does not provide only the "WITHIN" extension.
+Note that Gmail does not provide the "WITHIN" extension.
 
 ```{r, message = FALSE, eval=FALSE}
 imapconf %>%
@@ -198,7 +194,7 @@ imapconf %>%
 
 ### 3.2) Flag Options
 
-Flags work like tags attached to messages. You can see the common options with:
+Flags work like tags attached to messages. You can check the options with:
 
 ```{r, message = FALSE, eval=FALSE}
 flag_options()
@@ -224,15 +220,16 @@ metadata_options()
 
 ## 4) Search
 
-All search functions will return a list with an imapconf object and a vector "msg_id" 
-containing the ids resulted from search. The first object will be important when 
+All search functions will return a list with an imapconf object and a "msg_id" vector
+containing the results from search. The first object will be important when 
 you want to put all the commands in a chain and perform a fetch after searching for messages.
-You will need the IMAP configuration and the message's ids.
+
+You will need the IMAP configuration object and the message's ids.
 
 You can also **NEGATE** all serach expressions by setting `negate = TRUE`.
 
-If your server supports **ESEARCH**, use it. It will prevent your results form being
-stripped. For instance, if your search will return the first 1000 messages, intead of returning a sequence of `1, 2, 3, 4, 5, 6, ... 1000`, the results will be condensed to groups of sequence similar to what R does: `1:10`. If you can't use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in `configureIMAP()` in order to avoid stripping. This is related to curl's buffersize.
+If your server supports **ESEARCH**, use it. It will prevent your results from being
+stripped. With "ESEARCH", the results will be condensed to groups of sequence similar to what R does. For instance, if your search returns 1000 results, it is better having condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in `configureIMAP()` in order to avoid stripping. This is related to curl's buffersize.
 
 ### 4.1) Search by Date
 
@@ -427,8 +424,8 @@ Searching "TO" field:
 ```{r, message = FALSE, eval=FALSE}
 results <- imapconf %>%
   selectMailbox(mbox = "CRAN messages2") %>%
-  searchString(section_or_field = "TO", string = "ka.quadros@@hotmail.com",
-               negate = TRUE) # not TO "ka.quadros@@hotmail.com"
+  searchString(section_or_field = "TO", string = "hadley@rstudio.com",
+               negate = TRUE) # not TO "hadley@rstudio.com"
 
 results$msg_id
 
@@ -491,7 +488,7 @@ results <- imapconf %>%
 
 ### 4.5) Search by Within Extension
 
-Severs who support "WITHIN EXTENSION" enable searching for messages within a span
+Severs who support "WITHIN" EXTENSION enable searching for messages within a span
 of time, i.e. younger than "x" seconds, or older than "x" seconds.
 
 #### 4.5.1) Younger Than
@@ -499,7 +496,7 @@ of time, i.e. younger than "x" seconds, or older than "x" seconds.
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
   selectMailbox(mbox = "INBOX") %>%
-  searchYoungerThan(seconds = 3600) # msgs received in less than one hour
+  searchYoungerThan(seconds = 3600) # msgs received in less than one hour (3600 sec)
 
 ```
 
@@ -508,7 +505,7 @@ results <- imapconf %>%
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
   selectMailbox(mbox = "INBOX") %>%
-  searchOlderThan(seconds = 3600) # msgs received in not less than one hour
+  searchOlderThan(seconds = 3600) # msgs received in not less than one hour (3600 sec)
 
 ```
 
@@ -524,10 +521,10 @@ These are the helper functions you can use inside `customSearch()`:
 2) Criteria definition: `Before()`, `Since()`, `On()`, `sentBefore()`,
 `sentSince()`, `sentOn()`, `String()`, `Flag()`, `smallerThan()`, `largerThan()`, `youngerThan()`, and `olderThan()`.
 
-NOTE: IMAP queries follows Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". Therefore, the relational operators functions in this package should be used like the following examples: `OR(Before("17-Apr-2015"), String("FROM", "Jim"))`. Even though there is no "AND" operator in IMAP, this package adds a helper funcion `AND` to indicate multiples arguments that must be searched together, e.g. `AND(Since("01-Jul-2018"), Size(16000))`.
+NOTE: IMAP queries follows Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". Therefore, the relational operators functions in this package should be used like the following examples: `OR(Before("17-Apr-2015"), String("FROM", "Jim"))`. Even though there is no "AND" operator in IMAP, this package adds a helper funcion `AND()` to indicate multiples arguments that must be searched together, e.g. `AND(Since("01-Jul-2018"), Size(16000))`.
 
 Example 1: Searching for messages containing the string "toronto" in the "FROM" field
-and that were received before "12-Apr-2019".
+**AND** that were received before "12-Apr-2019".
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -564,11 +561,11 @@ results$msg_id
 
 ## 5) Fetch
 
-You can fetch full messages, only message headers, only message texts, or only a field of message metadata.
+You can fetch full messages, message headers, message texts, or only metadata field(s) of messages.
 
-We usually fetch messages after a search. Given the output of search functions in **mRpostman**, you will have to use the **exposition pipe** `%$%` in order to retrieve and correctly map the `imapconf` object and `msg_id` (search results).
+We usually fetch messages after a search. Given the output of search functions in **mRpostman**, you will have to use the **exposition pipe** `%$%` in order to retrieve and correctly map the `imapconf` object and the `msg_id` (search results).
 
-You can also choose to save fetch results in memory or to disk (working directory). If you choose to do so, **mRpostman** creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.
+You can also choose to write fetch results to disk (working directory) using `write_to_file = TRUE`. If you choose to do so, **mRpostman** creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.
 
 ### 5.1) Fetch Full Message
 
@@ -649,7 +646,7 @@ results <- imapconf %>%
 
 ```
 
-### 6.3) Get maxmium (larger) message ID with specific flag
+### 6.3) Get maximum (larger) message ID with specific flag
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
@@ -680,7 +677,7 @@ results <- imapconf %>%
 
 ### 6.5) Expunge
 
-Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the "specific_UID" attribute.
+Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the `specific_UID` attribute.
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -694,7 +691,7 @@ results <- imapconf %>%
 
 ### 6.6) Add/Remove/Replace Flags
 
-Adding, removing and replacing one or more message flags. 
+Adding, removing and replacing one or more flags to messages. 
 
 
 #### 6.6.1) Add Flags
@@ -708,7 +705,7 @@ results <- imapconf %>%
 
 ```
 
-You cannot add a flag that is the antonym of an existent flag in the message, e.g. cannot add "UNSEEN" flag when a message already has flag "SEEN". Use `replaceFlags()` instead.
+You cannot add a flag that is the antonym of an already existent flag in the message, e.g. cannot add "UNSEEN" flag when a message already has flag "SEEN". Use `replaceFlags()` instead.
 
 #### 6.6.2) Remove Flags
 
@@ -735,8 +732,7 @@ results <- imapconf %>%
 
 ### 6.7) Move Message(s)
 
-`moveMsg()` uses imap "MOVE" EXTENSION. Check if your server
-supports "MOVE" capability with `listServerCapabilities()`.
+`moveMsg()` uses IMAP "MOVE" EXTENSION. Check if your server supports "MOVE" capability with `listServerCapabilities()`.
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -749,7 +745,7 @@ results <- imapconf %>%
 
 ```
 
-If your server does not provide "MOVE" capability, the same result can be achieved with a combination of:
+If your server does not provide "MOVE" capability, the same result can be achieved with a combination of `addFlags()` and `expunge()`:
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%

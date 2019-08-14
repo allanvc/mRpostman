@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMAP Tools for R • mRpostman</title>
+<title>IMAP Tools for R in a Tidy Way • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -15,10 +15,10 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Tools for R">
+<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Tools for R in a Tidy Way">
 <meta property="og:description" content="Provides multiple IMAP (Internet Message Access Protocol) commands 
     based on the RFC 3501 manual (Crispin, 2003, &lt;doi:10.17487/RFC3501&gt;), 
-    its updates, and other related manuals. ">
+    its updates, and other related documents. ">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -95,16 +95,17 @@
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
+<p>IMAP Tools for R in a Tidy Way</p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><strong>mRpostman</strong> provides multiple IMAP (Internet Message Access Protocol) commands based on the RFC 3501 manual (Crispin, 2003, <a href="doi:10.17487/RFC3501" class="uri">doi:10.17487/RFC3501</a>), its updates, and other related manuals.</p>
+<p><strong>mRpostman</strong> provides multiple IMAP (Internet Message Access Protocol) commands based on the RFC 3501 manual (Crispin, 2003, <a href="doi:10.17487/RFC3501" class="uri">doi:10.17487/RFC3501</a>), its updates, and other related documents.</p>
 <p>mRpostman website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
 </div>
 <div id="first-things-first" class="section level2">
 <h2 class="hasAnchor">
 <a href="#first-things-first" class="anchor"></a>First things first …</h2>
-<p>Before using <strong>mRpostman</strong>, it is essential to configure your mail account. Many mail providers today require authorizing <strong>“less secure apps”</strong> to access your account from a third part app.</p>
+<p>Before using <strong>mRpostman</strong>, it is essential to configure your mail account. Many mail providers require authorizing <strong>“less secure apps”</strong> to access your account from a third part app.</p>
 <p>See how to do it for Gmail, Yahoo Mail and AOL Mail.</p>
 <div id="gmail" class="section level3">
 <h3 class="hasAnchor">
@@ -225,12 +226,12 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># examine mailbox -- number of existent and recent messages</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># be careful - case sensitive</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/examineMailbox.html">examineMailbox</a></span>()</a></code></pre></div>
 </div>
-<div id="search-by-period-using-a-flag" class="section level3">
+<div id="searching-by-period-using-a-flag" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-period-using-a-flag" class="anchor"></a>3) Search by Period using a flag</h3>
+<a href="#searching-by-period-using-a-flag" class="anchor"></a>3) Searching by period using a flag</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># search</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
@@ -241,9 +242,9 @@
 <a class="sourceLine" id="cb4-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb4-9" data-line-number="9">results<span class="op">$</span>msg_id</a></code></pre></div>
 </div>
-<div id="search-for-a-string-in-the-text-section-of-messages" class="section level3">
+<div id="searching-for-a-string-in-the-text-section-of-messages" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-for-a-string-in-the-text-section-of-messages" class="anchor"></a>4) Search for a String in the “Text” section of messages</h3>
+<a href="#searching-for-a-string-in-the-text-section-of-messages" class="anchor"></a>4) Searching for a string in the “Text” section of messages</h3>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># search</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
@@ -252,13 +253,13 @@
 <a class="sourceLine" id="cb5-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">results<span class="op">$</span>msg_id</a></code></pre></div>
 </div>
-<div id="fetch-headers-after-a-search" class="section level3">
+<div id="fetch-headers-after-searching" class="section level3">
 <h3 class="hasAnchor">
-<a href="#fetch-headers-after-a-search" class="anchor"></a>5) Fetch Headers after a search</h3>
+<a href="#fetch-headers-after-searching" class="anchor"></a>5) Fetch headers after searching</h3>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># be careful - exposition pipe, not %&gt;%!!</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
 <a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetchMsgHeader.html">fetchMsgHeader</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, </a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">                 <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
 <a class="sourceLine" id="cb6-7" data-line-number="7"></a>

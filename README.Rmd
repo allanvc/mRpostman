@@ -1,7 +1,5 @@
 ---
 output: github_document
-params:
-  password: "to complete interactively"
 ---
 
 <!-- This document must be rendered in RStudio using the option "knitr with parameters" or rmarkdown::render("MyDocument.Rmd", params = list(password = "my_password"))-->
@@ -27,22 +25,24 @@ knitr::opts_chunk$set(
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) 
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0) 
 
+IMAP Tools for R in a Tidy Way
+
+
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol) commands 
 based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), its updates, 
-and other related manuals.
+and other related documents.
 
 mRpostman website: https://allanvc.github.io/mRpostman
 
 ## First things first ...
 
 Before using **mRpostman**, it is essential to configure your mail account. Many 
-mail providers today require authorizing **"less secure apps"** to access
-your account from a third part app.
+mail providers require authorizing **"less secure apps"** to access your account 
+from a third part app.
 
 See how to do it for Gmail, Yahoo Mail and AOL Mail.
-
 
 ### Gmail
 
@@ -101,9 +101,10 @@ The package is divided in 6 groups of functions:
 `searchSentBefore()`,`searchSentSince()`, `searchSentPeriod()`, `searchSentOn()`,
 `searchString()`, `searchFlag()`, `searchSmallerThan()`, `searchLargerThan()`,
 `searchYoungerThan()`, `searchOlderThan()`, `customSearch()`;
-* **fetch**: `fetchFullMsg()`, `fetchMsgHeader()`, `fetchMsgText()`, `fetchMsgMetadata()`;
-* **miscellania**: `copyMsg()`, `getMinId()`, `getMaxId()`, `deleteMsg()`, `expunge()`, `addFlags()`,
-`removeFlags()`, `replaceFlags()`, `moveMsg()`.
+* **fetch**: `fetchFullMsg()`, `fetchMsgHeader()`, `fetchMsgText()`, 
+`fetchMsgMetadata()`;
+* **miscellania**: `copyMsg()`, `getMinId()`, `getMaxId()`, `deleteMsg()`, 
+`expunge()`, `addFlags()`, `removeFlags()`, `replaceFlags()`, `moveMsg()`.
 
 
 ## Installation
@@ -158,12 +159,12 @@ imapconf %>%
 
 # examine mailbox -- number of existent and recent messages
 imapconf %>%
-  selectMailbox(mbox = "UC Riverside") %>% # be careful - case sensitive
+  selectMailbox(mbox = "UC Riverside") %>% # mbox names are case sensitive
   examineMailbox()
 
 ```
 
-### 3) Search by Period using a flag
+### 3) Searching by period using a flag
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -177,7 +178,7 @@ results <- imapconf %>%
 results$msg_id
 ```
 
-### 4) Search for a String in the "Text" section of messages
+### 4) Searching for a string in the "Text" section of messages
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -189,18 +190,19 @@ results <- imapconf %>%
 results$msg_id
 ```
 
-### 5) Fetch Headers after a search
+### 5) Fetch headers after searching
 
 ```{r, message = FALSE, eval=FALSE}
 
 results <- imapconf %>%
   selectMailbox(mbox = "UC Riverside") %>%
-  searchString(section_or_field = "TEXT", string = "Welcome!") %$% # be careful - exposition pipe, not %>%!!
+  searchString(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
   fetchMsgHeader(imapconf = imapconf, msg_id = msg_id, 
                  fields = c("DATE", "SUBJECT"))
 
 results
 ```
+
 
 ## License
 

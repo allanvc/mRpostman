@@ -94,7 +94,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The goal of <strong>mRpostman</strong> is to make it easy to connect to your IMAP (Internet Message Access Protocol) server and execute commands, such as listing mailboxes, searching and fetching messages using various criteria.</p>
+<p>The goal of <strong>mRpostman</strong> is to make it easy to connect to your IMAP (Internet Message Access Protocol) server and execute commands, such as listing mailboxes, searching and fetching messages in a tidy way.</p>
 <p>In this vignette we will present all the functions that come with this package, but not all the possiilities one can explore.</p>
 </div>
 <div id="first-things-first---allowing-less-secure-apps-access" class="section level2">
@@ -247,20 +247,20 @@
 <div id="options-listing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#options-listing" class="anchor"></a>3) Options Listing</h2>
-<p>Before executing search and fetch commands, it is good to check which are your options regarding to flags, message’s section and fields, and you server capabilities as well.</p>
+<p>Before executing search and fetch commands, it is recommended to check which are your options regarding to flags, message’s section and fields, and you server capabilities as well.</p>
 <div id="server-capabilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#server-capabilities" class="anchor"></a>3.1) Server capabilities</h3>
-<p>Knowing you server capabilities is important when doing search because you can execute a optimized search using “ESEARCH” extension. Also, if your server has the “WITHIN” extension, you can use the functions <code><a href="../reference/searchYoungerThan.html">searchYoungerThan()</a></code> and <code><a href="../reference/searchOlderThan.html">searchOlderThan()</a></code>.</p>
-<p>If your server provides “MOVE” capabilities, you can use <code><a href="../reference/moveMsg.html">moveMsg()</a></code> for moving mesages between two mailboxes.</p>
-<p>Note that Gmail does not provide only the “WITHIN” extension.</p>
+<p>Knowing you server capabilities is important when searching because you can execute an optimized search using “ESEARCH” extension. Also, if your server has the “WITHIN” extension, you can use <code><a href="../reference/searchYoungerThan.html">searchYoungerThan()</a></code> and <code><a href="../reference/searchOlderThan.html">searchOlderThan()</a></code> functions.</p>
+<p>If your server provides “MOVE” capabilities, you can use <code><a href="../reference/moveMsg.html">moveMsg()</a></code> for moving messages between two mailboxes.</p>
+<p>Note that Gmail does not provide the “WITHIN” extension.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/listServerCapabilities.html">listServerCapabilities</a></span>()</a></code></pre></div>
 </div>
 <div id="flag-options" class="section level3">
 <h3 class="hasAnchor">
 <a href="#flag-options" class="anchor"></a>3.2) Flag Options</h3>
-<p>Flags work like tags attached to messages. You can see the common options with:</p>
+<p>Flags work like tags attached to messages. You can check the options with:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="../reference/flag_options.html">flag_options</a></span>()</a></code></pre></div>
 </div>
 <div id="section-and-fields-options" class="section level3">
@@ -279,9 +279,10 @@
 <div id="search" class="section level2">
 <h2 class="hasAnchor">
 <a href="#search" class="anchor"></a>4) Search</h2>
-<p>All search functions will return a list with an imapconf object and a vector “msg_id” containing the ids resulted from search. The first object will be important when you want to put all the commands in a chain and perform a fetch after searching for messages. You will need the IMAP configuration and the message’s ids.</p>
+<p>All search functions will return a list with an imapconf object and a “msg_id” vector containing the results from search. The first object will be important when you want to put all the commands in a chain and perform a fetch after searching for messages.</p>
+<p>You will need the IMAP configuration object and the message’s ids.</p>
 <p>You can also <strong>NEGATE</strong> all serach expressions by setting <code>negate = TRUE</code>.</p>
-<p>If your server supports <strong>ESEARCH</strong>, use it. It will prevent your results form being stripped. For instance, if your search will return the first 1000 messages, intead of returning a sequence of <code>1, 2, 3, 4, 5, 6, ... 1000</code>, the results will be condensed to groups of sequence similar to what R does: <code>1:10</code>. If you can’t use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configureIMAP.html">configureIMAP()</a></code> in order to avoid stripping. This is related to curl’s buffersize.</p>
+<p>If your server supports <strong>ESEARCH</strong>, use it. It will prevent your results from being stripped. With “ESEARCH”, the results will be condensed to groups of sequence similar to what R does. For instance, if your search returns 1000 results, it is better having condensed groups such as <code>1:10, 12, 23:27, ...</code> instead of a sequence of <code>1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...</code>. If you can’t use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configureIMAP.html">configureIMAP()</a></code> in order to avoid stripping. This is related to curl’s buffersize.</p>
 <div id="search-by-date" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-by-date" class="anchor"></a>4.1) Search by Date</h3>
@@ -421,8 +422,8 @@
 <p>Searching “TO” field:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"CRAN messages2"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TO"</span>, <span class="dt">string =</span> <span class="st">"ka.quadros@@hotmail.com"</span>,</a>
-<a class="sourceLine" id="cb24-4" data-line-number="4">               <span class="dt">negate =</span> <span class="ot">TRUE</span>) <span class="co"># not TO "ka.quadros@@hotmail.com"</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TO"</span>, <span class="dt">string =</span> <span class="st">"hadley@rstudio.com"</span>,</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">               <span class="dt">negate =</span> <span class="ot">TRUE</span>) <span class="co"># not TO "hadley@rstudio.com"</span></a>
 <a class="sourceLine" id="cb24-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb24-6" data-line-number="6">results<span class="op">$</span>msg_id</a></code></pre></div>
 <p>Searching “TEXT” section.</p>
@@ -465,20 +466,20 @@
 <div id="search-by-within-extension" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-by-within-extension" class="anchor"></a>4.5) Search by Within Extension</h3>
-<p>Severs who support “WITHIN EXTENSION” enable searching for messages within a span of time, i.e. younger than “x” seconds, or older than “x” seconds.</p>
+<p>Severs who support “WITHIN” EXTENSION enable searching for messages within a span of time, i.e. younger than “x” seconds, or older than “x” seconds.</p>
 <div id="younger-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#younger-than" class="anchor"></a>4.5.1) Younger Than</h4>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchYoungerThan.html">searchYoungerThan</a></span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received in less than one hour</span></a></code></pre></div>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchYoungerThan.html">searchYoungerThan</a></span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received in less than one hour (3600 sec)</span></a></code></pre></div>
 </div>
 <div id="older-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#older-than" class="anchor"></a>4.5.2) Older Than</h4>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb31-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchOlderThan.html">searchOlderThan</a></span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received in not less than one hour</span></a></code></pre></div>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchOlderThan.html">searchOlderThan</a></span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received in not less than one hour (3600 sec)</span></a></code></pre></div>
 </div>
 </div>
 <div id="custom-search" class="section level3">
@@ -490,8 +491,8 @@
 <li>Relational operators: <code><a href="../reference/AND.html">AND()</a></code>, and <code><a href="../reference/OR.html">OR()</a></code>;</li>
 <li>Criteria definition: <code><a href="../reference/Before.html">Before()</a></code>, <code><a href="../reference/Since.html">Since()</a></code>, <code><a href="../reference/On.html">On()</a></code>, <code><a href="../reference/sentBefore.html">sentBefore()</a></code>, <code><a href="../reference/sentSince.html">sentSince()</a></code>, <code><a href="../reference/sentOn.html">sentOn()</a></code>, <code><a href="../reference/String.html">String()</a></code>, <code><a href="../reference/Flag.html">Flag()</a></code>, <code><a href="../reference/smallerThan.html">smallerThan()</a></code>, <code><a href="../reference/largerThan.html">largerThan()</a></code>, <code><a href="../reference/youngerThan.html">youngerThan()</a></code>, and <code><a href="../reference/olderThan.html">olderThan()</a></code>.</li>
 </ol>
-<p>NOTE: IMAP queries follows Polish notation, i.e. operators such as <code>OR</code> come before arguments, e.g. “OR argument1 argument2”. Therefore, the relational operators functions in this package should be used like the following examples: <code><a href="../reference/OR.html">OR(Before("17-Apr-2015"), String("FROM", "Jim"))</a></code>. Even though there is no “AND” operator in IMAP, this package adds a helper funcion <code>AND</code> to indicate multiples arguments that must be searched together, e.g. <code><a href="../reference/AND.html">AND(Since("01-Jul-2018"), Size(16000))</a></code>.</p>
-<p>Example 1: Searching for messages containing the string “toronto” in the “FROM” field and that were received before “12-Apr-2019”.</p>
+<p>NOTE: IMAP queries follows Polish notation, i.e. operators such as <code>OR</code> come before arguments, e.g. “OR argument1 argument2”. Therefore, the relational operators functions in this package should be used like the following examples: <code><a href="../reference/OR.html">OR(Before("17-Apr-2015"), String("FROM", "Jim"))</a></code>. Even though there is no “AND” operator in IMAP, this package adds a helper funcion <code><a href="../reference/AND.html">AND()</a></code> to indicate multiples arguments that must be searched together, e.g. <code><a href="../reference/AND.html">AND(Since("01-Jul-2018"), Size(16000))</a></code>.</p>
+<p>Example 1: Searching for messages containing the string “toronto” in the “FROM” field <strong>AND</strong> that were received before “12-Apr-2019”.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb32-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb32-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/customSearch.html">customSearch</a></span>(<span class="dt">custom_request =</span> </a>
@@ -518,9 +519,9 @@
 <div id="fetch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fetch" class="anchor"></a>5) Fetch</h2>
-<p>You can fetch full messages, only message headers, only message texts, or only a field of message metadata.</p>
-<p>We usually fetch messages after a search. Given the output of search functions in <strong>mRpostman</strong>, you will have to use the <strong>exposition pipe</strong> <code>%$%</code> in order to retrieve and correctly map the <code>imapconf</code> object and <code>msg_id</code> (search results).</p>
-<p>You can also choose to save fetch results in memory or to disk (working directory). If you choose to do so, <strong>mRpostman</strong> creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.</p>
+<p>You can fetch full messages, message headers, message texts, or only metadata field(s) of messages.</p>
+<p>We usually fetch messages after a search. Given the output of search functions in <strong>mRpostman</strong>, you will have to use the <strong>exposition pipe</strong> <code>%$%</code> in order to retrieve and correctly map the <code>imapconf</code> object and the <code>msg_id</code> (search results).</p>
+<p>You can also choose to write fetch results to disk (working directory) using <code>write_to_file = TRUE</code>. If you choose to do so, <strong>mRpostman</strong> creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.</p>
 <div id="fetch-full-message" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-full-message" class="anchor"></a>5.1) Fetch Full Message</h3>
@@ -580,9 +581,9 @@
 <a class="sourceLine" id="cb39-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"[Gmail]/Trash"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/getMinId.html">getMinId</a></span>(<span class="dt">flag =</span> <span class="st">"UNSEEN"</span>)</a></code></pre></div>
 </div>
-<div id="get-maxmium-larger-message-id-with-specific-flag" class="section level3">
+<div id="get-maximum-larger-message-id-with-specific-flag" class="section level3">
 <h3 class="hasAnchor">
-<a href="#get-maxmium-larger-message-id-with-specific-flag" class="anchor"></a>6.3) Get maxmium (larger) message ID with specific flag</h3>
+<a href="#get-maximum-larger-message-id-with-specific-flag" class="anchor"></a>6.3) Get maximum (larger) message ID with specific flag</h3>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb40-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"[Gmail]/Trash"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb40-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/getMaxId.html">getMaxId</a></span>(<span class="dt">flag =</span> <span class="st">"UNSEEN"</span>)</a></code></pre></div>
@@ -602,7 +603,7 @@
 <div id="expunge" class="section level3">
 <h3 class="hasAnchor">
 <a href="#expunge" class="anchor"></a>6.5) Expunge</h3>
-<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the “specific_UID” attribute.</p>
+<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>specific_UID</code> attribute.</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb43-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"[Gmail]/Trash"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb43-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/deleteMsg.html">deleteMsg</a></span>(<span class="dt">msg_id =</span> <span class="dv">71171</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span></a>
@@ -611,7 +612,7 @@
 <div id="addremovereplace-flags" class="section level3">
 <h3 class="hasAnchor">
 <a href="#addremovereplace-flags" class="anchor"></a>6.6) Add/Remove/Replace Flags</h3>
-<p>Adding, removing and replacing one or more message flags.</p>
+<p>Adding, removing and replacing one or more flags to messages.</p>
 <div id="add-flags" class="section level4">
 <h4 class="hasAnchor">
 <a href="#add-flags" class="anchor"></a>6.6.1) Add Flags</h4>
@@ -619,7 +620,7 @@
 <a class="sourceLine" id="cb44-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb44-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchBefore.html">searchBefore</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb44-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/addFlags.html">addFlags</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">flags_to_set =</span> <span class="st">"RECENT"</span>)</a></code></pre></div>
-<p>You cannot add a flag that is the antonym of an existent flag in the message, e.g. cannot add “UNSEEN” flag when a message already has flag “SEEN”. Use <code><a href="../reference/replaceFlags.html">replaceFlags()</a></code> instead.</p>
+<p>You cannot add a flag that is the antonym of an already existent flag in the message, e.g. cannot add “UNSEEN” flag when a message already has flag “SEEN”. Use <code><a href="../reference/replaceFlags.html">replaceFlags()</a></code> instead.</p>
 </div>
 <div id="remove-flags" class="section level4">
 <h4 class="hasAnchor">
@@ -642,13 +643,13 @@
 <div id="move-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#move-messages" class="anchor"></a>6.7) Move Message(s)</h3>
-<p><code><a href="../reference/moveMsg.html">moveMsg()</a></code> uses imap “MOVE” EXTENSION. Check if your server supports “MOVE” capability with <code><a href="../reference/listServerCapabilities.html">listServerCapabilities()</a></code>.</p>
+<p><code><a href="../reference/moveMsg.html">moveMsg()</a></code> uses IMAP “MOVE” EXTENSION. Check if your server supports “MOVE” capability with <code><a href="../reference/listServerCapabilities.html">listServerCapabilities()</a></code>.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># copy search results from "Sent" to "INBOX"</span></a>
 <a class="sourceLine" id="cb47-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb47-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"[Gmail]/Sent Mail"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb47-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/searchBefore.html">searchBefore</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb47-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/moveMsg.html">moveMsg</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">to_mbox =</span> <span class="st">"CRAN messages2"</span>)</a></code></pre></div>
-<p>If your server does not provide “MOVE” capability, the same result can be achieved with a combination of:</p>
+<p>If your server does not provide “MOVE” capability, the same result can be achieved with a combination of <code><a href="../reference/addFlags.html">addFlags()</a></code> and <code><a href="../reference/expunge.html">expunge()</a></code>:</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb48-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"[Gmail]/Sent Mail"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb48-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/searchBefore.html">searchBefore</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
