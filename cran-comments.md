@@ -1,4 +1,4 @@
-**release version - v0.1.0**
+**New submission - v0.1.0**
 
 ## Test environments
 * local Ubuntu 18.04, R 3.6.1
