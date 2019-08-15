@@ -93,7 +93,7 @@ The package is divided in 6 groups of functions:
 
 ## 1) Configuration
 
-After enabling (if needed) "Non secure apps access" in you Mail provider,
+After enabling (if needed) "Non secure apps access" in your Mail provider,
 you have to configure your IMAP settings:
 
 ```{r, message = FALSE, eval=FALSE}
@@ -222,11 +222,11 @@ metadata_options()
 
 All search functions will return a list with an imapconf object and a "msg_id" vector
 containing the results from search. The first object will be important when 
-you want to put all the commands in a chain and perform a fetch after searching for messages.
+you want to put all the commands in a chain and perform a fetch after searching for messages. In this case, you will need the IMAP configuration object (`imapconf`) and the message's ids (`msg_id`).
 
-You will need the IMAP configuration object and the message's ids.
+If you do not want to return the `imapconf` object, but only the search results, you can set `return_imapconf = FALSE` in any of the search functions.
 
-You can also **NEGATE** all serach expressions by setting `negate = TRUE`.
+You can also **NEGATE** all search expressions by setting `negate = TRUE`.
 
 If your server supports **ESEARCH**, use it. It will prevent your results from being
 stripped. With "ESEARCH", the results will be condensed to groups of sequence similar to what R does. For instance, if your search returns 1000 results, it is better having condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being stripped even with ESEARCH, you can try to increase your buffersize in `configureIMAP()` in order to avoid stripping. This is related to curl's buffersize.
@@ -268,6 +268,19 @@ result <- imapconf %>%
                esearch = TRUE)
 
 result$msg_id
+```
+
+Remember, if you do not want to return the `imapconf` object, but only the search results, you can set `return_imapconf = FALSE` in any of the search functions.
+
+```{r, message = FALSE, eval=FALSE}
+result <- imapconf %>%
+  selectMailbox(mbox = "UC Riverside") %>%
+  searchBefore(date_char = "02-May-2019", 
+               by = "UID", 
+               flag = "UNANSWERED",
+               esearch = TRUE, return_imapconf = FALSE)
+
+result
 ```
 
 You can also **NEGATE** the statement to search for messages **NOT BEFORE a date**:
