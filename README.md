@@ -199,6 +199,12 @@ This package is licensed under the terms of the GPL-3 License.
 
 ## References
 
-Crispin, M., *“INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1”*, RFC
+Crispin, M., *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC
 3501, DOI: 10.17487/RFC3501, March 2003,
 <https://www.rfc-editor.org/info/rfc3501>.
+
+Ooms, J. curl: *A Modern and Flexible Web Client for R*. R package
+version 3.3, 2019, <https://CRAN.R-project.org/package=curl>
+
+Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
+<https://curl.haxx.se/libcurl/>
