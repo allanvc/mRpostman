@@ -1,7 +1,7 @@
 #' @title Custom Search Specific Check
 #'
 #' @description Internal helper function for checking specific arguments
-#'     used in \link{customSearch}.
+#'     used in \link{custom_search}.
 #'
 #' @param date_char A character vector with format "DD-Mon-YYYY",
 #'     e.g. "01-Apr-2019". We opted not to use objects of type "date", since IMAP

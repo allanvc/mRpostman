@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMAP Tools for R in a Tidy Way • mRpostman</title>
+<title>IMAP Tools for R • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Tools for R in a Tidy Way">
+<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Tools for R">
 <meta property="og:description" content="Provides multiple IMAP (Internet Message Access Protocol) commands 
     based on the RFC 3501 manual (Crispin, 2003, &lt;doi:10.17487/RFC3501&gt;), 
     its updates, and other related documents. ">
@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -91,11 +91,11 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mrpostman" class="anchor"></a>mRpostman <img src="reference/figures/logo.png" align="right" width="150">
 </h1></div>
-<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.1.0/mRpostman/man/figures/logo.png" align="right" /> -->
+<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.1.1/mRpostman/man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
-<p>IMAP Tools for R in a Tidy Way</p>
+<p>IMAP Tools for R</p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
@@ -159,21 +159,28 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The package is divided in 6 groups of functions:</p>
+<p>The package is divided in 7 groups of functions:</p>
 <ul>
 <li>
-<strong>configuration</strong>: <code><a href="reference/configureIMAP.html">configureIMAP()</a></code>;</li>
+<strong>configuration</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>;</li>
 <li>
-<strong>mailboxes commands</strong>: <code><a href="reference/listMailboxes.html">listMailboxes()</a></code>, <code><a href="reference/selectMailbox.html">selectMailbox()</a></code>, <code><a href="reference/examineMailbox.html">examineMailbox()</a></code>, <code><a href="reference/renameMailbox.html">renameMailbox();</a></code>
+<strong>mailboxes commands</strong>: <code><a href="reference/list_mailboxes.html">list_mailboxes()</a></code>, <code><a href="reference/select_mailbox.html">select_mailbox()</a></code>, <code><a href="reference/examine_mailbox.html">examine_mailbox()</a></code>, <code><a href="reference/rename_mailbox.html">rename_mailbox();</a></code>
 </li>
 <li>
-<strong>options listing</strong>: <code><a href="reference/listServerCapabilities.html">listServerCapabilities()</a></code>,<code><a href="reference/flag_options.html">flag_options()</a></code>, <code><a href="reference/section_or_field_options.html">section_or_field_options()</a></code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>;</li>
+<strong>options listing</strong>: <code><a href="reference/list_server_capabilities.html">list_server_capabilities()</a></code>,<code><a href="reference/flag_options.html">flag_options()</a></code>, <code><a href="reference/section_or_field_options.html">section_or_field_options()</a></code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>;</li>
 <li>
-<strong>search</strong>: <code><a href="reference/searchBefore.html">searchBefore()</a></code>, <code><a href="reference/searchSince.html">searchSince()</a></code>, <code><a href="reference/searchPeriod.html">searchPeriod()</a></code>, <code><a href="reference/searchOn.html">searchOn()</a></code>, <code><a href="reference/searchSentBefore.html">searchSentBefore()</a></code>,<code><a href="reference/searchSentSince.html">searchSentSince()</a></code>, <code><a href="reference/searchSentPeriod.html">searchSentPeriod()</a></code>, <code><a href="reference/searchSentOn.html">searchSentOn()</a></code>, <code><a href="reference/searchString.html">searchString()</a></code>, <code><a href="reference/searchFlag.html">searchFlag()</a></code>, <code><a href="reference/searchSmallerThan.html">searchSmallerThan()</a></code>, <code><a href="reference/searchLargerThan.html">searchLargerThan()</a></code>, <code><a href="reference/searchYoungerThan.html">searchYoungerThan()</a></code>, <code><a href="reference/searchOlderThan.html">searchOlderThan()</a></code>, <code><a href="reference/customSearch.html">customSearch()</a></code>;</li>
+<strong>search</strong>: <code><a href="reference/search_before.html">search_before()</a></code>, <code><a href="reference/search_since.html">search_since()</a></code>, <code><a href="reference/search_period.html">search_period()</a></code>, <code><a href="reference/search_on.html">search_on()</a></code>, <code><a href="reference/search_sent_before.html">search_sent_before()</a></code>,<code><a href="reference/search_sent_since.html">search_sent_since()</a></code>, <code><a href="reference/search_sent_period.html">search_sent_period()</a></code>, <code><a href="reference/search_sent_on.html">search_sent_on()</a></code>, <code><a href="reference/search_string.html">search_string()</a></code>, <code><a href="reference/search_flag.html">search_flag()</a></code>, <code><a href="reference/search_smaller_than.html">search_smaller_than()</a></code>, <code><a href="reference/search_larger_than.html">search_larger_than()</a></code>, <code><a href="reference/search_younger_than.html">search_younger_than()</a></code>, <code><a href="reference/search_older_than.html">search_older_than()</a></code>, <code><a href="reference/custom_search.html">custom_search()</a></code>;</li>
 <li>
-<strong>fetch</strong>: <code><a href="reference/fetchFullMsg.html">fetchFullMsg()</a></code>, <code><a href="reference/fetchMsgHeader.html">fetchMsgHeader()</a></code>, <code><a href="reference/fetchMsgText.html">fetchMsgText()</a></code>, <code><a href="reference/fetchMsgMetadata.html">fetchMsgMetadata()</a></code>;</li>
+<strong>custom search helper functions</strong>:
+<ul>
+<li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>, <code><a href="reference/OR.html">OR()</a></code>;</li>
+<li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, and <code><a href="reference/older_than.html">older_than()</a></code>.</li>
+</ul>
+</li>
 <li>
-<strong>miscellania</strong>: <code><a href="reference/copyMsg.html">copyMsg()</a></code>, <code><a href="reference/getMinId.html">getMinId()</a></code>, <code><a href="reference/getMaxId.html">getMaxId()</a></code>, <code><a href="reference/deleteMsg.html">deleteMsg()</a></code>, <code><a href="reference/expunge.html">expunge()</a></code>, <code><a href="reference/addFlags.html">addFlags()</a></code>, <code><a href="reference/removeFlags.html">removeFlags()</a></code>, <code><a href="reference/replaceFlags.html">replaceFlags()</a></code>, <code><a href="reference/moveMsg.html">moveMsg()</a></code>.</li>
+<strong>fetch</strong>: <code><a href="reference/fetch_full_msg.html">fetch_full_msg()</a></code>, <code><a href="reference/fetch_msg_header.html">fetch_msg_header()</a></code>, <code><a href="reference/fetch_msg_text.html">fetch_msg_text()</a></code>, <code><a href="reference/fetch_msg_metadata.html">fetch_msg_metadata()</a></code>;</li>
+<li>
+<strong>miscellania</strong>: <code><a href="reference/copy_msg.html">copy_msg()</a></code>, <code><a href="reference/get_min_id.html">get_min_id()</a></code>, <code><a href="reference/get_max_id.html">get_max_id()</a></code>, <code><a href="reference/delete_msg.html">delete_msg()</a></code>, <code><a href="reference/expunge.html">expunge()</a></code>, <code><a href="reference/add_flags.html">add_flags()</a></code>, <code><a href="reference/remove_flags.html">remove_flags()</a></code>, <code><a href="reference/replace_flags.html">replace_flags()</a></code>, <code><a href="reference/move_msg.html">move_msg()</a></code>.</li>
 </ul>
 </div>
 <div id="installation" class="section level2">
@@ -197,7 +204,7 @@
 <a class="sourceLine" id="cb2-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># IMAP settings</span></a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Gmail</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configureIMAP.html">configureIMAP</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
 <a class="sourceLine" id="cb2-7" data-line-number="7">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
 <a class="sourceLine" id="cb2-8" data-line-number="8">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9">                          )</a>
@@ -218,7 +225,7 @@
 <a class="sourceLine" id="cb2-24" data-line-number="24"></a>
 <a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co"># Listing</span></a>
 <a class="sourceLine" id="cb2-26" data-line-number="26">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw"><a href="reference/listMailboxes.html">listMailboxes</a></span>()</a></code></pre></div>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
 </div>
 <div id="examining-a-mailbox" class="section level3">
 <h3 class="hasAnchor">
@@ -226,8 +233,8 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># examine mailbox -- number of existent and recent messages</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/examineMailbox.html">examineMailbox</a></span>()</a></code></pre></div>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/examine_mailbox.html">examine_mailbox</a></span>()</a></code></pre></div>
 </div>
 <div id="searching-by-period-using-a-flag" class="section level3">
 <h3 class="hasAnchor">
@@ -235,8 +242,8 @@
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># search</span></a>
 <a class="sourceLine" id="cb4-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/searchPeriod.html">searchPeriod</a></span>(<span class="dt">since_date_char =</span> <span class="st">"17-May-2018"</span>,</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_period.html">search_period</a></span>(<span class="dt">since_date_char =</span> <span class="st">"17-May-2018"</span>,</a>
 <a class="sourceLine" id="cb4-6" data-line-number="6">               <span class="dt">before_date_char =</span> <span class="st">"30-Jun-2019"</span>,</a>
 <a class="sourceLine" id="cb4-7" data-line-number="7">               <span class="dt">flag =</span> <span class="st">"ANSWERED"</span>)</a>
 <a class="sourceLine" id="cb4-8" data-line-number="8"></a>
@@ -248,8 +255,8 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># search</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>)</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>)</a>
 <a class="sourceLine" id="cb5-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">results<span class="op">$</span>msg_id</a></code></pre></div>
 </div>
@@ -258,9 +265,9 @@
 <a href="#fetch-headers-after-searching" class="anchor"></a>5) Fetch headers after searching</h3>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/selectMailbox.html">selectMailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/searchString.html">searchString</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetchMsgHeader.html">fetchMsgHeader</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, </a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, </a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">                 <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
 <a class="sourceLine" id="cb6-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb6-8" data-line-number="8">results</a></code></pre></div>

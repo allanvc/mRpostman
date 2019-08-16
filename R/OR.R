@@ -8,17 +8,17 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #'                           username="your_gmail_user",
 #'                           password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
 #' result <- imapconf %>%
-#'     selectMailbox(mbox = "INBOX") %>%
-#'     customSearch(custom_request = OR(sentSince(date.char="17-Apr-2019"),
-#'                                       smallerThan(size = 512000, negate = TRUE)))
-#' # searches for messages SentSince "17-Apr-2019" OR NOT SmallerThan  512KB.
+#'     select_mailbox(mbox = "INBOX") %>%
+#'     custom_search(custom_request = OR(sent_since(date.char="17-Apr-2019"),
+#'                                       smaller_than(size = 512000, negate = TRUE)))
+#' # searches for messages SentSince "17-Apr-2019" OR NOT Smaller Than  512KB.
 #'
 #' }
 #'

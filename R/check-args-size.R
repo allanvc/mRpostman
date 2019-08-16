@@ -1,7 +1,7 @@
 #' @inherit check_args_date title description return
 #'
-#' @param size An integer specifying the size (in number characters) of message to be used as search
-#'     criterion.
+#' @param size An integer specifying the size (in number of characters) of
+#'     message to be used as search criterion.
 #' @param negate If \code{TRUE}, negates the search and seeks for
 #'     "NOT search_criterion". Default is \code{FALSE}.
 #'

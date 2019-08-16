@@ -16,21 +16,21 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #'                           username="your_gmail_user",
 #'                           password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # deleting a message using specific UID
 #' result1 <- imapconf %>%
-#'     selectMailbox(mbox = "TAM") %>%
-#'     deleteMsg(msg_id = 71171, by = "UID") %$%
+#'     select_mailbox(mbox = "TAM") %>%
+#'     delete_msg(msg_id = 71171, by = "UID") %$%
 #'     expunge(imapconf = imapconf, specific_UID = msg_id)
 #'
 #'
 #' # expunge all message smarked as "DELETED" in INBOX
 #' result2 <- imapconf %>%
-#'     selectMailbox(mbox = "INBOX") %>%
+#'     select_mailbox(mbox = "INBOX") %>%
 #'     expunge()
 #'
 #' }

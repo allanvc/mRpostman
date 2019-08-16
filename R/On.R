@@ -1,8 +1,6 @@
-#' @inherit Before
+#' @inherit before
 #'
-#' @family search
-#' @family custom
-#' @family criteria helper functions
+#' @family customsearch helper functions
 #'
 #' @examples
 #'
@@ -10,23 +8,23 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #'                           username="your_gmail_user",
 #'                           password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
 #' result <- imapconf %>%
-#'     selectMailbox(mbox = "INBOX") %>%
-#'     customSearch(custom_request = OR(On(date_char = "17-Apr-2019"),
-#'                                      On(date_char = "17-Jul-2018")))
+#'     select_mailbox(mbox = "INBOX") %>%
+#'     custom_search(custom_request = OR(on(date_char = "17-Apr-2019"),
+#'                                       on(date_char = "17-Jul-2018")))
 #' # searches for messages On "17-Apr-2019" OR On "17-Jul-2018".
 #'
 #' }
 #'
 #' @export
 #'
-On <- function(date_char, negate = FALSE){
+on <- function(date_char, negate = FALSE){
 
 
   check_args_date(date_char, negate)

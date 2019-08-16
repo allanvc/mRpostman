@@ -8,8 +8,8 @@ check_args_expunge(imapconf, specific_UID, retries)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
-\link{configureIMAP} and with a \code{mbox} item added after a
-mailbox selection with \link{selectMailbox}.}
+\link{configure_imap} and with a \code{mbox} item added after a
+mailbox selection with \link{select_mailbox}.}
 
 \item{specific_UID}{A numeric vector containing one or more messages UIDs, if
 specific messages should be expunged and not the whole mailbox.}
@@ -25,28 +25,28 @@ Internal helper function for checking the arguments
     used in \link{expunge} function.
 }
 \seealso{
-Other miscellaneous helper: \code{\link{check_args_addReplaceFlags}},
-  \code{\link{check_args_copyMsg}},
-  \code{\link{check_args_deleteMsg}},
-  \code{\link{check_args_getMaxMinId}}
+Other miscellaneous helper: \code{\link{check_args_add_replace_flags}},
+  \code{\link{check_args_copy_msg}},
+  \code{\link{check_args_delete_msg}},
+  \code{\link{check_args_get_max_min_id}}
 
-Other check args: \code{\link{check_args_addReplaceFlags}},
-  \code{\link{check_args_copyMsg}},
-  \code{\link{check_args_customSearch}},
-  \code{\link{check_args_deleteMsg}},
-  \code{\link{check_args_fetchFullMsg}},
-  \code{\link{check_args_fetchMsgHeader}},
-  \code{\link{check_args_fetchMsgMetadata}},
-  \code{\link{check_args_fetchMsgText}},
-  \code{\link{check_args_getMaxMinId}},
-  \code{\link{check_args_moveMsg}},
-  \code{\link{check_args_removeFlags}},
-  \code{\link{check_args_searchDate}},
-  \code{\link{check_args_searchFlag}},
-  \code{\link{check_args_searchPeriod}},
-  \code{\link{check_args_searchSize}},
-  \code{\link{check_args_searchString}},
-  \code{\link{check_args_searchWithin}}
+Other check args: \code{\link{check_args_add_replace_flags}},
+  \code{\link{check_args_copy_msg}},
+  \code{\link{check_args_custom_search}},
+  \code{\link{check_args_delete_msg}},
+  \code{\link{check_args_fetch_full_msg}},
+  \code{\link{check_args_fetch_msg_header}},
+  \code{\link{check_args_fetch_msg_metadata}},
+  \code{\link{check_args_fetch_msg_text}},
+  \code{\link{check_args_get_max_min_id}},
+  \code{\link{check_args_move_msg}},
+  \code{\link{check_args_remove_flags}},
+  \code{\link{check_args_search_date}},
+  \code{\link{check_args_search_flag}},
+  \code{\link{check_args_search_period}},
+  \code{\link{check_args_search_size}},
+  \code{\link{check_args_search_string}},
+  \code{\link{check_args_search_within}}
 }
 \concept{check args}
 \concept{miscellaneous helper}

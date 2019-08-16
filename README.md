@@ -18,7 +18,7 @@ Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://trav
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
 
-IMAP Tools for R in a Tidy Way
+IMAP Tools for R
 
 ## Overview
 
@@ -81,23 +81,29 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 ## Introduction
 
-The package is divided in 6 groups of functions:
+The package is divided in 7 groups of functions:
 
-  - **configuration**: `configureIMAP()`;
-  - **mailboxes commands**: `listMailboxes()`, `selectMailbox()`,
-    `examineMailbox()`, `renameMailbox();`
-  - **options listing**: `listServerCapabilities()`,`flag_options()`,
+  - **configuration**: `configure_imap()`;
+  - **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`,
+    `examine_mailbox()`, `rename_mailbox();`
+  - **options listing**: `list_server_capabilities()`,`flag_options()`,
     `section_or_field_options()`, `metadata_options()`;
-  - **search**: `searchBefore()`, `searchSince()`, `searchPeriod()`,
-    `searchOn()`, `searchSentBefore()`,`searchSentSince()`,
-    `searchSentPeriod()`, `searchSentOn()`, `searchString()`,
-    `searchFlag()`, `searchSmallerThan()`, `searchLargerThan()`,
-    `searchYoungerThan()`, `searchOlderThan()`, `customSearch()`;
-  - **fetch**: `fetchFullMsg()`, `fetchMsgHeader()`, `fetchMsgText()`,
-    `fetchMsgMetadata()`;
-  - **miscellania**: `copyMsg()`, `getMinId()`, `getMaxId()`,
-    `deleteMsg()`, `expunge()`, `addFlags()`, `removeFlags()`,
-    `replaceFlags()`, `moveMsg()`.
+  - **search**: `search_before()`, `search_since()`, `search_period()`,
+    `search_on()`, `search_sent_before()`,`search_sent_since()`,
+    `search_sent_period()`, `search_sent_on()`, `search_string()`,
+    `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
+    `search_younger_than()`, `search_older_than()`, `custom_search()`;
+  - **custom search helper functions**:
+      - relational operators functions: `AND()`, `OR()`;
+      - criteria definition functions: `before()`, `since()`, `on()`,
+        `sent_before()`, `sent_since()`, `sent_on()`, `string()`,
+        `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`,
+        and `older_than()`.
+  - **fetch**: `fetch_full_msg()`, `fetch_msg_header()`,
+    `fetch_msg_text()`, `fetch_msg_metadata()`;
+  - **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`,
+    `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`,
+    `replace_flags()`, `move_msg()`.
 
 ## Installation
 
@@ -120,7 +126,7 @@ library(mRpostman)
 
 # IMAP settings
 # Gmail
-imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+imapconf <- configure_imap(url="imaps://imap.gmail.com",
                           username="your_user",
                           password=rstudioapi::askForPassword()
                           )
@@ -141,7 +147,7 @@ imapconf <- configureIMAP(url="imaps://imap.gmail.com",
 
 # Listing
 imapconf %>%
-  listMailboxes()
+  list_mailboxes()
 ```
 
 ### 2\) Examining a Mailbox
@@ -150,8 +156,8 @@ imapconf %>%
 
 # examine mailbox -- number of existent and recent messages
 imapconf %>%
-  selectMailbox(mbox = "UC Riverside") %>% # mbox names are case sensitive
-  examineMailbox()
+  select_mailbox(mbox = "UC Riverside") %>% # mbox names are case sensitive
+  examine_mailbox()
 ```
 
 ### 3\) Searching by period using a flag
@@ -160,8 +166,8 @@ imapconf %>%
 
 # search
 results <- imapconf %>%
-  selectMailbox(mbox = "INBOX") %>%
-  searchPeriod(since_date_char = "17-May-2018",
+  select_mailbox(mbox = "INBOX") %>%
+  search_period(since_date_char = "17-May-2018",
                before_date_char = "30-Jun-2019",
                flag = "ANSWERED")
 
@@ -174,8 +180,8 @@ results$msg_id
 
 # search
 results <- imapconf %>%
-  selectMailbox(mbox = "UC Riverside") %>%
-  searchString(section_or_field = "TEXT", string = "Welcome!")
+  select_mailbox(mbox = "UC Riverside") %>%
+  search_string(section_or_field = "TEXT", string = "Welcome!")
 
 results$msg_id
 ```
@@ -185,9 +191,9 @@ results$msg_id
 ``` r
 
 results <- imapconf %>%
-  selectMailbox(mbox = "UC Riverside") %>%
-  searchString(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
-  fetchMsgHeader(imapconf = imapconf, msg_id = msg_id, 
+  select_mailbox(mbox = "UC Riverside") %>%
+  search_string(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
+  fetch_msg_header(imapconf = imapconf, msg_id = msg_id, 
                  fields = c("DATE", "SUBJECT"))
 
 results

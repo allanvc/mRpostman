@@ -4,7 +4,7 @@
 #'     almost all mRpostman functions.
 #'
 #' @param imapconf An object of class \code{imapconf} generated with
-#'     \code{configureIMAP}.
+#'     \code{configure_imap}.
 #'
 #' @return A curl handle object.
 #'

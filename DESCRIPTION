@@ -1,7 +1,7 @@
 Package: mRpostman
 Type: Package
-Title: IMAP Tools for R in a Tidy Way
-Version: 0.1.0
+Title: IMAP Tools for R
+Version: 0.1.1
 Date: 2019-08-13
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
@@ -17,7 +17,7 @@ Imports: curl,
     magrittr,
     assertthat,
     base64enc
-Depends: R (>= 3.0.0)
+Depends: R (>= 3.1.0)
 BugReports: https://github.com/allanvc/mRpostman/issues
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests: knitr, rmarkdown

@@ -9,9 +9,10 @@ define_searchrequest_custom(custom_request, negate, by, esearch, handle)
 \arguments{
 \item{custom_request}{A string directly specifying what to search or
 constructed by a combination of operators helper functions \link{OR} and
-\link{AND}, and criteria helper functions such as \link{Before}, \link{Since},
-\link{On}, \link{sentBefore}, \link{sentSince}, \link{sentOn},
-\link{Flag}, or \link{String}.}
+\link{AND}, and criteria helper functions such as \link{before}, \link{since},
+\link{on}, \link{sent_before}, \link{sent_since}, \link{sent_on},
+\link{flag}, \link{string}, \link{smaller_than}, \link{larger_than},
+\link{younger_than}, or \link{younger_than}.}
 
 \item{negate}{If \code{TRUE}, negates the search and seeks for
 "NOT search_criterion". Default is \code{FALSE}.}
@@ -30,7 +31,7 @@ allows to condense results to message sets to cut down on transmission
 costs, e.g. \code{1:5} instead of writing ids individually such as
 code{1,2,3,4,5}. It can be used along with buffersize to avoid results
 stripping. Check if your IMAP server supports \code{SEARCH} with
-\code{\link{listServerCapabilities}}.}
+\code{\link{list_server_capabilities}}.}
 
 \item{handle}{A curl handle object.}
 }
@@ -42,20 +43,20 @@ Internal helper function for defining curl custom request to be
     used with each search function
 }
 \seealso{
-Other search helper: \code{\link{check_args_customSearch}},
-  \code{\link{check_args_searchDate}},
-  \code{\link{check_args_searchFlag}},
-  \code{\link{check_args_searchPeriod}},
-  \code{\link{check_args_searchSize}},
-  \code{\link{check_args_searchString}},
-  \code{\link{check_args_searchWithin}},
+Other search helper: \code{\link{check_args_custom_search}},
+  \code{\link{check_args_search_date}},
+  \code{\link{check_args_search_flag}},
+  \code{\link{check_args_search_period}},
+  \code{\link{check_args_search_size}},
+  \code{\link{check_args_search_string}},
+  \code{\link{check_args_search_within}},
   \code{\link{define_searchrequest_date}},
   \code{\link{define_searchrequest_flag}},
   \code{\link{define_searchrequest_period}},
   \code{\link{define_searchrequest_size}},
   \code{\link{define_searchrequest_string}},
   \code{\link{define_searchrequest_within}},
-  \code{\link{fix_searchStripping}}
+  \code{\link{fix_search_stripping}}
 
 Other define searchrequest: \code{\link{define_searchrequest_date}},
   \code{\link{define_searchrequest_flag}},

@@ -6,7 +6,7 @@
 #'     (SINCE and variations) to the custom request.
 #' @param operation2 A character indicating the first argument
 #'     (BEFORE and variations) to the custom request.
-#' @inheritParams check_args_searchPeriod
+#' @inheritParams check_args_search_period
 #' @param handle A curl handle object.
 #'
 #' @family search helper

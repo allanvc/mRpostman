@@ -4,8 +4,8 @@
 #'     used in \link{expunge} function.
 #'
 #' @param imapconf An object of class \code{imapconf} generated with
-#'     \link{configureIMAP} and with a \code{mbox} item added after a
-#'     mailbox selection with \link{selectMailbox}.
+#'     \link{configure_imap} and with a \code{mbox} item added after a
+#'     mailbox selection with \link{select_mailbox}.
 #' @param specific_UID A numeric vector containing one or more messages UIDs, if
 #'     specific messages should be expunged and not the whole mailbox.
 #' @param retries Number of attempts to connect and execute the command. Default

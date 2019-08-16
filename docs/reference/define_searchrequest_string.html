@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -138,6 +138,17 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>section_or_field</th>
+      <td><p>A mandatory character string specifying in which
+message's Section or Header Field to search for the provided string.
+For some available options, see <a href='section_or_field_options.html'>section_or_field_options</a>.</p></td>
+    </tr>
+    <tr>
+      <th>string</th>
+      <td><p>A character string specifying the word or expression to
+search for in messages.</p></td>
+    </tr>
+    <tr>
       <th>negate</th>
       <td><p>If <code>TRUE</code>, negates the search and seeks for
 "NOT search_criterion". Default is <code>FALSE</code>.</p></td>
@@ -160,7 +171,7 @@ allows to condense results to message sets to cut down on transmission
 costs, e.g. <code>1:5</code> instead of writing ids individually such as
 code1,2,3,4,5. It can be used along with buffersize to avoid results
 stripping. Check if your IMAP server supports <code>SEARCH</code> with
-<code><a href='listServerCapabilities.html'>listServerCapabilities</a></code>.</p></td>
+<code><a href='list_server_capabilities.html'>list_server_capabilities</a></code>.</p></td>
     </tr>
     <tr>
       <th>handle</th>
@@ -174,20 +185,20 @@ stripping. Check if your IMAP server supports <code>SEARCH</code> with
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other search helper: <code><a href='check_args_customSearch.html'>check_args_customSearch</a></code>,
-  <code><a href='check_args_searchDate.html'>check_args_searchDate</a></code>,
-  <code><a href='check_args_searchFlag.html'>check_args_searchFlag</a></code>,
-  <code><a href='check_args_searchPeriod.html'>check_args_searchPeriod</a></code>,
-  <code><a href='check_args_searchSize.html'>check_args_searchSize</a></code>,
-  <code><a href='check_args_searchString.html'>check_args_searchString</a></code>,
-  <code><a href='check_args_searchWithin.html'>check_args_searchWithin</a></code>,
+    <div class='dont-index'><p>Other search helper: <code><a href='check_args_custom_search.html'>check_args_custom_search</a></code>,
+  <code><a href='check_args_search_date.html'>check_args_search_date</a></code>,
+  <code><a href='check_args_search_flag.html'>check_args_search_flag</a></code>,
+  <code><a href='check_args_search_period.html'>check_args_search_period</a></code>,
+  <code><a href='check_args_search_size.html'>check_args_search_size</a></code>,
+  <code><a href='check_args_search_string.html'>check_args_search_string</a></code>,
+  <code><a href='check_args_search_within.html'>check_args_search_within</a></code>,
   <code><a href='define_searchrequest_custom.html'>define_searchrequest_custom</a></code>,
   <code><a href='define_searchrequest_date.html'>define_searchrequest_date</a></code>,
   <code><a href='define_searchrequest_flag.html'>define_searchrequest_flag</a></code>,
   <code><a href='define_searchrequest_period.html'>define_searchrequest_period</a></code>,
   <code><a href='define_searchrequest_size.html'>define_searchrequest_size</a></code>,
   <code><a href='define_searchrequest_within.html'>define_searchrequest_within</a></code>,
-  <code><a href='fix_searchStripping.html'>fix_searchStripping</a></code></p>
+  <code><a href='fix_search_stripping.html'>fix_search_stripping</a></code></p>
 <p>Other define searchrequest: <code><a href='define_searchrequest_custom.html'>define_searchrequest_custom</a></code>,
   <code><a href='define_searchrequest_date.html'>define_searchrequest_date</a></code>,
   <code><a href='define_searchrequest_flag.html'>define_searchrequest_flag</a></code>,

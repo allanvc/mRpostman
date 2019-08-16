@@ -17,10 +17,10 @@ Internal helper function for cleaning a message content in a
     string. It is used with fetch loop functions.
 }
 \seealso{
-Other fetch helper: \code{\link{check_args_fetchFullMsg}},
-  \code{\link{check_args_fetchMsgHeader}},
-  \code{\link{check_args_fetchMsgMetadata}},
-  \code{\link{check_args_fetchMsgText}},
+Other fetch helper: \code{\link{check_args_fetch_full_msg}},
+  \code{\link{check_args_fetch_msg_header}},
+  \code{\link{check_args_fetch_msg_metadata}},
+  \code{\link{check_args_fetch_msg_text}},
   \code{\link{decode_base64_text_if_TRUE}}
 
 Other cleaning: \code{\link{decode_base64_text_if_TRUE}}

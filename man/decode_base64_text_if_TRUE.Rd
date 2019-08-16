@@ -16,10 +16,10 @@ A string with a decoded message, if it was base64 coded.
 Internal helper function for decoding base64 message results.
 }
 \seealso{
-Other fetch helper: \code{\link{check_args_fetchFullMsg}},
-  \code{\link{check_args_fetchMsgHeader}},
-  \code{\link{check_args_fetchMsgMetadata}},
-  \code{\link{check_args_fetchMsgText}},
+Other fetch helper: \code{\link{check_args_fetch_full_msg}},
+  \code{\link{check_args_fetch_msg_header}},
+  \code{\link{check_args_fetch_msg_metadata}},
+  \code{\link{check_args_fetch_msg_text}},
   \code{\link{clean_fetch_results}}
 
 Other cleaning: \code{\link{clean_fetch_results}}

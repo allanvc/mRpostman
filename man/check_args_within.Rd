@@ -18,7 +18,7 @@ search criterion.}
 }
 \description{
 Internal helper function for checking specific arguments
-    used in \link{customSearch}.
+    used in \link{custom_search}.
 }
 \seealso{
 Other customsearch checkargs functions: \code{\link{check_args_date}},

@@ -8,8 +8,8 @@ expunge(imapconf, specific_UID = NULL, retries = 2)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
-\link{configureIMAP} and with a \code{mbox} item added after a
-mailbox selection with \link{selectMailbox}.}
+\link{configure_imap} and with a \code{mbox} item added after a
+mailbox selection with \link{select_mailbox}.}
 
 \item{specific_UID}{A numeric vector containing one or more messages UIDs, if
 specific messages should be expunged and not the whole mailbox.}
@@ -31,31 +31,31 @@ Expunge a specific message (using specific UID) or all messages
 
 # configure IMAP
 library(mRpostman)
-imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+imapconf <- configure_imap(url="imaps://imap.gmail.com",
                           username="your_gmail_user",
                           password=rstudioapi::askForPassword()
                           )
 
 # deleting a message using specific UID
 result1 <- imapconf \%>\%
-    selectMailbox(mbox = "TAM") \%>\%
-    deleteMsg(msg_id = 71171, by = "UID") \%$\%
+    select_mailbox(mbox = "TAM") \%>\%
+    delete_msg(msg_id = 71171, by = "UID") \%$\%
     expunge(imapconf = imapconf, specific_UID = msg_id)
 
 
 # expunge all message smarked as "DELETED" in INBOX
 result2 <- imapconf \%>\%
-    selectMailbox(mbox = "INBOX") \%>\%
+    select_mailbox(mbox = "INBOX") \%>\%
     expunge()
 
 }
 
 }
 \seealso{
-Other miscellaneous: \code{\link{addFlags}},
-  \code{\link{copyMsg}}, \code{\link{countMsgs}},
-  \code{\link{deleteMsg}}, \code{\link{getMaxId}},
-  \code{\link{getMinId}}, \code{\link{moveMsg}},
-  \code{\link{removeFlags}}, \code{\link{replaceFlags}}
+Other miscellaneous: \code{\link{add_flags}},
+  \code{\link{copy_msg}}, \code{\link{count_msgs}},
+  \code{\link{delete_msg}}, \code{\link{get_max_id}},
+  \code{\link{get_min_id}}, \code{\link{move_msg}},
+  \code{\link{remove_flags}}, \code{\link{replace_flags}}
 }
 \concept{miscellaneous}

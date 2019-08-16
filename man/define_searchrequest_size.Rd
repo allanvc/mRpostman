@@ -34,7 +34,7 @@ allows to condense results to message sets to cut down on transmission
 costs, e.g. \code{1:5} instead of writing ids individually such as
 code{1,2,3,4,5}. It can be used along with buffersize to avoid results
 stripping. Check if your IMAP server supports \code{SEARCH} with
-\code{\link{listServerCapabilities}}.}
+\code{\link{list_server_capabilities}}.}
 
 \item{handle}{A curl handle object.}
 }
@@ -46,20 +46,20 @@ Internal helper function for defining curl custom request to be
     used with each search function
 }
 \seealso{
-Other search helper: \code{\link{check_args_customSearch}},
-  \code{\link{check_args_searchDate}},
-  \code{\link{check_args_searchFlag}},
-  \code{\link{check_args_searchPeriod}},
-  \code{\link{check_args_searchSize}},
-  \code{\link{check_args_searchString}},
-  \code{\link{check_args_searchWithin}},
+Other search helper: \code{\link{check_args_custom_search}},
+  \code{\link{check_args_search_date}},
+  \code{\link{check_args_search_flag}},
+  \code{\link{check_args_search_period}},
+  \code{\link{check_args_search_size}},
+  \code{\link{check_args_search_string}},
+  \code{\link{check_args_search_within}},
   \code{\link{define_searchrequest_custom}},
   \code{\link{define_searchrequest_date}},
   \code{\link{define_searchrequest_flag}},
   \code{\link{define_searchrequest_period}},
   \code{\link{define_searchrequest_string}},
   \code{\link{define_searchrequest_within}},
-  \code{\link{fix_searchStripping}}
+  \code{\link{fix_search_stripping}}
 
 Other define searchrequest: \code{\link{define_searchrequest_custom}},
   \code{\link{define_searchrequest_date}},

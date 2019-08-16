@@ -2,7 +2,7 @@
 #'
 #' @inherit define_searchrequest_date description return
 #'
-#' @inheritParams check_args_searchSize
+#' @inheritParams check_args_search_string
 #' @param handle A curl handle object.
 #'
 #' @family search helper
