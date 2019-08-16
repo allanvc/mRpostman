@@ -2,7 +2,7 @@
 #'
 #' @inherit define_searchrequest_date description return
 #'
-#' @inheritParams check_args_customSearch
+#' @inheritParams check_args_custom_search
 #' @param handle A curl handle object.
 #'
 #' @return A curl handle object containing the custom request.

@@ -40,9 +40,9 @@
 <meta property="og:title" content="Relational Operators - Helper Functions for Custom Search — AND" />
 
 <meta property="og:description" content="Allows a combination of criteria helper
-    functions such as Before, Since, On,
-    sentBefore, sentSince, sentOn, Flag, or
-    String, in order to execute a multiple criteria custom search." />
+    functions such as before, since, on,
+    sent_before, sent_since, sent_on, flag, or
+    string, in order to execute a multiple criteria custom search." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -75,7 +75,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -129,9 +129,9 @@
     <div class="ref-description">
     
     <p>Allows a combination of criteria helper
-    functions such as <a href='Before.html'>Before</a>, <a href='Since.html'>Since</a>, <a href='On.html'>On</a>,
-    <a href='sentBefore.html'>sentBefore</a>, <a href='sentSince.html'>sentSince</a>, <a href='sentOn.html'>sentOn</a>, <a href='Flag.html'>Flag</a>, or
-    <a href='String.html'>String</a>, in order to execute a multiple criteria custom search.</p>
+    functions such as <a href='before.html'>before</a>, <a href='since.html'>since</a>, <a href='on.html'>on</a>,
+    <a href='sent_before.html'>sent_before</a>, <a href='sent_since.html'>sent_since</a>, <a href='sent_on.html'>sent_on</a>, <a href='flag.html'>flag</a>, or
+    <a href='string.html'>string</a>, in order to execute a multiple criteria custom search.</p>
     
     </div>
 
@@ -154,16 +154,17 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A search string to be used as a <code>custom_request</code> parameter in
-    <a href='customSearch.html'>customSearch</a> function.</p>
+    <a href='custom_search.html'>custom_search</a> function.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other customsearch helper functions: <code><a href='Before.html'>Before</a></code>,
-  <code><a href='Flag.html'>Flag</a></code>, <code><a href='OR.html'>OR</a></code>,
-  <code><a href='Since.html'>Since</a></code>, <code><a href='String.html'>String</a></code>,
-  <code><a href='olderThan.html'>olderThan</a></code>, <code><a href='sentBefore.html'>sentBefore</a></code>,
-  <code><a href='sentOn.html'>sentOn</a></code>, <code><a href='sentSince.html'>sentSince</a></code>,
-  <code><a href='smallerThan.html'>smallerThan</a></code>, <code><a href='youngerThan.html'>youngerThan</a></code></p></div>
+    <div class='dont-index'><p>Other customsearch helper functions: <code><a href='OR.html'>OR</a></code>,
+  <code><a href='before.html'>before</a></code>, <code><a href='flag.html'>flag</a></code>,
+  <code><a href='larger_than.html'>larger_than</a></code>, <code><a href='older_than.html'>older_than</a></code>,
+  <code><a href='on.html'>on</a></code>, <code><a href='sent_before.html'>sent_before</a></code>,
+  <code><a href='sent_on.html'>sent_on</a></code>, <code><a href='sent_since.html'>sent_since</a></code>,
+  <code><a href='since.html'>since</a></code>, <code><a href='smaller_than.html'>smaller_than</a></code>,
+  <code><a href='string.html'>string</a></code>, <code><a href='younger_than.html'>younger_than</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -171,18 +172,18 @@
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># configure IMAP</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configureIMAP.html'>configureIMAP</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
 <span class='co'># search</span>
 <span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='selectMailbox.html'>selectMailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='customSearch.html'>customSearch</a></span>(<span class='kw'>custom_request</span> <span class='kw'>=</span> <span class='fu'>AND</span>(<span class='fu'><a href='sentSince.html'>sentSince</a></span>(<span class='kw'>date.char</span> <span class='kw'>=</span> <span class='st'>"17-Apr-2019"</span>),
-                                      <span class='fu'><a href='smallerThan.html'>smallerThan</a></span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>512000</span>),
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='custom_search.html'>custom_search</a></span>(<span class='kw'>custom_request</span> <span class='kw'>=</span> <span class='fu'>AND</span>(<span class='fu'><a href='sent_since.html'>sent_since</a></span>(<span class='kw'>date.char</span> <span class='kw'>=</span> <span class='st'>"17-Apr-2019"</span>),
+                                      <span class='fu'><a href='smaller_than.html'>smaller_than</a></span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>512000</span>),
                                       <span class='kw'>negate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>))
-<span class='co'># searches for messages NOT SentSince "17-Apr-2019" AND NOT SmallerThan  512KB.</span>
+<span class='co'># searches for messages NOT SentSince "17-Apr-2019" AND NOT Smaller Than 512KB.</span>
 
 <span class='co'># }</span><div class='input'>
 </div></pre>

@@ -8,7 +8,7 @@ config_handle(imapconf)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
-\code{configureIMAP}.}
+\code{configure_imap}.}
 }
 \value{
 A curl handle object.
@@ -18,7 +18,7 @@ Internal helper function for configuring curl handles used in
     almost all mRpostman functions.
 }
 \seealso{
-Other config: \code{\link{configureIMAP}}
+Other config: \code{\link{configure_imap}}
 }
 \concept{config}
 \concept{config helper}

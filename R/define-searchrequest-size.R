@@ -3,7 +3,7 @@
 #' @inherit define_searchrequest_date description return
 #'
 #' @param operation A character indicating which custom operation to execute.
-#' @inheritParams check_args_searchSize
+#' @inheritParams check_args_search_size
 #' @param handle A curl handle object.
 #'
 #' @return A curl handle object containing the custom request.

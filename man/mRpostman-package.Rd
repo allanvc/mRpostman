@@ -2,7 +2,7 @@
 \name{mRpostman-package}
 \alias{mRpostman-package}
 \alias{mRpostman}
-\title{IMAP Tools for R in a Tidy Way}
+\title{IMAP Tools for R}
 
 \description{
   \pkg{mRpostman} provides multiple IMAP (Internet Message Access Protocol) 

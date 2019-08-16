@@ -14,13 +14,13 @@ OR(..., negate = FALSE)
 }
 \value{
 A search string to be used as a \code{custom_request} parameter in
-    \link{customSearch} function.
+    \link{custom_search} function.
 }
 \description{
 Allows a combination of criteria helper
-    functions such as \link{Before}, \link{Since}, \link{On},
-    \link{sentBefore}, \link{sentSince}, \link{sentOn}, \link{Flag}, or
-    \link{String}, in order to execute a multiple criteria custom search.
+    functions such as \link{before}, \link{since}, \link{on},
+    \link{sent_before}, \link{sent_since}, \link{sent_on}, \link{flag}, or
+    \link{string}, in order to execute a multiple criteria custom search.
 }
 \examples{
 
@@ -28,27 +28,28 @@ Allows a combination of criteria helper
 
 # configure IMAP
 library(mRpostman)
-imapconf <- configureIMAP(url="imaps://imap.gmail.com",
+imapconf <- configure_imap(url="imaps://imap.gmail.com",
                           username="your_gmail_user",
                           password=rstudioapi::askForPassword()
                           )
 
 # search
 result <- imapconf \%>\%
-    selectMailbox(mbox = "INBOX") \%>\%
-    customSearch(custom_request = OR(sentSince(date.char="17-Apr-2019"),
-                                      smallerThan(size = 512000, negate = TRUE)))
-# searches for messages SentSince "17-Apr-2019" OR NOT SmallerThan  512KB.
+    select_mailbox(mbox = "INBOX") \%>\%
+    custom_search(custom_request = OR(sent_since(date.char="17-Apr-2019"),
+                                      smaller_than(size = 512000, negate = TRUE)))
+# searches for messages SentSince "17-Apr-2019" OR NOT Smaller Than  512KB.
 
 }
 
 }
 \seealso{
 Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{Before}}, \code{\link{Flag}},
-  \code{\link{Since}}, \code{\link{String}},
-  \code{\link{olderThan}}, \code{\link{sentBefore}},
-  \code{\link{sentOn}}, \code{\link{sentSince}},
-  \code{\link{smallerThan}}, \code{\link{youngerThan}}
+  \code{\link{before}}, \code{\link{flag}},
+  \code{\link{larger_than}}, \code{\link{older_than}},
+  \code{\link{on}}, \code{\link{sent_before}},
+  \code{\link{sent_on}}, \code{\link{sent_since}},
+  \code{\link{since}}, \code{\link{smaller_than}},
+  \code{\link{string}}, \code{\link{younger_than}}
 }
 \concept{customsearch helper functions}

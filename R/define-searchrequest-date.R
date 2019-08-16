@@ -4,7 +4,7 @@
 #'     used with each search function
 #'
 #' @param operation A character indicating which custom operation to execute.
-#' @inheritParams check_args_searchDate
+#' @inheritParams check_args_search_date
 #' @param handle A curl handle object.
 #'
 #' @return A curl handle object containing the custom request.
