@@ -35,7 +35,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
-<img src="figures/gmail1.PNG">
+<img src="figures/gmail1.png">
 
 3) Set "Allow less secure apps" to **ON**.
 
@@ -46,15 +46,15 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Click on "Account Info".
 
-<img src="figures/yahoo1.PNG">
+<img src="figures/yahoo1.png">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/yahoo2.PNG">
+<img src="figures/yahoo2.png">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
-<img src="figures/yahoo3.PNG">
+<img src="figures/yahoo3.png">
 
 ### AOL Mail
 
@@ -62,15 +62,15 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2) Click on "Options" and then on "Account Info".
 
-<img src="figures/aol1.PNG">
+<img src="figures/aol1.png">
 
 3) Click on "Account Security" on the left menu. 
 
-<img src="figures/aol2.PNG">
+<img src="figures/aol2.png">
 
 4) After, set "Allow apps that use less secure sign in" **ON**
 
-<img src="figures/aol3.PNG">
+<img src="figures/aol3.png">
 
 
 ## Package Structure
@@ -785,15 +785,17 @@ imapconf %>%
 
 ## References
 
-Babcock, N., *"Introduction to IMAP"*, Blog, May 2016, https://nbsoftsolutions.com/blog/introduction-to-imap.
+Babcock, N., *Introduction to IMAP*, Blog, May 2016, https://nbsoftsolutions.com/blog/introduction-to-imap.
 
-Crispin, M., *"INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1"*, RFC 3501, 
+Crispin, M., *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC 3501, 
 DOI: 10.17487/RFC3501, March 2003, https://www.rfc-editor.org/info/rfc3501.
 
-Stenberg, D. Libcurl - The Multiprotocol File Transfer Library, https://curl.haxx.se/libcurl/
+Ooms, J. *curl: A Modern and Flexible Web Client for R*. R package version 3.3, 2019, https://CRAN.R-project.org/package=curl
 
-Freed, N. and N. Borenstein, *"Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types"*, RFC 2046, DOI: 10.17487/RFC2046, November 1996, https://www.rfc-editor.org/info/rfc2046.
+Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*, https://curl.haxx.se/libcurl/
 
-Resnick, P., Ed., *"Internet Message Format"*, RFC 2822, DOI: 10.17487/RFC2822, April 2001, https://www.rfc-editor.org/info/rfc2822.
+Freed, N. and N. Borenstein, *Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types*, RFC 2046, DOI: 10.17487/RFC2046, November 1996, https://www.rfc-editor.org/info/rfc2046.
 
-Resnick, P., Ed., *"Internet Message Format"*, RFC 5322, DOI: 10.17487/RFC5322, October 2008, https://www.rfc-editor.org/info/rfc5322.
+Resnick, P., Ed., *Internet Message Format*, RFC 2822, DOI: 10.17487/RFC2822, April 2001, https://www.rfc-editor.org/info/rfc2822.
+
+Resnick, P., Ed., *Internet Message Format*, RFC 5322, DOI: 10.17487/RFC5322, October 2008, https://www.rfc-editor.org/info/rfc5322.
