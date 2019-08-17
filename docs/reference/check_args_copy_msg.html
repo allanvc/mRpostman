@@ -131,8 +131,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>check_args_copy_msg</span>(<span class='no'>imapconf</span>, <span class='no'>msg_id</span>, <span class='no'>by</span>, <span class='no'>to_mbox</span>, <span class='no'>reselect_mbox</span>,
-  <span class='no'>logical_output</span>, <span class='no'>retries</span>)</pre>
+    <pre class="usage"><span class='fu'>check_args_copy_msg</span>(<span class='no'>imapconf</span>, <span class='no'>msg_id</span>, <span class='no'>by</span>, <span class='no'>to_mbox</span>, <span class='no'>reselect_mbox</span>, <span class='no'>retries</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,15 +166,6 @@ will be copied to.</p></td>
       <td><p>If <code>TRUE</code>, calls <code><a href='select_mailbox.html'>select_mailbox(mbox = to_mbox)</a></code>
 before returning the output. Default is <code>FALSE</code> for moving and
 copying operations, whereas it is <code>TRUE</code> for renaming mailboxes.</p></td>
-    </tr>
-    <tr>
-      <th>logical_output</th>
-      <td><p>A logical. If <code>TRUE</code>, simplifies the output
-returning <code>TRUE</code> to indicate the success of the mentioned operation.
-If <code>FALSE</code>, returns a list of length <code>2</code> containing the
-<code>imapconf</code> object (IMAP settings) and the previously informed
-message ids (parameter <code>msg_id</code>), so they can be passed as
-arguments to another function. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>retries</th>

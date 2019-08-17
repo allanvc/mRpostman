@@ -4,7 +4,7 @@
 \alias{check_args_move_msg}
 \title{Move Message Arguments Check}
 \usage{
-check_args_move_msg(imapconf, msg_id, by, to_mbox, logical_output, retries)
+check_args_move_msg(imapconf, msg_id, by, to_mbox, retries)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
@@ -23,13 +23,6 @@ is always the same during the life cycle of a message. Default is
 
 \item{to_mbox}{A character string specifying the mailbox to which messages
 will be moved to.}
-
-\item{logical_output}{A logical. If \code{TRUE}, simplifies the output
-returning \code{TRUE} to indicate the success of the mentioned operation.
-If \code{FALSE}, returns a list of length \code{2} containing the
-\code{imapconf} object (IMAP settings) and the previously informed
-message ids (parameter \code{msg_id}), so they can be passed as
-arguments to another function. Default is \code{FALSE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}

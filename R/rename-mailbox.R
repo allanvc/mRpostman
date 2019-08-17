@@ -12,7 +12,7 @@
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
-#' @return An \code{imaconf} object with the newer selected mailbox added
+#' @return An (invisible) \code{imaconf} object with the newer selected mailbox added
 #'     to it. If \code{reselect_mbox} is \code{FALSE}, it returns the
 #'     \code{imaconf} object with the former mailbox name.
 #'

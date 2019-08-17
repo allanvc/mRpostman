@@ -14,12 +14,6 @@
 #'     numbers are reordered to fill the gap. \code{"UID"} or unique identifier
 #'     is always the same during the life cycle of a message. Default is
 #'     \code{"MSN"}.
-#' @param logical_output A logical. If \code{TRUE}, simplifies the output
-#'     returning \code{TRUE} to indicate the success of the mentioned operation.
-#'     If \code{FALSE}, returns a list of length \code{2} containing the
-#'     \code{imapconf} object (IMAP settings) and the previously informed
-#'     message ids (parameter \code{msg_id}), so they can be passed as
-#'     arguments to another function. Default is \code{FALSE}.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
@@ -30,7 +24,7 @@
 #'
 #' @keywords internal
 #'
-check_args_delete_msg <- function(imapconf, msg_id, by, logical_output, retries) {
+check_args_delete_msg <- function(imapconf, msg_id, by, retries) {
 
   # checks
   assertthat::assert_that(
@@ -55,10 +49,6 @@ check_args_delete_msg <- function(imapconf, msg_id, by, logical_output, retries)
       by == "UID"
     ),
     msg='"by" must be set as "MSN" or "UID".')
-
-  assertthat::assert_that(
-    is.logical(logical_output),
-    msg='"logical_output" must be a logical.')
 
   assertthat::assert_that(
     is.numeric(retries),

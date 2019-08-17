@@ -5,8 +5,7 @@
 #'
 #' @inheritParams check_args_expunge
 #'
-#' @return A logical vector of length \code{1} indicating the success
-#'     (\code{TRUE}) of the mentioned operation.
+#' @return The (invisible) imapconf object that was previously inputed.
 #'
 #' @family miscellaneous
 #'
@@ -103,6 +102,6 @@ expunge <- function(imapconf, specific_UID = NULL, retries = 2) {
   # handle sanitizing
   rm(h)
 
-  return(TRUE)
+  invisible(imapconf)
 
 }

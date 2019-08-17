@@ -4,8 +4,7 @@
 \alias{delete_msg}
 \title{Delete Messages}
 \usage{
-delete_msg(imapconf, msg_id, by = "MSN", logical_output = TRUE,
-  retries = 2)
+delete_msg(imapconf, msg_id, by = "MSN", retries = 2)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
@@ -22,22 +21,13 @@ numbers are reordered to fill the gap. \code{"UID"} or unique identifier
 is always the same during the life cycle of a message. Default is
 \code{"MSN"}.}
 
-\item{logical_output}{A logical. If \code{TRUE}, simplifies the output
-returning \code{TRUE} to indicate the success of the mentioned operation.
-If \code{FALSE}, returns a list of length \code{2} containing the
-\code{imapconf} object (IMAP settings) and the previously informed
-message ids (parameter \code{msg_id}), so they can be passed as
-arguments to another function. Default is \code{FALSE}.}
-
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}
 }
 \value{
-Depending on the \code{logical_output} parameter, returns a \code{list}
-    of length \code{2} containing the \code{imapconf} object and previously
-    informed message ids (parameter \code{msg_id}), or a logical vector of
-    length \code{1} indicating the success (\code{TRUE}) of the mentioned
-    operation.
+An (invisible) \code{list} of length \code{2} containing the
+    \code{imapconf} object and the previously inputed message ids
+    (parameter \code{msg_id}).
 }
 \description{
 Deletes messages from a mailbox.

@@ -16,7 +16,7 @@ select_mailbox(imapconf, mbox, retries = 2)
 is \code{2}.}
 }
 \value{
-The \code{imaconf, list} object with the selected mailbox added to it.
+The (invisible) \code{imaconf} object with the selected mailbox added to it.
 }
 \description{
 Select a mailbox on the server for issuing further commands.
