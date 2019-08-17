@@ -4,11 +4,9 @@
 #'
 #' @inheritParams check_args_delete_msg
 #'
-#' @return Depending on the \code{logical_output} parameter, returns a \code{list}
-#'     of length \code{2} containing the \code{imapconf} object and previously
-#'     informed message ids (parameter \code{msg_id}), or a logical vector of
-#'     length \code{1} indicating the success (\code{TRUE}) of the mentioned
-#'     operation.
+#' @return An (invisible) \code{list} of length \code{2} containing the
+#'     \code{imapconf} object and the previously inputed message ids
+#'     (parameter \code{msg_id}).
 #'
 #' @family miscellaneous
 #'
@@ -39,10 +37,9 @@
 #'
 #' @export
 #'
-delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
-                      retries = 2) {
+delete_msg <- function(imapconf, msg_id, by = "MSN", retries = 2) {
 
-  check_args_delete_msg(imapconf, msg_id, by, logical_output, retries)
+  check_args_delete_msg(imapconf, msg_id, by, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -105,15 +102,9 @@ delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
   # handle sanitizing
   rm(h)
 
-  if (isTRUE(logical_output)) {
-    final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
-    # will allow users to pipe more operations after adding flags
-    return(final_output)
+  final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
+  # will allow users to pipe more operations after adding flags
+  invisible(final_output)
 
-  } else {
-
-    return(TRUE)
-
-  }
 
 }

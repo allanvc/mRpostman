@@ -5,7 +5,7 @@
 \title{Move Messages}
 \usage{
 move_msg(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALSE,
-  logical_output = TRUE, retries = 2)
+  retries = 2)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
@@ -29,22 +29,13 @@ will be moved to.}
 before returning the output. Default is \code{FALSE} for moving and
 copying operations, whereas it is \code{TRUE} for renaming mailboxes.}
 
-\item{logical_output}{A logical. If \code{TRUE}, simplifies the output
-returning \code{TRUE} to indicate the success of the mentioned operation.
-If \code{FALSE}, returns a list of length \code{2} containing the
-\code{imapconf} object (IMAP settings) and the previously informed
-message ids (parameter \code{msg_id}), so they can be passed as
-arguments to another function. Default is \code{FALSE}.}
-
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}
 }
 \value{
-Depending on the \code{logical_output} parameter, returns a \code{list}
-    of length \code{2} containing the \code{imapconf} object and previously
-    informed message ids (parameter \code{msg_id}), or a logical vector of
-    length \code{1} indicating the success (\code{TRUE}) of the mentioned
-    operation.
+An (invisible) \code{list} of length \code{2} containing the
+    \code{imapconf} object and the previously inputed message ids
+    (parameter \code{msg_id}).
 }
 \description{
 Moves messages between mailboxes.

@@ -4,8 +4,7 @@
 \alias{check_args_copy_msg}
 \title{Copy Message Arguments Check}
 \usage{
-check_args_copy_msg(imapconf, msg_id, by, to_mbox, reselect_mbox,
-  logical_output, retries)
+check_args_copy_msg(imapconf, msg_id, by, to_mbox, reselect_mbox, retries)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
@@ -28,13 +27,6 @@ will be copied to.}
 \item{reselect_mbox}{If \code{TRUE}, calls \code{select_mailbox(mbox = to_mbox)}
 before returning the output. Default is \code{FALSE} for moving and
 copying operations, whereas it is \code{TRUE} for renaming mailboxes.}
-
-\item{logical_output}{A logical. If \code{TRUE}, simplifies the output
-returning \code{TRUE} to indicate the success of the mentioned operation.
-If \code{FALSE}, returns a list of length \code{2} containing the
-\code{imapconf} object (IMAP settings) and the previously informed
-message ids (parameter \code{msg_id}), so they can be passed as
-arguments to another function. Default is \code{FALSE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}

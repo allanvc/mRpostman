@@ -19,12 +19,6 @@
 #' @param reselect_mbox If \code{TRUE}, calls \code{select_mailbox(mbox = to_mbox)}
 #'     before returning the output. Default is \code{FALSE} for moving and
 #'     copying operations, whereas it is \code{TRUE} for renaming mailboxes.
-#' @param logical_output A logical. If \code{TRUE}, simplifies the output
-#'     returning \code{TRUE} to indicate the success of the mentioned operation.
-#'     If \code{FALSE}, returns a list of length \code{2} containing the
-#'     \code{imapconf} object (IMAP settings) and the previously informed
-#'     message ids (parameter \code{msg_id}), so they can be passed as
-#'     arguments to another function. Default is \code{FALSE}.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
@@ -35,8 +29,7 @@
 #'
 #' @keywords internal
 #'
-check_args_move_msg <- function(imapconf, msg_id, by, to_mbox,
-                                logical_output, retries) {
+check_args_move_msg <- function(imapconf, msg_id, by, to_mbox, retries) {
 
   # checks
   assertthat::assert_that(
@@ -65,11 +58,6 @@ check_args_move_msg <- function(imapconf, msg_id, by, to_mbox,
   assertthat::assert_that(
     is.character(to_mbox),
     msg='"to_mbox" must be of type character. See listMailboxes().')
-
-  assertthat::assert_that(
-    is.logical(logical_output)
-    ,
-    msg='"logical_output" must be a logical.')
 
   assertthat::assert_that(
     is.numeric(retries),

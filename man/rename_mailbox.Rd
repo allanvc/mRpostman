@@ -21,7 +21,7 @@ copying operations, whereas it is \code{TRUE} for renaming mailboxes.}
 is \code{2}.}
 }
 \value{
-An \code{imaconf} object with the newer selected mailbox added
+An (invisible) \code{imaconf} object with the newer selected mailbox added
     to it. If \code{reselect_mbox} is \code{FALSE}, it returns the
     \code{imaconf} object with the former mailbox name.
 }

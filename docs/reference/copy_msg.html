@@ -130,7 +130,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>copy_msg</span>(<span class='no'>imapconf</span>, <span class='no'>msg_id</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"MSN"</span>, <span class='no'>to_mbox</span>, <span class='kw'>reselect_mbox</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>logical_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retries</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='kw'>retries</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,15 +167,6 @@ before returning the output. Default is <code>FALSE</code> for moving and
 copying operations, whereas it is <code>TRUE</code> for renaming mailboxes.</p></td>
     </tr>
     <tr>
-      <th>logical_output</th>
-      <td><p>A logical. If <code>TRUE</code>, simplifies the output
-returning <code>TRUE</code> to indicate the success of the mentioned operation.
-If <code>FALSE</code>, returns a list of length <code>2</code> containing the
-<code>imapconf</code> object (IMAP settings) and the previously informed
-message ids (parameter <code>msg_id</code>), so they can be passed as
-arguments to another function. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
       <th>retries</th>
       <td><p>Number of attempts to connect and execute the command. Default
 is <code>2</code>.</p></td>
@@ -184,11 +175,9 @@ is <code>2</code>.</p></td>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Depending on the <code>logical_output</code> parameter, returns a <code>list</code>
-    of length <code>2</code> containing the <code>imapconf</code> object and previously
-    informed message ids (parameter <code>msg_id</code>), or a logical vector of
-    length <code>1</code> indicating the success (<code>TRUE</code>) of the mentioned
-    operation.</p>
+    <p>An (invisible) <code>list</code> of length <code>2</code> containing the
+    <code>imapconf</code> object and the previously inputed message ids
+    (parameter <code>msg_id</code>).</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

@@ -8,7 +8,7 @@
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
-#' @return The \code{imaconf, list} object with the selected mailbox added to it.
+#' @return The (invisible) \code{imaconf} object with the selected mailbox added to it.
 #'
 #' @family mailbox commands
 #'

@@ -18,8 +18,7 @@ specific messages should be expunged and not the whole mailbox.}
 is \code{2}.}
 }
 \value{
-A logical vector of length \code{1} indicating the success
-    (\code{TRUE}) of the mentioned operation.
+The (invisible) imapconf object that was previously inputed.
 }
 \description{
 Expunge a specific message (using specific UID) or all messages
