@@ -47,7 +47,7 @@
 #' }
 #' @export
 #'
-section_or_field_options <- function(){
+section_or_field_options <- function() {
 
   section_opts <- c("BODY", "HEADER", "TEXT")
 

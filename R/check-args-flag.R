@@ -9,7 +9,7 @@
 #'
 #' @keywords internal
 #'
-check_args_flag <- function(flag, negate){
+check_args_flag <- function(flag, negate) {
 
   assertthat::assert_that(
     is.character(flag),
@@ -18,8 +18,6 @@ check_args_flag <- function(flag, negate){
   assertthat::assert_that(
     is.logical(negate),
     msg='"negate" must be a logical.')
-
-
 
   return(NULL)
 

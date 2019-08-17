@@ -24,17 +24,17 @@
 #'
 #' @export
 #'
-on <- function(date_char, negate = FALSE){
+on <- function(date_char, negate = FALSE) {
 
 
   check_args_date(date_char, negate)
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0('(ON ', date_char, ')')
 
-  } else{
+  } else {
     out = paste0('(NOT (ON ', date_char, '))')
 
   }

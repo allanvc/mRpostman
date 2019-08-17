@@ -10,7 +10,7 @@
 #'
 #' @keywords internal
 #'
-define_searchrequest_flag <- function(flag, negate, by, esearch, handle){
+define_searchrequest_flag <- function(flag, negate, by, esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {

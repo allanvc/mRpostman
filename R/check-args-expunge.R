@@ -18,7 +18,7 @@
 #'
 #' @keywords internal
 #'
-check_args_expunge <- function(imapconf, specific_UID, retries){
+check_args_expunge <- function(imapconf, specific_UID, retries) {
 
   # checks
   assertthat::assert_that(
@@ -36,7 +36,7 @@ check_args_expunge <- function(imapconf, specific_UID, retries){
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

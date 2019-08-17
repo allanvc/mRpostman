@@ -12,7 +12,7 @@
 #'
 #' @keywords internal
 #'
-clean_fetch_results <- function(msg){
+clean_fetch_results <- function(msg) {
 
 
   pattern1="\\* \\d+ FETCH.*BODY.*\\{\\d+\\}\r\n"

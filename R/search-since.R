@@ -54,7 +54,7 @@ search_since <- function(imapconf, date_char, negate = FALSE, by = "MSN",
   response <- tryCatch({
     curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
 
   })
@@ -97,7 +97,7 @@ search_since <- function(imapconf, date_char, negate = FALSE, by = "MSN",
       response <- tryCatch({
         curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
 
       })
@@ -156,7 +156,7 @@ search_since <- function(imapconf, date_char, negate = FALSE, by = "MSN",
     final.output <- list("imapconf" = imapconf, "msg_id" = response)
     return(final.output)
 
-  } else{
+  } else {
 
     return(response)
 

@@ -36,7 +36,7 @@
 #' @keywords internal
 #'
 check_args_copy_msg <- function(imapconf, msg_id, by, to_mbox, reselect_mbox,
-                                logical_output, retries){
+                                logical_output, retries) {
 
   # checks
   assertthat::assert_that(
@@ -80,7 +80,7 @@ check_args_copy_msg <- function(imapconf, msg_id, by, to_mbox, reselect_mbox,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

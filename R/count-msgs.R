@@ -42,7 +42,7 @@
 #'
 #' @export
 #'
-count_msgs <- function(imapconf, by = "MSN", flag, retries = 2){
+count_msgs <- function(imapconf, by = "MSN", flag, retries = 2) {
 
   # checks
   assertthat::assert_that(
@@ -65,7 +65,7 @@ count_msgs <- function(imapconf, by = "MSN", flag, retries = 2){
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 
@@ -76,11 +76,11 @@ count_msgs <- function(imapconf, by = "MSN", flag, retries = 2){
   h <- config_handle(imapconf)
 
   # adding the SEARCH id RETURN COUNT customrequest
-  if(by == "UID"){
+  if (by == "UID") {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("UID SEARCH RETURN (COUNT) ", flag))
-  } else{
+  } else {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("SEARCH RETURN (COUNT) ", flag))
@@ -89,11 +89,11 @@ count_msgs <- function(imapconf, by = "MSN", flag, retries = 2){
 
   response <- tryCatch({
     curl::curl_fetch_memory(imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(!is.null(response)){
+  if (!is.null(response)) {
     response <- as.numeric(as.character(
       stringr::str_match_all(
         string = rawToChar(response$content),
@@ -106,24 +106,24 @@ count_msgs <- function(imapconf, by = "MSN", flag, retries = 2){
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
       response <- as.numeric(as.character(
         stringr::str_match_all(
           string = rawToChar(response$content),
           pattern = "COUNT ([\\d]+)\r\n")[[1]][,2]
       ))
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if your IMAP server supports ESEARCH CAPABILITY;\n

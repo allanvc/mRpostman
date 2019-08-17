@@ -12,7 +12,8 @@
 #'
 #' @keywords internal
 #'
-define_searchrequest_custom <- function(custom_request, negate, by, esearch, handle){
+define_searchrequest_custom <- function(custom_request, negate, by, esearch,
+                                        handle) {
 
   # esearch
   if (isTRUE(esearch)) {

@@ -24,7 +24,7 @@
 #'
 search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
                             flag = NULL, esearch = FALSE, return_imapconf = TRUE,
-                            retries = 2){
+                            retries = 2) {
 
   check_args_search_within(imapconf, seconds, negate, by, flag, esearch,
                           return_imapconf, retries)
@@ -48,12 +48,12 @@ search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
   response <- tryCatch({
     curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
 
   })
 
-  if(!is.null(response)){
+  if (!is.null(response)) {
     if (isTRUE(esearch)) {
       pre_response <- stringr::str_match_all(rawToChar(response$content), 'ALL (.*)')[[1]][,2]
       pre_response <- eval(parse(text = paste0("c(", pre_response, ")")))
@@ -69,11 +69,11 @@ search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
     # note to self: changed the SEARCH METHOD FOR ESEARCH
     # that optimizes the response, but we need to use eval(parse(.))
 
-    if(length(pre_response) > 0){
+    if (length(pre_response) > 0) {
       response <- pre_response
       rm(pre_response)
 
-    } else{
+    } else {
       response = 0
 
     }
@@ -85,19 +85,19 @@ search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
 
     select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
 
       response <- tryCatch({
         curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
 
       })
     }
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
       if (isTRUE(esearch)) {
         pre_response <- stringr::str_match_all(rawToChar(response$content), 'ALL (.*)')[[1]][,2]
         pre_response <- eval(parse(text = paste0("c(", pre_response, ")")))
@@ -113,16 +113,16 @@ search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
       # note to self: changed the SEARCH METHOD FOR ESEARCH
       # that optimizes the response, but we need to use eval(parse(.))
 
-      if(length(pre_response) > 0){
+      if (length(pre_response) > 0) {
         response <- pre_response
         rm(pre_response)
 
-      } else{
+      } else {
         response = 0
 
       }
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if the "flag" is valid, in case you provided one;\n
@@ -146,11 +146,11 @@ search_older_than <- function(imapconf, seconds, negate = FALSE, by = "MSN",
     ')
   }
 
-  if(isTRUE(return_imapconf)){
+  if (isTRUE(return_imapconf)) {
     final_output <- list("imapconf" = imapconf, "msg_id" = response)
     return(final_output)
 
-  } else{
+  } else {
 
     return(response)
 

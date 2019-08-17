@@ -28,7 +28,7 @@
 #' }
 #' @export
 #'
-select_mailbox <- function(imapconf, mbox, retries = 2){
+select_mailbox <- function(imapconf, mbox, retries = 2) {
 
   # check
   assertthat::assert_that(
@@ -44,7 +44,7 @@ select_mailbox <- function(imapconf, mbox, retries = 2){
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 
@@ -58,7 +58,7 @@ select_mailbox <- function(imapconf, mbox, retries = 2){
                       '^\\".*\\"$') # to know if select_mailbox is being called
   #..from inside a search function after a failed attempt
   # we want to know if we have already added quotes
-  if(!isTRUE(mbox_check)){
+  if (!isTRUE(mbox_check)) {
     mbox <- paste0('"', mbox, '"')
   }
 
@@ -79,7 +79,7 @@ select_mailbox <- function(imapconf, mbox, retries = 2){
 
   response <- tryCatch({
     curl::curl_fetch_memory(imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
@@ -89,19 +89,19 @@ select_mailbox <- function(imapconf, mbox, retries = 2){
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
 
       response <- tryCatch({
         curl::curl_fetch_memory(imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
 
     }
 
-    if(is.null(response)){
+    if (is.null(response)) {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if your imapconf options are valid;\n
@@ -110,6 +110,6 @@ select_mailbox <- function(imapconf, mbox, retries = 2){
     }
 
   }
-  return(imapconf)
+  invisible(imapconf)
 
 }

@@ -15,7 +15,7 @@
 #'
 #' @keywords internal
 #'
-check_args_date <- function(date_char, negate){
+check_args_date <- function(date_char, negate) {
 
   assertthat::assert_that(
     stringr::str_detect(string = date_char,
@@ -25,8 +25,6 @@ check_args_date <- function(date_char, negate){
   assertthat::assert_that(
     is.logical(negate),
     msg='"negate" must be a logical.')
-
-
 
   return(NULL)
 

@@ -31,16 +31,16 @@
 #'
 #' @export
 #'
-older_than <- function(seconds, negate = FALSE){
+older_than <- function(seconds, negate = FALSE) {
 
   check_args_within(seconds, negate)
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0('(OLDER ', seconds, ')')
 
-  } else{
+  } else {
     out = paste0('(NOT (OLDER ', seconds, '))')
 
   }

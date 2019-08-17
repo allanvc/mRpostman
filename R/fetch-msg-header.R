@@ -51,7 +51,7 @@ fetch_msg_header <- function(imapconf, msg_id, by = "MSN", fields = NULL,
                                   keep_in_mem, retries, handle = h)
 
 
-  if(!is.null(partial)){
+  if (!is.null(partial)) {
     warning("Setting a partial interval of characters may strip your results.")
   }
 

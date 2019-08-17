@@ -32,16 +32,16 @@
 #'
 #' @export
 #'
-smaller_than <- function(size, negate = FALSE){
+smaller_than <- function(size, negate = FALSE) {
 
   check_args_size(size, negate)
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0('(SMALLER ', size, ')')
 
-  } else{
+  } else {
     out = paste0('(NOT (SMALLER ', size, '))')
 
   }

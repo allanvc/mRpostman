@@ -56,7 +56,8 @@
 #' @export
 #'
 search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
-                         flag = NULL, esearch = FALSE, return_imapconf = TRUE, retries = 2) {
+                         flag = NULL, esearch = FALSE, return_imapconf = TRUE,
+                         retries = 2) {
 
   check_args_search_date(imapconf, date_char, negate, by, flag, esearch,
                         return_imapconf, retries)
@@ -79,7 +80,7 @@ search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
   response <- tryCatch({
     curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
 
   })
@@ -104,7 +105,7 @@ search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
       response <- pre_response
       rm(pre_response)
 
-    } else{
+    } else {
       response = 0
 
     }
@@ -122,7 +123,7 @@ search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
       response <- tryCatch({
         curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
 
       })
@@ -148,12 +149,12 @@ search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
         response <- pre_response
         rm(pre_response)
 
-      } else{
+      } else {
         response = 0
 
       }
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if the "flag" is valid, in case you provided one;\n
@@ -181,7 +182,7 @@ search_before <- function(imapconf, date_char, negate = FALSE, by = "MSN",
     final_output <- list("imapconf" = imapconf, "msg_id" = response)
     return(final_output)
 
-  } else{
+  } else {
 
     return(response)
 

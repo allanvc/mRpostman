@@ -24,7 +24,7 @@
 #'
 #' @export
 #'
-OR <- function(..., negate = FALSE){
+OR <- function(..., negate = FALSE) {
 
   # ... must be 2+ args
   argg <- list(...)
@@ -43,11 +43,11 @@ OR <- function(..., negate = FALSE){
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0(paste0(rep('OR', n_OR), collapse = ' '), ' ', paste(..., sep = ' ')) # we'll already have parenthesis
     #... inside '...' args
 
-  } else{
+  } else {
     out = paste0('NOT (', paste0(rep('OR', n_OR), collapse = ' '), ' ', paste(..., sep = ' '), ')')
 
   }

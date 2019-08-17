@@ -37,7 +37,7 @@
 #'
 #' @export
 #'
-expunge <- function(imapconf, specific_UID = NULL, retries = 2){
+expunge <- function(imapconf, specific_UID = NULL, retries = 2) {
 
   check_args_expunge(imapconf, specific_UID, retries)
 
@@ -52,14 +52,14 @@ expunge <- function(imapconf, specific_UID = NULL, retries = 2){
 
 
   # setting as deleted first
-  if(!is.null(specific_UID)){
+  if (!is.null(specific_UID)) {
     UID_string = paste0(specific_UID, collapse = ",")
 
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("UID EXPUNGE ", UID_string))
 
-  } else{
+  } else {
     curl::handle_setopt(
       handle = h,
       customrequest = "EXPUNGE")
@@ -68,28 +68,28 @@ expunge <- function(imapconf, specific_UID = NULL, retries = 2){
   # REQUEST
   response <- tryCatch({
     curl::curl_fetch_memory(new_imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(is.null(response)){
+  if (is.null(response)) {
 
     # it is not necessary to select again
     count_retries = 1 #the first try was already counted
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(is.null(response)){
+    if (is.null(response)) {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if imapconf options are valid;\n

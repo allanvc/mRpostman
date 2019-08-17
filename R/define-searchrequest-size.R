@@ -14,7 +14,7 @@
 #' @keywords internal
 #'
 define_searchrequest_size <- function(operation, size, negate, by, flag, esearch,
-                                        handle){
+                                        handle) {
 
   # esearch
   if (isTRUE(esearch)) {

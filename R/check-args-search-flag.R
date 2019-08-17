@@ -38,7 +38,7 @@
 #' @keywords internal
 #'
 check_args_search_flag <- function(imapconf, flag, negate, by, esearch,
-                                  return_imapconf, retries){
+                                  return_imapconf, retries) {
 
   # checks
   assertthat::assert_that(
@@ -74,7 +74,7 @@ check_args_search_flag <- function(imapconf, flag, negate, by, esearch,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

@@ -12,7 +12,7 @@
 #'
 #' @keywords internal
 #'
-fix_search_stripping <- function(response){
+fix_search_stripping <- function(response) {
 
   # sort numbers from response
   # when it is different from the original vector, fix that number
@@ -20,7 +20,7 @@ fix_search_stripping <- function(response){
 
   sorted_response = sort(response)
 
-  if(any(which(response != sorted_response))){
+  if (any(which(response != sorted_response))) {
 
     stripped_idx <- which(response != sorted_response)[[1]]
 

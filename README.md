@@ -3,7 +3,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit .Rmd file -->
 
-# mRpostman <img src="man/figures/logo.png" align="right" width="150" />
+# mRpostman <img src="man/figures/logo.png" align="right" width="140" />
 
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 
@@ -98,7 +98,7 @@ The package is divided in 7 groups of functions:
       - criteria definition functions: `before()`, `since()`, `on()`,
         `sent_before()`, `sent_since()`, `sent_on()`, `string()`,
         `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`,
-        and `older_than()`.
+        `older_than()`;
   - **fetch**: `fetch_full_msg()`, `fetch_msg_header()`,
     `fetch_msg_text()`, `fetch_msg_metadata()`;
   - **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`,
@@ -198,6 +198,14 @@ results <- imapconf %>%
 
 results
 ```
+
+## Future Improvements
+
+  - better error handling and messages;
+
+  - add further IMAP functionalities;
+
+  - include **SMTP support** for sending emails.
 
 ## License
 

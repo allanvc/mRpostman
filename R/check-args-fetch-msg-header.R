@@ -38,7 +38,7 @@
 #'
 check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
                                       negate_fields, peek, partial,
-                                      write_to_file, keep_in_mem, retries){
+                                      write_to_file, keep_in_mem, retries) {
   # checks
   assertthat::assert_that(
     assertthat::validate_that(class(imapconf) == "imapconf"),
@@ -74,7 +74,7 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
     is.logical(negate_fields),
     msg='"negate_fields" must be a logical.')
 
-  if(is.null(fields)){
+  if (is.null(fields)) {
     assertthat::assert_that(
       isFALSE(negate_fields),
       msg='"negate_fields" can only be set as TRUE when "fields" is not NULL.')
@@ -92,7 +92,7 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
     is.logical(keep_in_mem),
     msg='"keep_in_mem" must be a logical.')
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     assertthat::assert_that(
       isTRUE(write_to_file),
       msg='"keep_in_mem" can only be set as FALSE when "write_to_file" = TRUE.')
@@ -106,7 +106,7 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
       is.null(partial)
     ), msg='"partial" must be NULL or a character with format "startbyte.stopbyte", e.g. "0.255".')
 
-  if(!is.null(partial)){
+  if (!is.null(partial)) {
     assertthat::assert_that(
       stringr::str_detect(string = partial,
                           pattern = '[0-9]+\\.[0-9]+'),
@@ -119,7 +119,7 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

@@ -15,7 +15,7 @@
 #' @keywords internal
 #'
 define_searchrequest_date <- function(operation, date_char, negate, by, flag,
-                                      esearch, handle){
+                                      esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {

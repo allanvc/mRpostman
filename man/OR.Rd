@@ -18,9 +18,11 @@ A search string to be used as a \code{custom_request} parameter in
 }
 \description{
 Allows a combination of criteria helper
-    functions such as \link{before}, \link{since}, \link{on},
-    \link{sent_before}, \link{sent_since}, \link{sent_on}, \link{flag}, or
-    \link{string}, in order to execute a multiple criteria custom search.
+    functions such as such as \link{before}, \link{since},
+    \link{on}, \link{sent_before}, \link{sent_since}, \link{sent_on},
+    \link{flag}, \link{string}, \link{smaller_than}, \link{larger_than},
+    \link{younger_than}, or \link{younger_than}, in order to execute a
+    multiple criteria custom search.
 }
 \examples{
 
