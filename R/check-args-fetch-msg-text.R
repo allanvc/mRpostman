@@ -70,7 +70,7 @@ check_args_fetch_msg_text <- function(imapconf, msg_id, by, peek, partial,
     is.logical(keep_in_mem),
     msg='"keep_in_mem" must be a logical.')
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     assertthat::assert_that(
       isTRUE(write_to_file),
       msg='"keep_in_mem" can only be set as FALSE when "write_to_file" = TRUE.')
@@ -97,7 +97,7 @@ check_args_fetch_msg_text <- function(imapconf, msg_id, by, peek, partial,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

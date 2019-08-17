@@ -82,12 +82,12 @@ list_server_capabilities <- function(imapconf, retries = 2) {
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
       server_capabilities <- stringr::str_split(
         stringr::str_match_all( # only the second matching (after authenticating)
           string = rawToChar(response$headers), # diff to listMailboxes -- parse headers
@@ -98,7 +98,7 @@ list_server_capabilities <- function(imapconf, retries = 2) {
       rm(response)
 
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if your imapconf options are valid.'

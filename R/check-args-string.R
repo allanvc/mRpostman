@@ -12,7 +12,7 @@
 #'
 #' @keywords internal
 #'
-check_args_string <- function(string, section_or_field, negate){
+check_args_string <- function(string, section_or_field, negate) {
 
   assertthat::assert_that(
     is.character(string),
@@ -25,8 +25,6 @@ check_args_string <- function(string, section_or_field, negate){
   assertthat::assert_that(
     is.logical(negate),
     msg='"negate" must be a logical.')
-
-
 
     return(NULL)
 

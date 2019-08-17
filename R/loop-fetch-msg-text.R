@@ -17,7 +17,7 @@
 #'
 loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
                               partial, write_to_disk, keep_in_mem,
-                              retries, handle){
+                              retries, handle) {
 
   h = handle
 
@@ -25,14 +25,14 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
   # preparation
 
   # peek
-  if(isTRUE(peek)){
+  if (isTRUE(peek)) {
     body_string = " BODY.PEEK[TEXT]"
   } else {
     body_string = " BODY[TEXT]"
   }
 
   # partial
-  if(!is.null(partial)){
+  if (!is.null(partial)) {
     partial_string = paste0("<", partial, ">")
   } else {
     partial_string = NULL
@@ -50,7 +50,7 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
   msg_list <- list()
   idx = 0
 
-  for(id in msg_id){
+  for (id in msg_id) {
     idx = idx+1
 
     curl::handle_setopt(
@@ -61,13 +61,13 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
 
       curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-    }, error = function(e){
+    }, error = function(e) {
       return(NULL)
 
     })
 
-    if(!is.null(response)){
-      msg_list[[idx]] <- decode_base64_text_if_TRUE(
+    if (!is.null(response)) {
+      msg_list[[idx]] <- decode_base64_text_if_needed(
         clean_fetch_results(
           rawToChar(response$headers)
         )
@@ -75,15 +75,15 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
 
       rm(response)
 
-      if(by == "UID"){
+      if (by == "UID") {
         names(msg_list)[idx] <- paste0("textUID", id)
 
-      } else{
+      } else {
         names(msg_list)[idx] <- paste0("textSEQID", id)
 
       }
 
-      if(isTRUE(write_to_disk)){
+      if (isTRUE(write_to_disk)) {
 
         mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
@@ -96,7 +96,7 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
         write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
                                               names(msg_list)[idx], ".txt"))
 
-        if(isFALSE(keep_in_mem)){
+        if (isFALSE(keep_in_mem)) {
           msg_list[[id]] <- NA
         }
 
@@ -107,20 +107,20 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
       # FORCE appending fresh_connect
       curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-      while(is.null(response) && count_retries < retries){
+      while (is.null(response) && count_retries < retries) {
         count_retries = count_retries+1
 
         response <- tryCatch({
 
           curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-        }, error = function(e){
+        }, error = function(e) {
           return(NULL)
 
         })
 
-        if(!is.null(response)){
-          msg_list[[idx]] <- decode_base64_text_if_TRUE(
+        if (!is.null(response)) {
+          msg_list[[idx]] <- decode_base64_text_if_needed(
             clean_fetch_results(
               rawToChar(response$headers)
               )
@@ -128,15 +128,15 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
 
           rm(response)
 
-          if(by == "UID"){
+          if (by == "UID") {
             names(msg_list)[idx] <- paste0("textUID", id)
 
-          } else{
+          } else {
             names(msg_list)[idx] <- paste0("textSEQID", id)
 
           }
 
-          if(isTRUE(write_to_disk)){
+          if (isTRUE(write_to_disk)) {
 
             mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
@@ -149,12 +149,12 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
             write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
                                                   names(msg_list)[idx], ".txt"))
 
-            if(isFALSE(keep_in_mem)){
+            if (isFALSE(keep_in_mem)) {
               msg_list[[id]] <- NA
             }
 
           }
-        } else{
+        } else {
           stop('An error ocurred while connecting. Please check the following and/or try again:\n
          - your internet connection status;\n
          - if imapconf options are valid;\n
@@ -167,11 +167,11 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
     } #else-response
   } #for
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     rm(msg_list)
     return(TRUE)
 
-  } else{
+  } else {
     return(msg_list)
   }
 

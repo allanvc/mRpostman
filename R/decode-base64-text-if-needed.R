@@ -11,20 +11,21 @@
 #'
 #' @keywords internal
 #'
-decode_base64_text_if_TRUE <- function(msg){
-  # to be used inside fetchMsgText() - Headers and full msgs are fine,
+decode_base64_text_if_needed <- function(msg) {
+  # to be used inside fetch_msg_text() - Headers and full msgs are fine,
   #.. except for the text part in full msgs
   check_result <- stringr::str_detect(string = msg,
                                       pattern = "(^[\\-\\-]+)|(<!DOCTYPE)")
 
-  if(isFALSE(check_result)){
+  if (isFALSE(check_result)) {
     msg_converted <- tryCatch({
       # opted for tryCatch to not interrupt in case of error when converting
       rawToChar(base64enc::base64decode(msg)) # ensuring correct encode
-      }, error = function(e){
+      }, error = function(e) {
         return(msg)
       })
-  } else{
+
+  } else {
     msg_converted <- msg
   }
 

@@ -22,7 +22,7 @@
 #' }
 #' @export
 #'
-metadata_options <- function(){
+metadata_options <- function() {
 
   metadata_opts <- c("INTERNALDATE", "UID", "ENVELOPE", "FLAGS", "RFC822.SIZE",
                   "BODYSTRUCTURE")

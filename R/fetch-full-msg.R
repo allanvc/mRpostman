@@ -33,7 +33,7 @@
 #'
 fetch_full_msg <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
                               partial = NULL, write_to_file = FALSE, keep_in_mem = TRUE,
-                              retries = 2){
+                              retries = 2) {
 
   #check
   check_args_fetch_full_msg(imapconf, msg_id, by, peek, partial,

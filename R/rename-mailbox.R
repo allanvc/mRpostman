@@ -35,7 +35,8 @@
 #' }
 #' @export
 #'
-rename_mailbox <- function(imapconf, new_name, reselect_mbox = TRUE, retries = 2){
+rename_mailbox <- function(imapconf, new_name, reselect_mbox = TRUE,
+                           retries = 2) {
 
   # checks
   assertthat::assert_that(
@@ -55,7 +56,7 @@ rename_mailbox <- function(imapconf, new_name, reselect_mbox = TRUE, retries = 2
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 
@@ -79,28 +80,28 @@ rename_mailbox <- function(imapconf, new_name, reselect_mbox = TRUE, retries = 2
   response <- tryCatch({
     curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(is.null(response)){
+  if (is.null(response)) {
 
     # it is not necessary to select again
     count_retries = 1 #the first try was already counted
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(is.null(response)){
+    if (is.null(response)) {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if imapconf options are valid;\n
@@ -114,18 +115,18 @@ rename_mailbox <- function(imapconf, new_name, reselect_mbox = TRUE, retries = 2
   rm(h)
 
   # reselecting
-  if(isTRUE(reselect_mbox)){
+  if (isTRUE(reselect_mbox)) {
 
     new_imapconf$mbox = new_name
 
     new_imapconf <- select_mailbox(imapconf = new_imapconf,
                                   mbox = new_imapconf$mbox)
 
-    return(new_imapconf)
+    invisible(new_imapconf)
 
   } else {
 
-    return(imapconf)
+    invisible(imapconf)
   }
 
 }

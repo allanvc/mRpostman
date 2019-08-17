@@ -16,7 +16,7 @@
 #'
 define_searchrequest_period <- function(operation1, since_date_char, operation2,
                                         before_date_char, negate, by, flag,
-                                        esearch, handle){
+                                        esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {

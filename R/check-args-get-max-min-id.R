@@ -26,7 +26,7 @@
 #'
 #' @keywords internal
 #'
-check_args_get_max_min_id <- function(imapconf, by, flag, retries){
+check_args_get_max_min_id <- function(imapconf, by, flag, retries) {
 
   # checks
   assertthat::assert_that(
@@ -49,7 +49,7 @@ check_args_get_max_min_id <- function(imapconf, by, flag, retries){
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

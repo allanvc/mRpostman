@@ -29,17 +29,17 @@
 #'
 #' @export
 #'
-flag <- function(flag, negate = FALSE){
+flag <- function(flag, negate = FALSE) {
 
 
   check_args_flag(flag, negate)
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0('(', flag, ')')
 
-  } else{
+  } else {
     out = paste0('(NOT (', flag, '))')
 
   }

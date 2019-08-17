@@ -36,7 +36,7 @@
 #' @keywords internal
 #'
 check_args_fetch_full_msg <- function(imapconf, msg_id, by, peek, partial,
-                                         write_to_file, keep_in_mem, retries){
+                                         write_to_file, keep_in_mem, retries) {
   # checks
   assertthat::assert_that(
     assertthat::validate_that(class(imapconf) == "imapconf"),
@@ -73,7 +73,7 @@ check_args_fetch_full_msg <- function(imapconf, msg_id, by, peek, partial,
     is.logical(keep_in_mem),
     msg='"keep_in_mem" must be a logical.')
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     assertthat::assert_that(
       isTRUE(write_to_file),
       msg='"keep_in_mem" can only be set as FALSE when "write_to_file" = TRUE.')
@@ -85,7 +85,7 @@ check_args_fetch_full_msg <- function(imapconf, msg_id, by, peek, partial,
       is.null(partial)
     ), msg='"partial" must be NULL or a character with format "startchar.endchar", e.g. "0.255".')
 
-  if(!is.null(partial)){
+  if (!is.null(partial)) {
     assertthat::assert_that(
       stringr::str_detect(string = partial,
                           pattern = '[0-9]+\\.[0-9]+'),
@@ -98,7 +98,7 @@ check_args_fetch_full_msg <- function(imapconf, msg_id, by, peek, partial,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

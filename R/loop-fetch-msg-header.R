@@ -17,7 +17,7 @@
 #'
 loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_fields,
                                    peek, partial, write_to_disk, keep_in_mem,
-                                   retries, handle){
+                                   retries, handle) {
 
   h = handle
 
@@ -41,14 +41,14 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
   }
 
   # body_string
-  if(isTRUE(peek)){
+  if (isTRUE(peek)) {
     body_string = paste0(" BODY.PEEK", header_string)
   } else {
     body_string = paste0(" BODY", header_string)
   }
 
   # partial
-  if(!is.null(partial)){
+  if (!is.null(partial)) {
     partial_string = paste0("<", partial, ">")
   } else {
     partial_string = NULL
@@ -66,7 +66,7 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
   msg_list <- list()
   idx = 0
 
-  for(id in msg_id){
+  for (id in msg_id) {
     idx = idx+1
 
     curl::handle_setopt(
@@ -78,27 +78,27 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
 
       curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-    }, error = function(e){
+    }, error = function(e) {
       return(NULL)
 
     })
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
 
       msg_list[[idx]] <- clean_fetch_results(
         rawToChar(response$headers))
 
       rm(response)
 
-      if(by == "UID"){
+      if (by == "UID") {
         names(msg_list)[idx] <- paste0("headerUID", id)
 
-      } else{
+      } else {
         names(msg_list)[idx] <- paste0("headerMSN", id)
 
       }
 
-      if(isTRUE(write_to_disk)){
+      if (isTRUE(write_to_disk)) {
 
         mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
@@ -111,7 +111,7 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
         write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
                                               names(msg_list)[idx], ".txt"))
 
-        if(isFALSE(keep_in_mem)){
+        if (isFALSE(keep_in_mem)) {
           msg_list[[id]] <- NA
         }
 
@@ -122,34 +122,34 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
       # FORCE appending fresh_connect
       curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-      while(is.null(response) && count_retries < retries){
+      while (is.null(response) && count_retries < retries) {
         count_retries = count_retries+1
 
         response <- tryCatch({
 
           curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
-        }, error = function(e){
+        }, error = function(e) {
           return(NULL)
 
         })
 
-        if(!is.null(response)){
+        if (!is.null(response)) {
 
           msg_list[[idx]] <- clean_fetch_results(
             rawToChar(response$headers))
 
           rm(response)
 
-          if(by == "UID"){
+          if (by == "UID") {
             names(msg_list)[idx] <- paste0("headerUID", id)
 
-          } else{
+          } else {
             names(msg_list)[idx] <- paste0("headerMSN", id)
 
           }
 
-          if(isTRUE(write_to_disk)){
+          if (isTRUE(write_to_disk)) {
 
             mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
@@ -162,12 +162,12 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
             write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
                                                   names(msg_list)[idx], ".txt"))
 
-            if(isFALSE(keep_in_mem)){
+            if (isFALSE(keep_in_mem)) {
               msg_list[[id]] <- NA
             }
 
           }
-        } else{
+        } else {
           stop('An error ocurred while connecting. Please check the following and/or try again:\n
          - your internet connection status;\n
          - if imapconf options are valid;\n
@@ -180,11 +180,11 @@ loop_fetch_msg_header <- function(new_imapconf, msg_id, by, fields, negate_field
     } #else-response
   } #for
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     rm(msg_list)
     return(TRUE)
 
-  } else{
+  } else {
     return(msg_list)
   }
 

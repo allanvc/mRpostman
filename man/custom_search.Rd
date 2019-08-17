@@ -56,10 +56,11 @@ Depending on the \code{return_imapconf} parameter, it can be a
 \description{
 Allows a combination of several arguments using helper functions
     that serve as relational operators, such as \link{OR} and \link{AND}; and
-    criteria helper functions such as \link{before}, \link{since}, \link{on},
-    \link{sent_before}, \link{sent_since}, \link{sent_on}, \link{flag}, or
-    \link{string}, in order to execute a custom search (with multiple
-    arguments).
+    criteria helper functions such as \link{before}, \link{since},
+    \link{on}, \link{sent_before}, \link{sent_since}, \link{sent_on},
+    \link{flag}, \link{string}, \link{smaller_than}, \link{larger_than},
+    \link{younger_than}, or \link{younger_than}, in order to execute a
+    custom search (with multiple arguments).
 }
 \note{
 IMAP queries follows Polish notation, i.e. operators such as \code{OR}

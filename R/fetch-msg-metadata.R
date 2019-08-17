@@ -33,7 +33,7 @@
 #'
 fetch_msg_metadata <- function(imapconf, msg_id, by = "MSN", metadata,
                              write_to_file = FALSE, keep_in_mem = TRUE,
-                             retries = 2){
+                             retries = 2) {
 
   #check
   check_args_fetch_msg_metadata(imapconf, msg_id, by, metadata,

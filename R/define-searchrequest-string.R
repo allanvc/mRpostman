@@ -11,7 +11,7 @@
 #' @keywords internal
 #'
 define_searchrequest_string <- function(section_or_field, string, negate, by,
-                                        esearch, handle){
+                                        esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {

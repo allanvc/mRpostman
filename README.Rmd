@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# mRpostman <img src="man/figures/logo.png" align="right" width="150" />
+# mRpostman <img src="man/figures/logo.png" align="right" width="140" />
 
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
@@ -105,7 +105,7 @@ The package is divided in 7 groups of functions:
   + relational operators functions: `AND()`, `OR()`;
   + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
   `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
-  `larger_than()`, `younger_than()`, and `older_than()`.
+  `larger_than()`, `younger_than()`, `older_than()`;
 * **fetch**: `fetch_full_msg()`, `fetch_msg_header()`, `fetch_msg_text()`, 
 `fetch_msg_metadata()`;
 * **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`, `delete_msg()`, 
@@ -207,6 +207,14 @@ results <- imapconf %>%
 
 results
 ```
+
+## Future Improvements
+
+- better error handling and messages;
+
+- add further IMAP functionalities;
+
+- include **SMTP support** for sending emails.
 
 
 ## License

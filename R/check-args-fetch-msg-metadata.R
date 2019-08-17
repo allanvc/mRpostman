@@ -30,7 +30,7 @@
 #' @keywords internal
 #'
 check_args_fetch_msg_metadata <- function(imapconf, msg_id, by, metadata,
-                                      write_to_file, keep_in_mem, retries){
+                                      write_to_file, keep_in_mem, retries) {
   # checks
   assertthat::assert_that(
     assertthat::validate_that(class(imapconf) == "imapconf"),
@@ -67,7 +67,7 @@ check_args_fetch_msg_metadata <- function(imapconf, msg_id, by, metadata,
     is.logical(keep_in_mem),
     msg='"keep_in_mem" must be a logical.')
 
-  if(isFALSE(keep_in_mem)){
+  if (isFALSE(keep_in_mem)) {
     assertthat::assert_that(
       isTRUE(write_to_file),
       msg='"keep_in_mem" can only be set as FALSE when "write_to_file" = TRUE.')
@@ -78,7 +78,7 @@ check_args_fetch_msg_metadata <- function(imapconf, msg_id, by, metadata,
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

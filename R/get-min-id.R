@@ -31,7 +31,7 @@
 #'
 #' @export
 #'
-get_min_id <- function(imapconf, by = "MSN", flag, retries = 2){
+get_min_id <- function(imapconf, by = "MSN", flag, retries = 2) {
 
   check_args_get_max_min_id(imapconf, by, flag, retries)
 
@@ -44,11 +44,11 @@ get_min_id <- function(imapconf, by = "MSN", flag, retries = 2){
   h <- config_handle(new_imapconf)
 
   # adding the SEARCH id RETURN COUNT customrequest
-  if(by == "UID"){
+  if (by == "UID") {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("UID SEARCH RETURN (MIN) ", flag))
-  } else{
+  } else {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("SEARCH RETURN (MIN) ", flag))
@@ -57,11 +57,11 @@ get_min_id <- function(imapconf, by = "MSN", flag, retries = 2){
 
   response <- tryCatch({
     curl::curl_fetch_memory(new_imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(!is.null(response)){
+  if (!is.null(response)) {
     response <- as.numeric(as.character(
       stringr::str_match_all(
         string = rawToChar(response$content),
@@ -74,24 +74,24 @@ get_min_id <- function(imapconf, by = "MSN", flag, retries = 2){
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
       response <- as.numeric(as.character(
         stringr::str_match_all(
           string = rawToChar(response$content),
           pattern = "MIN ([\\d]+)\r\n")[[1]][,2]
       ))
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if your IMAP server supports ESEARCH CAPABILITY;\n
@@ -102,7 +102,7 @@ get_min_id <- function(imapconf, by = "MSN", flag, retries = 2){
 
   }
 
-  if(!(length(response) >  0)){
+  if (!(length(response) >  0)) {
     response = 0
   }
 

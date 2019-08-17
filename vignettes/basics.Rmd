@@ -78,15 +78,19 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 The package is divided in 7 groups of functions:
 
 * **configuration**: `configure_imap()`;
-* **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`, `examine_mailbox()`, `rename_mailbox();`
-* **options listing**: `list_server_capabilities()`, `flag_options()`, `section_or_field_options()`, `metadata_options()`;
+* **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`, `examine_mailbox()`,
+`rename_mailbox();`
+* **options listing**: `list_server_capabilities()`,`flag_options()`, 
+`section_or_field_options()`, `metadata_options()`;
 * **search**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
-`search_sent_before()`, `search_sent_since()`, `search_sent_period()`, `search_sent_on()`, `search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`, `search_younger_than()`, `search_older_than()`, `custom_search()`;
+`search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
+`search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
+`search_younger_than()`, `search_older_than()`, `custom_search()`;
 * **custom search helper functions**: 
   + relational operators functions: `AND()`, `OR()`;
   + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
   `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
-  `larger_than()`, `younger_than()`, and `older_than()`.
+  `larger_than()`, `younger_than()`, `older_than()`;
 * **fetch**: `fetch_full_msg()`, `fetch_msg_header()`, `fetch_msg_text()`, 
 `fetch_msg_metadata()`;
 * **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`, `delete_msg()`, 
@@ -100,14 +104,6 @@ After enabling (if needed) "Non secure apps access" in your Mail provider,
 you have to configure your IMAP settings:
 
 ```{r, message = FALSE, eval=FALSE}
-
-library(mRpostman)
-
-# IMAP settings
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_user",
-                          password=rstudioapi::askForPassword()
-                          )
 
 library(mRpostman)
 
@@ -316,7 +312,7 @@ results <- imapconf %>%
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
-  search_period(since_date_char = "17-Jun-2019",
+  search_period(since_date_char = "02-Jan-2019",
                before_date_char = "30-Jun-2019",
                flag = "ANSWERED",
                esearch = TRUE)

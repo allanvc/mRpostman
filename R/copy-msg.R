@@ -34,7 +34,7 @@
 #' @export
 #'
 copy_msg <- function(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALSE,
-                    logical_output = TRUE, retries = 2){
+                    logical_output = TRUE, retries = 2) {
 
   check_args_copy_msg(imapconf, msg_id, by, to_mbox, logical_output,
                      retries)
@@ -55,12 +55,12 @@ copy_msg <- function(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALS
   msg_id_string = paste0(msg_id, collapse = ",")
 
   # adding the SEARCH or UID SEARCH before date customrequest parameter
-  if(by == "UID"){
+  if (by == "UID") {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("UID COPY ", msg_id_string, " ", to_mbox))
 
-  } else{
+  } else {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("COPY ", msg_id_string, " ", to_mbox))
@@ -69,28 +69,28 @@ copy_msg <- function(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALS
   # REQUEST
   response <- tryCatch({
     curl::curl_fetch_memory(new_imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(is.null(response)){
+  if (is.null(response)) {
 
     # it is not necessary to select again
     count_retries = 1 #the first try was already counted
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(is.null(response)){
+    if (is.null(response)) {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if imapconf options are valid;\n
@@ -113,12 +113,12 @@ copy_msg <- function(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALS
   }
 
 
-  if(isTRUE(logical_output)){
+  if (isTRUE(logical_output)) {
     final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
     # will allow users to pipe more operations after adding flags
     return(final_output)
 
-  } else{
+  } else {
 
     return(TRUE)
 

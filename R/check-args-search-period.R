@@ -47,7 +47,7 @@
 #'
 check_args_search_period <- function(imapconf, since_date_char, before_date_char,
                                     negate, by, flag, esearch, return_imapconf,
-                                    retries){
+                                    retries) {
 
   # checks
   assertthat::assert_that(
@@ -99,7 +99,7 @@ check_args_search_period <- function(imapconf, since_date_char, before_date_char
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 

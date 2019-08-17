@@ -21,9 +21,9 @@ Other fetch helper: \code{\link{check_args_fetch_full_msg}},
   \code{\link{check_args_fetch_msg_header}},
   \code{\link{check_args_fetch_msg_metadata}},
   \code{\link{check_args_fetch_msg_text}},
-  \code{\link{decode_base64_text_if_TRUE}}
+  \code{\link{decode_base64_text_if_needed}}
 
-Other cleaning: \code{\link{decode_base64_text_if_TRUE}}
+Other cleaning: \code{\link{decode_base64_text_if_needed}}
 }
 \concept{cleaning}
 \concept{fetch helper}

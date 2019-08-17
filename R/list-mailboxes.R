@@ -28,7 +28,7 @@
 #' }
 #' @export
 #'
-list_mailboxes <- function(imapconf, retries = 2){
+list_mailboxes <- function(imapconf, retries = 2) {
 
   # check
   assertthat::assert_that(
@@ -40,7 +40,7 @@ list_mailboxes <- function(imapconf, retries = 2){
     assertthat::validate_that(retries >= 1),
     msg='"retries" must be an integer equal or greater than 1.')
 
-  if(retries%%1 != 0){
+  if (retries%%1 != 0) {
     warning('only the integer part of "retries" will be used.')
   }
 
@@ -55,11 +55,11 @@ list_mailboxes <- function(imapconf, retries = 2){
 
   response <- tryCatch({
     curl::curl_fetch_memory(imapconf$url, handle = h)
-    }, error = function(e){
+    }, error = function(e) {
       return(NULL)
     })
 
-  if(!is.null(response)){
+  if (!is.null(response)) {
     occurrencies_splitted <- stringr::str_split(
       string = rawToChar(response$content),
       pattern = '\r\n\\*')
@@ -102,17 +102,17 @@ list_mailboxes <- function(imapconf, retries = 2){
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(!is.null(response)){
+    if (!is.null(response)) {
       occurrencies_splitted <- stringr::str_split(
         string = rawToChar(response$content),
         pattern = '\r\n\\*')
@@ -150,7 +150,7 @@ list_mailboxes <- function(imapconf, retries = 2){
       rm(mbox_check_children)
       rm(mbox_check_noselect)
 
-    } else{
+    } else {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if your imapconf options are valid.'

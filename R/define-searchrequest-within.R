@@ -14,7 +14,7 @@
 #' @keywords internal
 #'
 define_searchrequest_within <- function(operation, seconds, negate, by, flag,
-                                      esearch, handle){
+                                      esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {

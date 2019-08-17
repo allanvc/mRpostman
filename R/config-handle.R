@@ -20,7 +20,7 @@ config_handle <- function(imapconf) {
   for (i in 1:length(imapconf)) {
     # names not to consider for handle
     if (is.null(imapconf[[i]]) || names(imapconf)[i] == "url" ||
-        names(imapconf)[i] == "mbox" || names(imapconf)[i] == "show_pass"){
+        names(imapconf)[i] == "mbox" || names(imapconf)[i] == "show_pass") {
       id_to_drop <- append(id_to_drop, i)
     }
   }

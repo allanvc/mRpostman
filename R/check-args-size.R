@@ -9,7 +9,7 @@
 #'
 #' @keywords internal
 #'
-check_args_size <- function(size, negate){
+check_args_size <- function(size, negate) {
 
   assertthat::assert_that(
     is.numeric(size),

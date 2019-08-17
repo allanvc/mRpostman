@@ -48,7 +48,7 @@ Other fetch helper: \code{\link{check_args_fetch_full_msg}},
   \code{\link{check_args_fetch_msg_header}},
   \code{\link{check_args_fetch_msg_text}},
   \code{\link{clean_fetch_results}},
-  \code{\link{decode_base64_text_if_TRUE}}
+  \code{\link{decode_base64_text_if_needed}}
 
 Other check args: \code{\link{check_args_add_replace_flags}},
   \code{\link{check_args_copy_msg}},

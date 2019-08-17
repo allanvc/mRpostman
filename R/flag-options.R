@@ -27,7 +27,7 @@
 #' }
 #' @export
 #'
-flag_options <- function(){
+flag_options <- function() {
 
   flags <- c("SEEN", "ANSWERED", "FLAGGED", "DELETED", "DRAFT", "RECENT", "NEW")
 

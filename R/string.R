@@ -32,7 +32,7 @@
 #'
 #' @export
 #'
-string <- function(section_or_field, string, negate = FALSE){
+string <- function(section_or_field, string, negate = FALSE) {
 
   section_or_field = toupper(section_or_field)
 
@@ -40,10 +40,10 @@ string <- function(section_or_field, string, negate = FALSE){
 
   # setting part of the search string
 
-  if(!isTRUE(negate)){
+  if (!isTRUE(negate)) {
     out = paste0('(', section_or_field, ' ', paste0('"', string, '"'), ')')
 
-  } else{
+  } else {
     out = paste0('(NOT (', section_or_field, ' ', paste0('"', string, '"'), '))')
 
   }

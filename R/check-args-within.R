@@ -9,7 +9,7 @@
 #'
 #' @keywords internal
 #'
-check_args_within <- function(seconds, negate){
+check_args_within <- function(seconds, negate) {
 
   assertthat::assert_that(
     is.numeric(seconds),

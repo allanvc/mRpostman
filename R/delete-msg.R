@@ -40,7 +40,7 @@
 #' @export
 #'
 delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
-                      retries = 2){
+                      retries = 2) {
 
   check_args_delete_msg(imapconf, msg_id, by, logical_output, retries)
 
@@ -56,12 +56,12 @@ delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
   msg_id_string = paste0(msg_id, collapse = ",")
 
   # setting as deleted first
-  if(by == "UID"){
+  if (by == "UID") {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("UID STORE ", msg_id_string, " FLAGS (\\Deleted)"))
 
-  } else{
+  } else {
     curl::handle_setopt(
       handle = h,
       customrequest = paste0("STORE ", msg_id_string, " FLAGS (\\Deleted)"))
@@ -70,28 +70,28 @@ delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
   # REQUEST
   response <- tryCatch({
     curl::curl_fetch_memory(new_imapconf$url, handle = h)
-  }, error = function(e){
+  }, error = function(e) {
     return(NULL)
   })
 
-  if(is.null(response)){
+  if (is.null(response)) {
 
     # it is not necessary to select again
     count_retries = 1 #the first try was already counted
     # FORCE appending fresh_connect
     curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
-    while(is.null(response) && count_retries < retries){
+    while (is.null(response) && count_retries < retries) {
       count_retries = count_retries+1
       response <- tryCatch({
         curl::curl_fetch_memory(new_imapconf$url, handle = h)
 
-      }, error = function(e){
+      }, error = function(e) {
         return(NULL)
       })
     }
 
-    if(is.null(response)){
+    if (is.null(response)) {
       stop('An error ocurred while connecting. Please check the following and/or try again:\n
            - your internet connection status;\n
            - if imapconf options are valid;\n
@@ -105,12 +105,12 @@ delete_msg <- function(imapconf, msg_id, by = "MSN", logical_output = TRUE,
   # handle sanitizing
   rm(h)
 
-  if(isTRUE(logical_output)){
+  if (isTRUE(logical_output)) {
     final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
     # will allow users to pipe more operations after adding flags
     return(final_output)
 
-  } else{
+  } else {
 
     return(TRUE)
 
