@@ -39,8 +39,8 @@ command to be executed. Default is 5000ms (or 5 seconds). If a first
 execution is frustated, an error handler in each function (depending on
 \code{retires} value), will try to reconnect or re-execute the command.}
 
-\item{...}{Further IMAP parameters listed in
-\code{curl::curl_options}. Only for advanced users.}
+\item{...}{Further parameters added by mRpostman functions or IMAP parameters
+listed in \code{curl::curl_options}. Only for advanced users.}
 }
 \value{
 An object of class \code{imapconf} containing the settings

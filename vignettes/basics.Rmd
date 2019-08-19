@@ -110,7 +110,7 @@ library(mRpostman)
 # IMAP settings
 # Gmail
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_mail_user",
+                          username="your_user",
                           password=rstudioapi::askForPassword(),
                           verbose = TRUE
                           )
@@ -593,6 +593,7 @@ results <- imapconf %>%
 
 ```
 
+Do not forget to re-specify `by = "UID"` inside `fetch_full_msg()`.
 
 ### 5.2) Fetch Message Header
 

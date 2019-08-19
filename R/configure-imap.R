@@ -23,8 +23,8 @@
 #'     command to be executed. Default is 5000ms (or 5 seconds). If a first
 #'     execution is frustated, an error handler in each function (depending on
 #'     \code{retires} value), will try to reconnect or re-execute the command.
-#' @param ... Further IMAP parameters listed in
-#'     \code{curl::curl_options}. Only for advanced users.
+#' @param ... Further parameters added by mRpostman functions or IMAP parameters
+#'     listed in \code{curl::curl_options}. Only for advanced users.
 #'
 #' @return An object of class \code{imapconf} containing the settings
 #'     needed to connect to the IMAP server.
