@@ -24,7 +24,7 @@
 #'     select_mailbox(mbox = "TAM") %>%
 #'     search_before(date_char = "10-may-2012", by = "UID") %$% #exposition pipe - two argg
 #'     fetch_full_msg(imapconf = imapconf, msg_id = msg_id,
-#'                  by="UID", write_to_file = TRUE, keep_in_mem = FALSE,
+#'                  by="UID", write_to_disk = TRUE, keep_in_mem = FALSE,
 #'                  partial = "0.789")
 #'
 #' }
@@ -32,12 +32,12 @@
 #' @export
 #'
 fetch_full_msg <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
-                              partial = NULL, write_to_file = FALSE, keep_in_mem = TRUE,
+                              partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
                               retries = 2) {
 
   #check
   check_args_fetch_full_msg(imapconf, msg_id, by, peek, partial,
-                               write_to_file, keep_in_mem, retries)
+                               write_to_disk, keep_in_mem, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -49,7 +49,7 @@ fetch_full_msg <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
   h <- config_handle(new_imapconf)
 
   msg_list <- loop_fetch_full_msg(new_imapconf, msg_id, by, peek, partial,
-                                     write_to_file, keep_in_mem, retries, handle = h)
+                                     write_to_disk, keep_in_mem, retries, handle = h)
 
   # msg_list <- clean_messages(msg_list)
 

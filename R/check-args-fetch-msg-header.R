@@ -22,12 +22,12 @@
 #' @param partial \code{NULL} or a character string with format
 #'     "startchar.endchar" indicating the size (in characters) of a message slice
 #'     to fetch. Default is \code{NULL}, which fetchs the full specified content.
-#' @param write_to_file If \code{TRUE} writes fetch content of each message
+#' @param write_to_disk If \code{TRUE} writes fetch content of each message
 #'     to the disk as a text file in the working directory. Default is \code{FALSE}.
 #' @param keep_in_mem If \code{TRUE} keeps a copy of fetch results as an
-#'     list in the R session when \code{write_to_file = TRUE}. Default is
+#'     list in the R session when \code{write_to_disk = TRUE}. Default is
 #'     \code{FALSE}. It can only be set \code{TRUE} when
-#'     \code{write_to_file = TRUE}.
+#'     \code{write_to_disk = TRUE}.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
@@ -38,7 +38,7 @@
 #'
 check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
                                       negate_fields, peek, partial,
-                                      write_to_file, keep_in_mem, retries) {
+                                      write_to_disk, keep_in_mem, retries) {
   # checks
   assertthat::assert_that(
     assertthat::validate_that(class(imapconf) == "imapconf"),
@@ -85,8 +85,8 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
     msg='"peek" must be a logical.')
 
   assertthat::assert_that(
-    is.logical(write_to_file),
-    msg='"write_to_file" must be a logical.')
+    is.logical(write_to_disk),
+    msg='"write_to_disk" must be a logical.')
 
   assertthat::assert_that(
     is.logical(keep_in_mem),
@@ -94,8 +94,8 @@ check_args_fetch_msg_header <- function(imapconf, msg_id, by, fields,
 
   if (isFALSE(keep_in_mem)) {
     assertthat::assert_that(
-      isTRUE(write_to_file),
-      msg='"keep_in_mem" can only be set as FALSE when "write_to_file" = TRUE.')
+      isTRUE(write_to_disk),
+      msg='"keep_in_mem" can only be set as FALSE when "write_to_disk" = TRUE.')
   }
 
 

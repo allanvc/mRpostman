@@ -41,11 +41,9 @@
 #'
 #' @export
 #'
-remove_flags <- function(imapconf, msg_id, by = "MSN", flags_to_unset,
-                               logical_output = TRUE, retries = 2) {
+remove_flags <- function(imapconf, msg_id, by = "MSN", flags_to_unset, retries = 2) {
 
-  check_args_remove_flags(imapconf, msg_id, by, flags_to_unset, logical_output,
-                      retries)
+  check_args_remove_flags(imapconf, msg_id, by, flags_to_unset, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -114,15 +112,8 @@ remove_flags <- function(imapconf, msg_id, by = "MSN", flags_to_unset,
   # handle sanitizing
   rm(h)
 
-  if (isTRUE(logical_output)) {
-    final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
-    # will allow users to pipe more operations after adding flags
-    return(final_output)
-
-  } else {
-
-    return(TRUE)
-
-  }
+  final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
+  # will allow users to pipe more operations after adding flags
+  return(final_output)
 
 }

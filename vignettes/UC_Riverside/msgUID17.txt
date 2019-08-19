@@ -1,0 +1,13 @@
+Delivered-To: allanvcq@gmail.com
+Received: by 2002:a6b:bf42:0:0:0:0:0 with SMTP id p63csp22269iof;
+        Wed, 12 Dec 2018 11:39:57 -0800 (PST)
+X-Google-Smtp-Source: AFSGD/XfDEhSXRCUI5qsCbagdJwOkN7MGGAS/bIXTrnGtkvgnZZ34q2TM/ooOhEAmywBNTW92HkE
+X-Received: by 2002:a17:902:2dc3:: with SMTP id p61mr20493157plb.166.1544643597498;
+        Wed, 12 Dec 2018 11:39:57 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1544643597; cv=none;
+        d=google.com; s=arc-20160816;
+        b=jUcouqkQW/Dyi7OweU3opzm+kPQ9Nq/rbF7REt/amRzpa1+MUsm/BJZOxzqDEZwwEP
+         PU46whv84C4+jT20VjySjCwTYMqvpsFZkwaP7dugfg6ZKc/HI4JDJRBQgAgUb3BPthHq
+         vKZ3BFEQjmztWFCkF4IRO6NyiCRlAG8+RC32A+L1QgcpqWkZUP2mmDzEKJ4KvRWyUSjL
+         bU+aEq9f1hMUSh5bHnmlG/maZrC8rTsbqAitJgG6G9Y2SqUu42tkpfi6NLRKb3JDsGOS
+  

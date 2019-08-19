@@ -23,19 +23,21 @@
 #' results <- imapconf %>%
 #'     select_mailbox(mbox = "INBOX") %>%
 #'     search_sent_since(date_char = "26-Aug-2008") %$% #exposition pipe - two argg
-#'     fetch_msg_text(imapconf = imapconf, msg_id = msg_id, write_to_file = TRUE)
+#'     fetch_msg_text(imapconf = imapconf, msg_id = msg_id, write_to_disk = TRUE)
 #'
 #' }
 #'
 #' @export
 #'
 fetch_msg_text <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
-                         partial = NULL, write_to_file = FALSE, keep_in_mem = TRUE,
+                         partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
+                         try_b64decode = FALSE,
                          retries = 2) {
 
   #check
   check_args_fetch_msg_text(imapconf, msg_id, by, peek, partial,
-                               write_to_file, keep_in_mem, retries)
+                            write_to_disk, keep_in_mem, try_b64decode,
+                            retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -47,7 +49,8 @@ fetch_msg_text <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
   h <- config_handle(new_imapconf)
 
   msg_list <- loop_fetch_msg_text(new_imapconf, msg_id, by, peek, partial,
-                                     write_to_file, keep_in_mem, retries, handle = h)
+                                  write_to_disk, keep_in_mem,
+                                  try_b64decode, retries, handle = h)
 
   # msg_list <- clean_messages(msg_list)
 

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -130,7 +130,7 @@
     </div>
 
     <pre class="usage"><span class='fu'>fetch_msg_metadata</span>(<span class='no'>imapconf</span>, <span class='no'>msg_id</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"MSN"</span>, <span class='no'>metadata</span>,
-  <span class='kw'>write_to_file</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_in_mem</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retries</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+  <span class='kw'>write_to_disk</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>keep_in_mem</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>retries</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,16 +161,16 @@ is always the same during the life cycle of a message. Default is
 the metadata of a message to fetch. See <a href='metadata_options.html'>metadata_options</a>.</p></td>
     </tr>
     <tr>
-      <th>write_to_file</th>
+      <th>write_to_disk</th>
       <td><p>If <code>TRUE</code> writes fetch content of each message
 to the disk as a text file in the working directory. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>keep_in_mem</th>
       <td><p>If <code>TRUE</code> keeps a copy of fetch results as an
-list in the R session when <code>write_to_file = TRUE</code>. Default is
+list in the R session when <code>write_to_disk = TRUE</code>. Default is
 <code>FALSE</code>. It can only be set <code>TRUE</code> when
-<code>write_to_file = TRUE</code>.</p></td>
+<code>write_to_disk = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>retries</th>

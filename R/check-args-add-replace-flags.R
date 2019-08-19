@@ -16,12 +16,6 @@
 #'     \code{"MSN"}.
 #' @param flags_to_set A character vector containing one ore more flag names to
 #'     add to or replace in the specified message ids.
-#' @param logical_output A logical. If \code{TRUE}, simplifies the output
-#'     returning \code{TRUE} to indicate the success of the mentioned operation.
-#'     If \code{FALSE}, returns a list of length \code{2} containing the
-#'     \code{imapconf} object (IMAP settings) and the previously informed
-#'     message ids (parameter \code{msg_id}), so they can be passed as
-#'     arguments to another function. Default is \code{FALSE}.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{2}.
 #'
@@ -33,7 +27,7 @@
 #' @keywords internal
 #'
 check_args_add_replace_flags <- function(imapconf, msg_id, by, flags_to_set,
-                                logical_output, retries) {
+                                         retries) {
 
   # checks
   assertthat::assert_that(
@@ -62,11 +56,6 @@ check_args_add_replace_flags <- function(imapconf, msg_id, by, flags_to_set,
   assertthat::assert_that(
     is.character(flags_to_set),
     msg='"flags_to_set" argument must be a character.')
-
-  assertthat::assert_that(
-    is.logical(logical_output)
-    ,
-    msg='"logical_output" must be a logical.')
 
   assertthat::assert_that(
     is.numeric(retries),

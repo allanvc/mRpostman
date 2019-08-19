@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -95,7 +95,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>The goal of <strong>mRpostman</strong> is to make it easy to connect to your IMAP (Internet Message Access Protocol) server and execute commands, such as listing mailboxes, searching and fetching messages in a tidy way.</p>
-<p>In this vignette we will present all the functions that come with this package, but not all the possiilities one can explore.</p>
+<p>In this vignette we will present all available functions of this package, but not all the possiilities one can explore.</p>
 </div>
 <div id="first-things-first---allowing-less-secure-apps-access" class="section level2">
 <h2 class="hasAnchor">
@@ -191,23 +191,24 @@
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># IMAP settings</span></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># Gmail</span></a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">                          )</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co"># Yahoo Mail</span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co">#                           username="your_user",</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="co"># AOL Mail</span></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#                           username="your_user",</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co"># you can try another IMAP server</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-6" data-line-number="6">                          <span class="dt">username=</span><span class="st">"your_mail_user"</span>,</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>(),</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">                          <span class="dt">verbose =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">                          )</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="co"># Yahoo Mail</span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co"># AOL Mail</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co"># you can try another IMAP server</span></a></code></pre></div>
 </div>
 <div id="mailbox-commands" class="section level2">
 <h2 class="hasAnchor">
@@ -468,7 +469,7 @@
 <a href="#larger-than" class="anchor"></a>4.4.1) Larger Than</h4>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb30-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_larger_than.html">search_larger_than</a></span>(<span class="dt">size =</span> <span class="dv">512000</span>) <span class="co"># Larger than 512KB</span></a></code></pre></div>
+<a class="sourceLine" id="cb30-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_larger_than.html">search_larger_than</a></span>(<span class="dt">size =</span> <span class="dv">512000</span>, <span class="dt">esearch =</span> <span class="ot">TRUE</span>) <span class="co"># Larger than 512KB</span></a></code></pre></div>
 </div>
 </div>
 <div id="search-by-within-extension" class="section level3">
@@ -493,7 +494,7 @@
 <div id="custom-search" class="section level3">
 <h3 class="hasAnchor">
 <a href="#custom-search" class="anchor"></a>4.6) Custom Search</h3>
-<p><code><a href="../reference/custom_search.html">custom_search()</a></code> and its <strong>helper functions</strong> allow you to create a vast number of customized search by combining different criteria using all the type of searches presented before.</p>
+<p><code><a href="../reference/custom_search.html">custom_search()</a></code> and its <strong>helper functions</strong> allow you to create a vast number of customized search by combining different criteria using all the types of searches presented before.</p>
 <p>These are the helper functions you can use inside <code><a href="../reference/custom_search.html">custom_search()</a></code>:</p>
 <ol style="list-style-type: decimal">
 <li>Relational operators: <code><a href="../reference/AND.html">AND()</a></code>, and <code><a href="../reference/OR.html">OR()</a></code>;</li>
@@ -545,25 +546,28 @@
 <a href="#fetch-message-header" class="anchor"></a>5.2) Fetch Message Header</h3>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb36-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-Feb-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
-<a class="sourceLine" id="cb36-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
-<a class="sourceLine" id="cb36-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb36-6" data-line-number="6">results</a></code></pre></div>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"15-Aug-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb36-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, </a>
+<a class="sourceLine" id="cb36-5" data-line-number="5">                   <span class="dt">msg_id =</span> msg_id, </a>
+<a class="sourceLine" id="cb36-6" data-line-number="6">                   <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>),</a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">                   <span class="dt">by =</span> <span class="st">"UID"</span>)</a>
+<a class="sourceLine" id="cb36-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb36-9" data-line-number="9">results</a></code></pre></div>
 </div>
 <div id="fetch-message-text" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-message-text" class="anchor"></a>5.3) Fetch Message Text</h3>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb37-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
-<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_msg_text.html">fetch_msg_text</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id)</a></code></pre></div>
+<a class="sourceLine" id="cb37-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"17-Aug-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb37-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_msg_text.html">fetch_msg_text</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">by =</span> <span class="st">"UID"</span>, <span class="dt">try_b64decode =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="fetch-message-metadata" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-message-metadata" class="anchor"></a>5.4) Fetch Message Metadata</h3>
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb38-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_on.html">search_on</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb38-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_msg_metadata.html">fetch_msg_metadata</a></span>(imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">by =</span> <span class="st">"UID"</span>,</a>
 <a class="sourceLine" id="cb38-5" data-line-number="5">                   <span class="dt">metadata =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</a></code></pre></div>
 <p>You can check metadata options with <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
@@ -579,7 +583,7 @@
 <p>Copying seach results form “CRAN messages2” to “INBOX” mailbox:</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb39-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"CRAN messages2"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2019"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb39-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/copy_msg.html">copy_msg</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">to_mbox =</span> <span class="st">"INBOX"</span>)</a></code></pre></div>
 </div>
 <div id="get-minimum-smaller-message-id-with-specific-flag" class="section level3">
@@ -626,7 +630,7 @@
 <a href="#add-flags" class="anchor"></a>6.6.1) Add Flags</h4>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb45-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"18-Aug-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb45-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/add_flags.html">add_flags</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">flags_to_set =</span> <span class="st">"RECENT"</span>)</a></code></pre></div>
 <p>You cannot add a flag that is the antonym of an already existent flag in the message, e.g. cannot add “UNSEEN” flag when a message already has flag “SEEN”. Use <code><a href="../reference/replace_flags.html">replace_flags()</a></code> instead.</p>
 </div>
@@ -635,7 +639,7 @@
 <a href="#remove-flags" class="anchor"></a>6.6.2) Remove Flags</h4>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb46-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb46-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_before.html">search_before</a></span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
+<a class="sourceLine" id="cb46-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"18-Aug-2019"</span>, <span class="dt">by =</span> <span class="st">"UID"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co">#exposition pipe operator</span></a>
 <a class="sourceLine" id="cb46-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/remove_flags.html">remove_flags</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, <span class="dt">flags_to_unset =</span> <span class="st">"RECENT"</span>)</a></code></pre></div>
 </div>
 <div id="replace-flags" class="section level4">

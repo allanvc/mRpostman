@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -163,11 +163,16 @@ fetching. Default is <code>TRUE</code>.</p></td>
 to fetch. Default is <code>NULL</code>, which fetchs the full specified content.</p></td>
     </tr>
     <tr>
+      <th>write_to_disk</th>
+      <td><p>If <code>TRUE</code> writes fetch content of each message
+to the disk as a text file in the working directory. Default is <code>FALSE</code>.</p></td>
+    </tr>
+    <tr>
       <th>keep_in_mem</th>
       <td><p>If <code>TRUE</code> keeps a copy of fetch results as an
-list in the R session when <code>write_to_file = TRUE</code>. Default is
+list in the R session when <code>write_to_disk = TRUE</code>. Default is
 <code>FALSE</code>. It can only be set <code>TRUE</code> when
-<code>write_to_file = TRUE</code>.</p></td>
+<code>write_to_disk = TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>retries</th>

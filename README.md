@@ -207,6 +207,9 @@ results
 
   - include **SMTP support** for sending emails.
 
+If you want to contribute, specially with the SMTP support, please
+contact the package mantainer.
+
 ## License
 
 This package is licensed under the terms of the GPL-3 License.

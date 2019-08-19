@@ -17,7 +17,7 @@ The goal of **mRpostman** is to make it easy to connect to your IMAP
 (Internet Message Access Protocol) server and execute commands,
 such as listing mailboxes, searching and fetching messages in a tidy way.
 
-In this vignette we will present all the functions that come with this package,
+In this vignette we will present all available functions of this package,
 but not all the possiilities one can explore.
 
 ## First things first - Allowing Less Secure Apps Access
@@ -110,8 +110,9 @@ library(mRpostman)
 # IMAP settings
 # Gmail
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_user",
-                          password=rstudioapi::askForPassword()
+                          username="your_mail_user",
+                          password=rstudioapi::askForPassword(),
+                          verbose = TRUE
                           )
 
 # Yahoo Mail
@@ -494,7 +495,7 @@ results <- imapconf %>%
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
-  search_larger_than(size = 512000) # Larger than 512KB
+  search_larger_than(size = 512000, esearch = TRUE) # Larger than 512KB
 
 ```
 
@@ -525,7 +526,7 @@ results <- imapconf %>%
 ### 4.6) Custom Search
 
 `custom_search()` and its **helper functions** allow you to create a vast number of
-customized search by combining different criteria using all the type of searches presented before.
+customized search by combining different criteria using all the types of searches presented before.
 
 These are the helper functions you can use inside `custom_search()`:
 
@@ -599,8 +600,11 @@ results <- imapconf %>%
 
 results <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
-  search_before(date_char = "10-Feb-2019", by = "UID") %$% #exposition pipe operator
-  fetch_msg_header(imapconf = imapconf, msg_id = msg_id, fields = c("DATE", "SUBJECT"))
+  search_since(date_char = "15-Aug-2019", by = "UID") %$% #exposition pipe operator
+  fetch_msg_header(imapconf = imapconf, 
+                   msg_id = msg_id, 
+                   fields = c("DATE", "SUBJECT"),
+                   by = "UID")
 
 results
 
@@ -612,8 +616,8 @@ results
 
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
-  search_before(date_char = "10-may-2019", by = "UID") %$% #exposition pipe operator
-  fetch_msg_text(imapconf = imapconf, msg_id = msg_id)
+  search_since(date_char = "17-Aug-2019", by = "UID") %$% #exposition pipe operator
+  fetch_msg_text(imapconf = imapconf, msg_id = msg_id, by = "UID", try_b64decode = TRUE)
 
 ```
 
@@ -623,7 +627,7 @@ results <- imapconf %>%
 
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
-  search_before(date_char = "10-may-2019", by = "UID") %$% #exposition pipe operator
+  search_on(date_char = "10-may-2019", by = "UID") %$% #exposition pipe operator
   fetch_msg_metadata(imapconf, msg_id = msg_id, by = "UID",
                    metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
 
@@ -643,7 +647,7 @@ Copying seach results form "CRAN messages2" to "INBOX" mailbox:
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
-  search_before(date_char = "10-may-2012") %$% #exposition pipe operator
+  search_since(date_char = "10-may-2019") %$% #exposition pipe operator
   copy_msg(imapconf = imapconf, msg_id = msg_id, to_mbox = "INBOX")
 
 ```
@@ -712,7 +716,7 @@ Adding, removing and replacing one or more flags to messages.
 
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
-  search_before(date_char = "10-may-2012", by = "UID") %$% #exposition pipe operator
+  search_since(date_char = "18-Aug-2019", by = "UID") %$% #exposition pipe operator
   add_flags(imapconf = imapconf, msg_id = msg_id, flags_to_set = "RECENT")
 
 ```
@@ -725,7 +729,7 @@ You cannot add a flag that is the antonym of an already existent flag in the mes
 
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
-  search_before(date_char = "10-may-2012", by = "UID") %$% #exposition pipe operator
+  search_since(date_char = "18-Aug-2019", by = "UID") %$% #exposition pipe operator
   remove_flags(imapconf = imapconf, msg_id = msg_id, flags_to_unset = "RECENT")
 
 ```
