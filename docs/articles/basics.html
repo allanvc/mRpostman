@@ -191,7 +191,7 @@
 <a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># IMAP settings</span></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># Gmail</span></a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">                          <span class="dt">username=</span><span class="st">"your_mail_user"</span>,</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
 <a class="sourceLine" id="cb1-7" data-line-number="7">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>(),</a>
 <a class="sourceLine" id="cb1-8" data-line-number="8">                          <span class="dt">verbose =</span> <span class="ot">TRUE</span></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9">                          )</a>
@@ -540,6 +540,7 @@
 <a class="sourceLine" id="cb35-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_full_msg.html">fetch_full_msg</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id,</a>
 <a class="sourceLine" id="cb35-5" data-line-number="5">                 <span class="dt">by=</span><span class="st">"UID"</span>, <span class="dt">write_to_file =</span> <span class="ot">TRUE</span>, <span class="dt">keep_in_mem =</span> <span class="ot">TRUE</span>,</a>
 <a class="sourceLine" id="cb35-6" data-line-number="6">                 <span class="dt">partial =</span> <span class="st">"0.789"</span>)</a></code></pre></div>
+<p>Do not forget to re-specify <code>by = "UID"</code> inside <code><a href="../reference/fetch_full_msg.html">fetch_full_msg()</a></code>.</p>
 </div>
 <div id="fetch-message-header" class="section level3">
 <h3 class="hasAnchor">
