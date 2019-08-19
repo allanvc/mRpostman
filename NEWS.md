@@ -4,7 +4,8 @@
 
 - changed return from mailboxes operation functions and some miscellanea functions: 
 now select_mailbox(), rename_mailbox(), copy_msg(), move_msg(), delete_msg(), 
-and expunge() returns are invisible and only returns imapconf or a list (imapconf+msg_ids)
+expunge(), add/remove/replace_flags() returns are invisible and only return 
+imapconf or a list (imapconf+msg_ids).
 
 - changed package logo
 
