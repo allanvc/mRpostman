@@ -30,12 +30,12 @@
 #'
 fetch_msg_header <- function(imapconf, msg_id, by = "MSN", fields = NULL,
                            negate_fields = FALSE, peek = TRUE,
-                           partial = NULL, write_to_file = FALSE,
+                           partial = NULL, write_to_disk = FALSE,
                            keep_in_mem = TRUE, retries = 2){
 
   # checks
   check_args_fetch_msg_header(imapconf, msg_id, by, fields, negate_fields, peek,
-                            partial, write_to_file, keep_in_mem, retries)
+                            partial, write_to_disk, keep_in_mem, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -47,7 +47,7 @@ fetch_msg_header <- function(imapconf, msg_id, by = "MSN", fields = NULL,
   h <- config_handle(new_imapconf)
 
   msg_list <- loop_fetch_msg_header(new_imapconf, msg_id, by, fields,
-                                  negate_fields, peek, partial, write_to_file,
+                                  negate_fields, peek, partial, write_to_disk,
                                   keep_in_mem, retries, handle = h)
 
 

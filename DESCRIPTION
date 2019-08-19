@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: IMAP Tools for R
-Version: 0.1.1
-Date: 2019-08-13
+Version: 0.2.0
+Date: 2019-08-18
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))

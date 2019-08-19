@@ -5,7 +5,7 @@
 \title{Fetch Full Messages}
 \usage{
 fetch_full_msg(imapconf, msg_id, by = "MSN", peek = TRUE,
-  partial = NULL, write_to_file = FALSE, keep_in_mem = TRUE,
+  partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
   retries = 2)
 }
 \arguments{
@@ -30,13 +30,13 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which fetchs the full specified content.}
 
-\item{write_to_file}{If \code{TRUE} writes fetch content of each message
+\item{write_to_disk}{If \code{TRUE} writes fetch content of each message
 to the disk as a text file in the working directory. Default is \code{FALSE}.}
 
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
-list in the R session when \code{write_to_file = TRUE}. Default is
+list in the R session when \code{write_to_disk = TRUE}. Default is
 \code{FALSE}. It can only be set \code{TRUE} when
-\code{write_to_file = TRUE}.}
+\code{write_to_disk = TRUE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}
@@ -63,7 +63,7 @@ results <- imapconf \%>\%
     select_mailbox(mbox = "TAM") \%>\%
     search_before(date_char = "10-may-2012", by = "UID") \%$\% #exposition pipe - two argg
     fetch_full_msg(imapconf = imapconf, msg_id = msg_id,
-                 by="UID", write_to_file = TRUE, keep_in_mem = FALSE,
+                 by="UID", write_to_disk = TRUE, keep_in_mem = FALSE,
                  partial = "0.789")
 
 }

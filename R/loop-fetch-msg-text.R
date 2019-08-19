@@ -16,7 +16,7 @@
 #' @keywords internal
 #'
 loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
-                              partial, write_to_disk, keep_in_mem,
+                              partial, write_to_disk, keep_in_mem, try_b64decode,
                               retries, handle) {
 
   h = handle
@@ -67,11 +67,20 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
     })
 
     if (!is.null(response)) {
-      msg_list[[idx]] <- decode_base64_text_if_needed(
-        clean_fetch_results(
-          rawToChar(response$headers)
+      if (isTRUE(try_b64decode)) {
+        msg_list[[idx]] <- decode_base64_text_if_needed(
+          clean_fetch_results(
+            rawToChar(response$headers)
+          )
         )
-      )
+
+      } else {
+        msg_list[[idx]] <- clean_fetch_results(
+            rawToChar(response$headers)
+            )
+
+      }
+
 
       rm(response)
 
@@ -120,11 +129,19 @@ loop_fetch_msg_text <- function(new_imapconf, msg_id, by, peek,
         })
 
         if (!is.null(response)) {
-          msg_list[[idx]] <- decode_base64_text_if_needed(
-            clean_fetch_results(
-              rawToChar(response$headers)
+          if (isTRUE(try_b64decode)) {
+            msg_list[[idx]] <- decode_base64_text_if_needed(
+              clean_fetch_results(
+                rawToChar(response$headers)
               )
             )
+
+          } else {
+            msg_list[[idx]] <- clean_fetch_results(
+              rawToChar(response$headers)
+            )
+
+          }
 
           rm(response)
 

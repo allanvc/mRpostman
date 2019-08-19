@@ -21,10 +21,13 @@ is always the same during the life cycle of a message. Default is
 \item{metadata}{A character vector or string specifying one or more items of
 the metadata of a message to fetch. See \link{metadata_options}.}
 
+\item{write_to_disk}{If \code{TRUE} writes fetch content of each message
+to the disk as a text file in the working directory. Default is \code{FALSE}.}
+
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
-list in the R session when \code{write_to_file = TRUE}. Default is
+list in the R session when \code{write_to_disk = TRUE}. Default is
 \code{FALSE}. It can only be set \code{TRUE} when
-\code{write_to_file = TRUE}.}
+\code{write_to_disk = TRUE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}

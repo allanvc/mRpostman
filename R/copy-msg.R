@@ -34,7 +34,7 @@
 copy_msg <- function(imapconf, msg_id, by = "MSN", to_mbox, reselect_mbox = FALSE,
                      retries = 2) {
 
-  check_args_copy_msg(imapconf, msg_id, by, to_mbox, retries)
+  check_args_copy_msg(imapconf, msg_id, by, to_mbox, reselect_mbox, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)

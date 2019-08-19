@@ -5,7 +5,7 @@
 \title{Metadata Fetch Loop}
 \usage{
 loop_fetch_msg_text(new_imapconf, msg_id, by, peek, partial, write_to_disk,
-  keep_in_mem, retries, handle)
+  keep_in_mem, try_b64decode, retries, handle)
 }
 \arguments{
 \item{msg_id}{A numeric vetor containing one or more messages ids.}
@@ -25,10 +25,16 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which fetchs the full specified content.}
 
+\item{write_to_disk}{If \code{TRUE} writes fetch content of each message
+to the disk as a text file in the working directory. Default is \code{FALSE}.}
+
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
-list in the R session when \code{write_to_file = TRUE}. Default is
+list in the R session when \code{write_to_disk = TRUE}. Default is
 \code{FALSE}. It can only be set \code{TRUE} when
-\code{write_to_file = TRUE}.}
+\code{write_to_disk = TRUE}.}
+
+\item{try_b64decode}{If \code{TRUE}, tries to guess and decode the fetched
+text from base64 format to \code{character}. Default is \code{FALSE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}

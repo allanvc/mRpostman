@@ -5,8 +5,8 @@
 \title{Fetch Message Text}
 \usage{
 fetch_msg_text(imapconf, msg_id, by = "MSN", peek = TRUE,
-  partial = NULL, write_to_file = FALSE, keep_in_mem = TRUE,
-  retries = 2)
+  partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
+  try_b64decode = FALSE, retries = 2)
 }
 \arguments{
 \item{imapconf}{An object of class \code{imapconf} generated with
@@ -30,13 +30,16 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which fetchs the full specified content.}
 
-\item{write_to_file}{If \code{TRUE} writes fetch content of each message
+\item{write_to_disk}{If \code{TRUE} writes fetch content of each message
 to the disk as a text file in the working directory. Default is \code{FALSE}.}
 
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
-list in the R session when \code{write_to_file = TRUE}. Default is
+list in the R session when \code{write_to_disk = TRUE}. Default is
 \code{FALSE}. It can only be set \code{TRUE} when
-\code{write_to_file = TRUE}.}
+\code{write_to_disk = TRUE}.}
+
+\item{try_b64decode}{If \code{TRUE}, tries to guess and decode the fetched
+text from base64 format to \code{character}. Default is \code{FALSE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
 is \code{2}.}
@@ -62,7 +65,7 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
 results <- imapconf \%>\%
     select_mailbox(mbox = "INBOX") \%>\%
     search_sent_since(date_char = "26-Aug-2008") \%$\% #exposition pipe - two argg
-    fetch_msg_text(imapconf = imapconf, msg_id = msg_id, write_to_file = TRUE)
+    fetch_msg_text(imapconf = imapconf, msg_id = msg_id, write_to_disk = TRUE)
 
 }
 

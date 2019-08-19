@@ -32,12 +32,12 @@
 #' @export
 #'
 fetch_msg_metadata <- function(imapconf, msg_id, by = "MSN", metadata,
-                             write_to_file = FALSE, keep_in_mem = TRUE,
+                             write_to_disk = FALSE, keep_in_mem = TRUE,
                              retries = 2) {
 
   #check
   check_args_fetch_msg_metadata(imapconf, msg_id, by, metadata,
-                              write_to_file, keep_in_mem, retries)
+                              write_to_disk, keep_in_mem, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -49,7 +49,7 @@ fetch_msg_metadata <- function(imapconf, msg_id, by = "MSN", metadata,
   h <- config_handle(new_imapconf)
 
   msg_list <- loop_fetch_msg_metadata(new_imapconf, msg_id, by, metadata,
-                                    write_to_file, keep_in_mem, retries, handle = h)
+                                    write_to_disk, keep_in_mem, retries, handle = h)
 
   # msg_list <- clean_messages(msg_list)
 
