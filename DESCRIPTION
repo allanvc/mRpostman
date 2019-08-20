@@ -2,7 +2,7 @@ Package: mRpostman
 Type: Package
 Title: IMAP Tools in a Tidy Way
 Version: 0.2.0
-Date: 2019-08-20
+Date: 2019-08-18
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))
