@@ -23,8 +23,8 @@
 #'                        size = 512000)
 #'                    )
 #'                  )
-#' # searches for messages containing the string "allanvcq@@gmail.com" in the field "FROM"
-#'     OR those Larger Than 512KB.
+#' # searches for messages containing the string "allanvcq@@gmail.com" in the
+#' # field "FROM" OR those Larger Than 512KB.
 #'
 #' }
 #'

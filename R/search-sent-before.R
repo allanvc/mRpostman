@@ -31,16 +31,16 @@
 #' # configure IMAP
 #' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
 #' results <- imapconf %>%
 #'     select_mailbox(mbox = "INBOX") %>%
 #'     search_sent_before(date_char = "17-Apr-2012",
-#'                      negate = TRUE,
-#'                      flag = "UNANSWERED")
+#'                       negate = TRUE,
+#'                       flag = "UNANSWERED")
 #'
 #' }
 #'

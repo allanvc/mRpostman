@@ -54,17 +54,19 @@ Fetch all the sections and fields of one or more messages.
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # fetching
 results <- imapconf \%>\%
     select_mailbox(mbox = "TAM") \%>\%
     search_before(date_char = "10-may-2012", by = "UID") \%$\% #exposition pipe - two argg
-    fetch_full_msg(imapconf = imapconf, msg_id = msg_id,
-                 by="UID", write_to_disk = TRUE, keep_in_mem = FALSE,
-                 partial = "0.789")
+    fetch_full_msg(imapconf = imapconf,
+                   msg_id = msg_id,
+                   by="UID", write_to_disk = TRUE,
+                   keep_in_mem = FALSE,
+                   partial = "0.789")
 
 }
 

@@ -9,8 +9,8 @@
 #' # configure IMAP
 #' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
@@ -23,9 +23,9 @@
 #'                        seconds = 3600)
 #'                    )
 #'                  )
-#' # searches for messages containing the string "allanvcq@@gmail.com" in the field "FROM"
-#'     OR messgaes that are "older" than one hour (messages arrived more than
-#'     3600 seconds ago).
+#' # searches for messages containing the string "allanvcq@@gmail.com" in the
+#' # field "FROM" OR messgaes that are "older" than one hour (messages arrived
+#' # more than 3600 seconds ago).
 #'
 #' }
 #'

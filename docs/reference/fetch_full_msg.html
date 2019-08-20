@@ -203,17 +203,19 @@ is <code>2</code>.</p></td>
 <span class='co'># configure IMAP</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
 <span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
-                          <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
-                          <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
 <span class='co'># fetching</span>
 <span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"TAM"</span>) <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='search_before.html'>search_before</a></span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"10-may-2012"</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"UID"</span>) <span class='kw'>%$%</span> <span class='co'>#exposition pipe - two argg</span>
-    <span class='fu'>fetch_full_msg</span>(<span class='kw'>imapconf</span> <span class='kw'>=</span> <span class='no'>imapconf</span>, <span class='kw'>msg_id</span> <span class='kw'>=</span> <span class='no'>msg_id</span>,
-                 <span class='kw'>by</span><span class='kw'>=</span><span class='st'>"UID"</span>, <span class='kw'>write_to_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>keep_in_mem</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-                 <span class='kw'>partial</span> <span class='kw'>=</span> <span class='st'>"0.789"</span>)
+    <span class='fu'>fetch_full_msg</span>(<span class='kw'>imapconf</span> <span class='kw'>=</span> <span class='no'>imapconf</span>,
+                   <span class='kw'>msg_id</span> <span class='kw'>=</span> <span class='no'>msg_id</span>,
+                   <span class='kw'>by</span><span class='kw'>=</span><span class='st'>"UID"</span>, <span class='kw'>write_to_disk</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+                   <span class='kw'>keep_in_mem</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+                   <span class='kw'>partial</span> <span class='kw'>=</span> <span class='st'>"0.789"</span>)
 
 <span class='co'># }</span><div class='input'>
 </div></pre>

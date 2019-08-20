@@ -31,16 +31,16 @@ Allows a combination of criteria helper
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # search
 result <- imapconf \%>\%
     select_mailbox(mbox = "INBOX") \%>\%
     custom_search(custom_request = AND(sent_since(date.char = "17-Apr-2019"),
-                                      smaller_than(size = 512000),
-                                      negate = TRUE))
+                                       smaller_than(size = 512000),
+                                       negate = TRUE))
 # searches for messages NOT SentSince "17-Apr-2019" AND NOT Smaller Than 512KB.
 
 }

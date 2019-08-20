@@ -43,7 +43,8 @@
 #' \dontrun{
 #'
 #' library(mRpostman)
-#' section_or_fields_opts()
+#' section_or_field_options()
+#'
 #' }
 #' @export
 #'

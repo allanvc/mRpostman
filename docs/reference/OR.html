@@ -177,15 +177,16 @@
 <span class='co'># configure IMAP</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
 <span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
-                          <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
-                          <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
 <span class='co'># search</span>
 <span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='custom_search.html'>custom_search</a></span>(<span class='kw'>custom_request</span> <span class='kw'>=</span> <span class='fu'>OR</span>(<span class='fu'><a href='sent_since.html'>sent_since</a></span>(<span class='kw'>date.char</span><span class='kw'>=</span><span class='st'>"17-Apr-2019"</span>),
-                                      <span class='fu'><a href='smaller_than.html'>smaller_than</a></span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>512000</span>, <span class='kw'>negate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)))
+                                      <span class='fu'><a href='smaller_than.html'>smaller_than</a></span>(<span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>512000</span>, <span class='kw'>negate</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+                                     ))
 <span class='co'># searches for messages SentSince "17-Apr-2019" OR NOT Smaller Than  512KB.</span>
 
 <span class='co'># }</span><div class='input'>

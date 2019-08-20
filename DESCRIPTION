@@ -1,14 +1,17 @@
 Package: mRpostman
 Type: Package
-Title: IMAP Tools for R
+Title: IMAP Tools in a Tidy Way
 Version: 0.2.0
-Date: 2019-08-18
+Date: 2019-08-20
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))
-Description: Provides multiple IMAP (Internet Message Access Protocol) commands 
+Description: Multiple IMAP (Internet Message Access Protocol) commands 
     based on the RFC 3501 manual (Crispin, 2003, <doi:10.17487/RFC3501>), 
-    its updates, and other related documents. 
+    its updates, and other related documents. Besides other features,
+    'mRpostman' provides functions for listing, selecting and renaming mailboxes, 
+    as well as moving, fetching, and searching for messages using several 
+    criteria.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

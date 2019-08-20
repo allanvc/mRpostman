@@ -8,9 +8,9 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="url="imaps://export.imap.aol.com"",
-#'                           username="your_AOL_user",
-#'                           password=rstudioapi::askForPassword()
+#' imapconf <- configure_imap(url="imaps://export.imap.aol.com",
+#'                            username="your_AOL_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search 1
@@ -22,7 +22,8 @@
 #' result2 <- imapconf %>%
 #'     select_mailbox(mbox = "Inbox") %>%
 #'     search_since(date_char = "17-Jun-2019", flag = "FLAGGED")
-#' # depending on results, it might be necessary increase buffersize in configureIMAP()
+#' # depending on results, it might be necessary to increase buffersize in
+#' # configure_imap()
 #'
 #' }
 #'

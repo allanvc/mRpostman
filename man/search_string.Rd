@@ -64,15 +64,17 @@ Searches for messages containing a string in an specific
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # search
 results <- imapconf \%>\%
     select_mailbox(mbox = "TAM") \%>\%
-    search_string(section_or_field = "FROM", string = "michelle@hotmail.com",
-                 negate = TRUE) # not FROM "michele"
+    search_string(section_or_field = "FROM",
+                  string = "michelle@hotmail.com",
+                  negate = TRUE
+                 ) # not FROM "michele"
 
 }
 
