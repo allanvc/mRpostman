@@ -1,4 +1,4 @@
-## mRpostman 0.2.0 (2019-08-18 - CRAN release)
+## mRpostman 0.2.0 (2019-08-18 - CRAN submission)
 
 - changed function name patterns to those specified in the tidyverse style guide
 
