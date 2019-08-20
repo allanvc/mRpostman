@@ -18,10 +18,10 @@
 #' \dontrun{
 #'
 #' # configure IMAP
-#' #' library(mRpostman)
+#' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # list mailboxes

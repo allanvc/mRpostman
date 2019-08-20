@@ -28,16 +28,16 @@ Criteria helper functions to be combined inside a operator helper
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # search
 result <- imapconf \%>\%
     select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request = AND(flag(flag="UNSEEN"),
-                                      smaller_than(size = 512000),
-                                      negate = TRUE))
+    custom_search(custom_request = AND(flag("UNSEEN"),
+                                       smaller_than(size = 512000),
+                                       negate = TRUE))
 # searches for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
 
 }

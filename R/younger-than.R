@@ -11,8 +11,8 @@
 #' # configure IMAP
 #' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
@@ -25,7 +25,8 @@
 #'                        seconds = 3600)
 #'                    )
 #'                  )
-#' # searches for messages that are Smaller Than 512 KB OR Younger Than 3600 seconds (or one hour).
+#' # searches for messages that are Smaller Than 512 KB OR Younger Than 3600
+#' # seconds (or one hour).
 #'
 #' }
 #'

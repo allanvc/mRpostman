@@ -84,8 +84,8 @@ Functions that allows searching for messages using the (internal)
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 
@@ -93,8 +93,8 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
 results <- imapconf \%>\%
     select_mailbox(mbox = "INBOX") \%>\%
     search_period(since_date_char = "17-Apr-2012",
-                 before_date_char = "30-Jun-2015",
-                 flag = "DRAFT")
+                  before_date_char = "30-Jun-2015",
+                  flag = "DRAFT")
 
 
 }

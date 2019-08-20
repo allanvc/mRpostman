@@ -60,8 +60,8 @@ Searches for messages marked with a specific flag.
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # search

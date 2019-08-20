@@ -27,7 +27,5 @@ metadata_options <- function() {
   metadata_opts <- c("INTERNALDATE", "UID", "ENVELOPE", "FLAGS", "RFC822.SIZE",
                   "BODYSTRUCTURE")
 
-  # but the user can pass other fields
-
   return(metadata_opts)
 }

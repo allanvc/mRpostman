@@ -237,35 +237,36 @@ is <code>2</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div># NOT RUN {
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># configure IMAP</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
-# search1
-result1 <- imapconf %>%
-    select_mailbox(mbox = "TAM") %>%
-    custom_search(custom_request = AND(string(section_or_field = "TO",
-                                             string = "allan"),
-                                      before(date_char = "12-Apr-2009")))
-# searches for messages containing the string "allan" in the "TO" field
-    and that were received before "12-Apr-2009".
+<span class='co'># search1</span>
+<span class='no'>result1</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"TAM"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>custom_search</span>(<span class='kw'>custom_request</span> <span class='kw'>=</span> <span class='fu'><a href='AND.html'>AND</a></span>(<span class='fu'><a href='string.html'>string</a></span>(<span class='kw'>section_or_field</span> <span class='kw'>=</span> <span class='st'>"TO"</span>,
+                                              <span class='kw'>string</span> <span class='kw'>=</span> <span class='st'>"allan"</span>),
+                                       <span class='fu'><a href='before.html'>before</a></span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"12-Apr-2009"</span>)
+                                      ))
+<span class='co'># searches for messages containing the string "allan" in the "TO" field</span>
+<span class='co'># and that were received before "12-Apr-2009".</span>
 
-# search2
-result2 <- imapconf %>%
-    select_mailbox(mbox = "INBOX") %>%
-    custom_search(custom_request = OR(string(section_or_field = "TEXT",
-                                            string = "Contract 2872827"),
-                                     string(section_or_field = "Subject",
-                                            string = "Buying operation")))
-# searches for messages containing the string "Contract 2872827" in the
-   "TEXT" section or the string "Buying operation" in the "Subject" field
-   of the HEADER.
+<span class='co'># search2</span>
+<span class='no'>result2</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>custom_search</span>(<span class='kw'>custom_request</span> <span class='kw'>=</span> <span class='fu'><a href='OR.html'>OR</a></span>(<span class='fu'><a href='string.html'>string</a></span>(<span class='kw'>section_or_field</span> <span class='kw'>=</span> <span class='st'>"TEXT"</span>,
+                                             <span class='kw'>string</span> <span class='kw'>=</span> <span class='st'>"Contract 2872827"</span>),
+                                      <span class='fu'><a href='string.html'>string</a></span>(<span class='kw'>section_or_field</span> <span class='kw'>=</span> <span class='st'>"Subject"</span>,
+                                             <span class='kw'>string</span> <span class='kw'>=</span> <span class='st'>"Buying operation"</span>)
+                                             ))
+<span class='co'># searches for messages containing the string "Contract 2872827" in the</span>
+<span class='co'># "TEXT" section or the string "Buying operation" in the "Subject" field</span>
+<span class='co'># of the HEADER.</span>
 
-# }
-<div class='input'>
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

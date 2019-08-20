@@ -78,28 +78,30 @@ IMAP queries follows Polish notation, i.e. operators such as \code{OR}
 # configure IMAP
 library(mRpostman)
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_gmail_user",
+                           password=rstudioapi::askForPassword()
                           )
 # search1
 result1 <- imapconf \%>\%
     select_mailbox(mbox = "TAM") \%>\%
     custom_search(custom_request = AND(string(section_or_field = "TO",
-                                             string = "allan"),
-                                      before(date_char = "12-Apr-2009")))
+                                              string = "allan"),
+                                       before(date_char = "12-Apr-2009")
+                                      ))
 # searches for messages containing the string "allan" in the "TO" field
-    and that were received before "12-Apr-2009".
+# and that were received before "12-Apr-2009".
 
 # search2
 result2 <- imapconf \%>\%
     select_mailbox(mbox = "INBOX") \%>\%
     custom_search(custom_request = OR(string(section_or_field = "TEXT",
-                                            string = "Contract 2872827"),
-                                     string(section_or_field = "Subject",
-                                            string = "Buying operation")))
+                                             string = "Contract 2872827"),
+                                      string(section_or_field = "Subject",
+                                             string = "Buying operation")
+                                             ))
 # searches for messages containing the string "Contract 2872827" in the
-   "TEXT" section or the string "Buying operation" in the "Subject" field
-   of the HEADER.
+# "TEXT" section or the string "Buying operation" in the "Subject" field
+# of the HEADER.
 
 }
 

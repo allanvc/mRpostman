@@ -241,8 +241,8 @@ is <code>2</code>.</p></td>
 <span class='co'># configure IMAP</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
 <span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
-                          <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
-                          <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
 <span class='co'># search 1</span>
@@ -254,7 +254,8 @@ is <code>2</code>.</p></td>
 <span class='no'>result2</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"[Gmail]/Com estrela"</span>) <span class='kw'>%&gt;%</span>
     <span class='fu'>search_before</span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"17-Dec-2018"</span>, <span class='kw'>flag</span> <span class='kw'>=</span> <span class='st'>"ANSWERED"</span>)
-<span class='co'># depending on results, it might be necessary increase buffersize in configureIMAP()</span>
+<span class='co'># depending on results, it might be necessary to increase buffersize in</span>
+<span class='co'># configure_imap()</span>
 
 <span class='co'># }</span><div class='input'>
 </div></pre>

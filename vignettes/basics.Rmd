@@ -15,7 +15,7 @@ vignette: >
 
 The goal of **mRpostman** is to make it easy to connect to your IMAP 
 (Internet Message Access Protocol) server and execute commands,
-such as listing mailboxes, searching and fetching messages in a tidy way.
+such as list mailboxes, search for and fetch messages in a tidy way.
 
 In this vignette we will present all available functions of this package,
 but not all the possiilities one can explore.

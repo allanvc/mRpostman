@@ -172,29 +172,28 @@ search for in messages.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div># NOT RUN {
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># configure IMAP</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
-# search
-result <- imapconf %>%
-    select_mailbox(mbox = "INBOX") %>%
-    custom_search(custom_request =
-                 OR(string(
-                       section_or_field = "from", string = "allanvcq@gmail.com"),
-                    string(
-                       section_or_field = "from", string = "allanvcq@yahoo.com")
+<span class='co'># search</span>
+<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='custom_search.html'>custom_search</a></span>(<span class='kw'>custom_request</span> <span class='kw'>=</span>
+                 <span class='fu'><a href='OR.html'>OR</a></span>(<span class='fu'>string</span>(
+                       <span class='kw'>section_or_field</span> <span class='kw'>=</span> <span class='st'>"from"</span>, <span class='kw'>string</span> <span class='kw'>=</span> <span class='st'>"allanvcq@gmail.com"</span>),
+                    <span class='fu'>string</span>(
+                       <span class='kw'>section_or_field</span> <span class='kw'>=</span> <span class='st'>"from"</span>, <span class='kw'>string</span> <span class='kw'>=</span> <span class='st'>"allanvcq@yahoo.com"</span>)
                    )
                  )
-# searches for messages containing the string "allanvcq@gmail.com" OR
-    "allanvcq@yahoo.com" in the "FROM" field.
+<span class='co'># searches for messages containing the string "allanvcq@gmail.com" OR</span>
+<span class='co'># "allanvcq@yahoo.com" in the "FROM" field.</span>
 
-# }
-<div class='input'>
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

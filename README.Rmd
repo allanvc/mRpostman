@@ -25,14 +25,16 @@ knitr::opts_chunk$set(
 [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) 
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0) 
 
-IMAP Tools for R
+IMAP Tools for R in a Tidy Way
 
 
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol) commands 
-based on the RFC 3501 manual (Crispin, 2003), its updates, 
-and other related documents.
+based on the RFC 3501 manual (Crispin, 2003), its updates, and other related 
+documents. Besides other features, this package presents functions for listing, 
+selecting and renaming mailboxes, as well as moving, fetching, and searching for 
+messages using several criteria.
 
 mRpostman website: https://allanvc.github.io/mRpostman
 

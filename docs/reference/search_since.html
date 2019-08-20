@@ -224,27 +224,27 @@ is <code>2</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div># NOT RUN {
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="url="imaps://export.imap.aol.com"",
-                          username="your_AOL_user",
-                          password=rstudioapi::askForPassword()
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># configure IMAP</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://export.imap.aol.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_AOL_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
-# search 1
-result1 <- imapconf %>%
-    select_mailbox(mbox = "Sent") %>%
-    search_since(date_char = "17-Apr-2012")
+<span class='co'># search 1</span>
+<span class='no'>result1</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"Sent"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>search_since</span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"17-Apr-2012"</span>)
 
-# search 2
-result2 <- imapconf %>%
-    select_mailbox(mbox = "Inbox") %>%
-    search_since(date_char = "17-Jun-2019", flag = "FLAGGED")
-# depending on results, it might be necessary increase buffersize in configureIMAP()
+<span class='co'># search 2</span>
+<span class='no'>result2</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"Inbox"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>search_since</span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"17-Jun-2019"</span>, <span class='kw'>flag</span> <span class='kw'>=</span> <span class='st'>"FLAGGED"</span>)
+<span class='co'># depending on results, it might be necessary to increase buffersize in</span>
+<span class='co'># configure_imap()</span>
 
-# }
-<div class='input'>
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

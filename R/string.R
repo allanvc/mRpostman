@@ -11,8 +11,8 @@
 #' # configure IMAP
 #' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search
@@ -26,7 +26,7 @@
 #'                    )
 #'                  )
 #' # searches for messages containing the string "allanvcq@@gmail.com" OR
-#'     "allanvcq@@yahoo.com" in the "FROM" field.
+#' # "allanvcq@@yahoo.com" in the "FROM" field.
 #'
 #' }
 #'

@@ -24,6 +24,7 @@
 #'
 #' library(mRpostman)
 #' flag_options()
+#'
 #' }
 #' @export
 #'

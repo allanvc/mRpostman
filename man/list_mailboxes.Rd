@@ -23,11 +23,11 @@ List Mailboxes from IMAP server.
 \dontrun{
 
 # configure IMAP
-#' library(mRpostman)
+library(mRpostman)
 imapconf <- configureIMAP(url="imaps://imap.gmail.com",
                           username="your_gmail_user",
                           password=rstudioapi::askForPassword()
-                          )
+                         )
 
 # list mailboxes
 results <- imapconf \%>\%

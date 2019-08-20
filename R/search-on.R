@@ -9,8 +9,8 @@
 #' # configure IMAP
 #' library(mRpostman)
 #' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#'                            username="your_gmail_user",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # list mailboxes
@@ -26,7 +26,8 @@
 #' result2 <- imapconf %>%
 #'     select_mailbox(mbox = "Special Mailbox") %>%
 #'     search_on(date_char = "17-Sep-2018", flag = "UNDELETED")
-#' # depending on results, it might be necessary increase buffersize in configureIMAP()
+#' # depending on results, it might be necessary to increase buffersize in
+#' # configure_imap()
 #'
 #' }
 #'

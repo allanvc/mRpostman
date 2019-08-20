@@ -19,7 +19,7 @@
 #' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
 #'                           username="your_gmail_user",
 #'                           password=rstudioapi::askForPassword()
-#'                           )
+#'                          )
 #'
 #' # list server's capabilities
 #' results <- imapconf %>%

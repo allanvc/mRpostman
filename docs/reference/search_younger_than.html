@@ -215,21 +215,20 @@ is <code>2</code>.</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-</div># NOT RUN {
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url=""imaps://export.imap.aol.com"",
-                          username="your_AOL_user",
-                          password=rstudioapi::askForPassword()
+</div><span class='co'># NOT RUN {</span>
+<span class='co'># configure IMAP</span>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://export.imap.aol.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_AOL_user"</span>,
+                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 
-# search
-results <- imapconf %>%
-    select_mailbox(mbox = "Smiles GOL") %>%
-    search_younger_than(seconds = 3600)
+<span class='co'># search</span>
+<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
+    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"Smiles GOL"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>search_younger_than</span>(<span class='kw'>seconds</span> <span class='kw'>=</span> <span class='fl'>3600</span>)
 
-# }
-<div class='input'>
+<span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
