@@ -8,7 +8,6 @@
 #'
 #' @return A curl handle object.
 #'
-#' @family config
 #' @family config helper
 #'
 #' @keywords internal

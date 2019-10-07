@@ -14,8 +14,8 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                            username="your_gmail_user",
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
 #'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
@@ -30,9 +30,9 @@
 #' @export
 #'
 fetch_msg_text <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
-                         partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
-                         try_b64decode = FALSE,
-                         retries = 2) {
+                           partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
+                           try_b64decode = FALSE,
+                           retries = 2) {
 
   #check
   check_args_fetch_msg_text(imapconf, msg_id, by, peek, partial,

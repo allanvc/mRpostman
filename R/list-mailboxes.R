@@ -16,9 +16,9 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
+#'                            password=rstudioapi::askForPassword()
 #'                          )
 #'
 #' # list mailboxes
@@ -71,7 +71,10 @@ list_mailboxes <- function(imapconf, retries = 2) {
 
     occurrencies_names <- stringr::str_match_all(
       string = rawToChar(response$content),
-      pattern = '.*\" \"*(.*?)\\"\r\n')[[1]][,2] # more general
+      pattern = '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]')[[1]][,2] # more general
+    # ok for Gmail, Yahoo, AOL and Yandex
+    # Gmail, Yahoo, AOL - mbox names RHS: (\\"\r\n)
+    # Yandex - mbox names RHS: (\r\n\\*)
 
     mbox_check_children <- do.call(
       stringr::str_detect, c(string = list(occurrencies_names),
@@ -124,7 +127,10 @@ list_mailboxes <- function(imapconf, retries = 2) {
 
       occurrencies_names <- stringr::str_match_all(
         string = rawToChar(response$content),
-        pattern = ".*/\" \"*(.*?) *\"\r.*")[[1]][,2]
+        pattern = '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]')[[1]][,2] # more general
+      # ok for Gmail, Yahoo, AOL and Yandex
+      # Gmail, Yahoo, AOL - mbox names RHS: (\\"\r\n)
+      # Yandex - mbox names RHS: (\r\n\\*)
 
       mbox_check_children <- do.call(
         stringr::str_detect, c(string = list(occurrencies_names),

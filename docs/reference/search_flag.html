@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -168,7 +168,7 @@ is always the same during the life cycle of a message. Default is
 <code>ESEARCH</code> capability, it can be used to optimize search results. It
 allows to condense results to message sets to cut down on transmission
 costs, e.g. <code>1:5</code> instead of writing ids individually such as
-code1,2,3,4,5. It can be used along with buffersize to avoid results
+<code>1,2,3,4,5</code>. It can be used along with buffersize to avoid results
 stripping. Check if your IMAP server supports <code>SEARCH</code> with
 <code><a href='list_server_capabilities.html'>list_server_capabilities</a></code>.</p></td>
     </tr>
@@ -204,8 +204,8 @@ is <code>2</code>.</p></td>
 </div><span class='co'># NOT RUN {</span>
 <span class='co'># configure IMAP</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
                            <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 

@@ -13,69 +13,26 @@ vignette: >
 
 ## Introduction
 
-The goal of **mRpostman** is to make it easy to connect to your IMAP 
-(Internet Message Access Protocol) server and execute commands,
-such as list mailboxes, search for and fetch messages in a tidy way.
+**mRpostman** makes extensive use of 'curl' and libcurl capabilities, providing 
+functions for mailboxes manipulation and eletronic messages operations such as 
+moving, deleting, and searching messages by criteria, setting and clearing flags, 
+selective fetching of message attributes and more.
 
-In this vignette we will present all available functions of this package,
-but not all the possiilities one can explore.
+In this vignette, we present all available functions of this package,
+but not all the possibilities one can explore.
 
-## First things first - Allowing Less Secure Apps Access
+## Allowing Less Secure Apps Access
 
 Before using **mRpostman**, it is essential to configure your mail account. Many 
 mail providers today require authorizing **"less secure apps"** to access
 your account from a third part app.
 
-See how to do it for Gmail, Yahoo Mail and AOL Mail.
-
-
-### Gmail
-
-1) Go to Gmail website and log in with your credentials.
-
-2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
-
-<img src="figures/gmail1.png">
-
-3) Set "Allow less secure apps" to **ON**.
-
-
-### Yahoo Mail
-
-1) Go to Yahoo Mail website and log in with your credentials.
-
-2) Click on "Account Info".
-
-<img src="figures/yahoo1.png">
-
-3) Click on "Account Security" on the left menu. 
-
-<img src="figures/yahoo2.png">
-
-4) After, set "Allow apps that use less secure sign in" **ON**
-
-<img src="figures/yahoo3.png">
-
-### AOL Mail
-
-1) Go to AOL Mail website and log in with your credentials.
-
-2) Click on "Options" and then on "Account Info".
-
-<img src="figures/aol1.png">
-
-3) Click on "Account Security" on the left menu. 
-
-<img src="figures/aol2.png">
-
-4) After, set "Allow apps that use less secure sign in" **ON**
-
-<img src="figures/aol3.png">
+See **README.md** for more details on _Allowing Less Secure Apps Access_.
 
 
 ## Package Structure
 
-The package is divided in 7 groups of functions:
+The package is divided in 8 groups of functions:
 
 * **configuration**: `configure_imap()`;
 * **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`, `examine_mailbox()`,
@@ -85,16 +42,18 @@ The package is divided in 7 groups of functions:
 * **search**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
 `search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
 `search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
-`search_younger_than()`, `search_older_than()`, `custom_search()`;
-* **custom search helper functions**: 
+`search_younger_than()`, `search_older_than()`;
+* **custom search and its helper functions**: `custom_search()`;
   + relational operators functions: `AND()`, `OR()`;
   + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
   `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
   `larger_than()`, `younger_than()`, `older_than()`;
 * **fetch**: `fetch_full_msg()`, `fetch_msg_header()`, `fetch_msg_text()`, 
 `fetch_msg_metadata()`;
+* **attachments**: `list_attachments()`, `get_attachments()`;
 * **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`, `delete_msg()`, 
 `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`, `move_msg()`.
+
 
 ## How do I start?
 
@@ -110,13 +69,13 @@ library(mRpostman)
 # IMAP settings
 # Gmail
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_user",
-                          password=rstudioapi::askForPassword(),
-                          verbose = TRUE
+                           username="your_user",
+                           password=rstudioapi::askForPassword(),
+                           verbose = TRUE
                           )
 
 # Yahoo Mail
-# imapconf <- configure_imap(url="imaps://export.imap.aol.com/",
+# imapconf <- configure_imap(url="imaps://imap.mail.yahoo.com/",
 #                           username="your_user",
 #                           password=rstudioapi::askForPassword()
 #                           )
@@ -127,9 +86,18 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #                           password=rstudioapi::askForPassword()
 #                           )
 
-# you can try another IMAP server
+# Yandex Mail
+# imapconf <- configure_imap(url="imaps://imap.yandex.com",
+#                           username="your_user",
+#                           password=rstudioapi::askForPassword()
+#                           )
+
+# you can try another IMAP server and see if it works
 
 ```
+
+Another useful options are: `timeout_ms`, `verbose = TRUE`, `buffersize` and `fresh_connect = TRUE`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`. See `curl::curl_options()`.
+
 
 ## 2) Mailbox Commands
 
@@ -263,9 +231,9 @@ a flag also.
 result <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_before(date_char = "02-May-2019", 
-               by = "UID", 
-               flag = "UNANSWERED",
-               esearch = TRUE)
+                by = "UID", 
+                flag = "UNANSWERED",
+                esearch = TRUE)
 
 result$msg_id
 ```
@@ -276,9 +244,9 @@ Remember, if you do not want to return the `imapconf` object, but only the searc
 result <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_before(date_char = "02-May-2019", 
-               by = "UID", 
-               flag = "UNANSWERED",
-               esearch = TRUE, return_imapconf = FALSE)
+                by = "UID", 
+                flag = "UNANSWERED",
+                esearch = TRUE, return_imapconf = FALSE)
 
 result
 ```
@@ -289,10 +257,10 @@ You can also **NEGATE** the statement to search for messages **NOT BEFORE a date
 results <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_before(date_char = "02-May-2019", 
-               negate = TRUE, 
-               by = "UID", 
-               flag = "UNANSWERED",
-               esearch = TRUE)
+                negate = TRUE, 
+                by = "UID", 
+                flag = "UNANSWERED",
+                esearch = TRUE)
 
 results$msg_id
 
@@ -304,7 +272,7 @@ results$msg_id
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_since(date_char = "17-Apr-2019",
-              esearch = TRUE)
+               esearch = TRUE)
 
 ```
 
@@ -314,9 +282,9 @@ results <- imapconf %>%
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_period(since_date_char = "02-Jan-2019",
-               before_date_char = "30-Jun-2019",
-               flag = "ANSWERED",
-               esearch = TRUE)
+                before_date_char = "30-Jun-2019",
+                flag = "ANSWERED",
+                esearch = TRUE)
 
 ```
 
@@ -326,10 +294,10 @@ You can **NEGATE** period searches too:
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_period(since_date_char = "17-Jun-2019",
-               before_date_char = "30-Jun-2019", 
-               negate = TRUE,
-               flag = "ANSWERED",
-               esearch = TRUE)
+                before_date_char = "30-Jun-2019", 
+                negate = TRUE,
+                flag = "ANSWERED",
+                esearch = TRUE)
 
 ```
 
@@ -339,8 +307,8 @@ results <- imapconf %>%
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_on(date_char = "30-Apr-2019", 
-           flag = "SEEN",
-           esearch = TRUE)
+            flag = "SEEN",
+            esearch = TRUE)
 
 ```
 
@@ -365,9 +333,9 @@ a flag also.
 results <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_sent_before(date_char = "02-Jan-2019", 
-                   by = "UID", 
-                   flag = "UNANSWERED",
-                   esearch = TRUE)
+                     by = "UID", 
+                     flag = "UNANSWERED",
+                     esearch = TRUE)
 
 ```
 
@@ -377,10 +345,10 @@ You can also **NEGATE** the statement to search for messages **NOT SENTBEFORE a 
 results <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_sent_before(date_char = "02-May-2019", 
-                   negate = TRUE, 
-                   by = "UID", 
-                   flag = "UNANSWERED",
-                   esearch = TRUE)
+                     negate = TRUE, 
+                     by = "UID", 
+                     flag = "UNANSWERED",
+                     esearch = TRUE)
 
 ```
 
@@ -399,8 +367,8 @@ results <- imapconf %>%
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_sent_period(since_date_char = "17-Jun-2019",
-               before_date_char = "30-Jun-2019",
-               flag = "ANSWERED")
+                     before_date_char = "30-Jun-2019",
+                     flag = "ANSWERED")
 
 ```
 
@@ -410,8 +378,9 @@ You can **NEGATE** period searches too:
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_sent_period(since_date_char = "17-Jun-2019",
-               before_date_char = "30-Jun-2019", negate = TRUE,
-               flag = "ANSWERED")
+                     before_date_char = "30-Jun-2019", 
+                     negate = TRUE,
+                     flag = "ANSWERED")
 
 ```
 
@@ -421,8 +390,8 @@ results <- imapconf %>%
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_sent_on(date_char = "30-Apr-2019", 
-               flag = "SEEN",
-               esearch = TRUE)
+                 flag = "SEEN",
+                 esearch = TRUE)
 
 ```
 
@@ -438,7 +407,7 @@ Searching "TO" field:
 results <- imapconf %>%
   select_mailbox(mbox = "CRAN messages2") %>%
   search_string(section_or_field = "TO", string = "hadley@rstudio.com",
-               negate = TRUE) # not TO "hadley@rstudio.com"
+                negate = TRUE) # not TO "hadley@rstudio.com"
 
 results$msg_id
 
@@ -523,7 +492,7 @@ results <- imapconf %>%
 ```
 
 
-### 4.6) Custom Search
+## 5) Custom Search
 
 `custom_search()` and its **helper functions** allow you to create a vast number of
 customized search by combining different criteria using all the types of searches presented before.
@@ -572,7 +541,7 @@ results$msg_id
 
 ```
 
-## 5) Fetch
+## 6) Fetch
 
 You can fetch full messages, message headers, message texts, or only metadata field(s) of messages.
 
@@ -580,7 +549,7 @@ We usually fetch messages after a search. Given the output of search functions i
 
 You can also choose to write fetch results to disk (working directory) using `write_to_file = TRUE`. If you choose to do so, **mRpostman** creates a folder with the mailbox name in your wd and save the parts of the messages you are fetching to text files using each message sequence number (MSN) or unique identifier (UID) as names.
 
-### 5.1) Fetch Full Message
+### 6.1) Fetch Full Message
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -595,7 +564,9 @@ results <- imapconf %>%
 
 Do not forget to re-specify `by = "UID"` inside `fetch_full_msg()`.
 
-### 5.2) Fetch Message Header
+**IMPORTANT:** Some servers may require larger `timeout_ms` parameter inside `configure_imap()` in order to successfully fetch your messages. This is particularly important when your messages have large attachments, which can sensibly increase the fetching time.
+
+### 6.2) Fetch Message Header
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -611,7 +582,7 @@ results
 
 ```
 
-### 5.3) Fetch Message Text
+### 6.3) Fetch Message Text
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -622,7 +593,7 @@ results <- imapconf %>%
 
 ```
 
-### 5.4) Fetch Message Metadata
+### 6.4) Fetch Message Metadata
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -630,18 +601,59 @@ results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
   search_on(date_char = "10-may-2019", by = "UID") %$% #exposition pipe operator
   fetch_msg_metadata(imapconf, msg_id = msg_id, by = "UID",
-                   metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
+                     metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
 
 ```
 
 You can check metadata options with `metadata_options()`.
 
 
-## 6) Miscellanea
+## 7) Attachments
+
+**After fetching full messages**, it is possible to list and get the attachments of those messages.
+
+`fetch_full_msg()` will return a list with the full message content, i.e. header, text, and attachments. You can access this content and list or get/save the attachments from each message with the following functions.
+
+**IMPORTANT:** you **cannot** set `keep_in_mem = FALSE` in `fetch_full_msg()` if you intend to list or get attachments after fetching your messages.
+
+### 7.1) Listing Attachments
+
+This will list your attachments filenames for each fetched message.
+
+```{r, message = FALSE, eval = FALSE}
+imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "23-Sep-2019") %$%
+  fetch_full_msg(imapconf, msg_id=msg_id, write_to_disk = TRUE) %>%
+  list_attachments()
+```
+
+
+### 7.1) Getting Attachments
+
+`get_attachments()` will try to convert base64 text inside your message to the appropriate file extension. This will create a folder with the selected mailbox in your working directory. Inside it, you will have other folders with the respective message sequence number (MSN) or unique id (UID), e.g.: msgMSN8 or msgUID8, and the attachment(s) inside it.
+
+
+```{r, message = FALSE, eval = FALSE}
+imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "23-Sep-2019") %$%
+  fetch_full_msg(imapconf, msg_id=msg_id, write_to_disk = TRUE) %>%
+  get_attachments()
+```
+
+The result will be like this:
+
+<img src="figures/INBOX.png">
+
+<img src="figures/INBOX2.png">
+
+
+## 8) Miscellanea
 
 Here we present other functions to perform useful IMAP operations.
 
-### 6.1) Copy Message(s)
+### 8.1) Copy Message(s)
 
 Copying seach results form "CRAN messages2" to "INBOX" mailbox:
 
@@ -654,7 +666,7 @@ results <- imapconf %>%
 ```
 
 
-### 6.2) Get minimum (smaller) message ID with specific flag
+### 8.2) Get minimum (smaller) message ID with specific flag
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
@@ -663,7 +675,7 @@ results <- imapconf %>%
 
 ```
 
-### 6.3) Get maximum (larger) message ID with specific flag
+### 8.3) Get maximum (larger) message ID with specific flag
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
@@ -672,7 +684,7 @@ results <- imapconf %>%
 
 ```
 
-### 6.4) Delete message(s)
+### 8.4) Delete message(s)
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
@@ -692,7 +704,7 @@ results <- imapconf %>%
 
 ```
 
-### 6.5) Expunge
+### 8.5) Expunge
 
 Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the `specific_UID` attribute.
 
@@ -706,12 +718,12 @@ results <- imapconf %>%
 ```
 
 
-### 6.6) Add/Remove/Replace Flags
+### 8.6) Add/Remove/Replace Flags
 
 Adding, removing and replacing one or more flags to messages. 
 
 
-#### 6.6.1) Add Flags
+#### 8.6.1) Add Flags
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -724,7 +736,7 @@ results <- imapconf %>%
 
 You cannot add a flag that is the antonym of an already existent flag in the message, e.g. cannot add "UNSEEN" flag when a message already has flag "SEEN". Use `replace_flags()` instead.
 
-#### 6.6.2) Remove Flags
+#### 8.6.2) Remove Flags
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -735,7 +747,7 @@ results <- imapconf %>%
 
 ```
 
-#### 6.6.3) Replace Flags
+#### 8.6.3) Replace Flags
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -747,7 +759,7 @@ results <- imapconf %>%
 
 ```
 
-### 6.7) Move Message(s)
+### 8.7) Move Message(s)
 
 `move_msg()` uses IMAP "MOVE" EXTENSION. Check if your server supports "MOVE" capability with `list_server_capabilities()`.
 

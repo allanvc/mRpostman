@@ -16,9 +16,9 @@
 #'
 #' # configure IMAP
 #' #' library(mRpostman)
-#' imapconf <- configureIMAP(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
+#'                            password=rstudioapi::askForPassword()
 #'                          )
 #'
 #' # list server's capabilities
@@ -45,7 +45,7 @@ list_server_capabilities <- function(imapconf, retries = 2) {
     warning('only the integer part of "retries" will be used.')
   }
 
-  # forcing server url to the format we need -- removing unnecesary final slashe(s)
+  # forcing server url to the format we need -- removing unnecessary final slashe(s)
   imapconf$url <- gsub("/+$","", imapconf$url)
 
   # forcing retries as an integer
@@ -63,10 +63,17 @@ list_server_capabilities <- function(imapconf, retries = 2) {
   })
 
   if (!is.null(response)) {
-    server_capabilities <- stringr::str_split(
-      stringr::str_match_all( # only the second matching (after authenticating)
-      string = rawToChar(response$headers), # diff to listMailboxes -- parse headers
-      pattern = '\r\n\\* CAPABILITY (.*?)\r\n')[[1]][2,2], " ")[[1]]
+    pattern = '\r\n\\* CAPABILITY (.*?)\r\n'
+
+    server_capabilities <- unlist(
+      regmatches(rawToChar(response$headers),
+                 regexec(pattern,
+                          rawToChar(response$headers)
+                         )
+                 )
+      )[2]
+
+    server_capabilities <- strsplit(x = server_capabilities, split = " ")
 
     # sanitizing
     rm(h)
@@ -88,10 +95,17 @@ list_server_capabilities <- function(imapconf, retries = 2) {
     }
 
     if (!is.null(response)) {
-      server_capabilities <- stringr::str_split(
-        stringr::str_match_all( # only the second matching (after authenticating)
-          string = rawToChar(response$headers), # diff to listMailboxes -- parse headers
-          pattern = '\r\n\\* CAPABILITY (.*?)\r\n')[[1]][2,2], " ")[[1]]
+      pattern = '\r\n\\* CAPABILITY (.*?)\r\n'
+
+      server_capabilities <- unlist(
+        regmatches(rawToChar(response$headers),
+                   regexec(pattern,
+                           rawToChar(response$headers) # diff to listMailboxes -- parse headers
+                   )
+        )
+      )[2]
+
+      server_capabilities <- strsplit(x = server_capabilities, split = " ")
 
       # sanitizing
       rm(h)

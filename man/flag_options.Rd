@@ -17,10 +17,11 @@ Lists flags used by most of IMAP servers.
 RFC 2060 lists a set of systems flags, which are presentend and extended
     by this function. We also present a list of negative flags. When using
     \code{verbose = TRUE} in \link{configure_imap} function, flags appear
-    with "\\", e.g. "\\Seen". It is important to note that some but not all
-    functions that deal with flags also accepts, keywords (words listed by
-    flags without starting with "\\"). This is the case of \link{add_flags},
-    \link{remove_flags}, and \link{replace_flags}
+    with "\\", e.g. "\\Seen". It is important to note that some (but not all)
+    functions that deal with flags also accepts, keywords - words usually
+    listed (when verbose = TRUE) together with flags by the server but with
+    no leading "\\"). This is the case of \link{add_flags},
+    \link{remove_flags}, and \link{replace_flags}.
 }
 \examples{
 \dontrun{

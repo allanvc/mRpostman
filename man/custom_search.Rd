@@ -34,7 +34,7 @@ is always the same during the life cycle of a message. Default is
 \code{ESEARCH} capability, it can be used to optimize search results. It
 allows to condense results to message sets to cut down on transmission
 costs, e.g. \code{1:5} instead of writing ids individually such as
-code{1,2,3,4,5}. It can be used along with buffersize to avoid results
+\code{1,2,3,4,5}. It can be used along with buffersize to avoid results
 stripping. Check if your IMAP server supports \code{SEARCH} with
 \code{\link{list_server_capabilities}}.}
 
@@ -77,8 +77,8 @@ IMAP queries follows Polish notation, i.e. operators such as \code{OR}
 
 # configure IMAP
 library(mRpostman)
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                           username="your_gmail_user",
+imapconf <- configure_imap(url="imaps://your.imap.server.com",
+                           username="your_username",
                            password=rstudioapi::askForPassword()
                           )
 # search1

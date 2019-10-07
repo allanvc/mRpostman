@@ -18,21 +18,22 @@ Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://trav
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
 
-IMAP Tools for R in a Tidy Way
+IMAP Toolkit for R
 
 ## Overview
 
 **mRpostman** provides multiple IMAP (Internet Message Access Protocol)
 commands based on the RFC 3501 manual (Crispin, 2003), its updates, and
-other related documents. Besides other features, this package presents
-functions for listing, selecting and renaming mailboxes, as well as
-moving, fetching, and searching for messages using several criteria.
+other related documents. This package makes extensive use of ‘curl’ and
+libcurl capabilities to provide functions for listing, selecting and
+renaming mailboxes, as well as moving, fetching, and searching messages
+using several criteria.
 
 mRpostman website: <https://allanvc.github.io/mRpostman>
 
 ## First things first …
 
-Before using **mRpostman**, it is essential to configure your mail
+Before using **mRpostman**, it is essential to configure your email
 account. Many mail providers require authorizing **“less secure apps”**
 to access your account from a third part app.
 
@@ -83,7 +84,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 ## Introduction
 
-The package is divided in 7 groups of functions:
+The package is divided in 8 groups of functions:
 
   - **configuration**: `configure_imap()`;
   - **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`,
@@ -103,6 +104,7 @@ The package is divided in 7 groups of functions:
         `older_than()`;
   - **fetch**: `fetch_full_msg()`, `fetch_msg_header()`,
     `fetch_msg_text()`, `fetch_msg_metadata()`;
+  - **attachments**: `list_attachments()`, `get_attachments()`;
   - **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`,
     `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`,
     `replace_flags()`, `move_msg()`.
@@ -134,18 +136,24 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
                           )
 
 # Yahoo Mail
-# imapconf <- configureIMAP(url="imaps://export.imap.aol.com/",
+# imapconf <- configure_imap(url="imaps://imap.mail.yahoo.com/",
 #                           username="your_user",
 #                           password=rstudioapi::askForPassword()
 #                           )
 
 # AOL Mail
-# imapconf <- configureIMAP(url="imaps://export.imap.aol.com/",
+# imapconf <- configure_imap(url="imaps://export.imap.aol.com/",
 #                           username="your_user",
 #                           password=rstudioapi::askForPassword()
 #                           )
 
-# you can try another IMAP server
+# Yandex Mail
+# imapconf <- configure_imap(url="imaps://imap.yandex.com",
+#                           username="your_user",
+#                           password=rstudioapi::askForPassword()
+#                           )
+
+# you can try another IMAP server and see if it works
 
 # Listing
 imapconf %>%

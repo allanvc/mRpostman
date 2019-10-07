@@ -14,8 +14,8 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                            username="your_gmail_user",
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
 #'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
@@ -34,12 +34,12 @@
 #' @export
 #'
 fetch_full_msg <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
-                              partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
-                              retries = 2) {
+                           partial = NULL, write_to_disk = FALSE, keep_in_mem = TRUE,
+                           retries = 2) {
 
   #check
   check_args_fetch_full_msg(imapconf, msg_id, by, peek, partial,
-                               write_to_disk, keep_in_mem, retries)
+                            write_to_disk, keep_in_mem, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -50,10 +50,18 @@ fetch_full_msg <- function(imapconf, msg_id, by = "MSN", peek = TRUE,
   # config handle
   h <- config_handle(new_imapconf)
 
+  if (isFALSE(keep_in_mem)) {
+    warning('Setting "keep_in_mem = TRUE" will not alow you to use get_attachment')
+  }
+
   msg_list <- loop_fetch_full_msg(new_imapconf, msg_id, by, peek, partial,
-                                     write_to_disk, keep_in_mem, retries, handle = h)
+                                  write_to_disk, keep_in_mem, retries, handle = h)
 
   # msg_list <- clean_messages(msg_list)
+
+  # v0.3.0.0 -- added a attribute mbox to fetch_full_msg so we can use get_attachment()
+  #after it
+  attr(msg_list, which = 'mbox') = new_imapconf$mbox
 
   # handle sanitizing
   rm(h)

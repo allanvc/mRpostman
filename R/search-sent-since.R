@@ -8,8 +8,8 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://export.imap.aol.com",
-#'                            username="your_AOL_user",
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
 #'                            password=rstudioapi::askForPassword()
 #'                           )
 #'

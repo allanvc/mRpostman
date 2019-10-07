@@ -30,7 +30,7 @@ to the disk as a text file in the working directory. Default is \code{FALSE}.}
 
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
 list in the R session when \code{write_to_disk = TRUE}. Default is
-\code{FALSE}. It can only be set \code{TRUE} when
+\code{TRUE}. It can only be set \code{FALSE} when
 \code{write_to_disk = TRUE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default

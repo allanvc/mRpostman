@@ -17,9 +17,5 @@ A curl handle object.
 Internal helper function for configuring curl handles used in
     almost all mRpostman functions.
 }
-\seealso{
-Other config: \code{\link{configure_imap}}
-}
-\concept{config}
 \concept{config helper}
 \keyword{internal}

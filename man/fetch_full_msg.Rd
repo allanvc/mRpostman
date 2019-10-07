@@ -35,7 +35,7 @@ to the disk as a text file in the working directory. Default is \code{FALSE}.}
 
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
 list in the R session when \code{write_to_disk = TRUE}. Default is
-\code{FALSE}. It can only be set \code{TRUE} when
+\code{TRUE}. It can only be set \code{FALSE} when
 \code{write_to_disk = TRUE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
@@ -53,8 +53,8 @@ Fetch all the sections and fields of one or more messages.
 
 # configure IMAP
 library(mRpostman)
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                           username="your_gmail_user",
+imapconf <- configure_imap(url="imaps://your.imap.server.com",
+                           username="your_username",
                            password=rstudioapi::askForPassword()
                           )
 
