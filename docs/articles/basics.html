@@ -127,7 +127,7 @@
 <li>
 <strong>fetch</strong>: <code><a href="../reference/fetch_full_msg.html">fetch_full_msg()</a></code>, <code><a href="../reference/fetch_msg_header.html">fetch_msg_header()</a></code>, <code><a href="../reference/fetch_msg_text.html">fetch_msg_text()</a></code>, <code><a href="../reference/fetch_msg_metadata.html">fetch_msg_metadata()</a></code>;</li>
 <li>
-<strong>attachments</strong>: <code><a href="../reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>;</li>
+<strong>attachments</strong>: <code><a href="../reference/list_attachments.html">list_attachments()</a></code>, <code><a href="../reference/get_attachments.html">get_attachments()</a></code>;</li>
 <li>
 <strong>miscellania</strong>: <code><a href="../reference/copy_msg.html">copy_msg()</a></code>, <code><a href="../reference/get_min_id.html">get_min_id()</a></code>, <code><a href="../reference/get_max_id.html">get_max_id()</a></code>, <code><a href="../reference/delete_msg.html">delete_msg()</a></code>, <code><a href="../reference/expunge.html">expunge()</a></code>, <code><a href="../reference/add_flags.html">add_flags()</a></code>, <code><a href="../reference/remove_flags.html">remove_flags()</a></code>, <code><a href="../reference/replace_flags.html">replace_flags()</a></code>, <code><a href="../reference/move_msg.html">move_msg()</a></code>.</li>
 </ul>
@@ -556,12 +556,12 @@
 <div id="getting-attachments" class="section level3">
 <h3 class="hasAnchor">
 <a href="#getting-attachments" class="anchor"></a>7.1) Getting Attachments</h3>
-<p><code>get_attachments()</code> will try to convert base64 text inside your message to the appropriate file extension. This will create a folder with the selected mailbox in your working directory. Inside it, you will have other folders with the respective message sequence number (MSN) or unique id (UID), e.g.: msgMSN8 or msgUID8, and the attachment(s) inside it.</p>
+<p><code><a href="../reference/get_attachments.html">get_attachments()</a></code> will try to convert base64 text inside your message to the appropriate file extension. This will create a folder with the selected mailbox in your working directory. Inside it, you will have other folders with the respective message sequence number (MSN) or unique id (UID), e.g.: msgMSN8 or msgUID8, and the attachment(s) inside it.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb40-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="../reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb40-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="../reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
 <a class="sourceLine" id="cb40-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="../reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id, <span class="dt">write_to_disk =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="st">  </span><span class="kw">get_attachments</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="../reference/get_attachments.html">get_attachments</a></span>()</a></code></pre></div>
 <p>The result will be like this:</p>
 <p><img src="figures/INBOX.png"></p>
 <p><img src="figures/INBOX2.png"></p>

@@ -39,6 +39,6 @@ attachments <- imapconf \%>\%
 
 }
 \seealso{
-Other attachments: \code{\link{get_attachment}}
+Other attachments: \code{\link{get_attachments}}
 }
 \concept{attachments}

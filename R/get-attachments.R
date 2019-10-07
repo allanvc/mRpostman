@@ -36,7 +36,7 @@
 #'
 #' @export
 #'
-get_attachment <- function(msg_list) {
+get_attachments <- function(msg_list) {
 
   #check
   check_args_get_attachment(msg_list)
