@@ -137,26 +137,26 @@ library(mRpostman)
 # IMAP settings
 # Gmail
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                          username="your_user",
-                          password=rstudioapi::askForPassword()
+                           username="your_user",
+                           password=rstudioapi::askForPassword()
                           )
 
 # Yahoo Mail
 # imapconf <- configure_imap(url="imaps://imap.mail.yahoo.com/",
-#                           username="your_user",
-#                           password=rstudioapi::askForPassword()
+#                            username="your_user",
+#                            password=rstudioapi::askForPassword()
 #                           )
 
 # AOL Mail
 # imapconf <- configure_imap(url="imaps://export.imap.aol.com/",
-#                           username="your_user",
-#                           password=rstudioapi::askForPassword()
+#                            username="your_user",
+#                            password=rstudioapi::askForPassword()
 #                           )
 
 # Yandex Mail
 # imapconf <- configure_imap(url="imaps://imap.yandex.com",
-#                           username="your_user",
-#                           password=rstudioapi::askForPassword()
+#                            username="your_user",
+#                            password=rstudioapi::askForPassword()
 #                           )
 
 # you can try another IMAP server and see if it works
@@ -185,8 +185,8 @@ imapconf %>%
 results <- imapconf %>%
   select_mailbox(mbox = "INBOX") %>%
   search_period(since_date_char = "17-May-2018",
-               before_date_char = "30-Jun-2019",
-               flag = "ANSWERED")
+                before_date_char = "30-Jun-2019",
+                flag = "ANSWERED")
 
 results$msg_id
 ```
@@ -210,8 +210,9 @@ results$msg_id
 results <- imapconf %>%
   select_mailbox(mbox = "UC Riverside") %>%
   search_string(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
-  fetch_msg_header(imapconf = imapconf, msg_id = msg_id, 
-                 fields = c("DATE", "SUBJECT"))
+  fetch_msg_header(imapconf = imapconf, 
+                   msg_id = msg_id, 
+                   fields = c("DATE", "SUBJECT"))
 
 results
 ```
