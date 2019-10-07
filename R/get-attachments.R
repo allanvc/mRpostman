@@ -86,11 +86,19 @@ get_attachment <- function(msg_list) {
       # "ending with"
 
       # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
-      # we opted for not decoding all characters, only dots
-      filenames <- gsub("=2E",".", filenames)
+      # we opted for decoding only dots first to get the correct file extension part
+      filenames <- gsub("=2E|%2E",".", filenames)
 
       # standard URLdecoding:
-      filenames <- utils::URLdecode(filenames)
+      for (j in seq_along(filenames)) {
+        filenames[j] <- tryCatch({
+          filenames[j] <- utils::URLdecode(filenames[j])
+        }, warning = function(w) {
+          filenames[j]
+        }, error = function(e) {
+          filenames[j]
+        })
+      }
 
       # removing problematic Win-*NIX-OSX characters from filenames
       # forbiden_chars <- "[\\/:*?\"<>|]"
