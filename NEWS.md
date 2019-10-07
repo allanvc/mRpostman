@@ -1,11 +1,14 @@
 ## mRpostman 0.3.0 (2019-10-07)
 
 
-### Features (0.3.0)
+### Features
 
-* get_attachment() function:
+* get_attachments() function:
 + added get_attachment()
 + added helper functions: has_attachment(), check_args_get_attachment()
+
+* list_attachments() function:
++ added list_attachments()
 
 * loop_fetch_XXXX() functions:
 + error msg: fixed from examineMailbox() to examine_mailbox()

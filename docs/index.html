@@ -95,7 +95,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mrpostman" class="anchor"></a>mRpostman <img src="reference/figures/logo.png" align="right" width="140">
 </h1></div>
-<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.0.0/mRpostman/man/figures/logo.png" align="right" /> -->
+<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.0_git/mRpostman/man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
@@ -211,26 +211,26 @@
 <a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># IMAP settings</span></a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Gmail</span></a>
 <a class="sourceLine" id="cb2-6" data-line-number="6">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                          <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                          <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">                           <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">                           <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
 <a class="sourceLine" id="cb2-9" data-line-number="9">                          )</a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># Yahoo Mail</span></a>
 <a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.mail.yahoo.com/",</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#                           username="your_user",</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#                            username="your_user",</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># AOL Mail</span></a>
 <a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#                           username="your_user",</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#                            username="your_user",</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># Yandex Mail</span></a>
 <a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.yandex.com",</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#                           username="your_user",</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#                            username="your_user",</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-28" data-line-number="28"></a>
 <a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># you can try another IMAP server and see if it works</span></a>
@@ -256,8 +256,8 @@
 <a class="sourceLine" id="cb4-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_period.html">search_period</a></span>(<span class="dt">since_date_char =</span> <span class="st">"17-May-2018"</span>,</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">               <span class="dt">before_date_char =</span> <span class="st">"30-Jun-2019"</span>,</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">               <span class="dt">flag =</span> <span class="st">"ANSWERED"</span>)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">                <span class="dt">before_date_char =</span> <span class="st">"30-Jun-2019"</span>,</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">                <span class="dt">flag =</span> <span class="st">"ANSWERED"</span>)</a>
 <a class="sourceLine" id="cb4-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb4-9" data-line-number="9">results<span class="op">$</span>msg_id</a></code></pre></div>
 </div>
@@ -279,10 +279,11 @@
 <a class="sourceLine" id="cb6-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, <span class="dt">msg_id =</span> msg_id, </a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                 <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb6-8" data-line-number="8">results</a></code></pre></div>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, </a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">                   <span class="dt">msg_id =</span> msg_id, </a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">                   <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">results</a></code></pre></div>
 </div>
 </div>
 <div id="future-improvements" class="section level2">
