@@ -52,7 +52,7 @@
 ### Features (0.2.1-2)
 * loop-fetch-XXXX() functions for fetching msgs:
 + added select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox) inside
-the tryCatch in the while loop -- it prevent errors specially when messages have
+the tryCatch in the while loop -- it prevents errors specially when messages have
 larger attachments taking too much time to fetch. In some IMAP servers (such as 
 Yandex) it may lose the mbox selection. Other alternatives: set a larger 
 timeout_ms in configure_imap.
