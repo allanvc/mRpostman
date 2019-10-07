@@ -8,9 +8,9 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                           username="your_gmail_user",
-#'                           password=rstudioapi::askForPassword()
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
+#'                            password=rstudioapi::askForPassword()
 #'                           )
 #'
 #' # search

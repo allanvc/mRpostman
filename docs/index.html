@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMAP Tools in a Tidy Way • mRpostman</title>
+<title>IMAP Toolkit • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -15,13 +15,14 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Tools in a Tidy Way">
-<meta property="og:description" content="Multiple IMAP (Internet Message Access Protocol) commands 
-    based on the RFC 3501 manual (Crispin, 2003, &lt;doi:10.17487/RFC3501&gt;), 
-    its updates, and other related documents. Besides other features,
-    'mRpostman' provides functions for listing, selecting and renaming mailboxes, 
-    as well as moving, fetching, and searching for messages using several 
-    criteria.">
+<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Toolkit">
+<meta property="og:description" content="IMAP4rev1 (Internet Message Access Protocol, Version 4rev1) 
+    functionalities based on the RFC 3501 manual (Crispin, 2003, 
+    &lt;doi:10.17487/RFC3501&gt;), its updates, and other related documents. 
+    'mRpostman' makes extensive use of 'curl' and libcurl capabilities, 
+    providing functions for mailboxes manipulation and eletronic messages 
+    operations such as moving, deleting, and searching messages by criteria, 
+    setting and clearing flags, selective fetching of message attributes and more.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -42,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -94,21 +95,21 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mrpostman" class="anchor"></a>mRpostman <img src="reference/figures/logo.png" align="right" width="140">
 </h1></div>
-<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.2.0/mRpostman/man/figures/logo.png" align="right" /> -->
+<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.0.0/mRpostman/man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
-<p>IMAP Tools in a Tidy Way</p>
+<p>IMAP Toolkit for R</p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><strong>mRpostman</strong> provides multiple IMAP (Internet Message Access Protocol) commands based on the RFC 3501 manual (Crispin, 2003), its updates, and other related documents. Besides other features, this package presents functions for listing, selecting and renaming mailboxes, as well as moving, fetching, and searching for messages using several criteria.</p>
+<p><strong>mRpostman</strong> provides multiple IMAP (Internet Message Access Protocol) commands based on the RFC 3501 manual (Crispin, 2003), its updates, and other related documents. This package makes extensive use of ‘curl’ and libcurl capabilities to provide functions for listing, selecting and renaming mailboxes, as well as moving, fetching, and searching messages using several criteria.</p>
 <p>mRpostman website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
 </div>
 <div id="first-things-first" class="section level2">
 <h2 class="hasAnchor">
 <a href="#first-things-first" class="anchor"></a>First things first …</h2>
-<p>Before using <strong>mRpostman</strong>, it is essential to configure your mail account. Many mail providers require authorizing <strong>“less secure apps”</strong> to access your account from a third part app.</p>
+<p>Before using <strong>mRpostman</strong>, it is essential to configure your email account. Many mail providers require authorizing <strong>“less secure apps”</strong> to access your account from a third part app.</p>
 <p>See how to do it for Gmail, Yahoo Mail and AOL Mail.</p>
 <div id="gmail" class="section level3">
 <h3 class="hasAnchor">
@@ -162,7 +163,7 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The package is divided in 7 groups of functions:</p>
+<p>The package is divided in 8 groups of functions:</p>
 <ul>
 <li>
 <strong>configuration</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>;</li>
@@ -182,6 +183,8 @@
 </li>
 <li>
 <strong>fetch</strong>: <code><a href="reference/fetch_full_msg.html">fetch_full_msg()</a></code>, <code><a href="reference/fetch_msg_header.html">fetch_msg_header()</a></code>, <code><a href="reference/fetch_msg_text.html">fetch_msg_text()</a></code>, <code><a href="reference/fetch_msg_metadata.html">fetch_msg_metadata()</a></code>;</li>
+<li>
+<strong>attachments</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>;</li>
 <li>
 <strong>miscellania</strong>: <code><a href="reference/copy_msg.html">copy_msg()</a></code>, <code><a href="reference/get_min_id.html">get_min_id()</a></code>, <code><a href="reference/get_max_id.html">get_max_id()</a></code>, <code><a href="reference/delete_msg.html">delete_msg()</a></code>, <code><a href="reference/expunge.html">expunge()</a></code>, <code><a href="reference/add_flags.html">add_flags()</a></code>, <code><a href="reference/remove_flags.html">remove_flags()</a></code>, <code><a href="reference/replace_flags.html">replace_flags()</a></code>, <code><a href="reference/move_msg.html">move_msg()</a></code>.</li>
 </ul>
@@ -213,22 +216,28 @@
 <a class="sourceLine" id="cb2-9" data-line-number="9">                          )</a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># Yahoo Mail</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.mail.yahoo.com/",</span></a>
 <a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#                           username="your_user",</span></a>
 <a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-16" data-line-number="16"></a>
 <a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># AOL Mail</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># imapconf &lt;- configureIMAP(url="imaps://export.imap.aol.com/",</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
 <a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#                           username="your_user",</span></a>
 <a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># you can try another IMAP server</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co"># Listing</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># Yandex Mail</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.yandex.com",</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#                           username="your_user",</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#                           password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># you can try another IMAP server and see if it works</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co"># Listing</span></a>
+<a class="sourceLine" id="cb2-32" data-line-number="32">imapconf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
 </div>
 <div id="examining-a-mailbox" class="section level3">
 <h3 class="hasAnchor">
@@ -305,6 +314,8 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=mRpostman">https://​cloud.r-project.org/​package=mRpostman</a>
+</li>
 <li>Report a bug at <br><a href="https://github.com/allanvc/mRpostman/issues">https://​github.com/​allanvc/​mRpostman/​issues</a>
 </li>
 </ul>

@@ -69,7 +69,7 @@ loop_fetch_msg_metadata <- function(new_imapconf, msg_id, by, metadata,
 
         mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
-        forbiden_chars <- "[\\~#%&*{}/:<>?|\"-]"
+        forbiden_chars <- "[\\/:*?\"<>|]"
         mbox_clean = gsub(forbiden_chars, "", mbox_clean)
 
         complete_path <- paste0("./", mbox_clean)
@@ -94,6 +94,7 @@ loop_fetch_msg_metadata <- function(new_imapconf, msg_id, by, metadata,
 
         response <- tryCatch({
 
+          select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox)
           curl::curl_fetch_memory(url = new_imapconf$url, handle = h)
 
         }, error = function(e) {
@@ -119,7 +120,7 @@ loop_fetch_msg_metadata <- function(new_imapconf, msg_id, by, metadata,
 
             mbox_clean = gsub("%20", "_", new_imapconf$mbox)
 
-            forbiden_chars <- "[\\~#%&*{}/:<>?|\"-]"
+            forbiden_chars <- "[\\/:*?\"<>|]"
             mbox_clean = gsub(forbiden_chars, "", mbox_clean)
 
             complete_path <- paste0("./", mbox_clean)
@@ -139,7 +140,7 @@ loop_fetch_msg_metadata <- function(new_imapconf, msg_id, by, metadata,
          - your internet connection status;\n
          - if imapconf options are valid;\n
          - the name of the Mailbox (argument "mbox");\n
-         - if "msg_id" does not have any number greater than "EXISTS" -- see examineMailbox().'
+         - if "msg_id" does not have any number greater than "EXISTS" -- see examine_mailbox().'
 
           )
         }

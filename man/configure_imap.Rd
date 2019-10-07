@@ -11,7 +11,7 @@ configure_imap(url, username, password, show_pass = FALSE,
 \arguments{
 \item{url}{String containing the IMAP server address}
 
-\item{username}{String containing user's name.}
+\item{username}{String containing the username.}
 
 \item{password}{String containing user's password.}
 
@@ -31,7 +31,7 @@ but curl package accepts 2147483647 bytes without returning errors.}
 
 \item{fresh_connect}{If \code{TRUE}, opens a new curl connection for each
 IMAP command to be executed. Default is \code{NULL}. Nonetheless, most of
-mRpostman functions will set \code{fresh_connect = TRUE} for the retires
+mRpostman functions will set \code{fresh_connect = TRUE} for the retries
 in case of an connection error.}
 
 \item{timeout_ms}{Time in miliseconds (ms) to wait until a connection or a
@@ -54,16 +54,13 @@ Configure IMAP server settings.
 
 # Gmail config example:
 library(mRpostman)
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                           username="your_gmail_user",
+imapconf <- configure_imap(url="imaps://your.imap.server.com",
+                           username="your_username",
                            password=rstudioapi::askForPassword()
                           )
 }
 }
 \references{
 \url{https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html}
-}
-\seealso{
-Other config: \code{\link{config_handle}}
 }
 \concept{config}

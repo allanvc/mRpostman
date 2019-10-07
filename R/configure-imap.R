@@ -3,7 +3,7 @@
 #' @description Configure IMAP server settings.
 #'
 #' @param url String containing the IMAP server address
-#' @param username String containing user's name.
+#' @param username String containing the username.
 #' @param password String containing user's password.
 #' @param show_pass How to store user's password in imapconf object. Default is
 #'     \code{FALSE}.
@@ -17,7 +17,7 @@
 #'     but curl package accepts 2147483647 bytes without returning errors.
 #' @param fresh_connect If \code{TRUE}, opens a new curl connection for each
 #'     IMAP command to be executed. Default is \code{NULL}. Nonetheless, most of
-#'     mRpostman functions will set \code{fresh_connect = TRUE} for the retires
+#'     mRpostman functions will set \code{fresh_connect = TRUE} for the retries
 #'     in case of an connection error.
 #' @param timeout_ms Time in miliseconds (ms) to wait until a connection or a
 #'     command to be executed. Default is 5000ms (or 5 seconds). If a first
@@ -38,8 +38,8 @@
 #'
 #' # Gmail config example:
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                            username="your_gmail_user",
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
 #'                            password=rstudioapi::askForPassword()
 #'                           )
 #' }

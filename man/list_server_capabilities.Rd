@@ -24,9 +24,9 @@ Lists IMAP server's capabilities.
 
 # configure IMAP
 #' library(mRpostman)
-imapconf <- configureIMAP(url="imaps://imap.gmail.com",
-                          username="your_gmail_user",
-                          password=rstudioapi::askForPassword()
+imapconf <- configure_imap(url="imaps://your.imap.server.com",
+                           username="your_username",
+                           password=rstudioapi::askForPassword()
                          )
 
 # list server's capabilities

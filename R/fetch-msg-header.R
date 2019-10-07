@@ -14,8 +14,8 @@
 #'
 #' # configure IMAP
 #' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://imap.gmail.com",
-#'                            username="your_gmail_user",
+#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
+#'                            username="your_username",
 #'                            password=rstudioapi::askForPassword()
 #'                           )
 #' # fetching
@@ -29,13 +29,13 @@
 #' @export
 #'
 fetch_msg_header <- function(imapconf, msg_id, by = "MSN", fields = NULL,
-                           negate_fields = FALSE, peek = TRUE,
-                           partial = NULL, write_to_disk = FALSE,
-                           keep_in_mem = TRUE, retries = 2){
+                             negate_fields = FALSE, peek = TRUE,
+                             partial = NULL, write_to_disk = FALSE,
+                             keep_in_mem = TRUE, retries = 2){
 
   # checks
   check_args_fetch_msg_header(imapconf, msg_id, by, fields, negate_fields, peek,
-                            partial, write_to_disk, keep_in_mem, retries)
+                              partial, write_to_disk, keep_in_mem, retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -46,14 +46,16 @@ fetch_msg_header <- function(imapconf, msg_id, by = "MSN", fields = NULL,
   # config handle
   h <- config_handle(new_imapconf)
 
-  msg_list <- loop_fetch_msg_header(new_imapconf, msg_id, by, fields,
-                                  negate_fields, peek, partial, write_to_disk,
-                                  keep_in_mem, retries, handle = h)
-
-
   if (!is.null(partial)) {
     warning("Setting a partial interval of characters may strip your results.")
   }
+
+  msg_list <- loop_fetch_msg_header(new_imapconf, msg_id, by, fields,
+                                    negate_fields, peek, partial, write_to_disk,
+                                    keep_in_mem, retries, handle = h)
+
+  attr(msg_list, which = 'mbox') = new_imapconf$mbox
+
 
   # handle sanitizing
   rm(h)

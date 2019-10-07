@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -142,7 +142,7 @@
     </tr>
     <tr>
       <th>username</th>
-      <td><p>String containing user's name.</p></td>
+      <td><p>String containing the username.</p></td>
     </tr>
     <tr>
       <th>password</th>
@@ -174,7 +174,7 @@ but curl package accepts 2147483647 bytes without returning errors.</p></td>
       <th>fresh_connect</th>
       <td><p>If <code>TRUE</code>, opens a new curl connection for each
 IMAP command to be executed. Default is <code>NULL</code>. Nonetheless, most of
-mRpostman functions will set <code>fresh_connect = TRUE</code> for the retires
+mRpostman functions will set <code>fresh_connect = TRUE</code> for the retries
 in case of an connection error.</p></td>
     </tr>
     <tr>
@@ -200,17 +200,13 @@ listed in <code><a href='https://www.rdocumentation.org/packages/curl/topics/cur
 
     <p><a href='https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html'>https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html</a></p>
     
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p>Other config: <code><a href='config_handle.html'>config_handle</a></code></p></div>
-    
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 <span class='co'># Gmail config example:</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'>configure_imap</span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://imap.gmail.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_gmail_user"</span>,
+<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'>configure_imap</span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
+                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
                            <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
                           )
 <span class='co'># }</span></pre>
@@ -223,8 +219,6 @@ listed in <code><a href='https://www.rdocumentation.org/packages/curl/topics/cur
       <li><a href="#value">Value</a></li>
 
       <li><a href="#references">References</a></li>
-
-      <li><a href="#see-also">See also</a></li>
       
       <li><a href="#examples">Examples</a></li>
     </ul>

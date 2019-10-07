@@ -34,7 +34,7 @@ to the disk as a text file in the working directory. Default is \code{FALSE}.}
 
 \item{keep_in_mem}{If \code{TRUE} keeps a copy of fetch results as an
 list in the R session when \code{write_to_disk = TRUE}. Default is
-\code{FALSE}. It can only be set \code{TRUE} when
+\code{TRUE}. It can only be set \code{FALSE} when
 \code{write_to_disk = TRUE}.}
 
 \item{retries}{Number of attempts to connect and execute the command. Default
@@ -62,6 +62,7 @@ Other check args: \code{\link{check_args_add_replace_flags}},
   \code{\link{check_args_fetch_msg_header}},
   \code{\link{check_args_fetch_msg_metadata}},
   \code{\link{check_args_fetch_msg_text}},
+  \code{\link{check_args_get_attachment}},
   \code{\link{check_args_get_max_min_id}},
   \code{\link{check_args_move_msg}},
   \code{\link{check_args_remove_flags}},
