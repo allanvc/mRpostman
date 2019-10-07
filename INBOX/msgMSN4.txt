@@ -1,298 +1,306 @@
-X-Apparently-To: mrpostman.package@aol.com; Mon, 23 Sep 2019 21:09:01 +0000
-Return-Path: <avcastro.quadros@gmail.com>
-Authentication-Results: mta4049.aol.mail.bf1.yahoo.com; 
- dkim=pass (ok) header.i=@gmail.com header.s=20161025;
- spf=pass smtp.mailfrom=@gmail.com;
- dmarc=pass(p=none sp=quarantine dis=none) header.from=gmail.com;
-Received-SPF: pass (domain of gmail.com designates 209.85.167.182 as permitted sender)
-X-YMailISG: _EfKTQQWLDtsvlYaDHvDmh0qpqEPM9J4.yEgoTcIco6w4VOD
- te0HGm_zfITRzhk7XNCe6_R6TNcW2CzK4CdCeNGWOArounekhPstwB4OQF35
- DUphdb.Z6zdDt4uhZ8_saqZgUkpBjCYlMSsw_97m5iNLmI0GveX5VVmlY49d
- D7Vn_1nP51hvlF.Iwcu4Y4x9gWaFIL.HLqtukAjzlMsGU2B4ai_ZosiSJJGa
- TCfI6AG3ISMEKSTtwIq3EZNvw9Mou4m8MgzboA1BWQuK8cc0Rtm7QfPMe1MU
- PUQJVn_Uw.WiRZKkFpEN0PCxhU.giMv.Ow5N6agyrxeUpbn7yr96jeM9p5CD
- 7YHMUbwds8slTYKLBFVljGA2cRxSEwJpWH8JuphtIFM3_umZbImSKY77CQxQ
- Sr_FJohKUaWZsGa_4DGbzHwZLoUdgIPXIugaOgZofO_5xDikdalH_kO3WXr5
- f49AESJahRYATzI6.Gor7ldR8E8CTn6U4L5F0G7JtyVknC9jkoO7clJC4SV8
- GBmfFlyYCEkmEGoxBC3S4Kei6W_MvBVKFhr7DmfHjVbA4CdZLerVny5.yT3L
- K2sFK5MKc.T.urRgghbvcorGt5PP.GJqy0EKmmuQkw54yK_tPxQCrk3LmyNu
- 7uKe77XVW64b5IACe.ClBV5XolifvJLNcgRk6nDwg1hSnl5pD1rDfrRdodfK
- MfXmQLUfgGl.DWroO2oOBA0O39cOOUANjw0BqItLD3ExADgnhHT_36_aBWgh
- g1SkdHN22H0tVS7n8VM2VAeIyxI.a5dUsHsXs6desDUvtrszlog77699RwD5
- JvovOD0iEKpuhUyRobp5dayOon6lA6k3PF7_EBrX.0uvcAvyGVjWVHeUoOzA
- 5BZZZP68OmntMu8NbzLnjeRT6SHRY5poiW5ymOHHb.qGMQVoqhW5NxhOdj5P
- i8idXGHr.eeUjcDeYnGD6pRo6WSKA.WSgFjFNDfdI7taADAXd8sTxzaDG9Us
- D1UlILQ7bTiZ4s_qyoLs6WH0RD4l158DA8kr.6zGu.FLFNT4pwLMLVGzzrHv
- p7SD4N7.rGQRjU7M9ogskR4AJJdF_xGB8StbExdKPmRxCTULGdd.fibPSwP3
- vpIajpY_zsG3tjnBpMAs0gy8SbSSRgCiHOpv9q9W6MJwPfPz3Po6gnV1k6DW
- zkM-
-X-Originating-IP: [209.85.167.182]
-Received: from 10.196.122.42  (EHLO mail-oi1-f182.google.com) (209.85.167.182)
-  by mta4049.aol.mail.bf1.yahoo.com with SMTPS; Mon, 23 Sep 2019 21:09:01 +0000
-Received: by mail-oi1-f182.google.com with SMTP id w6so8891518oie.11
-        for <mRpostman.package@aol.com>; Mon, 23 Sep 2019 14:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=/gi6JllyMW/OtLpRuOcggVz1UWvMbfRDOdsnFOVEE3c=;
-        b=aOQ/nx5C0NhU97yZhtrDIPVnU3ei7QJ6eq1IFkRABFVexrXTHcnY6s4w4G+Ow9AjtE
-         2aNqoRBuC4/DZvDhjqR1OaiE/u3N+0wxho9p6h+iDy5YTyM6F6UQ9tgKo6giO+3ZoO/8
-         dl5unr0rKfdobMp2kHbW1iS/p2Vlos75HvpWDMq0KLG6lkeYHkoqEnBWObS5DFXwR92i
-         CS/S0OJp38GefO/K3QwEzF8r34xnI7AGKpjvzxjCq/3iGPmUYHZ3C2kZDHN+/VeJW5pa
-         C4ipIycB1i3R/S+VDNYk6awAjVj3lF0XHhuTXW2CEoxy/4odPxCioGmHqrxLLbj4Kykh
-         Cvew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=/gi6JllyMW/OtLpRuOcggVz1UWvMbfRDOdsnFOVEE3c=;
-        b=ZVO3FU9AheUM0WOF4WYtMdt61M8Y+JtLvy6QZ193e8qTxyEcA7otqfM/iOqdG+YXYk
-         CfQ3a+jmkhYUeeoFuRWsyGGaVT1cgBauhLpgRoDks2yyfJs56Vmdr43ZkgmokPmltwk3
-         yHrg3GipK76k64V42utrHiFxKdl22HwYlUgKCEL5jsGWd7ZT2eUu1z303SqWc+XwkrK2
-         cPGTV8mpauQrBvIvZQqQMRz7PmPCc1gvLtBJANqz5xaDz3uo7lvJSYle7JMqGHubqhKS
-         /LUIESrQDoIxXPlzpt6gucXY1ZwGpUicpF5nZmXtgK6CLfuDtt0VQOGCs9Cn9y8IIm1G
-         Mkhw==
-X-Gm-Message-State: APjAAAWkc4eH/8LwnVTsJaqgIf59V9PQfebb3h4mz/f3gyKSj6jrf8rE
-	MlZmkYYJmcTXyB3uvaalqy8/0CdCC6kyIf5rlahRR8Pz
-X-Google-Smtp-Source: APXvYqyPgaqzlpGn/GNHpxneMbmaYlUZKjEPCIvspzDnwFpD830d6ml5t561Yw18p1rLUWz/hYS7mW3tSQQ/Js0Sy/8=
-X-Received: by 2002:aca:4d08:: with SMTP id a8mr1889299oib.39.1569272939564;
- Mon, 23 Sep 2019 14:08:59 -0700 (PDT)
-MIME-Version: 1.0
+X-Apparently-To: mrpostman.package@yahoo.com; Tue, 24 Sep 2019 04:07:44 +0000
+Return-Path: <allan.quadros@fnde.gov.br>
+Authentication-Results: mta4202.mail.gq1.yahoo.com; 
+ dkim=permerror (bad sig) header.i=@fnde.onmicrosoft.com header.s=selector2-fnde-onmicrosoft-com;
+ spf=pass smtp.mailfrom=@fnde.gov.br;
+ dmarc=NULL(p=NULL sp=NULL dis=NULL) header.from=fnde.gov.br;
+Received-SPF: pass (domain of fnde.gov.br designates 200.130.5.140 as permitted sender)
+X-YMailISG: 4cP.edUWLDuHg98OSjMF.2h1O6KOga1sWZyGz442..6nefHU
+ WVpFxMhhyF5HqCZGBDqHPJiLb.B4hQTll1O_GQ3DsM8k53OaPY259vd1bQyB
+ HiAcMOkKvyBgtHrtrk0cFl.TAEFzjcg3H7lSWOsqqVXl3FibYD_RoZ.YD4O4
+ Pj3DFgqv5c4S_A8VS.C5ZXxCrF_Ie5babQw_ZBF3Ym9gvm3AlPqfh1tEXjTu
+ t4JnCL6.3Ivnhk.3U1EIVAdIIrnshAmM4aN3SaKp4WHma9lqgSoQK_bcQRW3
+ KM0LQHlgYMDm_bMg64QqMesC7_XYZWUyZs90QZPmnC5vRILTCGqjHmMDu_Mr
+ 286wuAvlMCNQI0f1zKcSa6wMtiHdYUsAYagi.cH9kpp8aaNYb.M60Gz7W7RQ
+ mIYB0JagVjHi.sZ0McqJMtP_H2bdkpCtw5FU7xqWmuvmvH9e1qpPp4XirJ23
+ nS1X_jibkaMWoVS7ErFUt6zQhS2BUQZz9fzrxgMQf0AawbiezPhq4AjDhD3L
+ A8S67EspeQyfmEBTmrs4zOpkFQfzZYpGuUKi3W5UlzrurvyJPzyRcEzR217g
+ sIgUUsJFKnOeEn.nFr9KGzhWKrvfPAWnLfW5A9QclgddYKJm1lSKTt6inf4J
+ lbKw390GvdCQE2rwIl29SH0mlSTNLqnsyHweI6tcM85vDqqqEUUMzOlhiRVn
+ TtVMPBKosaarzzLMCfMX3hecpXirp.ymPqraRSEQj4fDhUwsSqKaDR1x4As2
+ EzOEEWQkmq.8j4.CCwSt172MES8kz3tBF_4Uix8UmKR4teXgmQYDbqPYFFbd
+ TQWBR5gFCpCTvIGDWNnlEcrUa17HCCFc.6H4b63RIH5dI5bRirP2WZElGeqb
+ FzeuLZMlWrJz24MCiZjqS22Eibjr2PRDdVOJe8EGRT_YliQVauDd9LSnNLKv
+ mGVobqdEPL5GA_8Bs_BF7DCxxvTo.QmKvYdqcJwPWcmxBwg5YsbVXriSSp9w
+ jvSbbLS21nPiGEttWtMxyQr_PETDf_hXPvI2_obFy9.nLFuavaqLHI3PCFs_
+ ZXYLI0UDMBBMW1pRPldRK5X7kfWkfaDJt21V2AwjgUkW12_TbZ6efNHetyFd
+ V6hvbHbeue9NYhj1EbrwpFsdPy4WtDdme6PiBMPHOd6dg1s_nul9VMd6PmOb
+X-Originating-IP: [200.130.5.140]
+Received: from 10.214.155.146  (EHLO tefe01.fnde.gov.br) (200.130.5.140)
+  by mta4202.mail.gq1.yahoo.com with SMTPS; Tue, 24 Sep 2019 04:07:43 +0000
+Received: from trombetas04.fnde.gov.br (trombetas04.fnde.gov.br [172.20.14.134]) by tefe01.fnde.gov.br with smtp
+	(TLS: TLSv1/SSLv3,256bits,AES256-GCM-SHA384)
+	 id 3dac_028b_c8d77e7d_45dc_4cbc_9fe6_868dd87b54bc;
+	Tue, 24 Sep 2019 01:07:35 -0300
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AogaAMV5tsVz4omzo+XWOsybMalKbIHUf/0ASmx2b8n8zS8nzzxZrAMDRSRlpyaLTfF8LTftAxOGG7eRrvYBolyNFWWPS6x7ee1N6MyDl0D7vpUlaNqPssQ7ZW7dcGf324tHyWrXtGb9Yp1hf46HOM6+eVMx8b1Wm15V+Oo4+5HoLILB5SOOGZK/VeGy701D0QlI1dB0kqdMwvqI+ThT3SVZMCv3TmFqdivp8TC3RVrNZQEr3aT3sJUpFQamAXgb9qSAyi0L4JwkXQG1PNYFhAKDi4kf4ryBBXHMpVFpMxQz8O2G2Z7JKSXjMNZdPvQxATir4tQb/zocz207fhNuiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t9lURfu0wmnFpl9zvSUCAVUlrv0mu7XNbvthYoomay0=;
+ b=UrFpVbIn0HCpP3qlmjswqIu+OaTLvE/BBIXRI/4JoT4Ep0s8KB09aV5WwnE3U5gyznSvpyoKvmp5mqyuaSnDs/s4n4ZvfqWwugFuSPevbbdW/TcaL8+5f+EPqt7bvBeySLgjMNLiEmhi8b7MiVs7SMvBd0Relrl7K44QG/MSsvsJ+4hqxRHs5mnk4lAcD4bwLQVFhqkuTcK+Dbc02NTa03ecdSWX8XdyxYUPDTitpughmts5H0LTzxF0wEjfSTbIgD657TzIzD4nyx7azFjIOUNoLEgmZCnoYoIReCAfxa3dC2BTAoEIemhcH2DWdLcrYreWJg0o+Z6lSasW2/Z/uA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fnde.gov.br; dmarc=pass action=none header.from=fnde.gov.br;
+ dkim=pass header.d=fnde.gov.br; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fnde.onmicrosoft.com;
+ s=selector2-fnde-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t9lURfu0wmnFpl9zvSUCAVUlrv0mu7XNbvthYoomay0=;
+ b=KE0qKDU40q+h5Q2lG5z+1uK/sfrEN4MSvQAQyGwjmwvZaTSJ8xdyHKGCy2xUUEJzTHvyKBcrfK9qv+gP+utwujBcwaWZrXfc3cTGshDFOaum+k8CHXjJUiskG0ZIgVCxDkknrxqk6mJtVbZimVmlB17D/ZncXsrZf3bqILXcaQg=
+From: ALLAN VIEIRA DE CASTRO QUADROS <allan.quadros@fnde.gov.br>
+To: "mRpostman.package@yahoo.com" <mRpostman.package@yahoo.com>,
+	"mRpostman.package@yandex.com" <mRpostman.package@yandex.com>
+Subject: =?Windows-1252?Q?Enc:_Termo_de_Responsabilidade_=96_Teto_remunerat=F3rio?=
+Thread-Topic: =?Windows-1252?Q?Termo_de_Responsabilidade_=96_Teto_remunerat=F3rio?=
+Thread-Index: AdRr4coMCoCLUxbMSVKViWn2xFRNHQAgLpggAABsECAAAAhakEBGzyygAAQDX+ABP3XKzw==
+Date: Tue, 24 Sep 2019 04:07:28 +0000
+Message-ID: <RO1P152MB10048EB1CB30811385CF33B3B2840@RO1P152MB1004.LAMP152.PROD.OUTLOOK.COM>
 References: <1754144B62CA4B4986CD00604C422239D46A5186@tibagi02.fnde.gov.br>
  <2B299240B9316A45A31FBB288BB0E2C301943E9470@tibagi02.fnde.gov.br>
  <1754144B62CA4B4986CD00604C422239D46A57A7@tibagi02.fnde.gov.br>
  <0BE50F5A7A33FD458DA9C142287A52EB01B20F8EDA@tibagi01.fnde.gov.br>
- <SC1P15201MB2335735B850BDDEB665EE8A6B78F0@SC1P15201MB2335.LAMP152.PROD.OUTLOOK.COM>
- <FR1P152MB28569FFDCB8E254DB42AD50FC58F0@FR1P152MB2856.LAMP152.PROD.OUTLOOK.COM>
- <RO1P152MB1004C14317BECB5216918149B2850@RO1P152MB1004.LAMP152.PROD.OUTLOOK.COM>
-In-Reply-To: <RO1P152MB1004C14317BECB5216918149B2850@RO1P152MB1004.LAMP152.PROD.OUTLOOK.COM>
-From: Allan Vieira de Castro Quadros <avcastro.quadros@gmail.com>
-Date: Mon, 23 Sep 2019 18:08:48 -0300
-Message-ID: <CAJEsQYtg7dBg_NJVtU_eOU_t7aYWmhCjn73EHLqzbX1sTQB3ow@mail.gmail.com>
-Subject: =?UTF-8?Q?Fwd=3A_Termo_de_Responsabilidade_=E2=80=93_Teto_remunerat=C3=B3r?=
-	=?UTF-8?Q?io?=
-To: mRpostman.package@aol.com
-Content-Type: multipart/mixed; boundary="0000000000001e886605933ed450"
-Content-Length: 327636
+ <SC1P15201MB2335735B850BDDEB665EE8A6B78F0@SC1P15201MB2335.LAMP152.PROD.OUTLOOK.COM>,<FR1P152MB28569FFDCB8E254DB42AD50FC58F0@FR1P152MB2856.LAMP152.PROD.OUTLOOK.COM>
+In-Reply-To: <FR1P152MB28569FFDCB8E254DB42AD50FC58F0@FR1P152MB2856.LAMP152.PROD.OUTLOOK.COM>
+Accept-Language: pt-BR, en-US
+Content-Language: pt-BR
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=allan.quadros@fnde.gov.br; 
+x-originating-ip: [189.6.27.60]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 952c9cf8-444b-486f-b8e2-08d740a4b6c9
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(49563074)(7193020);SRVR:RO1P152MB1196;
+x-ms-traffictypediagnostic: RO1P152MB1196:
+x-microsoft-antispam-prvs: <RO1P152MB119676E956D6DFE11B7B4902B2840@RO1P152MB1196.LAMP152.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:23;
+x-forefront-prvs: 0170DAF08C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(366004)(199004)(189003)(76116006)(2906002)(7736002)(99936001)(64756008)(6606003)(66476007)(66946007)(33656002)(66446008)(6116002)(3846002)(25786009)(66556008)(66066001)(11346002)(186003)(486006)(446003)(99286004)(26005)(19627405001)(76176011)(7696005)(86362001)(66576008)(224303003)(81166006)(8936002)(2501003)(81156014)(14454004)(102836004)(6506007)(476003)(733005)(52536014)(14444005)(6436002)(5660300002)(110136005)(74316002)(66574012)(71200400001)(498600001)(236005)(256004)(9686003)(55016002)(71190400001)(54896002);DIR:OUT;SFP:1101;SCL:1;SRVR:RO1P152MB1196;H:RO1P152MB1004.LAMP152.PROD.OUTLOOK.COM;FPR:;SPF:None;LANG:pt;PTR:InfoNoRecords;A:0;MX:1;
+received-spf: None (protection.outlook.com: fnde.gov.br does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 7KkH4UEvSTOIIA9oziEpsGf/mQPANdYlsDrpWMZ5e5LN+MhFnG8ONBMm1AAsk8HnQ80dWVLCDlLXDHbQn3afj3lgOyWlU0vpzaZCav0V8c6r9CizzHuwLC03GRn/H1MjpAu7qeYk9k7/8P3cTgtMjVoqjb/ky1By2f8qDdmMGciUo6UFfDsgliBqY5vGOoWzs5+QKaRAQASHr6tiq00M4BxZ7BFCTTTy5HTjXS86Ox7iwkCtd983NFzsd/64y2PlKOZZZcLFg/yS2KnFR1K5zLOAwgLI8sycncNve8i5KVIDfyxd367YlddfWg7KIGNRXtiPhgNSszdjayr99dHHFX1+BhzdqHoCoPRLeCX36LhqEzQaODbmKzhoOV6XlkzICF6jKzO+l137ZB7mxu6fZ1wTDYSqP7k32F8CxKedlNc=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/mixed;
+	boundary="_008_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_"
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 952c9cf8-444b-486f-b8e2-08d740a4b6c9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 04:07:28.0552
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: cf8454d3-e012-4a9d-95b3-70bdb6f459d5
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Xv2I3q9SXWAbcft9s+ZdIFIOcdAr9X2NjVsWYehHriGa5dzmtB0PmNSkepIhNLHwjk+uaczoTTvzydedKaB2xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: RO1P152MB1196
+Return-Path: allan.quadros@fnde.gov.br
+X-OriginatorOrg: fnde.gov.br
+X-CrossPremisesHeadersFilteredBySendConnector: trombetas04.fnde.gov.br
+X-OrganizationHeadersPreserved: trombetas04.fnde.gov.br
+Content-Length: 327511
 
---0000000000001e886605933ed450
-Content-Type: multipart/related; boundary="0000000000001e886505933ed44f"
+--_008_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: multipart/related;
+	boundary="_007_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_";
+	type="multipart/alternative"
 
---0000000000001e886505933ed44f
-Content-Type: multipart/alternative; boundary="0000000000001e886305933ed44e"
+--_007_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: multipart/alternative;
+	boundary="_000_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_"
 
---0000000000001e886305933ed44e
-Content-Type: text/plain; charset="UTF-8"
+--_000_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: text/plain; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
----------- Forwarded message ---------
-De: ALLAN VIEIRA DE CASTRO QUADROS <allan.quadros@fnde.gov.br>
-Date: seg, 23 de set de 2019 =C3=A0s 18:07
-Subject: Enc: Termo de Responsabilidade =E2=80=93 Teto remunerat=C3=B3rio
-To: avcastro.quadros@gmail.com <avcastro.quadros@gmail.com>
+
+
+
+________________________________
+De: CGPEO/DIRAD/FNDE <CGPEO@fnde.gov.br>
+Enviado: ter=E7a-feira, 17 de setembro de 2019 16:40
+Assunto: Termo de Responsabilidade =96 Teto remunerat=F3rio
+
+
+
+
+[cid:image003.jpg@01D465F4.072DE1A0]
 
 
 
 
 
-------------------------------
-*De:* CGPEO/DIRAD/FNDE <CGPEO@fnde.gov.br>
-*Enviado:* ter=C3=A7a-feira, 17 de setembro de 2019 16:40
-*Assunto:* Termo de Responsabilidade =E2=80=93 Teto remunerat=C3=B3rio
+Termo de Responsabilidade =96 Teto remunerat=F3rio
+
+
+
+Em cumprimento =E0s determina=E7=F5es constantes na Portaria/SRH/MP n.=BA 2=
+/2011, c=F3pia anexa, visando assegurar rotinas para a correta aplica=E7=E3=
+o do teto remunerat=F3rio de que trata o inciso XI do art. 37 da Constitui=
+=E7=E3o Federal, encaminhamos, em anexo, Termo de Responsabilidade a ser pr=
+eenchido, assinado e restitu=EDdo =E0 Central CGPEO at=E9 18/10/2019, impre=
+terivelmente.
+
+O Termo dever=E1 ser preenchido por todos os servidores ativos, cedidos, re=
+quisitados, CTU, aposentados e benefici=E1rios de pens=E3o civil.
+
+Esclarecemos que trata-se de novo ciclo de apresenta=E7=E3o do Termo, tendo=
+ em vista o disposto no inciso II do Art. 1=BA da referida Portaria Normati=
+va.
+
+A Central CGPEO est=E1 =E0 disposi=E7=E3o para o esclarecimento de d=FAvida=
+s que possam surgir, por meio dos ramais 4830/4831 ou pelo e-mail centralcg=
+peo@fnde.gov.br<mailto:centralcgpeo@fnde.gov.br>.
+
+
+
+[cid:image002.jpg@01D453E4.63A51880]
 
 
 
 
-[image: cid:image003.jpg@01D465F4.072DE1A0]
 
 
 
-
-
-*Termo de Responsabilidade =E2=80=93 Teto remunerat=C3=B3rio*
-
-
-
-Em cumprimento =C3=A0s determina=C3=A7=C3=B5es constantes na Portaria/SRH/M=
-P n.=C2=BA 2/2011,
-c=C3=B3pia anexa, visando assegurar rotinas para a correta aplica=C3=A7=C3=
-=A3o do teto
-remunerat=C3=B3rio de que trata o inciso XI do art. 37 da Constitui=C3=A7=
-=C3=A3o Federal,
-encaminhamos, em anexo, Termo de Responsabilidade a ser preenchido,
-assinado e *restitu=C3=ADdo =C3=A0 Central CGPEO at=C3=A9 18/10/2019*, impr=
-eterivelmente.
-
-O Termo dever=C3=A1 ser preenchido por *todos* os servidores ativos, cedido=
-s,
-requisitados, CTU, aposentados e benefici=C3=A1rios de pens=C3=A3o civil.
-
-Esclarecemos que trata-se de novo ciclo de apresenta=C3=A7=C3=A3o do Termo,=
- tendo em
-vista o disposto no inciso II do Art. 1=C2=BA da referida Portaria Normativ=
-a.
-
-A Central CGPEO est=C3=A1 =C3=A0 disposi=C3=A7=C3=A3o para o esclarecimento=
- de d=C3=BAvidas que
-possam surgir, por meio dos ramais 4830/4831 ou pelo e-mail
-centralcgpeo@fnde.gov.br.
-
-
-
-[image: cid:image002.jpg@01D453E4.63A51880]
-
---0000000000001e886305933ed44e
-Content-Type: text/html; charset="UTF-8"
+--_000_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: text/html; charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr"><br><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
-=3D"gmail_attr">---------- Forwarded message ---------<br>De: <strong class=
-=3D"gmail_sendername" dir=3D"auto">ALLAN VIEIRA DE CASTRO QUADROS</strong> =
-<span dir=3D"auto">&lt;<a href=3D"mailto:allan.quadros@fnde.gov.br">allan.q=
-uadros@fnde.gov.br</a>&gt;</span><br>Date: seg, 23 de set de 2019 =C3=A0s 1=
-8:07<br>Subject: Enc: Termo de Responsabilidade =E2=80=93 Teto remunerat=C3=
-=B3rio<br>To: <a href=3D"mailto:avcastro.quadros@gmail.com">avcastro.quadro=
-s@gmail.com</a> &lt;<a href=3D"mailto:avcastro.quadros@gmail.com">avcastro.=
-quadros@gmail.com</a>&gt;<br></div><br><br>
-
-
-
-
-<div dir=3D"ltr">
-<div id=3D"m_1025027205566852640divtagdefaultwrapper" style=3D"font-size:12=
-pt;color:#000000;font-family:Calibri,Helvetica,sans-serif" dir=3D"ltr">
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<style type=3D"text/css" style=3D"display:none;"><!-- P {margin-top:0;margi=
+n-bottom:0;} --></style>
+</head>
+<body dir=3D"ltr">
+<div id=3D"divtagdefaultwrapper" style=3D"font-size:12pt;color:#000000;font=
+-family:Calibri,Helvetica,sans-serif;" dir=3D"ltr">
 <p style=3D"margin-top:0;margin-bottom:0"><br>
 </p>
 <br>
 <br>
-<div style=3D"color:rgb(0,0,0)">
-<hr style=3D"display:inline-block;width:98%">
-<div id=3D"m_1025027205566852640divRplyFwdMsg" dir=3D"ltr"><font face=3D"Ca=
-libri, sans-serif" style=3D"font-size:11pt" color=3D"#000000"><b>De:</b> CG=
-PEO/DIRAD/FNDE &lt;<a href=3D"mailto:CGPEO@fnde.gov.br" target=3D"_blank">C=
-GPEO@fnde.gov.br</a>&gt;<br>
-<b>Enviado:</b> ter=C3=A7a-feira, 17 de setembro de 2019 16:40<br>
-<b>Assunto:</b> Termo de Responsabilidade =E2=80=93 Teto remunerat=C3=B3rio=
-</font>
-<div>=C2=A0</div>
+<div style=3D"color: rgb(0, 0, 0);">
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>De:</b> CGPEO/DIRAD/FNDE &lt;CG=
+PEO@fnde.gov.br&gt;<br>
+<b>Enviado:</b> ter=E7a-feira, 17 de setembro de 2019 16:40<br>
+<b>Assunto:</b> Termo de Responsabilidade =96 Teto remunerat=F3rio</font>
+<div>&nbsp;</div>
 </div>
 <div lang=3D"PT-BR" link=3D"blue" vlink=3D"purple">
-<div class=3D"m_1025027205566852640x_WordSection1">
-<p class=3D"m_1025027205566852640x_MsoNormal"><span style=3D"color:#1f497d"=
->=C2=A0</span></p>
-<p class=3D"m_1025027205566852640x_MsoNormal" align=3D"center" style=3D"tex=
-t-align:center"><span style=3D"font-size:14.0pt"><img width=3D"600" height=
-=3D"160" id=3D"m_1025027205566852640x__x0000_i1026" alt=3D"cid:image003.jpg=
-@01D465F4.072DE1A0" style=3D"width:6.25in;height:1.6666in" src=3D"cid:16d5f=
-f44edd772f6c1"></span><span style=3D"font-size:14.0pt"></span></p>
-<p class=3D"m_1025027205566852640x_MsoNormal"><span style=3D"font-size:14.0=
-pt">=C2=A0</span></p>
+<div class=3D"x_WordSection1">
+<p class=3D"x_MsoNormal"><span style=3D"color:#1F497D">&nbsp;</span></p>
+<p class=3D"x_MsoNormal" align=3D"center" style=3D"text-align:center"><span=
+ style=3D"font-size:14.0pt"><img explicitlogon=3D"allan.quadros@fnde.mail.o=
+nmicrosoft.com" width=3D"600" height=3D"160" id=3D"x__x0000_i1026" alt=3D"c=
+id:image003.jpg@01D465F4.072DE1A0" style=3D"width: 6.25in; height: 1.6666in=
+; user-select: none;" tabindex=3D"0" data-outlook-trace=3D"F:1|T:1" src=3D"=
+cid:image004.jpg@01D46C49.645D3730"></span><span style=3D"font-size:14.0pt"=
+></span></p>
+<p class=3D"x_MsoNormal"><span style=3D"font-size:14.0pt">&nbsp;</span></p>
 <div align=3D"center">
-<table class=3D"m_1025027205566852640x_MsoNormalTable" border=3D"0" cellspa=
-cing=3D"0" cellpadding=3D"0" width=3D"0" style=3D"width:471.6pt;border-coll=
-apse:collapse">
+<table class=3D"x_MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpaddin=
+g=3D"0" width=3D"0" style=3D"width:471.6pt; border-collapse:collapse">
 <tbody>
 <tr>
-<td width=3D"645" valign=3D"top" style=3D"width:471.6pt;padding:0cm 5.4pt 0=
-cm 5.4pt">
-<p class=3D"m_1025027205566852640x_MsoNormal"><span style=3D"color:#1f497d"=
->=C2=A0</span></p>
+<td width=3D"645" valign=3D"top" style=3D"width:471.6pt; padding:0cm 5.4pt =
+0cm 5.4pt">
+<p class=3D"x_MsoNormal"><span style=3D"color:#1F497D">&nbsp;</span></p>
 <div align=3D"center">
-<table class=3D"m_1025027205566852640x_MsoNormalTable" border=3D"0" cellspa=
-cing=3D"0" cellpadding=3D"0" width=3D"100%" style=3D"width:100.0%;border-co=
-llapse:collapse">
+<table class=3D"x_MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpaddin=
+g=3D"0" width=3D"100%" style=3D"width:100.0%; border-collapse:collapse">
 <tbody>
 <tr style=3D"height:7.4pt">
-<td width=3D"630" valign=3D"top" style=3D"width:472.7pt;padding:0cm 5.4pt 0=
-cm 5.4pt;height:7.4pt">
-<p class=3D"m_1025027205566852640x_MsoNormal" align=3D"center" style=3D"tex=
-t-align:center"><b><span style=3D"font-size:14.0pt;color:#1f497d">Termo de =
-Responsabilidade =E2=80=93 Teto remunerat=C3=B3rio</span></b></p>
-<p class=3D"m_1025027205566852640x_MsoNormal" align=3D"center" style=3D"tex=
-t-align:center"><b><span style=3D"color:#1f497d">=C2=A0</span></b></p>
-<p class=3D"m_1025027205566852640x_paragrafonumeradonivel1" style=3D"margin=
-:6.0pt;text-align:justify;text-indent:64.9pt;line-height:115%">
-<span style=3D"font-size:14.0pt;line-height:115%;font-family:&quot;Calibri&=
-quot;,sans-serif;color:#1f497d">Em cumprimento =C3=A0s determina=C3=A7=C3=
-=B5es constantes na Portaria/SRH/MP n.=C2=BA 2/2011, c=C3=B3pia anexa, visa=
-ndo assegurar rotinas para a correta aplica=C3=A7=C3=A3o do teto remunerat=
-=C3=B3rio
- de que trata o inciso XI do art. 37 da Constitui=C3=A7=C3=A3o Federal, enc=
-aminhamos, em anexo, Termo de Responsabilidade a ser preenchido, assinado e
-<b>restitu=C3=ADdo =C3=A0 Central CGPEO at=C3=A9 18/10/2019</b>, impreteriv=
-elmente.</span></p>
-<p class=3D"m_1025027205566852640x_paragrafonumeradonivel1" style=3D"margin=
-:6.0pt;text-align:justify;text-indent:64.9pt;line-height:115%">
-<span style=3D"font-size:14.0pt;line-height:115%;font-family:&quot;Calibri&=
-quot;,sans-serif;color:#1f497d">O Termo dever=C3=A1 ser preenchido por
+<td width=3D"630" valign=3D"top" style=3D"width:472.7pt; padding:0cm 5.4pt =
+0cm 5.4pt; height:7.4pt">
+<p class=3D"x_MsoNormal" align=3D"center" style=3D"text-align:center"><b><s=
+pan style=3D"font-size:14.0pt; color:#1F497D">Termo de Responsabilidade =96=
+ Teto remunerat=F3rio</span></b></p>
+<p class=3D"x_MsoNormal" align=3D"center" style=3D"text-align:center"><b><s=
+pan style=3D"color:#1F497D">&nbsp;</span></b></p>
+<p class=3D"x_paragrafonumeradonivel1" style=3D"margin:6.0pt; text-align:ju=
+stify; text-indent:64.9pt; line-height:115%">
+<span style=3D"font-size:14.0pt; line-height:115%; font-family:&quot;Calibr=
+i&quot;,sans-serif; color:#1F497D">Em cumprimento =E0s determina=E7=F5es co=
+nstantes na Portaria/SRH/MP n.=BA 2/2011, c=F3pia anexa, visando assegurar =
+rotinas para a correta aplica=E7=E3o do teto remunerat=F3rio
+ de que trata o inciso XI do art. 37 da Constitui=E7=E3o Federal, encaminha=
+mos, em anexo, Termo de Responsabilidade a ser preenchido, assinado e
+<b>restitu=EDdo =E0 Central CGPEO at=E9 18/10/2019</b>, impreterivelmente.<=
+/span></p>
+<p class=3D"x_paragrafonumeradonivel1" style=3D"margin:6.0pt; text-align:ju=
+stify; text-indent:64.9pt; line-height:115%">
+<span style=3D"font-size:14.0pt; line-height:115%; font-family:&quot;Calibr=
+i&quot;,sans-serif; color:#1F497D">O Termo dever=E1 ser preenchido por
 <b>todos</b> os servidores ativos, cedidos, requisitados, CTU, aposentados =
-e benefici=C3=A1rios de pens=C3=A3o civil.</span></p>
-<p class=3D"m_1025027205566852640x_paragrafonumeradonivel1" style=3D"margin=
-:6.0pt;text-align:justify;text-indent:64.9pt;line-height:115%">
-<span style=3D"font-size:14.0pt;line-height:115%;font-family:&quot;Calibri&=
-quot;,sans-serif;color:#1f497d">Esclarecemos que trata-se de novo ciclo de =
-apresenta=C3=A7=C3=A3o do Termo, tendo em vista o disposto no inciso II do =
-Art. 1=C2=BA da referida Portaria Normativa.</span><span style=3D"font-size=
-:14.0pt;line-height:115%;font-family:&quot;Calibri&quot;,sans-serif;color:#=
-1f497d"></span></p>
-<p class=3D"m_1025027205566852640x_paragrafonumeradonivel1" style=3D"margin=
-:6.0pt;text-align:justify;text-indent:64.9pt;line-height:115%">
-<span style=3D"font-size:14.0pt;line-height:115%;font-family:&quot;Calibri&=
-quot;,sans-serif;color:#1f497d">A Central CGPEO est=C3=A1 =C3=A0 disposi=C3=
-=A7=C3=A3o para o esclarecimento de d=C3=BAvidas que possam surgir, por mei=
-o dos ramais 4830/4831 ou pelo e-mail
-<a href=3D"mailto:centralcgpeo@fnde.gov.br" id=3D"m_1025027205566852640LPln=
-k95894" class=3D"m_1025027205566852640OWAAutoLink" target=3D"_blank">
-<span style=3D"color:#1f497d">centralcgpeo@fnde.gov.br</span></a>.</span><s=
+e benefici=E1rios de pens=E3o civil.</span></p>
+<p class=3D"x_paragrafonumeradonivel1" style=3D"margin:6.0pt; text-align:ju=
+stify; text-indent:64.9pt; line-height:115%">
+<span style=3D"font-size:14.0pt; line-height:115%; font-family:&quot;Calibr=
+i&quot;,sans-serif; color:#1F497D">Esclarecemos que trata-se de novo ciclo =
+de apresenta=E7=E3o do Termo, tendo em vista o disposto no inciso II do Art=
+. 1=BA da referida Portaria Normativa.</span><span style=3D"font-size:14.0p=
+t; line-height:115%; font-family:&quot;Calibri&quot;,sans-serif; color:#1F4=
+97D"></span></p>
+<p class=3D"x_paragrafonumeradonivel1" style=3D"margin:6.0pt; text-align:ju=
+stify; text-indent:64.9pt; line-height:115%">
+<span style=3D"font-size:14.0pt; line-height:115%; font-family:&quot;Calibr=
+i&quot;,sans-serif; color:#1F497D">A Central CGPEO est=E1 =E0 disposi=E7=E3=
+o para o esclarecimento de d=FAvidas que possam surgir, por meio dos ramais=
+ 4830/4831 ou pelo e-mail
+<a href=3D"mailto:centralcgpeo@fnde.gov.br" id=3D"LPlnk233029" class=3D"OWA=
+AutoLink" previewremoved=3D"true">
+<span style=3D"color:#1F497D">centralcgpeo@fnde.gov.br</span></a>.</span><s=
 pan style=3D"font-family:&quot;Calibri&quot;,sans-serif"></span></p>
-<p class=3D"m_1025027205566852640x_MsoNormal" style=3D"text-align:justify;t=
-ext-indent:3.0cm;text-autospace:none">
-<span style=3D"font-size:14.0pt;color:#1f497d">=C2=A0</span></p>
-<p class=3D"m_1025027205566852640x_MsoNormal" align=3D"center" style=3D"tex=
-t-align:center"><span style=3D"font-size:14.0pt;color:#1f497d"><img border=
-=3D"0" width=3D"616" height=3D"72" id=3D"m_1025027205566852640x_Imagem_x002=
-0_1" alt=3D"cid:image002.jpg@01D453E4.63A51880" style=3D"width:6.4166in;hei=
-ght:0.75in" src=3D"cid:16d5ff44ede8546ed2"></span><span style=3D"font-size:=
-14.0pt"></span></p>
+<p class=3D"x_MsoNormal" style=3D"text-align:justify; text-indent:3.0cm; te=
+xt-autospace:none">
+<span style=3D"font-size:14.0pt; color:#1F497D">&nbsp;</span></p>
+<p class=3D"x_MsoNormal" align=3D"center" style=3D"text-align:center"><span=
+ style=3D"font-size:14.0pt; color:#1F497D"><img explicitlogon=3D"allan.quad=
+ros@fnde.mail.onmicrosoft.com" border=3D"0" width=3D"616" height=3D"72" id=
+=3D"x_Imagem_x0020_1" alt=3D"cid:image002.jpg@01D453E4.63A51880" style=3D"w=
+idth: 6.4166in; height: 0.75in; user-select: none;" tabindex=3D"0" data-out=
+look-trace=3D"F:1|T:1" src=3D"cid:image005.jpg@01D46C49.645D3730"></span><s=
+pan style=3D"font-size:14.0pt"></span></p>
 </td>
 </tr>
 <tr style=3D"height:7.4pt">
-<td width=3D"630" valign=3D"top" style=3D"width:472.7pt;padding:0cm 5.4pt 0=
-cm 5.4pt;height:7.4pt">
-<p class=3D"m_1025027205566852640x_MsoNormal" style=3D"text-align:justify">=
-<span style=3D"font-size:14.0pt;color:black">=C2=A0</span></p>
+<td width=3D"630" valign=3D"top" style=3D"width:472.7pt; padding:0cm 5.4pt =
+0cm 5.4pt; height:7.4pt">
+<p class=3D"x_MsoNormal" style=3D"text-align:justify"><span style=3D"font-s=
+ize:14.0pt; color:black">&nbsp;</span></p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p class=3D"m_1025027205566852640x_MsoNormal" align=3D"center" style=3D"tex=
-t-align:center"><span style=3D"font-size:12.0pt;font-family:&quot;Times New=
- Roman&quot;,serif"></span></p>
+<p class=3D"x_MsoNormal" align=3D"center" style=3D"text-align:center"><span=
+ style=3D"font-size:12.0pt; font-family:&quot;Times New Roman&quot;,serif">=
+</span></p>
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p class=3D"m_1025027205566852640x_MsoNormal"><span style=3D"color:#1f497d"=
->=C2=A0</span></p>
-<p class=3D"m_1025027205566852640x_MsoNormal"><span style=3D"color:#1f497d"=
->=C2=A0</span></p>
+<p class=3D"x_MsoNormal"><span style=3D"color:#1F497D">&nbsp;</span></p>
+<p class=3D"x_MsoNormal"><span style=3D"color:#1F497D">&nbsp;</span></p>
 </div>
 </div>
 </div>
 </div>
-</div>
+</body>
+</html>
 
-</div></div>
+--_000_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_--
 
---0000000000001e886305933ed44e--
---0000000000001e886505933ed44f
+--_007_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
 Content-Type: image/jpeg; name="image004.jpg"
-Content-Disposition: inline; filename="image004.jpg"
+Content-Description: image004.jpg
+Content-Disposition: inline; filename="image004.jpg"; size=25286;
+	creation-date="Thu, 25 Oct 2018 12:59:17 GMT";
+	modification-date="Thu, 25 Oct 2018 12:59:17 GMT"
+Content-ID: <image004.jpg@01D46C49.645D3730>
 Content-Transfer-Encoding: base64
-Content-ID: <16d5ff44edd772f6c1>
-X-Attachment-Id: 16d5ff44edd772f6c1
 
 /9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAABMAAD/4QNvaHR0cDov
 L25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49Iu+7vyIgaWQ9Ilc1TTBNcENl
@@ -738,12 +746,15 @@ zEsMDVxCgYMUcqsbtmB4DjTs0DLcENk9XULlP9isb21hCJ41iClosL4fKs232iB/fJEb+aTlT0kB
 w6RxguMmbiLc6IbYASTJEuSP6uVuVOtW+IQVmZ3Iv5mwFapJDLFlYZW+k8azAldCyqEbKBbh4VCY
 hmd1kVAt1PE00lAAzFGOUg5lFx4Y06yCAhF5s4bAAgiqs9BsnBfOQQMnI86z0gQMbpIxYL5lNrmm
 00BIoxLXJvy8KhgJWaxLixvgBQ0Ag2YAjgacCGPDDjQB/9k=
---0000000000001e886505933ed44f
+
+--_007_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
 Content-Type: image/jpeg; name="image005.jpg"
-Content-Disposition: inline; filename="image005.jpg"
+Content-Description: image005.jpg
+Content-Disposition: inline; filename="image005.jpg"; size=7599;
+	creation-date="Thu, 25 Oct 2018 12:59:17 GMT";
+	modification-date="Thu, 25 Oct 2018 12:59:17 GMT"
+Content-ID: <image005.jpg@01D46C49.645D3730>
 Content-Transfer-Encoding: base64
-Content-ID: <16d5ff44ede8546ed2>
-X-Attachment-Id: 16d5ff44ede8546ed2
 
 /9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAoHBwkHBgoJCAkLCwoMDxkQDw4ODx4WFxIZJCAmJSMg
 IyIoLTkwKCo2KyIjMkQyNjs9QEBAJjBGS0U+Sjk/QD3/2wBDAQsLCw8NDx0QEB09KSMpPT09PT09
@@ -879,15 +890,21 @@ q/UAfWiigB6XKJJtkOSaduCy7VAwe9FFACqW53dKRRsyMkk0UUAKMfdA/SjaTuBwPTFFFADQgAx9
 KKKAF3DggZpjj5qKKAEJAGTTGY9qKKAEwdwOePSjCq2e5oooAXcfTigge2aKKAERvLbg9etPlbO3
 AwPWiigBi8E85zQuASBRRQAobqPSonXrk9aKKAIlCLlBzjnBpY3cqeNpHSiigCxFcNt2y9fUU5iC
 PlIINFFADSSVO3g0UUUAf//Z
---0000000000001e886505933ed44f--
---0000000000001e886605933ed450
-Content-Type: application/pdf; 
-	name="=?UTF-8?Q?Termo_de_responsabilidade_=2D_remunera=C3=A7=C3=A3o_extra_SIAPE=2Epdf?="
-Content-Disposition: attachment; 
-	filename="=?UTF-8?Q?Termo_de_responsabilidade_=2D_remunera=C3=A7=C3=A3o_extra_SIAPE=2Epdf?="
+
+--_007_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_--
+
+--_008_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: application/pdf;
+	name="=?Windows-1252?Q?Termo_de_responsabilidade_-_remunera=E7=E3o_extra_SIAPE.?=
+ =?Windows-1252?Q?pdf?="
+Content-Description: =?Windows-1252?Q?Termo_de_responsabilidade_-_remunera=E7=E3o_extra_SIAPE.?=
+ =?Windows-1252?Q?pdf?=
+Content-Disposition: attachment;
+	filename="=?Windows-1252?Q?Termo_de_responsabilidade_-_remunera=E7=E3o_extra_SIAPE.?=
+ =?Windows-1252?Q?pdf?="; size=117197;
+	creation-date="Mon, 22 Oct 2018 20:18:05 GMT";
+	modification-date="Mon, 22 Oct 2018 20:18:06 GMT"
 Content-Transfer-Encoding: base64
-Content-ID: <16d5ff44ede1b912943>
-X-Attachment-Id: 16d5ff44ede1b912943
 
 JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9Qcm9kdWNlcihHUEwgR2hvc3RzY3JpcHQgOS4wNTsg
 bW9kaWZpZWQgdXNpbmcgaVRleHRTaGFycCA1LjIuMSBcKGNcKSAxVDNYVCBCVkJBKS9DcmVhdGlv
@@ -2946,14 +2963,16 @@ MTE0MjA4IDAwMDAwIG4gCjAwMDAxMTUwOTggMDAwMDAgbiAKdHJhaWxlcgo8PC9TaXplIDQ4L1Jv
 b3QgMyAwIFIvSW5mbyAxIDAgUi9JRCBbPDQ3M2M1ZmUwZTRmY2E4NmE4MjMzMjFmMDkxZDk0YTY1
 Pjw0ZWZiODA5MGFkZDU0NTFjN2JkMDIyZWI4NzI0OWFmNT5dPj4Kc3RhcnR4cmVmCjExNjA4Nwol
 JUVPRgo=
---0000000000001e886605933ed450
-Content-Type: application/pdf; 
+
+--_008_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_
+Content-Type: application/pdf;
 	name="Portaria Normativa 2 - 2011 - Teto Constitucional.pdf"
-Content-Disposition: attachment; 
-	filename="Portaria Normativa 2 - 2011 - Teto Constitucional.pdf"
+Content-Description: Portaria Normativa 2 - 2011 - Teto Constitucional.pdf
+Content-Disposition: attachment;
+	filename="Portaria Normativa 2 - 2011 - Teto Constitucional.pdf"; size=84864;
+	creation-date="Thu, 25 Oct 2018 13:13:35 GMT";
+	modification-date="Wed, 18 Apr 2018 18:03:06 GMT"
 Content-Transfer-Encoding: base64
-Content-ID: <16d5ff44ede6b4197ec4>
-X-Attachment-Id: 16d5ff44ede6b4197ec4
 
 JVBERi0xLjUNJeLjz9MNCjcgMCBvYmoNPDwvTGluZWFyaXplZCAxL0wgODQ4NjQvTyA5L0UgODA0
 MDEvTiAxL1QgODQ1NzMvSCBbIDQ4MCAxNTNdPj4NZW5kb2JqDSAgICAgICAgICAgICAgICAgICAg
@@ -4444,7 +4463,8 @@ Wzw2QTlGM0NCQjBENkI1RDNGNjRBN0FBMDdBOTVFMkZBRD48QkM1QUU5NUFENDk0MkQ0NDgzRDVB
 RTNDQzNCREY3RDU+XS9JbmZvIDYgMCBSL0xlbmd0aCAzOS9Sb290IDggMCBSL1NpemUgNy9UeXBl
 L1hSZWYvV1sxIDMgMF0+PnN0cmVhbQ0KaN5iYgACJkZGK0EmBga+1UCCsQdEiDEx/t+2BMhiYAQI
 MAAzKgQUDQplbmRzdHJlYW0NZW5kb2JqDXN0YXJ0eHJlZg0KMTE2DQolJUVPRg0K
---0000000000001e886605933ed450--
+
+--_008_RO1P152MB10048EB1CB30811385CF33B3B2840RO1P152MB1004LAMP_--
 )
-A008 OK FETCH completed
+F013 OK FETCH completed
 
