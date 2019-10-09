@@ -2,7 +2,7 @@
 % Please edit documentation in R/count-msgs.R
 \name{count_msgs}
 \alias{count_msgs}
-\title{Count Number of Messages}
+\title{Count the Number of Messages}
 \usage{
 count_msgs(imapconf, by = "MSN", flag, retries = 2)
 }

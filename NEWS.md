@@ -46,7 +46,8 @@
 + added Yandex configure_imap() example
 + removed figures (already appear on README.md)
 
-
+* count_msgs()
++ changed title
 
 ---
 ## mRpostman 0.2.1-X (2019-08-22 Github only)

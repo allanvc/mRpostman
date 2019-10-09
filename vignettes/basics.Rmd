@@ -70,8 +70,7 @@ library(mRpostman)
 # Gmail
 imapconf <- configure_imap(url="imaps://imap.gmail.com",
                            username="your_user",
-                           password=rstudioapi::askForPassword(),
-                           verbose = TRUE
+                           password=rstudioapi::askForPassword()
                           )
 
 # Yahoo Mail

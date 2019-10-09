@@ -1,4 +1,4 @@
-#' @title Count Number of Messages
+#' @title Count the Number of Messages
 #'
 #' @description Counts the number of messages with a respective flag in a mailbox.
 #'
