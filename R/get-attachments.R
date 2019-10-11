@@ -2,7 +2,7 @@
 #'
 #' @description Get attachments after fetching full messages.
 #'
-#' @inheritParams check_args_get_attachment
+#' @inheritParams check_args_get_attachments
 #'
 #' @return A logical \code{TRUE} if the attachments extraction was successful.
 #'
@@ -39,7 +39,7 @@
 get_attachments <- function(msg_list) {
 
   #check
-  check_args_get_attachment(msg_list)
+  check_args_get_attachments(msg_list)
 
   # retireves only base64 encoded attachments for now
 
@@ -110,6 +110,10 @@ get_attachments <- function(msg_list) {
 
       encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
       encodings <- encodings[seq(2, length(encodings), by = 2)]
+
+      if (any(!grepl(pattern = "base64", x = encodings))) {
+        warning("There are one or more non-base64 encoded attachments that will not be decoded. Use list_attachments() to identify them.")
+      }
 
       # preparing the directory for saving
 
