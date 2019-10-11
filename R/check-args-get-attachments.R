@@ -12,7 +12,7 @@
 #'
 #' @keywords internal
 #'
-check_args_get_attachment <- function(msg_list) {
+check_args_get_attachments <- function(msg_list) {
 
   assertthat::assert_that(
     is.list(msg_list),

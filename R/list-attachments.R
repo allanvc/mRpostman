@@ -2,7 +2,7 @@
 #'
 #' @description List attachments filenames after fetching full messages.
 #'
-#' @inheritParams check_args_get_attachment
+#' @inheritParams check_args_get_attachments
 #'
 #' @return A \code{list} of \code{data.frames} containing filenames and encodings
 #'     for each fetched message.
@@ -34,9 +34,9 @@
 list_attachments <- function(msg_list) {
 
   #check
-  check_args_get_attachment(msg_list)
+  check_args_get_attachments(msg_list)
 
-  attachment_list <- list()
+  attachments_list <- list()
 
   # retireves only base64 encoded attachments for now
 
@@ -73,7 +73,7 @@ list_attachments <- function(msg_list) {
       # standard URLdecoding:
       for (j in seq_along(filenames)) {
         filenames[j] <- tryCatch({
-          filenames[j] <- utils::URLdecode(filenames[j])
+          utils::URLdecode(filenames[j])
         }, warning = function(w) {
           filenames[j]
         }, error = function(e) {
@@ -88,6 +88,10 @@ list_attachments <- function(msg_list) {
       encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
       encodings <- encodings[seq(2, length(encodings), by = 2)]
 
+      # note for future me: I had the idea of extracting filetypes, but sometimes
+      #"Content-Type" are before "Content-Disposition" and we lose it after getting
+      #full_attachments object
+
 
       out <- list(data.frame("filename" = filenames,
                              "encoding" = encodings,
@@ -95,7 +99,7 @@ list_attachments <- function(msg_list) {
 
       names(out) <- id
 
-      attachment_list <- c(attachment_list, out)
+      attachments_list <- c(attachments_list, out)
 
 
 
@@ -104,6 +108,6 @@ list_attachments <- function(msg_list) {
 
   }
 
-  return(attachment_list)
+  return(attachments_list)
 
 }
