@@ -196,8 +196,8 @@
 <a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"mRpostman"</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># Dev version</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">'devtools'</span>)) <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">'devtools'</span>)</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"allanvc/mRpostman"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">'remotes'</span>)) <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">'remotes'</span>)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"allanvc/mRpostman"</span>)</a></code></pre></div>
 </div>
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
@@ -285,6 +285,22 @@
 <a class="sourceLine" id="cb6-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb6-9" data-line-number="9">results</a></code></pre></div>
 </div>
+</div>
+<div id="attachments" class="section level2">
+<h2 class="hasAnchor">
+<a href="#attachments" class="anchor"></a>6) Attachments</h2>
+<p>This will list all the attachments filenames for each fetched message.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/list_attachments.html">list_attachments</a></span>()</a></code></pre></div>
+<p>This extracts and decode your <code>base64</code> text attachments from messages, and save them locally.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/get_attachments.html">get_attachments</a></span>()</a></code></pre></div>
 </div>
 <div id="future-improvements" class="section level2">
 <h2 class="hasAnchor">

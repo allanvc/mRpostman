@@ -36,6 +36,7 @@
 + changed Description field
 
 * README.md:
++ changed dev installation example from 'devtools' to 'remotes' because the former depends on 'curl'
 + fixed typo - from "configureIMAP" to "configure_imap" in README.md
 + fixed typo - two AOL examples instead of one AOL and one Yahoo configure_imap example
 + added Yandex configure_imap() example
