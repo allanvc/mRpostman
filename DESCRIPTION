@@ -2,7 +2,7 @@ Package: mRpostman
 Type: Package
 Title: IMAP Toolkit
 Version: 0.3.0
-Date: 2019-10-07
+Date: 2019-10-15
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))

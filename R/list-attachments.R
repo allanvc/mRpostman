@@ -4,8 +4,8 @@
 #'
 #' @inheritParams check_args_get_attachments
 #'
-#' @return A \code{list} of \code{data.frames} containing filenames and encodings
-#'     for each fetched message.
+#' @return A \code{list} of \code{data.frames} containing filenames for each
+#'     fetched message.
 #'
 #' @family attachments
 #'
@@ -82,19 +82,25 @@ list_attachments <- function(msg_list) {
       }
 
       # 3) getting attachments encoding
-      pattern = '\r\nContent-Transfer-Encoding: (.*?)[\r\n|\r|\n]+'
+      # pattern = '\r\nContent-Transfer-Encoding: (.*?)[\r\n|\r|\n]+'
       # this REGEX works with IMAP and MS/Exchange protocols
 
-      encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
-      encodings <- encodings[seq(2, length(encodings), by = 2)]
+      # encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
+      # encodings <- encodings[seq(2, length(encodings), by = 2)]
+      # note to self: encodings sometimes comes before "Content-Disposition: attachment;"
+      # bring this feature only on future improvements
 
-      # note for future me: I had the idea of extracting filetypes, but sometimes
+      # if (any(!grepl(pattern = "base64", x = encodings))) {
+      #   warning("There are one or more non-base64 encoded attachments that will not be decoded. Use list_attachments() to identify them.")
+      # }
+
+      # note to future me: I had the idea of extracting filetypes, but sometimes
       #"Content-Type" are before "Content-Disposition" and we lose it after getting
       #full_attachments object
 
 
       out <- list(data.frame("filename" = filenames,
-                             "encoding" = encodings,
+                             # "encoding" = encodings,
                              stringsAsFactors = FALSE))
 
       names(out) <- id
