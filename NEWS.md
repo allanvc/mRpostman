@@ -4,8 +4,8 @@
 ### Features
 
 * get_attachments() function:
-+ added get_attachment()
-+ added helper functions: has_attachment(), check_args_get_attachment()
++ added get_attachments()
++ added helper functions: has_attachment(), check_args_get_attachments()
 
 * list_attachments() function:
 + added list_attachments()

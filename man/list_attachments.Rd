@@ -11,8 +11,8 @@ list_attachments(msg_list)
 the server after using \code{\link{fetch_full_msg}}.}
 }
 \value{
-A \code{list} of \code{data.frames} containing filenames and encodings
-    for each fetched message.
+A \code{list} of \code{data.frames} containing filenames for each
+    fetched message.
 }
 \description{
 List attachments filenames after fetching full messages.

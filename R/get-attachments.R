@@ -10,7 +10,7 @@
 #'     inside the working directory. This function currently handles only attachments
 #'     encoded as \code{base64} text. It tries to guess all file extensions while decoding
 #'     the text, but it may not be possible in some circumstances. In those cases,
-#'     you can try to change the file extension by directly renaming the file.
+#'     you can try to change the file extension directly by renaming the file.
 #'
 #' @family attachments
 #'
@@ -105,15 +105,17 @@ get_attachments <- function(msg_list) {
       filenames <- gsub(forbiden_chars,"", filenames)
 
       # getting attachments encoding
-      pattern = '\r\nContent-Transfer-Encoding: (.*?)[\r\n|\r|\n]+'
+      # pattern = '\r\nContent-Transfer-Encoding: (.*?)[\r\n|\r|\n]+'
       # this REGEX works with IMAP and MS/Exchange protocols
 
-      encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
-      encodings <- encodings[seq(2, length(encodings), by = 2)]
+      # encodings <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
+      # encodings <- encodings[seq(2, length(encodings), by = 2)]
+      # note to self: encodings sometimes comes before "Content-Disposition: attachment;"
+      # bring this feature only on future improvements
 
-      if (any(!grepl(pattern = "base64", x = encodings))) {
-        warning("There are one or more non-base64 encoded attachments that will not be decoded. Use list_attachments() to identify them.")
-      }
+      # if (any(!grepl(pattern = "base64", x = encodings))) {
+      #   warning("There are one or more non-base64 encoded attachments that will not be decoded. Use list_attachments() to identify them.")
+      # }
 
       # preparing the directory for saving
 
@@ -123,37 +125,38 @@ get_attachments <- function(msg_list) {
       # looping on attachments
       for (i in seq_along(filenames)) {
 
-        # base64 encoding
-        if (encodings[i] == "base64") {
+        # # base64 encoding
+        # if (encodings[i] == "base64") {
 
-          # saving attachments
-          # thank's to:
-          # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
+        # saving attachments
+        # thank's to:
+        # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
+        # writing binary file
+        temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
+        conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
+        writeBin(attachments_text[i], conn)
+        close(conn)
+        # decoding from BIN to the appropriate file extension
+        inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
+        outconn <- file(paste0(complete_path, "/", filenames[i]),"wb")
 
-          # writing binary file
-          temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
-          conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
-          writeBin(attachments_text[i], conn)
-          close(conn)
-
-          # decoding from BIN to the appropriate file extension
-          inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
-          outconn <- file(paste0(complete_path, "/", filenames[i]),"wb")
+        # base64 text decoding
+        tryCatch({
           base64enc::base64decode(what=inconn, output=outconn)
-          close(inconn)
-          close(outconn)
+        }, error = function(e) {
+          warning(paste0("Base64 text decoding failed for", filenames[i]))
+        })
 
+        close(inconn)
+        close(outconn)
 
-          unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
-          # From unlink() help: Not deleting a non-existent file is not a failure
-          # we don't need a tryCatch()
-
-        }
+        unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
+        # From unlink() help: Not deleting a non-existent file is not a failure
+        # we don't need a tryCatch()
 
       }
 
     }
-
 
   }
 

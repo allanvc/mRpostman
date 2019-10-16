@@ -21,7 +21,7 @@ All attachments will be stored in a folder labelled with the message id
     inside the working directory. This function currently handles only attachments
     encoded as \code{base64} text. It tries to guess all file extensions while decoding
     the text, but it may not be possible in some circumstances. In those cases,
-    you can try to change the file extension by directly renaming the file.
+    you can try to change the file extension directly by renaming the file.
 }
 \examples{
 
