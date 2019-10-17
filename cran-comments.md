@@ -8,5 +8,4 @@
 * Mac OS X (on travis-ci), devel & release
 
 ## R CMD check results
-0 ERRORs, 0 WARNINGs, 0 NOTES*
-(win-builder: possibly misspelled words in DESCRIPTION but the spelling is correct)
+0 ERRORs, 0 WARNINGs, 0 NOTES
