@@ -22,12 +22,11 @@ IMAP Toolkit for R
 
 ## Overview
 
-**mRpostman** provides multiple IMAP (Internet Message Access Protocol)
-commands based on the RFC 3501 manual (Crispin, 2003), its updates, and
-other related documents. This package makes extensive use of ‘curl’ and
-libcurl capabilities to provide functions for listing, selecting and
-renaming mailboxes, as well as moving, fetching, and searching messages
-using several criteria.
+**mRpostman** makes extensive use of ‘curl’ and ‘libcurl’ capabilities,
+providing functions for mailboxes and electronic messages manipulation,
+such as moving, deleting, and searching messages using specific
+criteria, setting and clearing flags, selective fetching of message
+attributes and more.
 
 mRpostman website: <https://allanvc.github.io/mRpostman>
 

@@ -13,10 +13,10 @@ vignette: >
 
 ## Introduction
 
-**mRpostman** makes extensive use of 'curl' and libcurl capabilities, providing 
-functions for mailboxes manipulation and eletronic messages operations such as 
-moving, deleting, and searching messages by criteria, setting and clearing flags, 
-selective fetching of message attributes and more.
+**mRpostman** makes extensive use of 'curl' and 'libcurl' capabilities, providing 
+functions for mailboxes and electronic messages manipulation, such as moving, 
+deleting, and searching messages using specific criteria, setting and clearing 
+flags, selective fetching of message attributes and more.
 
 In this vignette, we present all available functions of this package,
 but not all the possibilities one can explore.
