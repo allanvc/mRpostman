@@ -127,37 +127,87 @@
 <h3 class="hasAnchor">
 <a href="#features" class="anchor"></a>Features</h3>
 <ul>
-<li>get_attachments() function:</li>
+<li>
+<code><a href="../reference/get_attachments.html">get_attachments()</a></code> function:
+<ul>
 <li>added support to inline attachments: argument “content_disposition”</li>
-<li><p>changed REGEX for retrieving text and filenames</p></li>
-<li>check_args_get_atatchments() helper function:</li>
-<li><p>added support to inline attachments: argument “content_disposition”</p></li>
-<li>list_attachments() function:</li>
-<li>added support to inline attachments: added a column “content_disposition” to output</li>
-<li><p>changed REGEX for retrieving text and filenames</p></li>
-<li>check_args_list_attachments():</li>
-<li><p>added helper function check_args_list_attachments()</p></li>
-<li>has_attachment() helper function:</li>
-<li><p>added support to inline attachments</p></li>
-<li>loop_fetch_msg_XXXX() functions group:</li>
-<li><p>changed error message</p></li>
+<li>changed REGEX for retrieving text and filenames</li>
+</ul>
+</li>
+<li>
+<code>check_args_get_atatchments()</code> helper function:
+<ul>
+<li>added support to inline attachments: argument <code>"content_disposition"</code>
+</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/list_attachments.html">list_attachments()</a></code> function:
+<ul>
+<li>added support to inline attachments: added a column <code>"content_disposition"</code> to output</li>
+<li>changed REGEX for retrieving text and filenames</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/check_args_list_attachments.html">check_args_list_attachments()</a></code> function:
+<ul>
+<li>added helper function <code><a href="../reference/check_args_list_attachments.html">check_args_list_attachments()</a></code>
+</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/has_attachment.html">has_attachment()</a></code> helper function:
+<ul>
+<li>added support to inline attachments</li>
+</ul>
+</li>
+<li>
+<code>loop_fetch_msg_XXXX()</code> functions group:
+<ul>
+<li>changed error message</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="documentation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#documentation" class="anchor"></a>Documentation</h3>
 <ul>
-<li>DESCRIPTION FILE:</li>
+<li>DESCRIPTION FILE:
+<ul>
 <li>changed title to IMAP Toolkit</li>
-<li><p>changed Description field</p></li>
-<li>README.md:</li>
-<li><p>item 6) Attachments: added mention to inline attachments</p></li>
-<li>get_attachments():</li>
-<li>added new note to explain Content-Disposition types</li>
-<li><p>added reference to RFC2183</p></li>
-<li>check_args_get_attachments():</li>
-<li><p>added new argument “content_disposition”</p></li>
+<li>changed Description field</li>
 </ul>
+</li>
+<li>README.md:
+<ul>
+<li>item 6) Attachments: added mention to inline attachments</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/get_attachments.html">get_attachments()</a></code>:
+<ul>
+<li>added new note to explain Content-Disposition types</li>
+<li>added reference to RFC2183</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/check_args_get_attachments.html">check_args_get_attachments()</a></code>:
+<ul>
+<li>added new argument <code>"content_disposition"</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="other" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other" class="anchor"></a>Other</h3>
+<ul>
+<li>removed garbage script <code>environments_tests.R</code>
+</li>
+</ul>
+<hr>
 </div>
 </div>
     <div id="mrpostman-0-3-0-2019-10-07" class="section level2">
@@ -167,23 +217,43 @@
 <h3 class="hasAnchor">
 <a href="#features-1" class="anchor"></a>Features</h3>
 <ul>
-<li>get_attachments() function:</li>
-<li>added get_attachments()</li>
-<li><p>added helper functions: has_attachment(), check_args_get_attachments()</p></li>
-<li>list_attachments() function:</li>
-<li><p>added list_attachments()</p></li>
-<li>loop_fetch_XXXX() functions:</li>
-<li>error msg: fixed from examineMailbox() to examine_mailbox()</li>
-<li>fixed “forbiden[_]char[s]” in loop_fetch_full_msg()</li>
-<li><p>changed forbiden_chars to “[\/:*?"&lt;&gt;|]”, considering WIN-*NIX-OSX cases</p></li>
+<li>
+<code><a href="../reference/get_attachments.html">get_attachments()</a></code> function:
+<ul>
+<li>added <code><a href="../reference/get_attachments.html">get_attachments()</a></code>
+</li>
+<li>added helper functions: <code><a href="../reference/has_attachment.html">has_attachment()</a></code>, <code><a href="../reference/check_args_get_attachments.html">check_args_get_attachments()</a></code>
+</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/list_attachments.html">list_attachments()</a></code> function:
+<ul>
+<li>added <code><a href="../reference/list_attachments.html">list_attachments()</a></code>
+</li>
+</ul>
+</li>
+<li>
+<code>loop_fetch_msg_XXXX()</code> functions:
+<ul>
+<li>error msg: fixed from <code>examineMailbox()</code> to <code><a href="../reference/examine_mailbox.html">examine_mailbox()</a></code>
+</li>
+<li>fixed “forbiden[_]char[s]” in <code><a href="../reference/loop_fetch_full_msg.html">loop_fetch_full_msg()</a></code>
+</li>
+<li>changed forbiden_chars to <code>[\\/:*?\"&lt;&gt;|]</code>, considering WIN-*NIX-OSX cases</li>
+</ul>
+</li>
 <li>fetch_full_msg():</li>
-<li><p>added warning message related to get_attachment() when “keep_in_mem = TRUE”</p></li>
-<li>fetch_XXXX_XXXX() functions:</li>
-<li><p>added attr(msg_list, which = ‘mbox’) = new_imapconf$mbox to all – to be used by get_attachment()</p></li>
-<li>list_server_capabilities() function:</li>
+<li><p>added warning message related to <code>get_attachment()</code> when <code>keep_in_mem = TRUE</code></p></li>
+<li>
+<code>fetch_XXXX_XXXX()</code> functions:</li>
+<li><p>added <code>attr(msg_list, which = 'mbox') = new_imapconf$mbox</code> to all – to be used by <code>get_attachment()</code></p></li>
+<li>
+<code><a href="../reference/list_server_capabilities.html">list_server_capabilities()</a></code> function:</li>
 <li><p>converted regex match/extraction from stringr to base R</p></li>
 <li>examples:</li>
-<li>fixed typo - from “configureIMAP” to “configure_imap” in the following functions examples: list_mailboxes(), list_server_capabilities()</li>
+<li>fixed typo - from “configureIMAP” to “configure_imap” in the following functions examples: <code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code>, <code><a href="../reference/list_server_capabilities.html">list_server_capabilities()</a></code>
+</li>
 <li><p>changed all imaps://imap.gmail.com server examples to a generic one: imaps://your.imap.server.com</p></li>
 </ul>
 </div>
@@ -191,21 +261,35 @@
 <h3 class="hasAnchor">
 <a href="#documentation-1" class="anchor"></a>Documentation</h3>
 <ul>
-<li>DESCRIPTION FILE:</li>
+<li>DESCRIPTION FILE:
+<ul>
 <li>changed title to IMAP Toolkit</li>
-<li><p>changed Description field</p></li>
-<li>README.md:</li>
-<li>changed dev installation example from ‘devtools’ to ‘remotes’ because the former depends on ‘curl’</li>
+<li>changed Description field</li>
+</ul>
+</li>
+<li>README.md:
+<ul>
+<li>changed dev installation example from <code>devtools</code> to <code>remotes</code> because the former depends on <code>curl</code>
+</li>
 <li>fixed typo - from “configureIMAP” to “configure_imap” in README.md</li>
 <li>fixed typo - two AOL examples instead of one AOL and one Yahoo configure_imap example</li>
-<li><p>added Yandex configure_imap() example</p></li>
-<li>basics.Rmd vignette:</li>
+<li>added Yandex <code><a href="../reference/configure_imap.html">configure_imap()</a></code> example</li>
+</ul>
+</li>
+<li>basics.Rmd vignette:
+<ul>
 <li>fixed typo - from “configureIMAP” to “configure_imap” in README.md</li>
 <li>fixed typo - two AOL examples instead of one AOL and one Yahoo configure_imap example</li>
-<li>added Yandex configure_imap() example</li>
-<li><p>removed figures (already appear on README.md)</p></li>
-<li>count_msgs()</li>
-<li><p>changed title</p></li>
+<li>added Yandex <code><a href="../reference/configure_imap.html">configure_imap()</a></code> example</li>
+<li>removed figures (already appear on README.md)</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/count_msgs.html">count_msgs()</a></code>:
+<ul>
+<li>changed title</li>
+</ul>
+</li>
 </ul>
 <hr>
 </div>
@@ -217,28 +301,59 @@
 <h3 class="hasAnchor">
 <a href="#features-0-2-1-2" class="anchor"></a>Features (0.2.1-2)</h3>
 <ul>
-<li>loop-fetch-XXXX() functions for fetching msgs:</li>
-<li><p>added select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox) inside the tryCatch in the while loop – it prevents errors specially when messages have larger attachments taking too much time to fetch. In some IMAP servers (such as Yandex) it may lose the mbox selection. Other alternatives: set a larger timeout_ms in configure_imap.</p></li>
-<li>list_mailboxes():</li>
-<li><p>REGEX for cleaning mbox names from list_mailboxes() was modified to deal with the return of Yandex IMAP server: from ‘.<em>" "</em>(.<em>?)\"\r\n’ to ’.</em>" "<em>(.</em>?)[(\"\r\n)|(\r\n\*)]’</p></li>
+<li>
+<code>loop_fetch_msg_XXXX()</code> functions for fetching msgs:
+<ul>
+<li>added <code><a href="../reference/select_mailbox.html">select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox)</a></code> inside the tryCatch in the while loop – it prevents errors especially when messages have larger attachments taking too much time to fetch. In some IMAP servers (such as Yandex) it may lose the mbox selection. Other alternatives: set a larger <code>timeout_ms</code> in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>.</li>
+</ul>
+</li>
+<li>
+<code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code>:
+<ul>
+<li>REGEX for cleaning mbox names from <code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code> was modified to deal with the return of Yandex IMAP server: from <code>.*\" \"*(.*?)\\"\r\n' to '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]</code>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <div id="documentation-0-2-1-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#documentation-0-2-1-1" class="anchor"></a>Documentation (0.2.1-1)</h3>
 <ul>
-<li>function configure_imap():</li>
-<li><p>@param retries description typo: from “retires” to “retries”</p></li>
-<li>internal function conifg_handle():</li>
-<li><p>removed <a href='https://github.com/family'>@family</a> config, so it does not appear as “see also” in config_IMAP()</p></li>
-<li>function flag_options():</li>
-<li><p>updated <a href='https://github.com/note'>@note</a> to be more clear</p></li>
-<li>all internal functions from <a href='https://github.com/family'>@family</a> check args search:</li>
-<li><p>@param esearch typo: from code{1,2,3,4,5} to \code{1,2,3,4,5}</p></li>
-<li>pkg logo:</li>
-<li><p>improved logo with background transparency - better looking favicons</p></li>
-<li>README.md:</li>
-<li><p>changed section “First Things First” to “Allowing Less Secure Apps Access”</p></li>
+<li>function <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:
+<ul>
+<li>
+<code>@param retries description</code> typo: from “retires” to “retries”</li>
+</ul>
+</li>
+<li>internal function <code>conifg_handle()</code>:
+<ul>
+<li>removed <code>@family config</code>, so it does not appear as “see also” in <code>config_IMAP()</code>
+</li>
+</ul>
+</li>
+<li>function <code><a href="../reference/flag_options.html">flag_options()</a></code>:
+<ul>
+<li>updated <code>@note</code> to be more clear</li>
+</ul>
+</li>
+<li>all internal functions from <code>@family check args search</code>:
+<ul>
+<li>
+<code>@param esearch</code> typo: from <code>code{1,2,3,4,5}</code> to <code>\code{1,2,3,4,5}</code>
+</li>
+</ul>
+</li>
+<li>pkg logo:
+<ul>
+<li>improved logo with background transparency - better looking favicons</li>
+</ul>
+</li>
+<li>README.md:
+<ul>
+<li>changed section “First Things First” to “Allowing Less Secure Apps Access”</li>
+</ul>
+</li>
 </ul>
 <hr>
 </div>
@@ -248,7 +363,11 @@
 <a href="#mrpostman-0-2-0-2019-08-18---cran-submission" class="anchor"></a>mRpostman 0.2.0 (2019-08-18 - CRAN submission)</h2>
 <ul>
 <li><p>changed function name patterns to those specified in the tidyverse style guide</p></li>
-<li><p>changed return from mailboxes operation functions and some miscellanea functions: now select_mailbox(), rename_mailbox(), copy_msg(), move_msg(), delete_msg(), expunge(), add/remove/replace_flags() returns are invisible and only return imapconf or a list (imapconf+msg_ids).</p></li>
+<li>changed return from mailboxes operation functions and some miscellanea functions:
+<ul>
+<li>now <code><a href="../reference/select_mailbox.html">select_mailbox()</a></code>, <code><a href="../reference/rename_mailbox.html">rename_mailbox()</a></code>, <code><a href="../reference/copy_msg.html">copy_msg()</a></code>, <code><a href="../reference/move_msg.html">move_msg()</a></code>, <code><a href="../reference/delete_msg.html">delete_msg()</a></code>, <code><a href="../reference/expunge.html">expunge()</a></code>, <code>add/remove/replace_flags()</code> outputs are invisible and only return <code>imapconf</code> or a list (imapconf+msg_ids).</li>
+</ul>
+</li>
 <li><p>changed package logo</p></li>
 </ul>
 <hr>
