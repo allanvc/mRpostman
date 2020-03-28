@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Listing Mailboxes — list_mailboxes • mRpostman</title>
+<title>List Attachments Arguments Check — check_args_list_attachments • mRpostman</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -37,9 +37,9 @@
 
 
 
-<meta property="og:title" content="Listing Mailboxes — list_mailboxes" />
+<meta property="og:title" content="List Attachments Arguments Check — check_args_list_attachments" />
 
-<meta property="og:description" content="List Mailboxes from IMAP server." />
+<meta property="og:description" content="Internal helper function for listing attachments" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -118,60 +118,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Listing Mailboxes</h1>
+    <h1>List Attachments Arguments Check</h1>
     
-    <div class="hidden name"><code>list_mailboxes.Rd</code></div>
+    <div class="hidden name"><code>check_args_list_attachments.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>List Mailboxes from IMAP server.</p>
+    <p>Internal helper function for listing attachments</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>list_mailboxes</span>(<span class='no'>imapconf</span>, <span class='kw'>retries</span> <span class='kw'>=</span> <span class='fl'>2</span>)</pre>
+    <pre class="usage"><span class='fu'>check_args_list_attachments</span>(<span class='no'>msg_list</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>imapconf</th>
-      <td><p>An object of class <code>imapconf</code> generated with
-<a href='configure_imap.html'>configure_imap</a>.</p></td>
-    </tr>
-    <tr>
-      <th>retries</th>
-      <td><p>Number of attempts to connect and execute the command. Default
-is <code>2</code>.</p></td>
+      <th>msg_list</th>
+      <td><p>A <code>list</code> containing the full messages fetched from
+the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>list</code> containing the Mailboxes (root and children).</p>
+    <p><code>NULL</code> if arguments are correct.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other mailbox commands: <code><a href='examine_mailbox.html'>examine_mailbox</a></code>,
-  <code><a href='list_server_capabilities.html'>list_server_capabilities</a></code>,
-  <code><a href='rename_mailbox.html'>rename_mailbox</a></code>,
-  <code><a href='select_mailbox.html'>select_mailbox</a></code></p></div>
+    <div class='dont-index'><p>Other attachments helper: <code><a href='check_args_get_attachments.html'>check_args_get_attachments</a></code>,
+  <code><a href='has_attachment.html'>has_attachment</a></code></p>
+<p>Other check args: <code><a href='check_args_add_replace_flags.html'>check_args_add_replace_flags</a></code>,
+  <code><a href='check_args_copy_msg.html'>check_args_copy_msg</a></code>,
+  <code><a href='check_args_custom_search.html'>check_args_custom_search</a></code>,
+  <code><a href='check_args_delete_msg.html'>check_args_delete_msg</a></code>,
+  <code><a href='check_args_expunge.html'>check_args_expunge</a></code>,
+  <code><a href='check_args_fetch_full_msg.html'>check_args_fetch_full_msg</a></code>,
+  <code><a href='check_args_fetch_msg_header.html'>check_args_fetch_msg_header</a></code>,
+  <code><a href='check_args_fetch_msg_metadata.html'>check_args_fetch_msg_metadata</a></code>,
+  <code><a href='check_args_fetch_msg_text.html'>check_args_fetch_msg_text</a></code>,
+  <code><a href='check_args_get_attachments.html'>check_args_get_attachments</a></code>,
+  <code><a href='check_args_get_max_min_id.html'>check_args_get_max_min_id</a></code>,
+  <code><a href='check_args_move_msg.html'>check_args_move_msg</a></code>,
+  <code><a href='check_args_remove_flags.html'>check_args_remove_flags</a></code>,
+  <code><a href='check_args_search_date.html'>check_args_search_date</a></code>,
+  <code><a href='check_args_search_flag.html'>check_args_search_flag</a></code>,
+  <code><a href='check_args_search_period.html'>check_args_search_period</a></code>,
+  <code><a href='check_args_search_size.html'>check_args_search_size</a></code>,
+  <code><a href='check_args_search_string.html'>check_args_search_string</a></code>,
+  <code><a href='check_args_search_within.html'>check_args_search_within</a></code></p></div>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># configure IMAP</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
-                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
-                         )
-
-<span class='co'># list mailboxes</span>
-<span class='no'>results</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
-  <span class='fu'>list_mailboxes</span>()
-
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -181,9 +179,7 @@ is <code>2</code>.</p></td>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#see-also">See also</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

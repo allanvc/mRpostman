@@ -1,11 +1,12 @@
 #' @title List Attachments
 #'
-#' @description List attachments filenames after fetching full messages.
+#' @description List attachments filenames and Content-Disposition types after
+#'     fetching full messages.
 #'
-#' @inheritParams check_args_get_attachments
+#' @inheritParams check_args_list_attachments
 #'
-#' @return A \code{list} of \code{data.frames} containing filenames for each
-#'     fetched message.
+#' @return A \code{list} of \code{data.frames} containing the filenames and its
+#'     Content-Disposition types for each fetched message.
 #'
 #' @family attachments
 #'
@@ -34,7 +35,7 @@
 list_attachments <- function(msg_list) {
 
   #check
-  check_args_get_attachments(msg_list)
+  check_args_list_attachments(msg_list)
 
   attachments_list <- list()
 
@@ -48,18 +49,28 @@ list_attachments <- function(msg_list) {
 
     if (has_attachment(msg)) {
 
+      # A) Content_Disposition: attachment
       # 1) full attachments excerpts (with attachment "headers")
-      pattern = 'Content-Disposition: attachment;[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--'
+      # v0.3.1 - changed REGEX for getting full attachments
+      pattern = 'Content-Disposition: attachment;[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--|Content-Disposition: inline;[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--'
       # this REGEX works with IMAP and MS/Exchange protocols
       full_attachments <- unlist(regmatches(msg, gregexpr(pattern, msg)))
       # starting from full attachments to get filenames and text after
 
       # 2) extract attachment filenames:
-      pattern = '\r\nContent-Disposition: attachment;[\r\n\t]|[\r\n]*filename=\"(.*?)\"[\r\n|;]'
+      # pattern = '\r\nContent-Disposition: attachment;[\r\n\t]|[\r\n]*filename=\"(.*?)\"[\r\n|;]'
+      # v0.3.1 - simplified REGEX - we do not need to worry about getting ordinary text
+      # ..we have already selected only the attachments
+      pattern = 'filename=\"(.*?)\"[\r\n|;]'
       # this REGEX works with IMAP and MS/Exchange protocols
 
       filenames <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
-      filenames <- filenames[seq(2, length(filenames), by = 2)]
+
+      # v0.3.1 - to avoid errors in case NULL
+      if(!is.null(filenames)){
+        filenames <- filenames[seq(2, length(filenames), by = 2)]
+      }
+
 
       # cleaning encoding strings in filenames, e.g. "=?Windows-1252?Q?Termo_de_extra_SIAPE.?=\r\n =?Windows-1252?Q?pdf?="
       # pasting the extension to the name when it is
@@ -81,6 +92,14 @@ list_attachments <- function(msg_list) {
         })
       }
 
+      # v0.3.1 - obtaining Content-Disposition types
+      pattern = 'Content-Disposition: (inline|attachment);'
+      cont_disp_types <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
+
+      if(!is.null(cont_disp_types)){
+        cont_disp_types <- cont_disp_types[seq(2, length(cont_disp_types), by = 2)]
+      }
+
       # 3) getting attachments encoding
       # pattern = '\r\nContent-Transfer-Encoding: (.*?)[\r\n|\r|\n]+'
       # this REGEX works with IMAP and MS/Exchange protocols
@@ -95,18 +114,20 @@ list_attachments <- function(msg_list) {
       # }
 
       # note to future me: I had the idea of extracting filetypes, but sometimes
-      #"Content-Type" are before "Content-Disposition" and we lose it after getting
+      #"Content-Type" is before "Content-Disposition" and we lose it after getting
       #full_attachments object
 
+      out_df <- data.frame("filename" = filenames,
+                               "content_disposition" = cont_disp_types,
+                               # "encoding" = encodings,
+                               stringsAsFactors = FALSE)
 
-      out <- list(data.frame("filename" = filenames,
-                             # "encoding" = encodings,
-                             stringsAsFactors = FALSE))
+      # binding regular attachments and inline attachments
+      out <- list(out_df)
 
       names(out) <- id
 
       attachments_list <- c(attachments_list, out)
-
 
 
     }

@@ -11,11 +11,12 @@ list_attachments(msg_list)
 the server after using \code{\link{fetch_full_msg}}.}
 }
 \value{
-A \code{list} of \code{data.frames} containing filenames for each
-    fetched message.
+A \code{list} of \code{data.frames} containing the filenames and its
+    Content-Disposition types for each fetched message.
 }
 \description{
-List attachments filenames after fetching full messages.
+List attachments filenames and Content-Disposition types after
+    fetching full messages.
 }
 \examples{
 

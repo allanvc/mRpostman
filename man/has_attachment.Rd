@@ -18,7 +18,8 @@ A \code{logical} containing \code{TRUE} if there is one or more
 Internal helper function for attachment checking in messages.
 }
 \seealso{
-Other attachments helper: \code{\link{check_args_get_attachments}}
+Other attachments helper: \code{\link{check_args_get_attachments}},
+  \code{\link{check_args_list_attachments}}
 }
 \concept{attachments helper}
 \keyword{internal}

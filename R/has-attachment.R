@@ -13,7 +13,7 @@
 #' @keywords internal
 #'
 has_attachment <- function(msg) {
-  check <- grepl(pattern = "Content-Disposition: attachment",
+  check <- grepl(pattern = "Content-Disposition: (attachment|inline)",
                  x = msg)
   return(check)
 }

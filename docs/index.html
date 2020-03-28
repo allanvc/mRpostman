@@ -44,7 +44,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -96,7 +96,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mrpostman" class="anchor"></a>mRpostman <img src="reference/figures/logo.png" align="right" width="140">
 </h1></div>
-<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.0_git/mRpostman/man/figures/logo.png" align="right" /> -->
+<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.1_git/mRpostman/man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
@@ -290,13 +290,13 @@
 <div id="attachments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attachments" class="anchor"></a>6) Attachments</h2>
-<p>This will list all the attachments filenames for each fetched message.</p>
+<p>This will list all the attachments filenames and the Content-Disposition type for each fetched message.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
 <a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/list_attachments.html">list_attachments</a></span>()</a></code></pre></div>
-<p>This extracts and decode your <code>base64</code> text attachments from messages, and save them locally.</p>
+<p>This extracts and decode your <code>base64</code> text attachments (regular and inline) from messages, and save them locally.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>

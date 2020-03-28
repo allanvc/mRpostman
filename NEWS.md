@@ -1,3 +1,49 @@
+## mRpostman 0.3.1 (2020-03-27)
+
+### Features
+
+* get_attachments() function:
++ added support to inline attachments: argument "content_disposition"
++ changed REGEX for retrieving text and filenames
+
+* check_args_get_atatchments() helper function:
++ added support to inline attachments: argument "content_disposition"
+
+* list_attachments() function:
++ added support to inline attachments: added a column "content_disposition" to output
++ changed REGEX for retrieving text and filenames
+
+* check_args_list_attachments():
++ added helper function check_args_list_attachments()
+
+* has_attachment() helper function:
++ added support to inline attachments
+
+* loop_fetch_msg_XXXX() functions group:
++ changed error message
+
+### Documentation
+
+* DESCRIPTION FILE:
++ changed title to IMAP Toolkit
++ changed Description field
+
+* README.md:
++ item 6) Attachments: added mention to inline attachments
+
+* get_attachments():
++ added new note to explain Content-Disposition types
++ added reference to RFC2183
+
+* check_args_get_attachments():
++ added new argument "content_disposition"
+
+## OTHER
+
++ removed garbage function environments_tests.R
+
+
+---
 ## mRpostman 0.3.0 (2019-10-07)
 
 
@@ -27,7 +73,6 @@
 * examples:
 + fixed typo - from "configureIMAP" to "configure_imap" in the following functions examples: list_mailboxes(), list_server_capabilities()
 + changed all imaps://imap.gmail.com server examples to a generic one: imaps://your.imap.server.com
-
 
 ### Documentation
 
@@ -67,7 +112,6 @@ timeout_ms in configure_imap.
 the return of Yandex 
 IMAP server: from '.*\" \"*(.*?)\\"\r\n' to '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]'
 
-
 ### Documentation (0.2.1-1)
 * function configure_imap():
 + @param retries description typo: from "retires" to "retries"
@@ -88,7 +132,6 @@ IMAP server: from '.*\" \"*(.*?)\\"\r\n' to '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]'
 + changed section "First Things First" to "Allowing Less Secure Apps Access"
 
 
-
 ---
 ## mRpostman 0.2.0 (2019-08-18 - CRAN submission)
 
@@ -100,8 +143,6 @@ expunge(), add/remove/replace_flags() returns are invisible and only return
 imapconf or a list (imapconf+msg_ids).
 
 - changed package logo
-
-
 
 ---
 ## mRpostman 0.1.0 (2019-08-13 - Github release)

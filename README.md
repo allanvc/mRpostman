@@ -211,7 +211,8 @@ results
 
 ## 6\) Attachments
 
-This will list all the attachments filenames for each fetched message.
+This will list all the attachments filenames and the Content-Disposition
+type for each fetched message.
 
 ``` r
 imapconf %>%
@@ -221,8 +222,8 @@ imapconf %>%
   list_attachments()
 ```
 
-This extracts and decode your `base64` text attachments from messages,
-and save them locally.
+This extracts and decode your `base64` text attachments (regular and
+inline) from messages, and save them locally.
 
 ``` r
 imapconf %>%

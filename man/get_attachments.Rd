@@ -4,11 +4,17 @@
 \alias{get_attachments}
 \title{Get Attachments}
 \usage{
-get_attachments(msg_list)
+get_attachments(msg_list, content_disposition = "both")
 }
 \arguments{
 \item{msg_list}{A \code{list} containing the full messages fetched from
 the server after using \code{\link{fetch_full_msg}}.}
+
+\item{content_disposition}{A \code{string} indicating which type of
+"Content-Disposition" attachments should be retireved. Default is
+\code{"both"}, which retireves regular attachments
+("Content-Disposition: attachment") and  inline attachments
+("Content-Disposition: inline").}
 }
 \value{
 A logical \code{TRUE} if the attachments extraction was successful.
@@ -19,9 +25,20 @@ Get attachments after fetching full messages.
 \note{
 All attachments will be stored in a folder labelled with the message id
     inside the working directory. This function currently handles only attachments
-    encoded as \code{base64} text. It tries to guess all file extensions while decoding
-    the text, but it may not be possible in some circumstances. In those cases,
-    you can try to change the file extension directly by renaming the file.
+    encoded as \code{base64} text. It tries to guess all file extensions while
+    decoding the text, but it may not be possible to do it in some circumstances.
+    If it happens, you can try to change the file extension directly by renaming
+    the file.
+
+The "Content-Disposition" header specifies if the multipart electronic
+    messages will be presented as a main document with a list of separate
+    attachments ("Content-Disposition: attachment") or as a single document
+    with the various parts displayed inline. The first requires positive action
+    on the part of recipient, i.e. downloading the file, whereas inline
+    components are displayed automatically when the message is viewed
+    (\cite{Troost, R., Dorner, S., and K. Moore, Ed. (1997)}). You can choose
+    to download \code{both}, or only one of the types of attachments, using the
+    argument \code{content_disposition}.
 }
 \examples{
 
@@ -43,6 +60,13 @@ imapconf \%>\%
 
 }
 
+}
+\references{
+{
+    Troost, R., Dorner, S., and K. Moore, Ed.,
+    \emph{Communicating Presentation Information in Internet Messages:
+    The Content-Disposition Header Field}, RFC 2183, DOI 10.17487/RFC2183,
+    August 1997, \url{https://www.rfc-editor.org/info/rfc2183}.}
 }
 \seealso{
 Other attachments: \code{\link{list_attachments}}

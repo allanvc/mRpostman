@@ -136,11 +136,12 @@ loop_fetch_msg_metadata <- function(new_imapconf, msg_id, by, metadata,
 
           }
         } else {
-          stop('An error ocurred while connecting. Please check the following and/or try again:\n
-         - your internet connection status;\n
-         - if imapconf options are valid;\n
-         - the name of the Mailbox (argument "mbox");\n
-         - if "msg_id" does not have any number greater than "EXISTS" -- see examine_mailbox().'
+          stop('An error ocurred while connecting. Please do the following:\n
+         - check your internet connection status;\n
+         - try again increasing the "timeout_ms" argument;\n
+         - check if imapconf options are valid;\n
+         - check the name of the Mailbox (argument "mbox");\n
+         - check whether "msg_id" does not have any number greater than "EXISTS" -- see examine_mailbox().'
 
           )
         }
