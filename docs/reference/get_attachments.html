@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_attachments</span>(<span class='no'>msg_list</span>)</pre>
+    <pre class="usage"><span class='fu'>get_attachments</span>(<span class='no'>msg_list</span>, <span class='kw'>content_disposition</span> <span class='kw'>=</span> <span class='st'>"both"</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -138,6 +138,14 @@
       <th>msg_list</th>
       <td><p>A <code>list</code> containing the full messages fetched from
 the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>content_disposition</th>
+      <td><p>A <code>string</code> indicating which type of
+"Content-Disposition" attachments should be retireved. Default is
+<code>"both"</code>, which retireves regular attachments
+("Content-Disposition: attachment") and  inline attachments
+("Content-Disposition: inline").</p></td>
     </tr>
     </table>
     
@@ -149,9 +157,26 @@ the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></c
 
     <p>All attachments will be stored in a folder labelled with the message id
     inside the working directory. This function currently handles only attachments
-    encoded as <code>base64</code> text. It tries to guess all file extensions while decoding
-    the text, but it may not be possible in some circumstances. In those cases,
-    you can try to change the file extension directly by renaming the file.</p>
+    encoded as <code>base64</code> text. It tries to guess all file extensions while
+    decoding the text, but it may not be possible to do it in some circumstances.
+    If it happens, you can try to change the file extension directly by renaming
+    the file.</p>
+<p>The "Content-Disposition" header specifies if the multipart electronic
+    messages will be presented as a main document with a list of separate
+    attachments ("Content-Disposition: attachment") or as a single document
+    with the various parts displayed inline. The first requires positive action
+    on the part of recipient, i.e. downloading the file, whereas inline
+    components are displayed automatically when the message is viewed
+    (<cite>Troost, R., Dorner, S., and K. Moore, Ed. (1997)</cite>). You can choose
+    to download <code>both</code>, or only one of the types of attachments, using the
+    argument <code>content_disposition</code>.</p>
+    
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Troost, R., Dorner, S., and K. Moore, Ed.,
+    <em>Communicating Presentation Information in Internet Messages:
+    The Content-Disposition Header Field</em>, RFC 2183, DOI 10.17487/RFC2183,
+    August 1997, <a href='https://www.rfc-editor.org/info/rfc2183'>https://www.rfc-editor.org/info/rfc2183</a>.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -186,6 +211,8 @@ the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></c
       <li><a href="#value">Value</a></li>
 
       <li><a href="#note">Note</a></li>
+
+      <li><a href="#references">References</a></li>
 
       <li><a href="#see-also">See also</a></li>
       
