@@ -20,10 +20,7 @@
     functionalities based on the RFC 3501 manual (Crispin, 2003, 
     &lt;doi:10.17487/RFC3501&gt;), its updates, and other related documents. 
     'mRpostman' makes extensive use of 'curl' and 'libcurl' capabilities, 
-    providing functions for mailboxes and electronic messages manipulation, such 
-    as moving, deleting, and searching messages using specific 
-    criteria, setting and clearing flags, selective fetching of message 
-    attributes and more.">
+    providing functions for mailboxes and electronic messages manipulation.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -104,7 +101,7 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><strong>mRpostman</strong> makes extensive use of ‘curl’ and ‘libcurl’ capabilities, providing functions for mailboxes and electronic messages manipulation, such as moving, deleting, and searching messages using specific criteria, setting and clearing flags, selective fetching of message attributes and more.</p>
+<p><strong>mRpostman</strong> makes extensive use of ‘curl’ and ‘libcurl’ capabilities, providing functions for mailboxes and electronic messages manipulation. Beyond many other functionalities, it is possible to move, delete, search and fetch messages or its parts using specific criteria.</p>
 <p>mRpostman website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
 </div>
 <div id="first-things-first" class="section level2">
@@ -159,6 +156,11 @@
 </li>
 </ol>
 <p><img src="reference/figures/aol3.png"></p>
+</div>
+<div id="outlook---office-365" class="section level3">
+<h3 class="hasAnchor">
+<a href="#outlook---office-365" class="anchor"></a>Outlook - Office 365</h3>
+<p>There is no need to execute any external configuration. The parameter <code>url</code> in <code><a href="reference/configure_imap.html">configure_imap()</a></code> should be set as <code>url="imaps://outlook.office365.com"</code>.</p>
 </div>
 </div>
 <div id="introduction" class="section level2">
@@ -234,11 +236,17 @@
 <a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
 <a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#                           )</span></a>
 <a class="sourceLine" id="cb2-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># you can try another IMAP server and see if it works</span></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30"></a>
-<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co"># Listing</span></a>
-<a class="sourceLine" id="cb2-32" data-line-number="32">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># Outlook - Office 365</span></a>
+<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="co"># imapconf &lt;- configure_imap(url="imaps://outlook.office365.com",</span></a>
+<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co">#                            username="your_user",</span></a>
+<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
+<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="co">#                           )</span></a>
+<a class="sourceLine" id="cb2-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="co"># you can try another IMAP server and see if it works</span></a>
+<a class="sourceLine" id="cb2-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co"># Listing</span></a>
+<a class="sourceLine" id="cb2-38" data-line-number="38">imapconf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
 </div>
 <div id="examining-a-mailbox" class="section level3">
 <h3 class="hasAnchor">
@@ -246,7 +254,7 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># examine mailbox -- number of existent and recent messages</span></a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
+<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
 <a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/examine_mailbox.html">examine_mailbox</a></span>()</a></code></pre></div>
 </div>
 <div id="searching-by-period-using-a-flag" class="section level3">
@@ -268,7 +276,7 @@
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># search</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>)</a>
 <a class="sourceLine" id="cb5-6" data-line-number="6"></a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">results<span class="op">$</span>msg_id</a></code></pre></div>
@@ -278,7 +286,7 @@
 <a href="#fetch-headers-after-searching" class="anchor"></a>5) Fetch headers after searching</h3>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"UC Riverside"</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
 <a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, </a>
 <a class="sourceLine" id="cb6-6" data-line-number="6">                   <span class="dt">msg_id =</span> msg_id, </a>

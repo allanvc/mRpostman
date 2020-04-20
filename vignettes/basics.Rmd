@@ -14,9 +14,9 @@ vignette: >
 ## Introduction
 
 **mRpostman** makes extensive use of 'curl' and 'libcurl' capabilities, providing 
-functions for mailboxes and electronic messages manipulation, such as moving, 
-deleting, and searching messages using specific criteria, setting and clearing 
-flags, selective fetching of message attributes and more.
+functions for mailboxes and electronic messages manipulation. Beyond many other 
+functionalities, it is possible to move, delete, search and fetch messages or 
+its parts using specific criteria.
 
 In this vignette, we present all available functions of this package,
 but not all the possibilities one can explore.
@@ -91,6 +91,12 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #                           password=rstudioapi::askForPassword()
 #                           )
 
+# Outlook - Office 365
+# imapconf <- configure_imap(url="imaps://outlook.office365.com",
+#                            username="your_user",
+#                            password=rstudioapi::askForPassword()
+#                           )
+
 # you can try another IMAP server and see if it works
 
 ```
@@ -123,7 +129,7 @@ Select a mailbox and count the number of existent and recent messages.
 
 ```{r, message = FALSE, eval=FALSE}
 imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>% # be careful - case sensitive
+  select_mailbox(mbox = "Kansas State University") %>% # be careful - case sensitive
   examine_mailbox()
 ```
 
@@ -228,7 +234,7 @@ a flag also.
 
 ```{r, message = FALSE, eval=FALSE}
 result <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_before(date_char = "02-May-2019", 
                 by = "UID", 
                 flag = "UNANSWERED",
@@ -241,7 +247,7 @@ Remember, if you do not want to return the `imapconf` object, but only the searc
 
 ```{r, message = FALSE, eval=FALSE}
 result <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_before(date_char = "02-May-2019", 
                 by = "UID", 
                 flag = "UNANSWERED",
@@ -254,7 +260,7 @@ You can also **NEGATE** the statement to search for messages **NOT BEFORE a date
 
 ```{r, message = FALSE, eval=FALSE}
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_before(date_char = "02-May-2019", 
                 negate = TRUE, 
                 by = "UID", 
@@ -330,7 +336,7 @@ a flag also.
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_sent_before(date_char = "02-Jan-2019", 
                      by = "UID", 
                      flag = "UNANSWERED",
@@ -342,7 +348,7 @@ You can also **NEGATE** the statement to search for messages **NOT SENTBEFORE a 
 
 ```{r, message = FALSE, eval = FALSE}
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_sent_before(date_char = "02-May-2019", 
                      negate = TRUE, 
                      by = "UID", 
@@ -416,7 +422,7 @@ Searching "TEXT" section.
 
 ```{r, message = FALSE, eval=FALSE}
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_string(section_or_field = "TEXT", string = "Dear Allan")
 
 ```
@@ -425,7 +431,7 @@ To search for the string in the whole message, use `section_or_field = "BODY"`.
 
 ```{r, message = FALSE, eval=FALSE}
 results <- imapconf %>%
-select_mailbox(mbox = "UC Riverside") %>%
+select_mailbox(mbox = "Kansas State University") %>%
   search_string(section_or_field = "BODY", string = "Dear Allan")
 
 ```
@@ -553,7 +559,7 @@ You can also choose to write fetch results to disk (working directory) using `wr
 ```{r, message = FALSE, eval = FALSE}
 
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_before(date_char = "10-Mar-2019", by = "UID") %$% #exposition pipe operator
   fetch_full_msg(imapconf = imapconf, msg_id = msg_id,
                  by="UID", write_to_file = TRUE, keep_in_mem = TRUE,
@@ -570,7 +576,7 @@ Do not forget to re-specify `by = "UID"` inside `fetch_full_msg()`.
 ```{r, message = FALSE, eval=FALSE}
 
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_since(date_char = "15-Aug-2019", by = "UID") %$% #exposition pipe operator
   fetch_msg_header(imapconf = imapconf, 
                    msg_id = msg_id, 

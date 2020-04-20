@@ -29,11 +29,10 @@ IMAP Toolkit for R
 
 ## Overview
 
-
 **mRpostman** makes extensive use of 'curl' and 'libcurl' capabilities, providing 
-functions for mailboxes and electronic messages manipulation, such as moving, 
-deleting, and searching messages using specific criteria, setting and clearing 
-flags, selective fetching of message attributes and more.
+functions for mailboxes and electronic messages manipulation. Beyond many other 
+functionalities, it is possible to move, delete, search and fetch messages or 
+its parts using specific criteria.
 
 mRpostman website: https://allanvc.github.io/mRpostman
 
@@ -87,6 +86,11 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 4) After, set "Allow apps that use less secure sign in" **ON**
 
 <img src="man/figures/aol3.png">
+
+### Outlook - Office 365
+
+There is no need to execute any external configuration. The parameter `url` in
+`configure_imap()` should be set as `url="imaps://outlook.office365.com"`.
 
 
 ## Introduction
@@ -159,6 +163,12 @@ imapconf <- configure_imap(url="imaps://imap.gmail.com",
 #                            password=rstudioapi::askForPassword()
 #                           )
 
+# Outlook - Office 365
+# imapconf <- configure_imap(url="imaps://outlook.office365.com",
+#                            username="your_user",
+#                            password=rstudioapi::askForPassword()
+#                           )
+
 # you can try another IMAP server and see if it works
 
 # Listing
@@ -172,7 +182,7 @@ imapconf %>%
 
 # examine mailbox -- number of existent and recent messages
 imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>% # mbox names are case sensitive
+  select_mailbox(mbox = "Kansas State University") %>% # mbox names are case sensitive
   examine_mailbox()
 
 ```
@@ -197,7 +207,7 @@ results$msg_id
 
 # search
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_string(section_or_field = "TEXT", string = "Welcome!")
 
 results$msg_id
@@ -208,7 +218,7 @@ results$msg_id
 ```{r, message = FALSE, eval=FALSE}
 
 results <- imapconf %>%
-  select_mailbox(mbox = "UC Riverside") %>%
+  select_mailbox(mbox = "Kansas State University") %>%
   search_string(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
   fetch_msg_header(imapconf = imapconf, 
                    msg_id = msg_id, 
