@@ -1,4 +1,4 @@
-## mRpostman 0.3.1 (2020-03-27)
+## mRpostman 0.3.1 (2020-03-27 Github/ 2020-04-18 CRAN)
 
 ### Features
 
