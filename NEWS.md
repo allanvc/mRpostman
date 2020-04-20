@@ -31,8 +31,14 @@
 * README.md:
     + item 6) Attachments: added mention to inline attachments
     + changed description
+    + added Outlook - Office 365 configuration example
     + changed all examples from UC Riverside to Kansas State University (sorry UCR!)
 
+* Basics Vigntte
+    + changed description
+    + added Outlook - Office 365 configuration example
+    + changed all examples from UC Riverside to Kansas State University (sorry UCR!)
+    
 * `get_attachments()`:
     + added new note to explain Content-Disposition types
     + added reference to RFC2183
