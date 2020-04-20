@@ -30,6 +30,8 @@
 
 * README.md:
     + item 6) Attachments: added mention to inline attachments
+    + changed description
+    + changed all examples from UC Riverside to Kansas State University (sorry UCR!)
 
 * `get_attachments()`:
     + added new note to explain Content-Disposition types
