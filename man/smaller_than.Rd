@@ -2,59 +2,47 @@
 % Please edit documentation in R/smaller-than.R
 \name{smaller_than}
 \alias{smaller_than}
-\title{Criteria Helper Functions for Custom Search}
+\title{Criterion constructor function to be combined in a custom search statement}
 \usage{
 smaller_than(size, negate = FALSE)
 }
 \arguments{
-\item{size}{An integer specifying the size (in number of characters) of
-message to be used as search criterion.}
+\item{size}{An integer specifying the number of seconds to be used as
+search criterion.}
 
-\item{negate}{If \code{TRUE}, negates the search and seeks for
-"NOT search_criterion". Default is \code{FALSE}.}
-}
-\value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+\item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is \code{FALSE}.}
 }
 \description{
-Criteria helper functions to be combined inside a operator helper
-    function as a custom request in \link{custom_search}.
+Criterion constructor function to be combined in a custom search statement
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request =
-                 OR(string(
-                       section_or_field = "from", string = "allanvcq@gmail.com"),
-                    smaller_than(
-                       size = 512000)
-                   )
-                 )
-# searches for messages containing the string "allanvcq@gmail.com" in the
-# field "FROM" OR those Smaller Than 512KB.
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages containing the string "XYZ@k-state.edu" in the
+# "FROM" field OR those that are SMALLER than 512KB.
+res <- con$search(request = OR(string(expr = "XYZ@k-state.edu",
+                                      where = "FROM"),
+                               smaller_than(size = 512000)))
 }
 
 }
 \seealso{
-Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{OR}}, \code{\link{before}},
-  \code{\link{flag}}, \code{\link{larger_than}},
-  \code{\link{older_than}}, \code{\link{on}},
-  \code{\link{sent_before}}, \code{\link{sent_on}},
-  \code{\link{sent_since}}, \code{\link{since}},
-  \code{\link{string}}, \code{\link{younger_than}}
+Other custom search: 
+\code{\link{AND}()},
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{flag}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_before}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{string}()},
+\code{\link{younger_than}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

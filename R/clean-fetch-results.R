@@ -1,25 +1,25 @@
-#' @title Messages Results Cleaning
-#'
-#' @description Internal helper function for cleaning a message content in a
-#'     string. It is used with fetch loop functions.
-#'
-#' @param msg A character string with a message content.
-#'
-#' @return A string with a cleaned message.
-#'
-#' @family fetch helper
-#' @family cleaning
-#'
-#' @keywords internal
-#'
-clean_fetch_results <- function(msg) {
+#' Clean message's results
+#' @param msg_text A character string with a message content.
+#' @noRd
+clean_fetch_results <- function(msg_text) {
 
 
-  pattern1="\\* \\d+ FETCH.*BODY.*\\{\\d+\\}\r\n"
-  result <- stringr::str_remove(string = msg, pattern = pattern1)
+  pattern1 = "\\* \\d+ FETCH.*BODY.*\\{\\d+\\}\r\n"
+  # result <- stringr::str_remove(string = msg_text, pattern = pattern1)
+  result <- gsub(pattern1, "", msg_text)
 
-  pattern2="\\)\r\n[A-Z]\\d+ OK Success\r\n"
-  result <- stringr::str_remove(string = result, pattern = pattern2)
+  pattern2 = "\\)\r\n[A-Z]\\d+ OK Success\r\n"
+  # result <- stringr::str_remove(string = result, pattern = pattern2)
+  result <- gsub(pattern2, "", result)
+
+  pattern3 = "\\)\r\n[A-Z]\\d+ OK FETCH completed.\r\n" #MS Exchange
+  # result <- stringr::str_remove(string = result, pattern = pattern3)
+  result <- gsub(pattern3, "", result)
+
+  # attachments
+  pattern4 = "\\)\r\n[A-Z]\\d+ OK FETCH completed\r\n" #MS Exchange
+  # result <- stringr::str_remove(string = result, pattern = pattern3)
+  result <- gsub(pattern4, "", result)
 
   # note to self: base R functions like regmatches return error in some cases
   # sub is too slow

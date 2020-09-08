@@ -1,40 +1,23 @@
-#' @inherit before
-#'
-#' @inheritParams check_args_within
-#'
-#' @family customsearch helper functions
-#'
+#' @inherit older_than
+#' @note To be able to use this functionality, the server must support the
+#'   \code{WITHIN} capability.
+#' @family custom search
 #' @examples
-#'
 #' \dontrun{
-#'
-#' # configure IMAP
-#' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
-#'                            username="your_username",
-#'                            password=rstudioapi::askForPassword()
-#'                           )
-#'
-#' # search
-#' result <- imapconf %>%
-#'     select_mailbox(mbox = "INBOX") %>%
-#'     custom_search(custom_request =
-#'                  OR(smaller_than(
-#'                        size = 512000),
-#'                     younger_than(
-#'                        seconds = 3600)
-#'                    )
-#'                  )
-#' # searches for messages that are Smaller Than 512 KB OR Younger Than 3600
-#' # seconds (or one hour).
-#'
+#' # select folder & search
+#' con$select_folder(name = "INBOX")
+#' # search for messages containing the string "XYZ@@k-state.edu" in the
+#' #   "FROM" field AND those that are YOUNGER than 3600 seconds (1 hour).
+#' res <- con$search(request = AND(string(expr = "XYZ@@k-state.edu",
+#'                                       where = "FROM"),
+#'                                younger_than(seconds = 3600)))
 #' }
 #'
 #' @export
 #'
 younger_than <- function(seconds, negate = FALSE) {
 
-  check_args_within(seconds, negate)
+  check_args(seconds, negate)
 
   # setting part of the search string
 

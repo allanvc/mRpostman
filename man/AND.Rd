@@ -2,57 +2,47 @@
 % Please edit documentation in R/AND.R
 \name{AND}
 \alias{AND}
-\title{Relational Operators - Helper Functions for Custom Search}
+\title{Relational operator function to construct a custom search statement}
 \usage{
 AND(..., negate = FALSE)
 }
 \arguments{
-\item{...}{a combination of criteria helper functions with its arguments.}
+\item{...}{a combination of criteria constructor functions with its arguments.}
 
 \item{negate}{If \code{TRUE}, negates the search and seeks for
 "NOT search_criterion". Default is \code{FALSE}.}
 }
 \value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+A search string to be used as a \code{request} parameter in
+ \code{ImapCon$search()} function.
 }
 \description{
-Allows a combination of criteria helper
-    functions such as such as \link{before}, \link{since},
-    \link{on}, \link{sent_before}, \link{sent_since}, \link{sent_on},
-    \link{flag}, \link{string}, \link{smaller_than}, \link{larger_than},
-    \link{younger_than}, or \link{younger_than}, in order to execute a
-    multiple criteria custom search.
+Relational operator function to construct a custom search statement
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request = AND(sent_since(date.char = "17-Apr-2019"),
-                                       smaller_than(size = 512000),
-                                       negate = TRUE))
-# searches for messages NOT SentSince "17-Apr-2019" AND NOT Smaller Than 512KB.
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages SINCE "30-Ago-2019" AND SMALLER than 512KB.
+res <- con$search(request = AND(sent_since(date_char = "30-Ago-2019"),
+                                smaller_than(size = 512000)))
 }
-
 }
 \seealso{
-Other customsearch helper functions: \code{\link{OR}},
-  \code{\link{before}}, \code{\link{flag}},
-  \code{\link{larger_than}}, \code{\link{older_than}},
-  \code{\link{on}}, \code{\link{sent_before}},
-  \code{\link{sent_on}}, \code{\link{sent_since}},
-  \code{\link{since}}, \code{\link{smaller_than}},
-  \code{\link{string}}, \code{\link{younger_than}}
+Other custom search: 
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{flag}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_before}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{smaller_than}()},
+\code{\link{string}()},
+\code{\link{younger_than}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

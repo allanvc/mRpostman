@@ -1,41 +1,31 @@
-#' @title List Attachments
-#'
-#' @description List attachments filenames and Content-Disposition types after
-#'     fetching full messages.
-#'
-#' @inheritParams check_args_list_attachments
-#'
+#' List attachments and content-disposition types
+#' @param msg_list A \code{list} containing the messages (body or text) fetched
+#'   from the server.
+#' @note Please, note that this is an independent function and not an R6 method
+#'   that depends on the connection object. Therefore, it should be called alone
+#'   without the ImapCon object.
 #' @return A \code{list} of \code{data.frames} containing the filenames and its
-#'     Content-Disposition types for each fetched message.
-#'
+#'   \code{Content-Disposition} types for each fetched message.
 #' @family attachments
-#'
 #' @examples
-#'
 #' \dontrun{
+#' con$select_folder(name = "INBOX")
+#' # do a search followed by a fetch operation, then extract the attachments' list
+#' out < con$search_string(expr = "@k-state.edu", where = "FROM") %>%
+#'   con$fetch_body()
+#' att_list <- list_attachments(msg_list = out)
 #'
-#' # configure IMAP
-#' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
-#'                            username="your_username",
-#'                            password=rstudioapi::askForPassword()
-#'                           )
-#'
-#' # listing attachments
-#' attachments <- imapconf %>%
-#'     select_mailbox(mbox = "TAM") %>%
-#'     search_before(date_char = "10-may-2012", by = "UID") %$% #exposition pipe - two argg
-#'     fetch_full_msg(imapconf = imapconf, msg_id = msg_id) %>%
-#'     list_attachments()
-#'
+#' # or
+#' att_list < con$search_string(expr = "@k-state.edu", where = "FROM") %>%
+#'   con$fetch_body() %>%
+#'   list_attachments()
 #' }
-#'
 #' @export
 #'
 list_attachments <- function(msg_list) {
 
   #check
-  check_args_list_attachments(msg_list)
+  check_args(msg_list = msg_list)
 
   attachments_list <- list()
 
@@ -43,11 +33,13 @@ list_attachments <- function(msg_list) {
 
   for (i in seq_along(msg_list)) {
 
+    # i = 1
+
     id = names(msg_list[i]) # doing this to conserve name attribute
 
     msg = msg_list[[i]]
 
-    if (has_attachment(msg)) {
+    if (has_attachment(msg, call_from = "list_attachments")) {
 
       # A) Content_Disposition: attachment
       # 1) full attachments excerpts (with attachment "headers")
@@ -80,6 +72,9 @@ list_attachments <- function(msg_list) {
       # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
       # we opted for decoding only dots first to get the correct file extension part
       filenames <- gsub("=2E|%2E",".", filenames)
+
+      forbiden_chars <- "[\\/:*?\"<>|]"
+      filenames <- gsub(forbiden_chars,"", filenames)
 
       # standard URLdecoding:
       for (j in seq_along(filenames)) {
@@ -118,9 +113,9 @@ list_attachments <- function(msg_list) {
       #full_attachments object
 
       out_df <- data.frame("filename" = filenames,
-                               "content_disposition" = cont_disp_types,
-                               # "encoding" = encodings,
-                               stringsAsFactors = FALSE)
+                           "content_disposition" = cont_disp_types,
+                           # "encoding" = encodings,
+                           stringsAsFactors = FALSE)
 
       # binding regular attachments and inline attachments
       out <- list(out_df)
@@ -129,6 +124,12 @@ list_attachments <- function(msg_list) {
 
       attachments_list <- c(attachments_list, out)
 
+
+    } else { # when has_attachments returns FALSE
+
+      out <- NA
+      names(out) <- id
+      attachments_list <- c(attachments_list, out)
 
     }
 

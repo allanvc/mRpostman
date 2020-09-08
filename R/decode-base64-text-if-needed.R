@@ -1,16 +1,6 @@
-#' @title Messages Results Decoding
-#'
-#' @description Internal helper function for decoding base64 message results.
-#'
-#' @param msg A character string with a message content.
-#'
-#' @return A string with a decoded message, if it was base64 coded.
-#'
-#' @family fetch helper
-#' @family cleaning
-#'
-#' @keywords internal
-#'
+#' @description Messages Results Decoding
+#' @param msg A \code{character} string with a message content.
+#' @noRd
 decode_base64_text_if_needed <- function(msg) {
   # to be used inside fetch_msg_text() - Headers and full msgs are fine,
   #.. except for the text part in full msgs

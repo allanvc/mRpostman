@@ -70,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -94,6 +94,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/basics.html">mRpostman Basics</a>
+    </li>
+    <li>
+      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -139,145 +145,67 @@
         <td>
           <p><code><a href="AND.html">AND()</a></code> </p>
         </td>
-        <td><p>Relational Operators - Helper Functions for Custom Search</p></td>
+        <td><p>Relational operator function to construct a custom search statement</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ImapCon.html">ImapCon</a></code> </p>
+        </td>
+        <td><p>An IMAP Connection Class</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="OR.html">OR()</a></code> </p>
         </td>
-        <td><p>Relational Operators - Helper Functions for Custom Search</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="add_flags.html">add_flags()</a></code> </p>
-        </td>
-        <td><p>Add Flag(s) To Messages</p></td>
+        <td><p>Relational operator function to construct a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="before.html">before()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="configure_imap.html">configure_imap()</a></code> </p>
         </td>
-        <td><p>IMAP Settings</p></td>
+        <td><p>IMAP Connection Configuration</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="copy_msg.html">copy_msg()</a></code> </p>
+          <p><code><a href="execute_attachment_fetch.html">execute_attachment_fetch()</a></code> </p>
         </td>
-        <td><p>Copy Messages</p></td>
+        <td><p>Execution engine loop for all the fetch commands</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="count_msgs.html">count_msgs()</a></code> </p>
+          <p><code><a href="execute_complementary_operations.html">execute_complementary_operations()</a></code> </p>
         </td>
-        <td><p>Count the Number of Messages</p></td>
+        <td><p>Execution engine for all the complementary commands</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="custom_search.html">custom_search()</a></code> </p>
+          <p><code><a href="execute_fetch_loop.html">execute_fetch_loop()</a></code> </p>
         </td>
-        <td><p>Custom Search</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="delete_msg.html">delete_msg()</a></code> </p>
-        </td>
-        <td><p>Delete Messages</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="examine_mailbox.html">examine_mailbox()</a></code> </p>
-        </td>
-        <td><p>Examine Mailbox</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="expunge.html">expunge()</a></code> </p>
-        </td>
-        <td><p>Expunge Messages</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fetch_full_msg.html">fetch_full_msg()</a></code> </p>
-        </td>
-        <td><p>Fetch Full Messages</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fetch_msg_header.html">fetch_msg_header()</a></code> </p>
-        </td>
-        <td><p>Fetch Message Headers</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fetch_msg_metadata.html">fetch_msg_metadata()</a></code> </p>
-        </td>
-        <td><p>Fetch Message Metadata</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="fetch_msg_text.html">fetch_msg_text()</a></code> </p>
-        </td>
-        <td><p>Fetch Message Text</p></td>
+        <td><p>Execution engine loop for all the fetch commands</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="flag.html">flag()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="flag_options.html">flag_options()</a></code> </p>
-        </td>
-        <td><p>Flag Options</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_attachments.html">get_attachments()</a></code> </p>
-        </td>
-        <td><p>Get Attachments</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_max_id.html">get_max_id()</a></code> </p>
-        </td>
-        <td><p>Get Maximum Message ID in a Mailbox</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="get_min_id.html">get_min_id()</a></code> </p>
-        </td>
-        <td><p>Get Minimum Message ID in a Mailbox</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="larger_than.html">larger_than()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="list_attachments.html">list_attachments()</a></code> </p>
         </td>
-        <td><p>List Attachments</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="list_mailboxes.html">list_mailboxes()</a></code> </p>
-        </td>
-        <td><p>Listing Mailboxes</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="list_server_capabilities.html">list_server_capabilities()</a></code> </p>
-        </td>
-        <td><p>IMAP Server Capabilities</p></td>
+        <td><p>List attachments and content-disposition types</p></td>
       </tr><tr>
         
         <td>
@@ -293,177 +221,57 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="move_msg.html">move_msg()</a></code> </p>
-        </td>
-        <td><p>Move Messages</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="older_than.html">older_than()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="on.html">on()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="remove_flags.html">remove_flags()</a></code> </p>
-        </td>
-        <td><p>Remove Flag(s) From Messages</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="rename_mailbox.html">rename_mailbox()</a></code> </p>
-        </td>
-        <td><p>Rename Mailbox</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="replace_flags.html">replace_flags()</a></code> </p>
-        </td>
-        <td><p>Replace Flag(s) in Messages</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_before.html">search_before()</a></code> </p>
-        </td>
-        <td><p>Search By Internal Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_flag.html">search_flag()</a></code> </p>
-        </td>
-        <td><p>Search By Flag</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_larger_than.html">search_larger_than()</a></code> </p>
-        </td>
-        <td><p>Search By Syze</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_older_than.html">search_older_than()</a></code> </p>
-        </td>
-        <td><p>Search Within seconds</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_on.html">search_on()</a></code> </p>
-        </td>
-        <td><p>Search By Internal Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_period.html">search_period()</a></code> </p>
-        </td>
-        <td><p>Search By Internal Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_sent_before.html">search_sent_before()</a></code> </p>
-        </td>
-        <td><p>Search By Origination (RC-2822 Header) Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_sent_on.html">search_sent_on()</a></code> </p>
-        </td>
-        <td><p>Search By Origination (RC-2822 Header) Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_sent_period.html">search_sent_period()</a></code> </p>
-        </td>
-        <td><p>Search By Origination (RC-2822 Header) Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_sent_since.html">search_sent_since()</a></code> </p>
-        </td>
-        <td><p>Search By Origination (RC-2822 Header) Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_since.html">search_since()</a></code> </p>
-        </td>
-        <td><p>Search By Internal Date</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_smaller_than.html">search_smaller_than()</a></code> </p>
-        </td>
-        <td><p>Search By Syze</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_string.html">search_string()</a></code> </p>
-        </td>
-        <td><p>Search By String</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="search_younger_than.html">search_younger_than()</a></code> </p>
-        </td>
-        <td><p>Search Within seconds</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="section_or_field_options.html">section_or_field_options()</a></code> </p>
-        </td>
-        <td><p>Section or Header Fields Options</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="select_mailbox.html">select_mailbox()</a></code> </p>
-        </td>
-        <td><p>Mailbox Selection</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="sent_before.html">sent_before()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="sent_on.html">sent_on()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="sent_since.html">sent_since()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="since.html">since()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="smaller_than.html">smaller_than()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="string.html">string()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="younger_than.html">younger_than()</a></code> </p>
         </td>
-        <td><p>Criteria Helper Functions for Custom Search</p></td>
+        <td><p>Criterion constructor function to be combined in a custom search statement</p></td>
       </tr>
     </tbody>
     </table>

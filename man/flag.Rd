@@ -2,54 +2,45 @@
 % Please edit documentation in R/flag.R
 \name{flag}
 \alias{flag}
-\title{Criteria Helper Functions for Custom Search}
+\title{Criterion constructor function to be combined in a custom search statement}
 \usage{
-flag(flag, negate = FALSE)
+flag(name, negate = FALSE)
 }
 \arguments{
-\item{flag}{A string specifying the flag to be used for filtering messages.
-Use \link{flag_options} to list the flags available in your IMAP server.}
+\item{name}{A string containing one or more flags to search for. Use
+\href{#method-list_flags}{\code{ImapCon$list_flags()}} to list the flags
+in a selected mail folder.}
 
-\item{negate}{If \code{TRUE}, negates the search and seeks for
-"NOT search_criterion". Default is \code{FALSE}.}
-}
-\value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+\item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is \code{FALSE}.}
 }
 \description{
-Criteria helper functions to be combined inside a operator helper
-    function as a custom request in \link{custom_search}.
+Criterion constructor function to be combined in a custom search statement
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request = AND(flag("UNSEEN"),
-                                       smaller_than(size = 512000),
-                                       negate = TRUE))
-# searches for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
+res <- con$search(request = AND(flag("UNSEEN"),
+                                smaller_than(size = 512000, negate = TRUE)))
 }
-
 }
 \seealso{
-Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{OR}}, \code{\link{before}},
-  \code{\link{larger_than}}, \code{\link{older_than}},
-  \code{\link{on}}, \code{\link{sent_before}},
-  \code{\link{sent_on}}, \code{\link{sent_since}},
-  \code{\link{since}}, \code{\link{smaller_than}},
-  \code{\link{string}}, \code{\link{younger_than}}
+Other custom search: 
+\code{\link{AND}()},
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_before}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{smaller_than}()},
+\code{\link{string}()},
+\code{\link{younger_than}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

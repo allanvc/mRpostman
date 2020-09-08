@@ -70,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -94,6 +94,12 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/basics.html">mRpostman Basics</a>
+    </li>
+    <li>
+      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -120,15 +126,356 @@
       
     </div>
 
-    <div id="mrpostman-0-3-1-2020-03-27-github-2020-04-18-cran" class="section level2">
+    <div id="mrpostman-0900-2020-09-08-github" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0-3-1-2020-03-27-github-2020-04-18-cran" class="anchor"></a>mRpostman 0.3.1 (2020-03-27 Github/ 2020-04-18 CRAN)</h2>
+<a href="#mrpostman-0900-2020-09-08-github" class="anchor"></a>mRpostman 0.9.0.0 (2020-09-08 Github)</h2>
+<div id="important-message" class="section level3">
+<h3 class="hasAnchor">
+<a href="#important-message" class="anchor"></a>Important message</h3>
+<p>In this version, in order to drastically enhance the package usability, we had to opt for several profound changes with no backward compatibility. We are sorry that this changes will be painful for old users but it will certainly be strongly beneficial even on the short term. The primary update is that <code>mRpostman</code> now is built on an <code>R6</code> class and its methods, providing a much more convenient and elegant way of usage. It is structured following an OO framework which works well either with the tidy style using pipes or under the base R approach. The syntax now will be <code>ConnectionObject$method()</code>, where the <code>ConnectionObject</code> is created with <code><a href="../reference/configure_imap.html">configure_imap()</a></code> or <code>ImapCon$new()</code>. This completely modifies how the connection handle and other configuration information is passed among the methods/functions in <code>mRpostman</code>.</p>
+<p>This is a summary of the main modifications in the package:</p>
+<ul>
+<li><p>All the main functions, except by <code>list_attachments</code> and the custom-search helper functions, now are methods of the R6 class <code>ImapConf</code>;</p></li>
+<li><p>The way the connection token is passed between the functions has changed. The connection handle is created only inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and only modified with custom requests inside the methods. As a consequence, the password, username and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request functions. They do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
+<li><p>argument “by” used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical with default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
+<li><p>all functions that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code></p></li>
+</ul>
+</div>
+<div id="changes-without-backward-compatibility" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changes-without-backward-compatibility" class="anchor"></a>Changes without backward compatibility</h3>
+<div id="more-appropriate-function-names-old-function---new-method" class="section level4">
+<h4 class="hasAnchor">
+<a href="#more-appropriate-function-names-old-function---new-method" class="anchor"></a>More appropriate function names [old function -&gt; new method]:</h4>
+<ul>
+<li>
+<code>list_mailboxes()</code> -&gt; <code>list_mail_folders()</code>
+</li>
+<li>
+<code>select_mailbox()</code> -&gt; <code>select_folder()</code>
+</li>
+<li>
+<code>examine_mailbox()</code> -&gt; <code>examine_folder()</code>
+</li>
+<li>
+<code>custom_search()</code> -&gt; <code><a href="https://www.rdocumentation.org/packages/base/topics/search">search()</a></code>
+</li>
+<li>
+<code>fetch_full_msg()</code> -&gt; <code>fetch_body()</code>
+</li>
+<li>
+<code>fetch_msg_header()</code> -&gt; <code>fetch_header()</code>
+</li>
+<li>
+<code>fetch_msg_text()</code> -&gt; <code>fetch_text()</code>
+</li>
+<li>
+<code>fetch_msg_metadata()</code> -&gt; <code>fetch_metadata()</code>
+</li>
+<li>
+<code>get_min_id()</code> -&gt; <code>esearch_min_id()</code>
+</li>
+<li>
+<code>get_max_id()</code> -&gt; <code>esearch_max_id()</code>
+</li>
+<li>
+<code>count_msg()</code> -&gt; <code>esearch_count()</code>
+</li>
+</ul>
+</div>
+<div id="functions-that-were-removed" class="section level4">
+<h4 class="hasAnchor">
+<a href="#functions-that-were-removed" class="anchor"></a>Functions that were removed:</h4>
+<ul>
+<li><p><code>section_or_fields()</code></p></li>
+<li><p><code>flag_options()</code></p></li>
+</ul>
+</div>
+<div id="more-appropriate-argument-names-old----new" class="section level4">
+<h4 class="hasAnchor">
+<a href="#more-appropriate-argument-names-old----new" class="anchor"></a>More appropriate argument names [old - &gt; new]:</h4>
+<ul>
+<li>
+<p><code>mbox</code> -&gt; <code>name</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a character string</p></li>
+<li><p>Affected functions: <code>select_folder()</code> (former select_mailbox), <code>examine_folder()</code> (former select_mailbox), <code>rename_folder()</code> (former rename_mailbox)</p></li>
+</ul>
+</li>
+<li>
+<p><code>reselect_mbox</code> -&gt; <code>reselect</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a logical with <code>TRUE</code> as default</p></li>
+<li><p>Affected functions: <code>rename_folder()</code> (former rename_mailbox), <code>copy_msg()</code>, <code>move_msg()</code></p></li>
+</ul>
+</li>
+<li>
+<p><code>by</code> -&gt; <code>use_uid</code>:</p>
+<ul>
+<li><p>OBS: type HAS CHANGED from a character string with default value <code>MSN</code> to a logical with <code>FALSE</code> as default. Former <code>by = "UID"</code> now is equivalent to <code>use_uid = TRUE</code></p></li>
+<li>
+<p>Affected functions:</p>
+<ul>
+<li><p>all search operations: <code><a href="https://www.rdocumentation.org/packages/base/topics/search">search()</a></code> (former custom search), <code>search_before()</code>, <code>search_since()</code>, <code>search_on()</code>, <code>search_period()</code>, <code>search_sent_before()</code>, <code>search_sent_since()</code>, <code>search_sent_on()</code>, <code>search_sent_period()</code>, <code>search_larger_than()</code>, <code>search_smaller_than()</code>, <code>search_older_than()</code>, <code>search_younger_than()</code>, <code>search_flag()</code>, <code>search_string()</code>;</p></li>
+<li><p>all fetch operations: <code>fetch_body()</code> (former fetch_full_msg), <code>fetch_header()</code> (former fetch_msg_text), <code>fetch_text()</code> (former fetch_msg_text), <code>fetch_metadata()</code> (former fetch_msg_metadata);</p></li>
+<li><p>all complementary operations: <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>esearch_max_id()</code> (former get_max_id), <code>esearch_min_id()</code> (former get_min_id), <code>esearch_count()</code> (former count_msg), <code>add/replace/remove_flags()</code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><code>flag</code> -&gt; <code>name</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a character string containing the flag name</p></li>
+<li><p>Affected functions: <code>search_flag()</code>, <code><a href="../reference/flag.html">flag()</a></code> (custom search helper function)</p></li>
+</ul>
+</li>
+<li>
+<p><code>string</code> -&gt; <code>expr</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a character string containing the string or expression to be searched; shifted to the first position of the arguments in the functions/methods.</p></li>
+<li><p>Affected functions: <code>search_string()</code>, <code><a href="../reference/string.html">string()</a></code> (custom search helper function)</p></li>
+</ul>
+</li>
+<li>
+<p><code>section_or_fields</code> -&gt; <code>where</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a character string containing the name of the message section or the header field in which to execute the search for the informed expression;</p></li>
+<li><p>Affected functions: <code>search_string()</code>, <code><a href="../reference/string.html">string()</a></code> (custom search helper function)</p></li>
+</ul>
+</li>
+<li>
+<p><code>specific_UID</code> -&gt; <code>msg_uid</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a numeric vector containing messages’ uids</p></li>
+<li><p>Affected functions: <code>expunge()</code></p></li>
+</ul>
+</li>
+<li>
+<p><code>to_mbox</code> -&gt; <code>to_folder</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a character vector containing teh folder name</p></li>
+<li><p>Affected functions: <code>copy_msg()</code>, <code>move_msg()</code></p></li>
+</ul>
+</li>
+<li>
+<p><code>try_b64decode</code> -&gt; <code>base64_decode</code>:</p>
+<ul>
+<li><p>OBS: type has not changed, still a logical with default value <code>FALSE</code></p></li>
+<li><p>Affected functions: <code>fetch_text()</code> (former fetch_msg_text)</p></li>
+</ul>
+</li>
+<li>
+<p><code>show_pass</code> -&gt; removed:</p>
+<ul>
+<li><p>OBS: This argument is not available anymore.</p></li>
+<li><p>Affected functions: <code><a href="../reference/configure_imap.html">configure_imap()</a></code></p></li>
+</ul>
+</li>
+<li>
+<p><code>fresh_connect</code> -&gt; removed:</p>
+<ul>
+<li><p>OBS: This <code>curl</code> argument is not accepted by mRpostman anymore.</p></li>
+<li><p>Affected functions: <code><a href="../reference/configure_imap.html">configure_imap()</a></code></p></li>
+</ul>
+</li>
+<li>
+<p><code>return_imapconf</code> -&gt; removed:</p>
+<ul>
+<li><p>OBS: This argument is not available anymore.</p></li>
+<li><p>Affected functions: all search methods.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="changes-in-the-arguments-position" class="section level4">
+<h4 class="hasAnchor">
+<a href="#changes-in-the-arguments-position" class="anchor"></a>Changes in the arguments’ position</h4>
+<ul>
+<li>in <code>search_string()</code> and <code><a href="../reference/string.html">string()</a></code>:
+<ul>
+<li>`<code>expr</code> (former string) now is 1st; <code>where</code> (former section or fields)` now is 2nd</li>
+</ul>
+</li>
+<li>in <code>esearch_count()</code> (former count_msgs), <code>esearch_max_id()</code> (former get_max_id), <code>esearch_min_id()</code> (former get_min_id):
+<ul>
+<li>swapped the order between the arguments <code>use_uid</code> (former by) and <code>flag</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="behaviour-changes" class="section level4">
+<h4 class="hasAnchor">
+<a href="#behaviour-changes" class="anchor"></a>Behaviour changes</h4>
+<ul>
+<li>
+<p>default value of arguments:</p>
+<ul>
+<li>
+<code>reselect_mbox = FALSE</code> -&gt; <code>reselect = TRUE</code> (former reselect_mbox) in <code>move_msg()</code> and <code>copy_msg()</code>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="changes-that-should-not-cause-any-break" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changes-that-should-not-cause-any-break" class="anchor"></a>Changes that should not cause any break</h3>
+<div id="default-behavior-changes" class="section level4">
+<h4 class="hasAnchor">
+<a href="#default-behavior-changes" class="anchor"></a>Default behavior changes:</h4>
+<ul>
+<li>
+<p>returned object:</p>
+<ul>
+<li><p>functions/methods that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> in the previous version, now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code>. Applied to: <code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>get_attachments()</code>, <code>fetch_attachments()</code>, <code>expunge()</code></p></li>
+<li><p>all search functions now return <code>NA</code> when there is no match. The previous behavior was to return 0.</p></li>
+<li><p><code>add/replace/remove_flags()</code> methods now invisibly return the msg_ids in case the user intends to chain aany further operation (perhaps expunge) using pipe.</p></li>
+</ul>
+</li>
+<li>
+<p>default value of arguments:</p>
+<ul>
+<li>
+<code>retries = 2</code> -&gt; <code>retries = 1</code> in all functions</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="new-methods" class="section level4">
+<h4 class="hasAnchor">
+<a href="#new-methods" class="anchor"></a>New methods:</h4>
+<ul>
+<li><p><code>create_folder()</code>: Create a new mail folder (New IMAP functionality!)</p></li>
+<li><p><code>list_flags()</code>: List flags in a selected mail folder (New IMAP functionality!)</p></li>
+<li><p><code>fetch_attachments_list()</code>: Fetch attachments’ list without the previously need to fetch a message’s text or body</p></li>
+<li><p><code>fetch_attachments()</code>: Fetch attachments without the previously need to fetch a message’s text or body</p></li>
+<li><p><code>reset_*()</code>: reset one (*) of the original parameter that were informed in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>.</p></li>
+</ul>
+</div>
+<div id="new-arguments" class="section level4">
+<h4 class="hasAnchor">
+<a href="#new-arguments" class="anchor"></a>New arguments:</h4>
+<ul>
+<li>
+<p><code>mute</code>:</p>
+<ul>
+<li><p>OBS: A logical. If TRUE, mutes the confirmation message when the command is successfully executed. Default is FALSE. In the case of the <code>fetch_*()</code> functions, it only has effect when <code>write_to_disk = TRUE</code>.</p></li>
+<li><p>applied to methods/functions: <code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add/replace/remove_flags()</code>, <code>get_attachments()</code>, <code>fetch_attachments()</code></p></li>
+</ul>
+</li>
+<li>
+<p><code>override</code>:</p>
+<ul>
+<li><p>OBS: A logical. If TRUE, overrides existent files containing the same name in the local directory. Default is FALSE.</p></li>
+<li><p>applied to methods/functions: <code>get_attachments()</code>, <code>fetch_attachments()</code>.</p></li>
+</ul>
+</li>
+<li>
+<p><code>xoauth2_bearer</code>:</p>
+<ul>
+<li><p>OBS: added the <code>xoauth2_bearer</code> parameter for oauth2.0 authentication (libcurl &gt;= 7.70 is required because of bugs in previous versions). In Linux, if you use Ubuntu 20, you should be fine. Versions below this require updating libcurl if the user intends to use oauth2.0 authentication.</p></li>
+<li><p>applied to methods/functions: <code><a href="../reference/configure_imap.html">configure_imap()</a></code></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="new-functionalities" class="section level4">
+<h4 class="hasAnchor">
+<a href="#new-functionalities" class="anchor"></a>New functionalities:</h4>
+<ul>
+<li>in <code>examine_folder()</code> and <code>rename_folder()</code>:
+<ul>
+<li>if a folder was previous selected, the user does not have to provide the folder name</li>
+<li>if the user wants to examine or rename a folder different from the selected folder, he/she has just to inform the folder <code>name</code> argument</li>
+</ul>
+</li>
+<li>
+<code>flag</code> argument in all search functions:
+<ul>
+<li>all search methods that have the optional argument <code>flag</code> now accept more than one flag as a filtering parameter</li>
+<li>this is also applied to the <code>name</code> argument in <code>search_flag</code>
+</li>
+<li>the <code>flag</code> parameter was added to the <code>search_string</code> method</li>
+</ul>
+</li>
+<li>in <code>get_attachments()</code> and <code>fetch_attachments()</code>:
+<ul>
+<li>
+<code>override</code> argument was added and allows to control over the file writing process</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<ul>
+<li>
+<p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable span of time between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would had lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
+<ul>
+<li>applied to: all request functions/methods, such as search, fetch, mailbox operations (except those that don’t need a previously folder selection), and complementary operations</li>
+</ul>
+</li>
+<li><p>fixed bug that was writing metadata .txt files as textUID*.txt</p></li>
+</ul>
+</div>
+<div id="internal-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#internal-changes" class="anchor"></a>Internal changes</h3>
+<ul>
+<li>
+<p>Better error handling:</p>
+<ul>
+<li><p>An unique internal function called <code>check_args()</code> was created to check for the validity of the arguments of all methods and functions, replacing all the cheack_args_* specific functions</p></li>
+<li><p>added the <code>response_error_handling()</code> function to catch operation/resolving timeout errors and login error as well</p></li>
+</ul>
+</li>
+<li><p>All methods work as wrappers to internal functions with similar names and sufix <code>*_int</code></p></li>
+<li><p>Search, Fetch and Complementary functions have a central internal function called <code>execute_*()</code> (configure and) execute the requests to be made to the IMAP server</p></li>
+<li><p>removed <code>config_handle()</code>as the connection token chain has changed</p></li>
+<li><p>added <code>config_conn_handle()</code> which is called inside the <code>iniliaze()</code> method of the R6 <code>ImapCon</code> class.</p></li>
+<li><p>added <code>adjust_repeated_filenames()</code>, <code>serialize_filenames()</code> and <code>extract_MIME_level_and_filenames()</code> as helper functions to the new attachments fetch operations</p></li>
+<li><p>added <code>adjust_folder_name()</code> which is called in almost every request function</p></li>
+<li><p>some regex adjustments were made to <code>fix_search_stripping()</code>, <code>has_attachment()</code>, and <code>clear_fetch_results()</code></p></li>
+<li><p>in <code>list_server_capabilities()</code>: changed IMAP command to “CAPABILITY” instead of establishing a new connection</p></li>
+<li><p>REGEX structure replacement from <code>stringr</code> to base R in: <code>list_server_capabalities()</code>, <code>examine_folder()</code> (former examine_mailbox), <code>list_mail_folders()</code> (former list_mailboxes), <code>select_folder()</code> (former select_mailbox)</p></li>
+</ul>
+</div>
+<div id="other-general-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-general-changes" class="anchor"></a>Other general changes:</h3>
+<ul>
+<li><p><code>fetch_attachments_list()</code> and <code>fetch_attachments()</code> are a faster and smart way to respectively list and download messages’ attachments. They do not depend on a former fetching step, unlike <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. the new methods use BODYSTRUCTURE metadata fetching to identify the attachments, and <code>fetch_attachments()</code> also issue a FETCH BODY[level.MIME] command to fetch only the parts of the messages that contain the attachments. This prevent unnecessary fetching when users only want to obtain the attachments. However, <code>get_attachments()</code> and <code><a href="../reference/list_attachments.html">list_attachments()</a></code> are still available in the package.</p></li>
+<li><p>All <code>fetch_*</code> methods, and <code>get_attachments()</code> now use a different path for saving the fetched files. The folder to be created now will have the following structure: imap_server &gt; mail_folder &gt; <messageid> or <messageuid></messageuid></messageid></p></li>
+<li>
+<p>Fetched messages that are saved to disk will have different filename structures:</p>
+<ul>
+<li>if <code>use_uid = FALSE</code>: body<id>.txt, header<id>.txt, meta<id>.txt, text<id>.txt</id></id></id></id>
+</li>
+<li>if <code>use_uid</code> = TRUE: body<uid>.txt, header<uid>.txt, meta<uid>.txt, text<uid>.txt</uid></uid></uid></uid>
+</li>
+</ul>
+</li>
+<li><p>Confirmation messages were added to methods: <code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>fetch_*()</code>, <code>add/replace/remove_flags()</code>, <code>get_attachments()</code>, <code>fetch_attachments()</code></p></li>
+<li><p>A startup message informing about the breaking changes of the version were added by creating the zzz.R file</p></li>
+<li><p>Besides the <em><code>mRpostman</code> Basics</em> vignette, two more were added: <em>Migrating code to mRpostman’s R6 sintaxe</em>, and <em>Using IMAP OAuth2.0 authentication in mRpostman</em></p></li>
+</ul>
+<hr>
+</div>
+</div>
+    <div id="mrpostman-031-2020-03-27-github-2020-04-18-cran" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-031-2020-03-27-github-2020-04-18-cran" class="anchor"></a>mRpostman 0.3.1 (2020-03-27 Github/ 2020-04-18 CRAN)</h2>
 <div id="features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#features" class="anchor"></a>Features</h3>
 <ul>
 <li>
-<code><a href="../reference/get_attachments.html">get_attachments()</a></code> function:
+<code>get_attachments()</code> function:
 <ul>
 <li>added support to inline attachments: argument “content_disposition”</li>
 <li>changed REGEX for retrieving text and filenames</li>
@@ -149,20 +496,20 @@
 </ul>
 </li>
 <li>
-<code><a href="../reference/check_args_list_attachments.html">check_args_list_attachments()</a></code> function:
+<code>check_args_list_attachments()</code> function:
 <ul>
-<li>added helper function <code><a href="../reference/check_args_list_attachments.html">check_args_list_attachments()</a></code>
+<li>added helper function <code>check_args_list_attachments()</code>
 </li>
 </ul>
 </li>
 <li>
-<code><a href="../reference/has_attachment.html">has_attachment()</a></code> helper function:
+<code>has_attachment()</code> helper function:
 <ul>
 <li>added support to inline attachments</li>
 </ul>
 </li>
 <li>
-<code>loop_fetch_msg_XXXX()</code> functions group:
+<code>loop_fetch_msg_*()</code> functions group:
 <ul>
 <li>changed error message</li>
 </ul>
@@ -195,14 +542,14 @@
 </ul>
 </li>
 <li>
-<code><a href="../reference/get_attachments.html">get_attachments()</a></code>:
+<code>get_attachments()</code>:
 <ul>
 <li>added new note to explain Content-Disposition types</li>
 <li>added reference to RFC2183</li>
 </ul>
 </li>
 <li>
-<code><a href="../reference/check_args_get_attachments.html">check_args_get_attachments()</a></code>:
+<code>check_args_get_attachments()</code>:
 <ul>
 <li>added new argument <code>"content_disposition"</code>
 </li>
@@ -220,50 +567,47 @@
 <hr>
 </div>
 </div>
-    <div id="mrpostman-0-3-0-2019-10-07" class="section level2">
+    <div id="mrpostman-030-2019-10-07" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0-3-0-2019-10-07" class="anchor"></a>mRpostman 0.3.0 (2019-10-07)</h2>
+<a href="#mrpostman-030-2019-10-07" class="anchor"></a>mRpostman 0.3.0 (2019-10-07)</h2>
 <div id="features-1" class="section level3">
 <h3 class="hasAnchor">
 <a href="#features-1" class="anchor"></a>Features</h3>
 <ul>
 <li>
-<code><a href="../reference/get_attachments.html">get_attachments()</a></code> function:
+<p><code>get_attachments()</code> function:</p>
 <ul>
-<li>added <code><a href="../reference/get_attachments.html">get_attachments()</a></code>
+<li>added <code>get_attachments()</code>
 </li>
-<li>added helper functions: <code><a href="../reference/has_attachment.html">has_attachment()</a></code>, <code><a href="../reference/check_args_get_attachments.html">check_args_get_attachments()</a></code>
+<li>added helper functions: <code>has_attachment()</code>, <code>check_args_get_attachments()</code>
 </li>
 </ul>
 </li>
 <li>
-<code><a href="../reference/list_attachments.html">list_attachments()</a></code> function:
+<p><code><a href="../reference/list_attachments.html">list_attachments()</a></code> function:</p>
 <ul>
 <li>added <code><a href="../reference/list_attachments.html">list_attachments()</a></code>
 </li>
 </ul>
 </li>
 <li>
-<code>loop_fetch_msg_XXXX()</code> functions:
+<p><code>loop_fetch_msg_*()</code> functions:</p>
 <ul>
-<li>error msg: fixed from <code>examineMailbox()</code> to <code><a href="../reference/examine_mailbox.html">examine_mailbox()</a></code>
+<li>error msg: fixed from <code>examineMailbox()</code> to <code>examine_mailbox()</code>
 </li>
-<li>fixed “forbiden[_]char[s]” in <code><a href="../reference/loop_fetch_full_msg.html">loop_fetch_full_msg()</a></code>
+<li>fixed “forbiden[_]char[s]” in <code>loop_fetch_full_msg()</code>
 </li>
 <li>changed forbiden_chars to <code>[\\/:*?\"&lt;&gt;|]</code>, considering WIN-*NIX-OSX cases</li>
 </ul>
 </li>
-<li>fetch_full_msg():</li>
-<li><p>added warning message related to <code>get_attachment()</code> when <code>keep_in_mem = TRUE</code></p></li>
-<li>
-<code>fetch_XXXX_XXXX()</code> functions:</li>
-<li><p>added <code>attr(msg_list, which = 'mbox') = new_imapconf$mbox</code> to all – to be used by <code>get_attachment()</code></p></li>
-<li>
-<code><a href="../reference/list_server_capabilities.html">list_server_capabilities()</a></code> function:</li>
+<li><p>fetch_full_msg():</p></li>
+<li><p>added warning message related to <code>get_attachments()</code> when <code>keep_in_mem = TRUE</code></p></li>
+<li><p><code>fetch_*()</code> functions:</p></li>
+<li><p>added <code>attr(msg_list, which = 'mbox') = new_imapconf$mbox</code> to all – to be used by <code>get_attachments()</code></p></li>
+<li><p><code>list_server_capabilities()</code> function:</p></li>
 <li><p>converted regex match/extraction from stringr to base R</p></li>
-<li>examples:</li>
-<li>fixed typo - from “configureIMAP” to “configure_imap” in the following functions examples: <code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code>, <code><a href="../reference/list_server_capabilities.html">list_server_capabilities()</a></code>
-</li>
+<li><p>examples:</p></li>
+<li><p>fixed typo - from “configureIMAP” to “configure_imap” in the following functions examples: <code>list_mailboxes()</code>, <code>list_server_capabilities()</code></p></li>
 <li><p>changed all imaps://imap.gmail.com server examples to a generic one: imaps://your.imap.server.com</p></li>
 </ul>
 </div>
@@ -295,7 +639,7 @@
 </ul>
 </li>
 <li>
-<code><a href="../reference/count_msgs.html">count_msgs()</a></code>:
+<code>count_msgs()</code>:
 <ul>
 <li>changed title</li>
 </ul>
@@ -304,31 +648,31 @@
 <hr>
 </div>
 </div>
-    <div id="mrpostman-0-2-1-x-2019-08-22-github-only" class="section level2">
+    <div id="mrpostman-021-x-2019-08-22-github-only" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0-2-1-x-2019-08-22-github-only" class="anchor"></a>mRpostman 0.2.1-X (2019-08-22 Github only)</h2>
-<div id="features-0-2-1-2" class="section level3">
+<a href="#mrpostman-021-x-2019-08-22-github-only" class="anchor"></a>mRpostman 0.2.1-X (2019-08-22 Github only)</h2>
+<div id="features-021-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#features-0-2-1-2" class="anchor"></a>Features (0.2.1-2)</h3>
+<a href="#features-021-2" class="anchor"></a>Features (0.2.1-2)</h3>
 <ul>
 <li>
 <code>loop_fetch_msg_XXXX()</code> functions for fetching msgs:
 <ul>
-<li>added <code><a href="../reference/select_mailbox.html">select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox)</a></code> inside the tryCatch in the while loop – it prevents errors especially when messages have larger attachments taking too much time to fetch. In some IMAP servers (such as Yandex) it may lose the mbox selection. Other alternatives: set a larger <code>timeout_ms</code> in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>.</li>
+<li>added <code>select_mailbox(imapconf = new_imapconf, mbox = new_imapconf$mbox)</code> inside the tryCatch in the while loop – it prevents errors especially when messages have larger attachments taking too much time to fetch. In some IMAP servers (such as Yandex) it may lose the mbox selection. Other alternatives: set a larger <code>timeout_ms</code> in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>.</li>
 </ul>
 </li>
 <li>
-<code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code>:
+<code>list_mailboxes()</code>:
 <ul>
-<li>REGEX for cleaning mbox names from <code><a href="../reference/list_mailboxes.html">list_mailboxes()</a></code> was modified to deal with the return of Yandex IMAP server: from <code>.*\" \"*(.*?)\\"\r\n' to '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]</code>
+<li>REGEX for cleaning mbox names from <code>list_mailboxes()</code> was modified to deal with the return of Yandex IMAP server: from <code>.*\" \"*(.*?)\\"\r\n' to '.*\" \"*(.*?)[(\\"\r\n)|(\r\n\\*)]</code>
 </li>
 </ul>
 </li>
 </ul>
 </div>
-<div id="documentation-0-2-1-1" class="section level3">
+<div id="documentation-021-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-0-2-1-1" class="anchor"></a>Documentation (0.2.1-1)</h3>
+<a href="#documentation-021-1" class="anchor"></a>Documentation (0.2.1-1)</h3>
 <ul>
 <li>function <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:
 <ul>
@@ -342,7 +686,7 @@
 </li>
 </ul>
 </li>
-<li>function <code><a href="../reference/flag_options.html">flag_options()</a></code>:
+<li>function <code>flag_options()</code>:
 <ul>
 <li>updated <code>@note</code> to be more clear</li>
 </ul>
@@ -368,23 +712,24 @@
 <hr>
 </div>
 </div>
-    <div id="mrpostman-0-2-0-2019-08-18---cran-submission" class="section level2">
+    <div id="mrpostman-020-2019-08-18---cran-submission" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0-2-0-2019-08-18---cran-submission" class="anchor"></a>mRpostman 0.2.0 (2019-08-18 - CRAN submission)</h2>
+<a href="#mrpostman-020-2019-08-18---cran-submission" class="anchor"></a>mRpostman 0.2.0 (2019-08-18 - CRAN submission)</h2>
 <ul>
 <li><p>changed function name patterns to those specified in the tidyverse style guide</p></li>
-<li>changed return from mailboxes operation functions and some miscellanea functions:
+<li>
+<p>changed return from mailboxes operation functions and some miscellanea functions:</p>
 <ul>
-<li>now <code><a href="../reference/select_mailbox.html">select_mailbox()</a></code>, <code><a href="../reference/rename_mailbox.html">rename_mailbox()</a></code>, <code><a href="../reference/copy_msg.html">copy_msg()</a></code>, <code><a href="../reference/move_msg.html">move_msg()</a></code>, <code><a href="../reference/delete_msg.html">delete_msg()</a></code>, <code><a href="../reference/expunge.html">expunge()</a></code>, <code>add/remove/replace_flags()</code> outputs are invisible and only return <code>imapconf</code> or a list (imapconf+msg_ids).</li>
+<li>now <code>select_mailbox()</code>, <code>rename_mailbox()</code>, <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add/remove/replace_flags()</code> outputs are invisible and only return <code>imapconf</code> or a list (imapconf+msg_ids).</li>
 </ul>
 </li>
 <li><p>changed package logo</p></li>
 </ul>
 <hr>
 </div>
-    <div id="mrpostman-0-1-0-2019-08-13---github-release" class="section level2">
+    <div id="mrpostman-010-2019-08-13---github-release" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0-1-0-2019-08-13---github-release" class="anchor"></a>mRpostman 0.1.0 (2019-08-13 - Github release)</h2>
+<a href="#mrpostman-010-2019-08-13---github-release" class="anchor"></a>mRpostman 0.1.0 (2019-08-13 - Github release)</h2>
 </div>
   </div>
 
@@ -392,11 +737,12 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#mrpostman-0-3-1-2020-03-27-github-2020-04-18-cran">0.3.1</a></li>
-        <li><a href="#mrpostman-0-3-0-2019-10-07">0.3.0</a></li>
-        <li><a href="#mrpostman-0-2-1-x-2019-08-22-github-only">0.2.1</a></li>
-        <li><a href="#mrpostman-0-2-0-2019-08-18---cran-submission">0.2.0</a></li>
-        <li><a href="#mrpostman-0-1-0-2019-08-13---github-release">0.1.0</a></li>
+        <li><a href="#mrpostman-0900-2020-09-08-github">0.9.0.0</a></li>
+        <li><a href="#mrpostman-031-2020-03-27-github-2020-04-18-cran">0.3.1</a></li>
+        <li><a href="#mrpostman-030-2019-10-07">0.3.0</a></li>
+        <li><a href="#mrpostman-021-x-2019-08-22-github-only">0.2.1</a></li>
+        <li><a href="#mrpostman-020-2019-08-18---cran-submission">0.2.0</a></li>
+        <li><a href="#mrpostman-010-2019-08-13---github-release">0.1.0</a></li>
       </ul>
     </div>
   </div>

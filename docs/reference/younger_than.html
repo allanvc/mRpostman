@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Criteria Helper Functions for Custom Search — younger_than • mRpostman</title>
+<title>Criterion constructor function to be combined in a custom search statement — younger_than • mRpostman</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -37,10 +37,9 @@
 
 
 
-<meta property="og:title" content="Criteria Helper Functions for Custom Search — younger_than" />
+<meta property="og:title" content="Criterion constructor function to be combined in a custom search statement — younger_than" />
 
-<meta property="og:description" content="Criteria helper functions to be combined inside a operator helper
-    function as a custom request in custom_search." />
+<meta property="og:description" content="Criterion constructor function to be combined in a custom search statement" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -73,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -98,6 +97,12 @@
     <li>
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
+    <li>
+      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -119,15 +124,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Criteria Helper Functions for Custom Search</h1>
+    <h1>Criterion constructor function to be combined in a custom search statement</h1>
     
     <div class="hidden name"><code>younger_than.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Criteria helper functions to be combined inside a operator helper
-    function as a custom request in <a href='custom_search.html'>custom_search</a>.</p>
+    <p>Criterion constructor function to be combined in a custom search statement</p>
     
     </div>
 
@@ -139,54 +143,48 @@
     <tr>
       <th>seconds</th>
       <td><p>An integer specifying the number of seconds to be used as
-search criterion.</p></td>
+the search criterion.</p></td>
     </tr>
     <tr>
       <th>negate</th>
-      <td><p>If <code>TRUE</code>, negates the search and seeks for
-"NOT search_criterion". Default is <code>FALSE</code>.</p></td>
+      <td><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is <code>FALSE</code>.</p></td>
     </tr>
     </table>
     
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>A search string to be used as a <code>custom_request</code> parameter in
-    <a href='custom_search.html'>custom_search</a> function.</p>
+    <p>To be able to use this functionality, the server must support the
+  <code>WITHIN</code> capability.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other customsearch helper functions: <code><a href='AND.html'>AND</a></code>,
-  <code><a href='OR.html'>OR</a></code>, <code><a href='before.html'>before</a></code>,
-  <code><a href='flag.html'>flag</a></code>, <code><a href='larger_than.html'>larger_than</a></code>,
-  <code><a href='older_than.html'>older_than</a></code>, <code><a href='on.html'>on</a></code>,
-  <code><a href='sent_before.html'>sent_before</a></code>, <code><a href='sent_on.html'>sent_on</a></code>,
-  <code><a href='sent_since.html'>sent_since</a></code>, <code><a href='since.html'>since</a></code>,
-  <code><a href='smaller_than.html'>smaller_than</a></code>, <code><a href='string.html'>string</a></code></p></div>
+    <div class='dont-index'><p>Other custom search: 
+<code><a href='AND.html'>AND</a>()</code>,
+<code><a href='ImapCon.html'>ImapCon</a></code>,
+<code><a href='OR.html'>OR</a>()</code>,
+<code><a href='before.html'>before</a>()</code>,
+<code><a href='flag.html'>flag</a>()</code>,
+<code><a href='larger_than.html'>larger_than</a>()</code>,
+<code><a href='older_than.html'>older_than</a>()</code>,
+<code><a href='on.html'>on</a>()</code>,
+<code><a href='sent_before.html'>sent_before</a>()</code>,
+<code><a href='sent_on.html'>sent_on</a>()</code>,
+<code><a href='sent_since.html'>sent_since</a>()</code>,
+<code><a href='since.html'>since</a>()</code>,
+<code><a href='smaller_than.html'>smaller_than</a>()</code>,
+<code><a href='string.html'>string</a>()</code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='co'># configure IMAP</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
-                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
-                          )
-
-<span class='co'># search</span>
-<span class='no'>result</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='custom_search.html'>custom_search</a></span>(<span class='kw'>custom_request</span> <span class='kw'>=</span>
-                 <span class='fu'><a href='OR.html'>OR</a></span>(<span class='fu'><a href='smaller_than.html'>smaller_than</a></span>(
-                       <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>512000</span>),
-                    <span class='fu'>younger_than</span>(
-                       <span class='kw'>seconds</span> <span class='kw'>=</span> <span class='fl'>3600</span>)
-                   )
-                 )
-<span class='co'># searches for messages that are Smaller Than 512 KB OR Younger Than 3600</span>
-<span class='co'># seconds (or one hour).</span>
-
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># select folder &amp; search</span>
+<span class='no'>con</span>$<span class='fu'>select_folder</span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>)
+<span class='co'># search for messages containing the string "XYZ@k-state.edu" in the</span>
+<span class='co'>#   "FROM" field AND those that are YOUNGER than 3600 seconds (1 hour).</span>
+<span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='no'>con</span>$<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/search'>search</a></span>(<span class='kw'>request</span> <span class='kw'>=</span> <span class='fu'><a href='AND.html'>AND</a></span>(<span class='fu'><a href='string.html'>string</a></span>(<span class='kw'>expr</span> <span class='kw'>=</span> <span class='st'>"XYZ@k-state.edu"</span>,
+                                      <span class='kw'>where</span> <span class='kw'>=</span> <span class='st'>"FROM"</span>),
+                               <span class='fu'>younger_than</span>(<span class='kw'>seconds</span> <span class='kw'>=</span> <span class='fl'>3600</span>)))
 <span class='co'># }</span><div class='input'>
 </div></pre>
   </div>
@@ -195,7 +193,7 @@ search criterion.</p></td>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#value">Value</a></li>
+      <li><a href="#note">Note</a></li>
 
       <li><a href="#see-also">See also</a></li>
       
