@@ -1,46 +1,40 @@
-#' @title Criteria Helper Functions for Custom Search
-#'
-#' @inherit before description return
-#'
-#' @inheritParams check_args_flag
-#'
-#' @family customsearch helper functions
-#'
+#' Criterion constructor function to be combined in a custom search statement
+#' @param name A string containing one or more flags to search for. Use
+#'   \href{#method-list_flags}{\code{ImapCon$list_flags()}} to list the flags
+#'   in a selected mail folder.
+#' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+#'   CRITERIA". Default is \code{FALSE}.
+#' @family custom search
 #' @examples
-#'
 #' \dontrun{
-#'
-#' # configure IMAP
-#' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
-#'                            username="your_username",
-#'                            password=rstudioapi::askForPassword()
-#'                           )
-#'
-#' # search
-#' result <- imapconf %>%
-#'     select_mailbox(mbox = "INBOX") %>%
-#'     custom_search(custom_request = AND(flag("UNSEEN"),
-#'                                        smaller_than(size = 512000),
-#'                                        negate = TRUE))
-#' # searches for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
-#'
+#' # select folder & search
+#' con$select_folder(name = "INBOX")
+#' # search for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
+#' res <- con$search(request = AND(flag("UNSEEN"),
+#'                                 smaller_than(size = 512000, negate = TRUE)))
 #' }
-#'
 #' @export
 #'
-flag <- function(flag, negate = FALSE) {
+flag <- function(name, negate = FALSE) {
 
 
-  check_args_flag(flag, negate)
+  check_args(name, negate)
 
   # setting part of the search string
 
+  # flag/name (especial)
+  # if (!is.null(flag)) {
+  flag_string <- paste(name, collapse = " ") #v0.9.0 (for more than one flag passed)
+  flag_string = paste0(flag_string, "") # different here because flag is the main parameter of search
+  # } else {
+  #   flag_string = NULL
+  # }
+
   if (!isTRUE(negate)) {
-    out = paste0('(', flag, ')')
+    out = paste0('(', flag_string, ')')
 
   } else {
-    out = paste0('(NOT (', flag, '))')
+    out = paste0('(NOT (', flag_string, '))')
 
   }
 

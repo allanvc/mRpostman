@@ -1,38 +1,21 @@
 #' @inherit smaller_than
-#'
-#' @family customsearch helper functions
-#'
+#' @family custom search
 #' @examples
-#'
 #' \dontrun{
-#'
-#' # configure IMAP
-#' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
-#'                            username="your_username",
-#'                            password=rstudioapi::askForPassword()
-#'                           )
-#'
-#' # search
-#' result <- imapconf %>%
-#'     select_mailbox(mbox = "INBOX") %>%
-#'     custom_search(custom_request =
-#'                  OR(string(
-#'                        section_or_field = "from", string = "allanvcq@@gmail.com"),
-#'                     larger_than(
-#'                        size = 512000)
-#'                    )
-#'                  )
-#' # searches for messages containing the string "allanvcq@@gmail.com" in the
-#' # field "FROM" OR those Larger Than 512KB.
-#'
+#' # select folder & search
+#' con$select_folder(name = "INBOX")
+#' # search for messages containing the string "XYZ@@k-state.edu" in the
+#' #   "FROM" field OR those that are LARGER than 512KB.
+#' res <- con$search(request = OR(string(expr = "XYZ@@k-state.edu",
+#'                                       where = "FROM"),
+#'                                larger_than(size = 512000)))
 #' }
 #'
 #' @export
 #'
 larger_than <- function(size, negate = FALSE) {
 
-  check_args_size(size, negate)
+  check_args(size, negate)
 
   # setting part of the search string
 

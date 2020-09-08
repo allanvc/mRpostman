@@ -2,55 +2,49 @@
 % Please edit documentation in R/sent-before.R
 \name{sent_before}
 \alias{sent_before}
-\title{Criteria Helper Functions for Custom Search}
+\title{Criterion constructor function to be combined in a custom search statement}
 \usage{
 sent_before(date_char, negate = FALSE)
 }
 \arguments{
-\item{date_char}{A character vector with format "DD-Mon-YYYY",
-e.g. "01-Apr-2019". We opted not to use objects of type "date", since IMAP
-servers like this not so common date format.}
+\item{date_char}{A \code{character string} with format "DD-Mon-YYYY", e.g.
+"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this unusual date format.}
 
-\item{negate}{If \code{TRUE}, negates the search and seeks for
-"NOT search_criterion". Default is \code{FALSE}.}
+\item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is \code{FALSE}.}
 }
 \value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+A search string to be used as a \code{request} parameter in
+ \code{ImapCon$search()} function.
 }
 \description{
-Criteria helper functions to be combined inside a operator helper
-    function as a custom request in \link{custom_search}.
+Criterion constructor function to be combined in a custom search statement
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request = OR(sent_before(date_char = "17-Apr-2019"),
-                                      smaller_than(size = 512000)
-                                     ))
-# searches for messages sentBefore "17-Apr-2019" OR Smaller Than 512KB.
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages SINCE "30-Ago-2019" AND SMALLER than 512KB.
+res <- con$search(request = AND(sent_since(date_char = "30-Ago-2019"),
+                                smaller_than(size = 512000)))
 }
-
 }
 \seealso{
-Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{OR}}, \code{\link{before}},
-  \code{\link{flag}}, \code{\link{larger_than}},
-  \code{\link{older_than}}, \code{\link{on}},
-  \code{\link{sent_on}}, \code{\link{sent_since}},
-  \code{\link{since}}, \code{\link{smaller_than}},
-  \code{\link{string}}, \code{\link{younger_than}}
+Other custom search: 
+\code{\link{AND}()},
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{flag}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{smaller_than}()},
+\code{\link{string}()},
+\code{\link{younger_than}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

@@ -1,20 +1,18 @@
 Package: mRpostman
 Type: Package
 Title: IMAP Toolkit
-Version: 0.3.1
-Date: 2020-04-18
+Version: 0.9.0.0
+Date: 2020-08-30
 Authors@R: c(
     person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
     role = c("aut", "cre")))
-Description: IMAP4rev1 (Internet Message Access Protocol, Version 4rev1) 
-    functionalities based on the RFC 3501 manual (Crispin, 2003, 
-    <doi:10.17487/RFC3501>), its updates, and other related documents. 
-    'mRpostman' makes extensive use of 'curl' and 'libcurl' capabilities, 
-    providing functions for mailboxes and electronic messages manipulation.
+Description: Provides tools for searching and fetching emails, downloading 
+    attachments, mailbox management, and several other IMAP functionalities.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: curl,
+    R6,
     stringr,
     magrittr,
     assertthat,
@@ -25,4 +23,4 @@ BugReports: https://github.com/allanvc/mRpostman/issues
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1

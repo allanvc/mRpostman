@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List Attachments — list_attachments • mRpostman</title>
+<title>List attachments and content-disposition types — list_attachments • mRpostman</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -37,10 +37,9 @@
 
 
 
-<meta property="og:title" content="List Attachments — list_attachments" />
+<meta property="og:title" content="List attachments and content-disposition types — list_attachments" />
 
-<meta property="og:description" content="List attachments filenames and Content-Disposition types after
-    fetching full messages." />
+<meta property="og:description" content="List attachments and content-disposition types" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -73,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -98,6 +97,12 @@
     <li>
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
+    <li>
+      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -119,15 +124,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List Attachments</h1>
+    <h1>List attachments and content-disposition types</h1>
     
     <div class="hidden name"><code>list_attachments.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>List attachments filenames and Content-Disposition types after
-    fetching full messages.</p>
+    <p>List attachments and content-disposition types</p>
     
     </div>
 
@@ -138,40 +142,41 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>msg_list</th>
-      <td><p>A <code>list</code> containing the full messages fetched from
-the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></code>.</p></td>
+      <td><p>A <code>list</code> containing the messages (body or text) fetched
+from the server.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A <code>list</code> of <code>data.frames</code> containing the filenames and its
-    Content-Disposition types for each fetched message.</p>
+  <code>Content-Disposition</code> types for each fetched message.</p>
+    
+    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+
+    <p>Please, note that this is an independent function and not an R6 method
+  that depends on the connection object. Therefore, it should be called alone
+  without the ImapCon object.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other attachments: <code><a href='get_attachments.html'>get_attachments</a></code></p></div>
+    <div class='dont-index'><p>Other attachments: 
+<code><a href='ImapCon.html'>ImapCon</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-</div><span class='co'># NOT RUN {</span>
-<span class='co'># configure IMAP</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
-                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
-                          )
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='no'>con</span>$<span class='fu'>select_folder</span>(<span class='kw'>name</span> <span class='kw'>=</span> <span class='st'>"INBOX"</span>)
+<span class='co'># do a search followed by a fetch operation, then extract the attachments' list</span>
+<span class='no'>out</span> <span class='kw'>&lt;</span> <span class='no'>con</span>$<span class='fu'>search_string</span>(<span class='kw'>expr</span> <span class='kw'>=</span> <span class='st'>"@k-state.edu"</span>, <span class='kw'>where</span> <span class='kw'>=</span> <span class='st'>"FROM"</span>) <span class='kw'>%&gt;%</span>
+  <span class='no'>con</span>$<span class='fu'>fetch_body</span>()
+<span class='no'>att_list</span> <span class='kw'>&lt;-</span> <span class='fu'>list_attachments</span>(<span class='kw'>msg_list</span> <span class='kw'>=</span> <span class='no'>out</span>)
 
-<span class='co'># listing attachments</span>
-<span class='no'>attachments</span> <span class='kw'>&lt;-</span> <span class='no'>imapconf</span> <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='select_mailbox.html'>select_mailbox</a></span>(<span class='kw'>mbox</span> <span class='kw'>=</span> <span class='st'>"TAM"</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'><a href='search_before.html'>search_before</a></span>(<span class='kw'>date_char</span> <span class='kw'>=</span> <span class='st'>"10-may-2012"</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='st'>"UID"</span>) <span class='kw'>%$%</span> <span class='co'>#exposition pipe - two argg</span>
-    <span class='fu'><a href='fetch_full_msg.html'>fetch_full_msg</a></span>(<span class='kw'>imapconf</span> <span class='kw'>=</span> <span class='no'>imapconf</span>, <span class='kw'>msg_id</span> <span class='kw'>=</span> <span class='no'>msg_id</span>) <span class='kw'>%&gt;%</span>
-    <span class='fu'>list_attachments</span>()
-
-<span class='co'># }</span><div class='input'>
-</div></pre>
+<span class='co'># or</span>
+<span class='no'>att_list</span> <span class='kw'>&lt;</span> <span class='no'>con</span>$<span class='fu'>search_string</span>(<span class='kw'>expr</span> <span class='kw'>=</span> <span class='st'>"@k-state.edu"</span>, <span class='kw'>where</span> <span class='kw'>=</span> <span class='st'>"FROM"</span>) <span class='kw'>%&gt;%</span>
+  <span class='no'>con</span>$<span class='fu'>fetch_body</span>() <span class='kw'>%&gt;%</span>
+  <span class='fu'>list_attachments</span>()
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -179,6 +184,8 @@ the server after using <code><a href='fetch_full_msg.html'>fetch_full_msg</a></c
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#note">Note</a></li>
 
       <li><a href="#see-also">See also</a></li>
       

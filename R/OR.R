@@ -1,28 +1,13 @@
 #' @inherit AND
-#'
-#' @family customsearch helper functions
-#'
+#' @family custom search
 #' @examples
-#'
 #' \dontrun{
-#'
-#' # configure IMAP
-#' library(mRpostman)
-#' imapconf <- configure_imap(url="imaps://your.imap.server.com",
-#'                            username="your_username",
-#'                            password=rstudioapi::askForPassword()
-#'                           )
-#'
-#' # search
-#' result <- imapconf %>%
-#'     select_mailbox(mbox = "INBOX") %>%
-#'     custom_search(custom_request = OR(sent_since(date.char="17-Apr-2019"),
-#'                                       smaller_than(size = 512000, negate = TRUE)
-#'                                      ))
-#' # searches for messages SentSince "17-Apr-2019" OR NOT Smaller Than  512KB.
-#'
+#' # select folder & search
+#' con$select_folder(name = "INBOX")
+#' # search for messages SINCE "30-Ago-2019" OR SMALLER than 512KB.
+#' res <- con$search(request = OR(sent_since(date_char = "30-Ago-2019"),
+#'                                 smaller_than(size = 512000)))
 #' }
-#'
 #' @export
 #'
 OR <- function(..., negate = FALSE) {

@@ -16,11 +16,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="IMAP Toolkit">
-<meta property="og:description" content="IMAP4rev1 (Internet Message Access Protocol, Version 4rev1) 
-    functionalities based on the RFC 3501 manual (Crispin, 2003, 
-    &lt;doi:10.17487/RFC3501&gt;), its updates, and other related documents. 
-    'mRpostman' makes extensive use of 'curl' and 'libcurl' capabilities, 
-    providing functions for mailboxes and electronic messages manipulation.">
+<meta property="og:description" content="Provides tools for searching and fetching emails, downloading 
+    attachments, mailbox management, and several other IMAP functionalities.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -41,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -66,6 +63,12 @@
 <li>
       <a href="articles/basics.html">mRpostman Basics</a>
     </li>
+    <li>
+      <a href="articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -81,7 +84,7 @@
 <!--/.navbar -->
 
       
-      </header><div class="row">
+      </header><script src="index_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     
 
@@ -93,7 +96,7 @@
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#mrpostman" class="anchor"></a>mRpostman <img src="reference/figures/logo.png" align="right" width="140">
 </h1></div>
-<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.3.1_git/mRpostman/man/figures/logo.png" align="right" /> -->
+<!-- # mRpostman <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
@@ -101,14 +104,15 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><strong>mRpostman</strong> makes extensive use of ‘curl’ and ‘libcurl’ capabilities, providing functions for mailboxes and electronic messages manipulation. Beyond many other functionalities, it is possible to move, delete, search and fetch messages or its parts using specific criteria.</p>
-<p>mRpostman website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
+<p><code>mRpostman</code> provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for R users to perform Data Analysis on email data.</p>
+<p>mRpostman’s official website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
+<p><strong>IMPORTANT</strong>: Substantial changes without backward compatibility were implemented between versions 0.3.2 and 0.9.0.0000. Please, check the <a href="https://allanvc.github.io/mRpostman/news/index.html">changelog</a> or the vignette <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html">“Migrating code to mRpostman’s R6 sintaxe”</a> for more information.</p>
 </div>
-<div id="first-things-first" class="section level2">
+<div id="first-things-first-plain-authentication" class="section level2">
 <h2 class="hasAnchor">
-<a href="#first-things-first" class="anchor"></a>First things first …</h2>
-<p>Before using <strong>mRpostman</strong>, it is essential to configure your email account. Many mail providers require authorizing <strong>“less secure apps”</strong> to access your account from a third part app.</p>
-<p>See how to do it for Gmail, Yahoo Mail and AOL Mail.</p>
+<a href="#first-things-first-plain-authentication" class="anchor"></a>First things first … (plain authentication)</h2>
+<p>Before using <strong>mRpostman</strong>, it is essential to configure your email account. Many mail providers require authorizing <strong>“less secure apps”</strong> to access your account from a third part app, using plain authentication. If you’re interested in OAuth2.0 authentication, check the “IMAP OAuth2.0 authentication with mRpostman” vignette.</p>
+<p>Let’s see how to configure simple plain authentication for Gmail, Yahoo Mail, AOL Mail, and Office 365.</p>
 <div id="gmail" class="section level3">
 <h3 class="hasAnchor">
 <a href="#gmail" class="anchor"></a>Gmail</h3>
@@ -116,7 +120,7 @@
 <li><p>Go to Gmail website and log in with your credentials.</p></li>
 <li><p>Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p></li>
 </ol>
-<p><img src="reference/figures/gmail1.png"></p>
+<p><img src="reference/figures/gmail1.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/gmail1.png"> --></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Set “Allow less secure apps” to <strong>ON</strong>.</li>
 </ol>
@@ -128,16 +132,17 @@
 <li><p>Go to Yahoo Mail website and log in with your credentials.</p></li>
 <li><p>Click on “Account Info”.</p></li>
 </ol>
-<p><img src="reference/figures/yahoo1.png"></p>
+<p><img src="reference/figures/yahoo1.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/yahoo1.png"> --></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="reference/figures/yahoo2.png"></p>
+<p><img src="reference/figures/yahoo2.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/yahoo2.png"> --></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
 </ol>
 <p><img src="reference/figures/yahoo3.png"></p>
+<!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/yahoo3.png"> -->
 </div>
 <div id="aol-mail" class="section level3">
 <h3 class="hasAnchor">
@@ -146,16 +151,16 @@
 <li><p>Go to AOL Mail website and log in with your credentials.</p></li>
 <li><p>Click on “Options” and then on “Account Info”.</p></li>
 </ol>
-<p><img src="reference/figures/aol1.png"></p>
+<p><img src="reference/figures/aol1.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/aol1.png"> --></p>
 <ol start="3" style="list-style-type: decimal">
 <li>Click on “Account Security” on the left menu.</li>
 </ol>
-<p><img src="reference/figures/aol2.png"></p>
+<p><img src="reference/figures/aol2.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/aol2.png"> --></p>
 <ol start="4" style="list-style-type: decimal">
 <li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
 </li>
 </ol>
-<p><img src="reference/figures/aol3.png"></p>
+<p><img src="reference/figures/aol3.png"><!-- <img src="/home/allan/Documents/Package_Development/mRpostman/dev/v0.9.0.0_git/mRpostman/man/figures/aol3.png"> --></p>
 </div>
 <div id="outlook---office-365" class="section level3">
 <h3 class="hasAnchor">
@@ -166,17 +171,33 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The package is divided in 8 groups of functions:</p>
+<p>From version 0.9.0.0000 onward, <code>mRpostman</code> is implemented under the OO paradigm, based on an R6 class (<code>ImapCon</code>), its derived methods and a few independent functions with the aim to perform a myriad of IMAP commands.</p>
+<p>The package is divided in 8 groups of operations. Below, we present all the available methods/functions:</p>
 <ul>
+<li><ol style="list-style-type: decimal">
 <li>
 <strong>configuration</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>;</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
 <li>
-<strong>mailboxes commands</strong>: <code><a href="reference/list_mailboxes.html">list_mailboxes()</a></code>, <code><a href="reference/select_mailbox.html">select_mailbox()</a></code>, <code><a href="reference/examine_mailbox.html">examine_mailbox()</a></code>, <code><a href="reference/rename_mailbox.html">rename_mailbox();</a></code>
+<strong>server capabilities</strong>: <code>list_server_capabilities()</code>
 </li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
 <li>
-<strong>options listing</strong>: <code><a href="reference/list_server_capabilities.html">list_server_capabilities()</a></code>,<code><a href="reference/flag_options.html">flag_options()</a></code>, <code><a href="reference/section_or_field_options.html">section_or_field_options()</a></code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>;</li>
+<strong>mailbox operations</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>;</li>
+</ol></li>
+<li><ol start="4" style="list-style-type: decimal">
 <li>
-<strong>search</strong>: <code><a href="reference/search_before.html">search_before()</a></code>, <code><a href="reference/search_since.html">search_since()</a></code>, <code><a href="reference/search_period.html">search_period()</a></code>, <code><a href="reference/search_on.html">search_on()</a></code>, <code><a href="reference/search_sent_before.html">search_sent_before()</a></code>,<code><a href="reference/search_sent_since.html">search_sent_since()</a></code>, <code><a href="reference/search_sent_period.html">search_sent_period()</a></code>, <code><a href="reference/search_sent_on.html">search_sent_on()</a></code>, <code><a href="reference/search_string.html">search_string()</a></code>, <code><a href="reference/search_flag.html">search_flag()</a></code>, <code><a href="reference/search_smaller_than.html">search_smaller_than()</a></code>, <code><a href="reference/search_larger_than.html">search_larger_than()</a></code>, <code><a href="reference/search_younger_than.html">search_younger_than()</a></code>, <code><a href="reference/search_older_than.html">search_older_than()</a></code>, <code><a href="reference/custom_search.html">custom_search()</a></code>;</li>
+<strong>single search</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
+</ol></li>
+<li>
+<ol start="5" style="list-style-type: decimal">
+<li>
+<strong>custom search</strong>: <code>search</code>
+</li>
+</ol>
+<ul>
 <li>
 <strong>custom search helper functions</strong>:
 <ul>
@@ -184,142 +205,138 @@
 <li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>;</li>
 </ul>
 </li>
+</ul>
+</li>
+<li><ol start="6" style="list-style-type: decimal">
 <li>
-<strong>fetch</strong>: <code><a href="reference/fetch_full_msg.html">fetch_full_msg()</a></code>, <code><a href="reference/fetch_msg_header.html">fetch_msg_header()</a></code>, <code><a href="reference/fetch_msg_text.html">fetch_msg_text()</a></code>, <code><a href="reference/fetch_msg_metadata.html">fetch_msg_metadata()</a></code>;</li>
+<strong>fetch</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+</ol></li>
+<li><ol start="7" style="list-style-type: decimal">
 <li>
-<strong>attachments</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code><a href="reference/get_attachments.html">get_attachments()</a></code>;</li>
+<strong>attachments</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+</ol></li>
+<li><ol start="8" style="list-style-type: decimal">
 <li>
-<strong>miscellania</strong>: <code><a href="reference/copy_msg.html">copy_msg()</a></code>, <code><a href="reference/get_min_id.html">get_min_id()</a></code>, <code><a href="reference/get_max_id.html">get_max_id()</a></code>, <code><a href="reference/delete_msg.html">delete_msg()</a></code>, <code><a href="reference/expunge.html">expunge()</a></code>, <code><a href="reference/add_flags.html">add_flags()</a></code>, <code><a href="reference/remove_flags.html">remove_flags()</a></code>, <code><a href="reference/replace_flags.html">replace_flags()</a></code>, <code><a href="reference/move_msg.html">move_msg()</a></code>.</li>
+<strong>complementary operations</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>esearch_count()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
+</ol></li>
 </ul>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># CRAN version</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"mRpostman"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># Dev version</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">'remotes'</span>)) <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">'remotes'</span>)</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"allanvc/mRpostman"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># CRAN version</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"mRpostman"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3"></a></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="co"># Dev version</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(<span class="st">'remotes'</span>)) <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">'remotes'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6"></a>remotes<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/remotes/topics/install_github">install_github</a></span>(<span class="st">"allanvc/mRpostman"</span>)</span></code></pre></div>
 </div>
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic Usage</h2>
-<div id="configuring-imap-and-listing-mailboxes" class="section level3">
+<div id="configuring-an-imap-connection-and-listing-servers-capabilities" class="section level3">
 <h3 class="hasAnchor">
-<a href="#configuring-imap-and-listing-mailboxes" class="anchor"></a>1) Configuring IMAP and listing mailboxes</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co"># IMAP settings</span></a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="co"># Gmail</span></a>
-<a class="sourceLine" id="cb2-6" data-line-number="6">imapconf &lt;-<span class="st"> </span><span class="kw"><a href="reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://imap.gmail.com"</span>,</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7">                           <span class="dt">username=</span><span class="st">"your_user"</span>,</a>
-<a class="sourceLine" id="cb2-8" data-line-number="8">                           <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</a>
-<a class="sourceLine" id="cb2-9" data-line-number="9">                          )</a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co"># Yahoo Mail</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.mail.yahoo.com/",</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#                            username="your_user",</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co"># AOL Mail</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co"># imapconf &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#                            username="your_user",</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co"># Yandex Mail</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co"># imapconf &lt;- configure_imap(url="imaps://imap.yandex.com",</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#                            username="your_user",</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co"># Outlook - Office 365</span></a>
-<a class="sourceLine" id="cb2-30" data-line-number="30"><span class="co"># imapconf &lt;- configure_imap(url="imaps://outlook.office365.com",</span></a>
-<a class="sourceLine" id="cb2-31" data-line-number="31"><span class="co">#                            username="your_user",</span></a>
-<a class="sourceLine" id="cb2-32" data-line-number="32"><span class="co">#                            password=rstudioapi::askForPassword()</span></a>
-<a class="sourceLine" id="cb2-33" data-line-number="33"><span class="co">#                           )</span></a>
-<a class="sourceLine" id="cb2-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb2-35" data-line-number="35"><span class="co"># you can try another IMAP server and see if it works</span></a>
-<a class="sourceLine" id="cb2-36" data-line-number="36"></a>
-<a class="sourceLine" id="cb2-37" data-line-number="37"><span class="co"># Listing</span></a>
-<a class="sourceLine" id="cb2-38" data-line-number="38">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb2-39" data-line-number="39"><span class="st">  </span><span class="kw"><a href="reference/list_mailboxes.html">list_mailboxes</a></span>()</a></code></pre></div>
+<a href="#configuring-an-imap-connection-and-listing-servers-capabilities" class="anchor"></a>1) Configuring an IMAP connection and listing server’s capabilities</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co"># Outlook - Office 365</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6"></a>                      <span class="dt">username=</span><span class="st">"your_user@company.com"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7"></a>                      <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb2-8"><a href="#cb2-8"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9"></a></span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="co"># other IMAP providers that were tested: GMail (imaps://imap.gmail.com), </span></span>
+<span id="cb2-11"><a href="#cb2-11"></a><span class="co">#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),</span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="co">#   Yandex (imaps://imap.yandex.com)</span></span>
+<span id="cb2-13"><a href="#cb2-13"></a></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># you can try another IMAP server and see if it works</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a></span>
+<span id="cb2-16"><a href="#cb2-16"></a>con<span class="op">$</span><span class="kw">list_server_capabilities</span>()</span></code></pre></div>
 </div>
-<div id="examining-a-mailbox" class="section level3">
+<div id="listing-your-mail-folders-and-select-inbox" class="section level3">
 <h3 class="hasAnchor">
-<a href="#examining-a-mailbox" class="anchor"></a>2) Examining a Mailbox</h3>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># examine mailbox -- number of existent and recent messages</span></a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb3-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># mbox names are case sensitive</span></a>
-<a class="sourceLine" id="cb3-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/examine_mailbox.html">examine_mailbox</a></span>()</a></code></pre></div>
+<a href="#listing-your-mail-folders-and-select-inbox" class="anchor"></a>2) Listing your mail folders and select “INBOX”</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co"># Listing</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>con<span class="op">$</span><span class="kw">list_mail_folders</span>()</span>
+<span id="cb3-4"><a href="#cb3-4"></a></span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Selecting</span></span>
+<span id="cb3-6"><a href="#cb3-6"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span></code></pre></div>
 </div>
-<div id="searching-by-period-using-a-flag" class="section level3">
+<div id="searching-messages-by-date-with-a-flag-as-additional-filter" class="section level3">
 <h3 class="hasAnchor">
-<a href="#searching-by-period-using-a-flag" class="anchor"></a>3) Searching by period using a flag</h3>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co"># search</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_period.html">search_period</a></span>(<span class="dt">since_date_char =</span> <span class="st">"17-May-2018"</span>,</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">                <span class="dt">before_date_char =</span> <span class="st">"30-Jun-2019"</span>,</a>
-<a class="sourceLine" id="cb4-7" data-line-number="7">                <span class="dt">flag =</span> <span class="st">"ANSWERED"</span>)</a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9">results<span class="op">$</span>msg_id</a></code></pre></div>
+<a href="#searching-messages-by-date-with-a-flag-as-additional-filter" class="anchor"></a>3) Searching messages by date, with a flag as additional filter</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a>res1 &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_on</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>res1</span></code></pre></div>
 </div>
-<div id="searching-for-a-string-in-the-text-section-of-messages" class="section level3">
+<div id="customizing-a-search-with-multiple-criteria" class="section level3">
 <h3 class="hasAnchor">
-<a href="#searching-for-a-string-in-the-text-section-of-messages" class="anchor"></a>4) Searching for a string in the “Text” section of messages</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># search</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>)</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">results<span class="op">$</span>msg_id</a></code></pre></div>
+<a href="#customizing-a-search-with-multiple-criteria" class="anchor"></a>4) Customizing a search with multiple criteria</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co"># messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>res2 &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/search">search</a></span>(<span class="kw"><a href="reference/OR.html">OR</a></span>(</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  <span class="kw"><a href="reference/string.html">string</a></span>(<span class="dt">expr =</span> <span class="st">"@k-state.edu"</span>, <span class="dt">where =</span> <span class="st">"TO"</span>),</span>
+<span id="cb5-5"><a href="#cb5-5"></a>  <span class="kw"><a href="reference/string.html">string</a></span>(<span class="dt">expr =</span> <span class="st">"@ksu.edu"</span>, <span class="dt">where =</span> <span class="st">"TO"</span>)</span>
+<span id="cb5-6"><a href="#cb5-6"></a>))</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a>res2</span></code></pre></div>
 </div>
-<div id="fetch-headers-after-searching" class="section level3">
+<div id="fetch-messages-text-using-single-search-results" class="section level3">
 <h3 class="hasAnchor">
-<a href="#fetch-headers-after-searching" class="anchor"></a>5) Fetch headers after searching</h3>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">results &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"Kansas State University"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/search_string.html">search_string</a></span>(<span class="dt">section_or_field =</span> <span class="st">"TEXT"</span>, <span class="dt">string =</span> <span class="st">"Welcome!"</span>) <span class="op">%$%</span><span class="st"> </span><span class="co"># exposition pipe, not %&gt;%!!</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/fetch_msg_header.html">fetch_msg_header</a></span>(<span class="dt">imapconf =</span> imapconf, </a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">                   <span class="dt">msg_id =</span> msg_id, </a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">                   <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9">results</a></code></pre></div>
+<a href="#fetch-messages-text-using-single-search-results" class="anchor"></a>5) Fetch messages’ text using single-search results</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a>res3 &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Welcome!"</span>, <span class="dt">where =</span> <span class="st">"SUBJECT"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_text</span>(<span class="dt">write_to_disk =</span> <span class="ot">TRUE</span>) <span class="co"># also writes results to disk</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a></span>
+<span id="cb6-5"><a href="#cb6-5"></a>res3</span></code></pre></div>
 </div>
 </div>
 <div id="attachments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attachments" class="anchor"></a>6) Attachments</h2>
-<p>This will list all the attachments filenames and the Content-Disposition type for each fetched message.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/list_attachments.html">list_attachments</a></span>()</a></code></pre></div>
-<p>This extracts and decode your <code>base64</code> text attachments (regular and inline) from messages, and save them locally.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">imapconf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span><span class="kw"><a href="reference/select_mailbox.html">select_mailbox</a></span>(<span class="dt">mbox =</span> <span class="st">"INBOX"</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="st">  </span><span class="kw"><a href="reference/search_since.html">search_since</a></span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%$%</span></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="st">  </span><span class="kw"><a href="reference/fetch_full_msg.html">fetch_full_msg</a></span>(imapconf, <span class="dt">msg_id=</span>msg_id) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="st">  </span><span class="kw"><a href="reference/get_attachments.html">get_attachments</a></span>()</a></code></pre></div>
+<p>You can list the attachments of one or more messages with:</p>
+<ol style="list-style-type: upper-alpha">
+<li>the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_text</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># or with fetch_body()</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="st">  </span><span class="kw"><a href="reference/list_attachments.html">list_attachments</a></span>() <span class="co"># does not depend on the 'con' object</span></span></code></pre></div>
+<p>… or more directly with:</p>
+<ol start="2" style="list-style-type: upper-alpha">
+<li><code>fetch_attachments_list()</code></li>
+</ol>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_attachments_list</span>()</span></code></pre></div>
+<p>If you want to download the attachments of one or more messages, there are two ways of doing that as well.</p>
+<ol style="list-style-type: upper-alpha">
+<li>Using the <code>get_attachments()</code> method:</li>
+</ol>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_text</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># or with fetch_body()</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">get_attachments</span>()</span></code></pre></div>
+<p>… and more directly with the</p>
+<ol start="2" style="list-style-type: upper-alpha">
+<li>
+<code>fetch_attachments()</code> method:</li>
+</ol>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_attachments</span>()</span></code></pre></div>
 </div>
 <div id="future-improvements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#future-improvements" class="anchor"></a>Future Improvements</h2>
 <ul>
-<li><p>better error handling and messages;</p></li>
-<li><p>add further IMAP functionalities;</p></li>
-<li><p>include <strong>SMTP support</strong> for sending emails.</p></li>
+<li>add further IMAP functionalities.</li>
+<li>eliminate the stringr dependency</li>
+<li>implement a progress bar in fetch operations</li>
 </ul>
-<p>If you want to contribute, specially with the SMTP support, please contact the package mantainer.</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
@@ -329,7 +346,7 @@
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<p>Crispin, M., <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, DOI: 10.17487/RFC3501, March 2003, <a href="https://www.rfc-editor.org/info/rfc3501" class="uri">https://www.rfc-editor.org/info/rfc3501</a>.</p>
+<p>Crispin, M., <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, DOI: 10.17487/RFC3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
 <p>Ooms, J. curl: <em>A Modern and Flexible Web Client for R</em>. R package version 3.3, 2019, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
 <p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.haxx.se/libcurl/" class="uri">https://curl.haxx.se/libcurl/</a></p>
 </div>

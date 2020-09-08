@@ -2,63 +2,51 @@
 % Please edit documentation in R/string.R
 \name{string}
 \alias{string}
-\title{Criteria Helper Functions for Custom Search}
+\title{Criterion constructor function to be combined in a custom search statement}
 \usage{
-string(section_or_field, string, negate = FALSE)
+string(expr, where, negate = FALSE)
 }
 \arguments{
-\item{section_or_field}{A mandatory character string specifying in which
-messages's Section or Header Field to search for the provided string.
-For some available options, see \link{section_or_field_options}.}
+\item{expr}{A character string specifying the word or expression to search
+for in messages.}
 
-\item{string}{A character string specifying the word or expression to
-search for in messages.}
+\item{where}{A mandatory character string specifying in which
+message's Section or Header Field to search for the provided string.}
 
-\item{negate}{If \code{TRUE}, negates the search and seeks for
-"NOT search_criterion". Default is \code{FALSE}.}
-}
-\value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+\item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is \code{FALSE}.}
 }
 \description{
-Criteria helper functions to be combined inside a operator helper
-    function as a custom request in \link{custom_search}.
+Criterion constructor function to be combined in a custom search statement
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request =
-                 OR(string(
-                       section_or_field = "from", string = "allanvcq@gmail.com"),
-                    string(
-                       section_or_field = "from", string = "allanvcq@yahoo.com")
-                   )
-                 )
-# searches for messages containing the string "allanvcq@gmail.com" OR
-# "allanvcq@yahoo.com" in the "FROM" field.
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages containing the string "XYZ@k-state.edu" in the
+#   "FROM" AND the string "@gmail.com" in the "CC" field.
+res <- con$search(request = AND(string(expr = "XYZ@k-state.edu",
+                                      where = "FROM"),
+                               string(expr = "@gmail.com",
+                                      where = "CC")))
 }
 
 }
 \seealso{
-Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{OR}}, \code{\link{before}},
-  \code{\link{flag}}, \code{\link{larger_than}},
-  \code{\link{older_than}}, \code{\link{on}},
-  \code{\link{sent_before}}, \code{\link{sent_on}},
-  \code{\link{sent_since}}, \code{\link{since}},
-  \code{\link{smaller_than}}, \code{\link{younger_than}}
+Other custom search: 
+\code{\link{AND}()},
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{flag}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_before}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{smaller_than}()},
+\code{\link{younger_than}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

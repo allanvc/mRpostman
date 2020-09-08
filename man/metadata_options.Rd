@@ -29,8 +29,4 @@ Crispin, M., "Internet Message Access Protocol - Version 4rev1",
     RFC 2060, \doi{10.17487/RFC2060}, December 1996,
     \url{https://www.rfc-editor.org/info/rfc2060}.
 }
-\seealso{
-Other options: \code{\link{flag_options}},
-  \code{\link{section_or_field_options}}
-}
 \concept{options}

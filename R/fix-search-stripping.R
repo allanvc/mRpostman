@@ -1,22 +1,16 @@
-#' @title Fixing Stripped Search Results
-#'
-#' @description Fixes stripped results from search operations when server may
-#'     have stripped some lines.
-#'
-#' @param response An integer \code{vector} containing message ids from search.
-#'
-#' @return An integer \code{vector}.
-#'
-#' @family search helper
-#' @family fix results
-#'
-#' @keywords internal
-#'
+#' Fix stripped search results
+#' @param response An \code{integer vector} containing message's ids from
+#'   the search.
+#' @noRd
 fix_search_stripping <- function(response) {
 
   # sort numbers from response
   # when it is different from the original vector, fix that number
   # according to the number of digits of the next number to the right
+
+  # it does not seem to work anymore. Gmail seems to changed the response
+  # MS Exchange also informs that there is a stripping, but is not possible
+  # to retrieve this message in the curl's current version
 
   sorted_response = sort(response)
 
@@ -37,5 +31,5 @@ fix_search_stripping <- function(response) {
 
   }
 
-  return(response)
+  return(as.integer(as.character(response)))
 }

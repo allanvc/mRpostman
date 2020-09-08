@@ -1,16 +1,27 @@
-#' @title Flag Search Request
-#'
-#' @inherit define_searchrequest_date description return
-#'
-#' @inheritParams check_args_search_flag
+#' Define flag search request
+#' @param name A string containing one or more flags to search for. Use
+#'   \href{#method-list_flags}{\code{ImapCon$list_flags()}} to list the flags
+#'   in a selected mail folder.
+#' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+#'   CRITERIA". Default is \code{FALSE}.
+#' @param use_uid Default is \code{FALSE}. In this case, results will be
+#'   presented as message's sequence numbers. A message sequence number is a
+#'   message's relative position to the oldest message in the mailbox. It may
+#'   change after deleting or moving messages. If a message is deleted, sequence
+#'   numbers are reordered to fill the gap. If \code{TRUE}, the command will be
+#'   performed using the \code{"UID"} or unique identifier, and results are
+#'   presented as such. UIDs are always the same during the life cycle of a message.
+#' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
+#'   \code{ESEARCH} capability, it can be used to optimize search results. It
+#'   will condense the results: instead of writing down the whole sequences of messages'
+#'   ids, such as \code{\{1 2 3 4 5\}}, it will be presented as \code{\{1:5\}},
+#'   which decreases transmission costs. This argument can be used along with
+#'   \code{buffersize} to avoid results stripping. Check if your IMAP server
+#'   supports \code{ESEARCH} with
+#'   \href{#method-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}.
 #' @param handle A curl handle object.
-#'
-#' @family search helper
-#' @family define searchrequest
-#'
-#' @keywords internal
-#'
-define_searchrequest_flag <- function(flag, negate, by, esearch, handle) {
+#' @noRd
+define_searchrequest_flag <- function(name, negate, use_uid, esearch, handle) {
 
   # esearch
   if (isTRUE(esearch)) {
@@ -19,11 +30,19 @@ define_searchrequest_flag <- function(flag, negate, by, esearch, handle) {
     esearch_string = NULL
   }
 
-  # by
-  if (by == "UID") {
-    by_string = "UID "
+  # flag/name (especial)
+  # if (!is.null(flag)) {
+  flag_string <- paste(name, collapse = " ") #v0.9.0 (for more than one flag passed)
+  flag_string = paste0(flag_string, "") # different here because flag is the main parameter of search
+  # } else {
+  #   flag_string = NULL
+  # }
+
+  # use_uid
+  if (isTRUE(use_uid)) {
+    use_uid_string = "UID "
   } else {
-    by_string = NULL
+    use_uid_string = NULL
   }
 
   # negate
@@ -33,10 +52,16 @@ define_searchrequest_flag <- function(flag, negate, by, esearch, handle) {
     negate_string = NULL
   }
 
-  curl::handle_setopt(
-    handle = handle,
-    customrequest = paste0(by_string, "SEARCH ", esearch_string, negate_string,
-                           flag))
+  customrequest <- paste0(use_uid_string, "SEARCH ", esearch_string, negate_string,
+                          flag_string)
 
-  return(handle)
+  tryCatch({
+    curl::handle_setopt(
+      handle = handle,
+      customrequest = customrequest)
+  }, error = function(e){
+    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
+  })
+
+  return(c(handle = handle, customrequest = customrequest))
 }

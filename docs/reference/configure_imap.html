@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>IMAP Settings — configure_imap • mRpostman</title>
+<title>IMAP Connection Configuration — configure_imap • mRpostman</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -37,9 +37,9 @@
 
 
 
-<meta property="og:title" content="IMAP Settings — configure_imap" />
+<meta property="og:title" content="IMAP Connection Configuration — configure_imap" />
 
-<meta property="og:description" content="Configure IMAP server settings." />
+<meta property="og:description" content="Configure and create a new IMAP connection." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
       </span>
     </div>
 
@@ -97,6 +97,12 @@
     <li>
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
+    <li>
+      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+    </li>
+    <li>
+      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -118,98 +124,85 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>IMAP Settings</h1>
+    <h1>IMAP Connection Configuration</h1>
     
     <div class="hidden name"><code>configure_imap.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Configure IMAP server settings.</p>
+    <p>Configure and create a new IMAP connection.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>configure_imap</span>(<span class='no'>url</span>, <span class='no'>username</span>, <span class='no'>password</span>, <span class='kw'>show_pass</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>use_ssl</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>buffersize</span> <span class='kw'>=</span> <span class='fl'>16000</span>,
-  <span class='kw'>fresh_connect</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>timeout_ms</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>configure_imap</span>(
+  <span class='no'>url</span>,
+  <span class='no'>username</span>,
+  <span class='kw'>password</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>xoauth2_bearer</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>use_ssl</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>buffersize</span> <span class='kw'>=</span> <span class='fl'>16000</span>,
+  <span class='kw'>timeout_ms</span> <span class='kw'>=</span> <span class='fl'>5000</span>,
+  <span class='no'>...</span>
+)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>url</th>
-      <td><p>String containing the IMAP server address</p></td>
+      <td><p>A character string containing the IMAP server address</p></td>
     </tr>
     <tr>
       <th>username</th>
-      <td><p>String containing the username.</p></td>
+      <td><p>A character string containing the username.</p></td>
     </tr>
     <tr>
       <th>password</th>
-      <td><p>String containing user's password.</p></td>
+      <td><p>A character string containing the user's password.</p></td>
     </tr>
     <tr>
-      <th>show_pass</th>
-      <td><p>How to store user's password in imapconf object. Default is
-<code>FALSE</code>.</p></td>
+      <th>xoauth2_bearer</th>
+      <td><p>A character string containing the oauth2 bearer token.</p></td>
     </tr>
     <tr>
       <th>use_ssl</th>
-      <td><p>A Logical indicating the use or not of Secure Sockets Layer
-encryption when connecting to IMAP server. Default is <code>TRUE</code>.</p></td>
+      <td><p>A logical indicating the use or not of Secure Sockets Layer
+encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>If <code>FALSE</code>, mutes the output from the server. Default is
-<code>FALSE</code>.</p></td>
+      <td><p>If <code>FALSE</code>, mutes the flow of information between the
+server and the client. Default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>buffersize</th>
       <td><p>The size in bytes for curl's receive buffer. Default is
 16000 bytes or 16kb, which means it will use the default value of libcurl.
-Maximum buffersize in libcurl documentation is 512kb (or 512000 bytes),
-but curl package accepts 2147483647 bytes without returning errors.</p></td>
-    </tr>
-    <tr>
-      <th>fresh_connect</th>
-      <td><p>If <code>TRUE</code>, opens a new curl connection for each
-IMAP command to be executed. Default is <code>NULL</code>. Nonetheless, most of
-mRpostman functions will set <code>fresh_connect = TRUE</code> for the retries
-in case of an connection error.</p></td>
+According to libcurl's documentation, the maximum buffersize is 512kb
+(or 512000 bytes), but any number passe to <code>buffersize</code> is treated
+as a request, not an order.</p></td>
     </tr>
     <tr>
       <th>timeout_ms</th>
-      <td><p>Time in miliseconds (ms) to wait until a connection or a
-command to be executed. Default is 5000ms (or 5 seconds). If a first
-execution is frustated, an error handler in each function (depending on
-<code>retires</code> value), will try to reconnect or re-execute the command.</p></td>
+      <td><p>Time in miliseconds (ms) to wait for the execution or
+rexecution of a command. Default is 5000ms (or 5 seconds). If a first
+execution is frustrated, an error handler in each function (depending on
+the <code>retries</code> value), will try to reconnect or re-execute the command.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further parameters added by mRpostman functions or IMAP parameters
-listed in <code><a href='https://www.rdocumentation.org/packages/curl/topics/curl_options'>curl::curl_options</a></code>. Only for advanced users.</p></td>
+      <td><p>Further curl parameters (see <code><a href='https://jeroen.cran.dev/curl/reference/curl_options.html'>curl::curl_options</a></code>) that
+can be used with the IMAP protocol. Only for advanced users.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code>imapconf</code> containing the settings
-    needed to connect to the IMAP server.</p>
-    
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p><a href='https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html'>https://curl.haxx.se/libcurl/c/CURLOPT_BUFFERSIZE.html</a></p>
+    <p>A new `ImapCon` object.</p>
     
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># NOT RUN {</span>
-<span class='co'># Gmail config example:</span>
-<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>mRpostman</span>)
-<span class='no'>imapconf</span> <span class='kw'>&lt;-</span> <span class='fu'>configure_imap</span>(<span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://your.imap.server.com"</span>,
-                           <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"your_username"</span>,
-                           <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>()
-                          )
-<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -217,11 +210,7 @@ listed in <code><a href='https://www.rdocumentation.org/packages/curl/topics/cur
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-
-      <li><a href="#references">References</a></li>
-      
-      <li><a href="#examples">Examples</a></li>
-    </ul>
+          </ul>
 
   </div>
 </div>

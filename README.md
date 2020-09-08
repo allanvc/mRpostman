@@ -22,20 +22,31 @@ IMAP Toolkit for R
 
 ## Overview
 
-**mRpostman** makes extensive use of ‘curl’ and ‘libcurl’ capabilities,
-providing functions for mailboxes and electronic messages manipulation.
-Beyond many other functionalities, it is possible to move, delete,
-search and fetch messages or its parts using specific criteria.
+`mRpostman` provides tools for searching and fetching emails, mailbox
+management, attachment extraction, and several other IMAP
+functionalities. This package makes extensive use of {curl} and
+{libcurl} to implement an easy-to-use IMAP client for R, paving the way
+for R users to perform Data Analysis on email data.
 
-mRpostman website: <https://allanvc.github.io/mRpostman>
+mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 
-## First things first …
+**IMPORTANT**: Substantial changes without backward compatibility were
+implemented between versions 0.3.2 and 0.9.0.0000. Please, check the
+[changelog](https://allanvc.github.io/mRpostman/news/index.html) or the
+vignette [“Migrating code to mRpostman’s R6
+sintaxe”](https://allanvc.github.io/mRpostman/articles/code_migration.html)
+for more information.
+
+## First things first … (plain authentication)
 
 Before using **mRpostman**, it is essential to configure your email
 account. Many mail providers require authorizing **“less secure apps”**
-to access your account from a third part app.
+to access your account from a third part app, using plain
+authentication. If you’re interested in OAuth2.0 authentication, check
+the “IMAP OAuth2.0 authentication with mRpostman” vignette.
 
-See how to do it for Gmail, Yahoo Mail and AOL Mail.
+Let’s see how to configure simple plain authentication for Gmail, Yahoo
+Mail, AOL Mail, and Office 365.
 
 ### Gmail
 
@@ -44,7 +55,7 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 2)  Then, go to
     <https://myaccount.google.com/u/1/lesssecureapps?pageId=none>
 
-<img src="man/figures/gmail1.png">
+![](man/figures/gmail1.png) <!-- <img src="man/figures/gmail1.png"> -->
 
 3)  Set “Allow less secure apps” to **ON**.
 
@@ -54,15 +65,17 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Account Info”.
 
-<img src="man/figures/yahoo1.png">
+![](man/figures/yahoo1.png) <!-- <img src="man/figures/yahoo1.png"> -->
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/yahoo2.png">
+![](man/figures/yahoo2.png) <!-- <img src="man/figures/yahoo2.png"> -->
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
 
-<img src="man/figures/yahoo3.png">
+![](man/figures/yahoo3.png)
+
+<!-- <img src="man/figures/yahoo3.png"> -->
 
 ### AOL Mail
 
@@ -70,15 +83,15 @@ See how to do it for Gmail, Yahoo Mail and AOL Mail.
 
 2)  Click on “Options” and then on “Account Info”.
 
-<img src="man/figures/aol1.png">
+![](man/figures/aol1.png) <!-- <img src="man/figures/aol1.png"> -->
 
 3)  Click on “Account Security” on the left menu.
 
-<img src="man/figures/aol2.png">
+![](man/figures/aol2.png) <!-- <img src="man/figures/aol2.png"> -->
 
 4)  After, set “Allow apps that use less secure sign in” **ON**
 
-<img src="man/figures/aol3.png">
+![](man/figures/aol3.png) <!-- <img src="man/figures/aol3.png"> -->
 
 ### Outlook - Office 365
 
@@ -88,30 +101,52 @@ There is no need to execute any external configuration. The parameter
 
 ## Introduction
 
-The package is divided in 8 groups of functions:
+From version 0.9.0.0000 onward, `mRpostman` is implemented under the OO
+paradigm, based on an R6 class (`ImapCon`), its derived methods and a
+few independent functions with the aim to perform a myriad of IMAP
+commands.
 
-  - **configuration**: `configure_imap()`;
-  - **mailboxes commands**: `list_mailboxes()`, `select_mailbox()`,
-    `examine_mailbox()`, `rename_mailbox();`
-  - **options listing**: `list_server_capabilities()`,`flag_options()`,
-    `section_or_field_options()`, `metadata_options()`;
-  - **search**: `search_before()`, `search_since()`, `search_period()`,
-    `search_on()`, `search_sent_before()`,`search_sent_since()`,
-    `search_sent_period()`, `search_sent_on()`, `search_string()`,
-    `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
-    `search_younger_than()`, `search_older_than()`, `custom_search()`;
-  - **custom search helper functions**:
-      - relational operators functions: `AND()`, `OR()`;
-      - criteria definition functions: `before()`, `since()`, `on()`,
-        `sent_before()`, `sent_since()`, `sent_on()`, `string()`,
-        `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`,
-        `older_than()`;
-  - **fetch**: `fetch_full_msg()`, `fetch_msg_header()`,
-    `fetch_msg_text()`, `fetch_msg_metadata()`;
-  - **attachments**: `list_attachments()`, `get_attachments()`;
-  - **miscellania**: `copy_msg()`, `get_min_id()`, `get_max_id()`,
-    `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`,
-    `replace_flags()`, `move_msg()`.
+The package is divided in 8 groups of operations. Below, we present all
+the available methods/functions:
+
+  - 1.  **configuration**: `configure_imap()`;
+
+  - 2.  **server capabilities**: `list_server_capabilities()`
+
+  - 3.  **mailbox operations**: `list_mail_folders()`,
+        `select_folder()`, `examine_folder()`, `rename_folder()`,
+        `create_folder()`;
+
+  - 4.  **single search**: `search_before()`, `search_since()`,
+        `search_period()`, `search_on()`,
+        `search_sent_before()`,`search_sent_since()`,
+        `search_sent_period()`, `search_sent_on()`, `search_string()`,
+        `search_flag()`, `search_smaller_than()`,
+        `search_larger_than()`, `search_younger_than()`,
+        `search_older_than()`;
+
+  - 5.  **custom search**: `search`
+    
+    <!-- end list -->
+    
+      - **custom search helper functions**:
+          - relational operators functions: `AND()`, `OR()`;
+          - criteria definition functions: `before()`, `since()`,
+            `on()`, `sent_before()`, `sent_since()`, `sent_on()`,
+            `string()`, `flag()`, `smaller_than()`, `larger_than()`,
+            `younger_than()`, `older_than()`;
+
+  - 6.  **fetch**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
+        `fetch_metadata()`, `fetch_attachments_list()`,
+        `fetch_attachments()`;
+
+  - 7.  **attachments**: `list_attachments()`, `get_attachments()`,
+        `fetch_attachments_list()`, `fetch_attachments()`;
+
+  - 8.  **complementary operations**: `copy_msg()`, `move_msg()`,
+        `delete_msg()`, `expunge()`, `esearch_count()`,
+        `esearch_min_id()`, `esearch_max_id()`, `add_flags()`,
+        `remove_flags()`, `replace_flags()`;
 
 ## Installation
 
@@ -126,134 +161,128 @@ remotes::install_github("allanvc/mRpostman")
 
 ## Basic Usage
 
-### 1\) Configuring IMAP and listing mailboxes
+### 1\) Configuring an IMAP connection and listing server’s capabilities
 
 ``` r
 
 library(mRpostman)
 
-# IMAP settings
-# Gmail
-imapconf <- configure_imap(url="imaps://imap.gmail.com",
-                           username="your_user",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# Yahoo Mail
-# imapconf <- configure_imap(url="imaps://imap.mail.yahoo.com/",
-#                            username="your_user",
-#                            password=rstudioapi::askForPassword()
-#                           )
-
-# AOL Mail
-# imapconf <- configure_imap(url="imaps://export.imap.aol.com/",
-#                            username="your_user",
-#                            password=rstudioapi::askForPassword()
-#                           )
-
-# Yandex Mail
-# imapconf <- configure_imap(url="imaps://imap.yandex.com",
-#                            username="your_user",
-#                            password=rstudioapi::askForPassword()
-#                           )
-
 # Outlook - Office 365
-# imapconf <- configure_imap(url="imaps://outlook.office365.com",
-#                            username="your_user",
-#                            password=rstudioapi::askForPassword()
-#                           )
+con <- configure_imap(url="imaps://outlook.office365.com",
+                      username="your_user@company.com",
+                      password=rstudioapi::askForPassword()
+)
+
+# other IMAP providers that were tested: GMail (imaps://imap.gmail.com), 
+#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
+#   Yandex (imaps://imap.yandex.com)
 
 # you can try another IMAP server and see if it works
 
+con$list_server_capabilities()
+```
+
+### 2\) Listing your mail folders and select “INBOX”
+
+``` r
+
 # Listing
-imapconf %>%
-  list_mailboxes()
+con$list_mail_folders()
+
+# Selecting
+con$select_folder(name = "INBOX")
 ```
 
-### 2\) Examining a Mailbox
+### 3\) Searching messages by date, with a flag as additional filter
 
 ``` r
 
-# examine mailbox -- number of existent and recent messages
-imapconf %>%
-  select_mailbox(mbox = "Kansas State University") %>% # mbox names are case sensitive
-  examine_mailbox()
+res1 <- con$search_on(date_char = "02-Jan-2020")
+
+res1
 ```
 
-### 3\) Searching by period using a flag
+### 4\) Customizing a search with multiple criteria
 
 ``` r
 
-# search
-results <- imapconf %>%
-  select_mailbox(mbox = "INBOX") %>%
-  search_period(since_date_char = "17-May-2018",
-                before_date_char = "30-Jun-2019",
-                flag = "ANSWERED")
+# messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field
+res2 <- con$search(OR(
+  string(expr = "@k-state.edu", where = "TO"),
+  string(expr = "@ksu.edu", where = "TO")
+))
 
-results$msg_id
+res2
 ```
 
-### 4\) Searching for a string in the “Text” section of messages
+### 5\) Fetch messages’ text using single-search results
 
 ``` r
 
-# search
-results <- imapconf %>%
-  select_mailbox(mbox = "Kansas State University") %>%
-  search_string(section_or_field = "TEXT", string = "Welcome!")
+res3 <- con$search_string(expr = "Welcome!", where = "SUBJECT") %>%
+  con$fetch_text(write_to_disk = TRUE) # also writes results to disk
 
-results$msg_id
-```
-
-### 5\) Fetch headers after searching
-
-``` r
-
-results <- imapconf %>%
-  select_mailbox(mbox = "Kansas State University") %>%
-  search_string(section_or_field = "TEXT", string = "Welcome!") %$% # exposition pipe, not %>%!!
-  fetch_msg_header(imapconf = imapconf, 
-                   msg_id = msg_id, 
-                   fields = c("DATE", "SUBJECT"))
-
-results
+res3
 ```
 
 ## 6\) Attachments
 
-This will list all the attachments filenames and the Content-Disposition
-type for each fetched message.
+You can list the attachments of one or more messages with:
+
+1)  the `list_attachments()` function:
+
+<!-- end list -->
 
 ``` r
-imapconf %>%
-  select_mailbox(mbox = "INBOX") %>%
-  search_since(date_char = "23-Sep-2019") %$%
-  fetch_full_msg(imapconf, msg_id=msg_id) %>%
-  list_attachments()
+
+con$search_since(date_char = "02-Jan-2020") %>%
+  con$fetch_text() %>% # or with fetch_body()
+  list_attachments() # does not depend on the 'con' object
 ```
 
-This extracts and decode your `base64` text attachments (regular and
-inline) from messages, and save them locally.
+… or more directly with:
+
+2)  `fetch_attachments_list()`
+
+<!-- end list -->
 
 ``` r
-imapconf %>%
-  select_mailbox(mbox = "INBOX") %>%
-  search_since(date_char = "23-Sep-2019") %$%
-  fetch_full_msg(imapconf, msg_id=msg_id) %>%
-  get_attachments()
+
+con$search_since(date_char = "02-Jan-2020") %>%
+  con$fetch_attachments_list()
+```
+
+If you want to download the attachments of one or more messages, there
+are two ways of doing that as well.
+
+1)  Using the `get_attachments()` method:
+
+<!-- end list -->
+
+``` r
+
+con$search_since(date_char = "02-Jan-2020") %>%
+  con$fetch_text() %>% # or with fetch_body()
+  con$get_attachments()
+```
+
+… and more directly with the
+
+2)  `fetch_attachments()` method:
+
+<!-- end list -->
+
+``` r
+
+con$search_since(date_char = "02-Jan-2020") %>%
+  con$fetch_attachments()
 ```
 
 ## Future Improvements
 
-  - better error handling and messages;
-
-  - add further IMAP functionalities;
-
-  - include **SMTP support** for sending emails.
-
-If you want to contribute, specially with the SMTP support, please
-contact the package mantainer.
+  - add further IMAP functionalities.
+  - eliminate the stringr dependency
+  - implement a progress bar in fetch operations
 
 ## License
 
@@ -263,7 +292,7 @@ This package is licensed under the terms of the GPL-3 License.
 
 Crispin, M., *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC
 3501, DOI: 10.17487/RFC3501, March 2003,
-<https://www.rfc-editor.org/info/rfc3501>.
+<https://tools.ietf.org/html/rfc3501>.
 
 Ooms, J. curl: *A Modern and Flexible Web Client for R*. R package
 version 3.3, 2019, <https://CRAN.R-project.org/package=curl>

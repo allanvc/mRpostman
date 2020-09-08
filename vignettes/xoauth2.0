@@ -1,0 +1,91 @@
+---
+title: "IMAP OAuth2.0 authentication with mRpostman"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Migrating code to mRpostman's R6 sintaxe}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+<!-- This document must be rendered in RStudio using the option "knitr with parameters" or rmarkdown::render("MyDocument.Rmd", params = list(password = "my_password")) if we want to see the results-->
+
+<style>
+  .col2 {
+    columns: 2 100px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 100px; /* chrome, safari */
+    -moz-columns: 2 100px;    /* firefox */
+  }
+  <!-- .col3 { -->
+  <!--   columns: 3 100px; -->
+  <!--   -webkit-columns: 3 100px; -->
+  <!--   -moz-columns: 3 100px; -->
+  <!-- } -->
+</style>
+
+## Introduction
+
+More and more mail providers are adopting the OAuth2.0 authentication as they preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is definetely a more secure way of authenticating your identity during the access.
+
+In this vignette, we will describe the process of obtaining, using and refreshing a OAuth2.0 token in order to establish a connection with the GMail IMAP server. This process will very likely be similar in the case of other mail providers, such as AOL, Yahoo, etc.
+
+The steps involved in configurating and obtaining an oauth2.0 access token can be summarized as the following:
+
+* 1) creating a new API project in the Google Account Console
+* 2) creating new credentials access for the project
+* 3) obtaining and saving the credentials
+* 4) using the `httr` package to retrieve...
+
+## Step 1 - Creating a new API project
+
+Using yopur web browser, log into the page: https://console.developers.google.com/apis/. Assuming tht you don't have any pre-existent project, you should see this page:
+
+![](vignettes/figures/xoauth/step1_1.png)
+
+Then, click on "Create New Project"
+
+On the next screen, type a name for your project. Here, we go with "mRpostman":
+
+![]()
+
+After a few seconds, the project is created.
+
+
+## Step 2 - Creating new credentials
+
+Once the project is created, we move to the credentials part.
+
+Click on "CREDENTIALS" in the menu on the left:
+
+![]()
+
+You should see the following screen:
+
+![]()
+
+On the menu on the top, click on "+ CREATE CREDENTIALS", then on "OAuth client ID".
+
+![]()
+
+You should see the following screen. Click on "CONFIGURE CONSENT SCREEN".
+
+![]()
+
+Choose "External", then click on "CREATE"
+
+![]()
+
+In the following page, inform an app name (it can be mRpostman again):
+
+![]()
+
+You don't need to fill more fields besides the app name. Then click on "SAVE" on the bottom of the page..
+
+
+
+
+The st
+
+
+

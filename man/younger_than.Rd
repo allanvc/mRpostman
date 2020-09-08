@@ -2,59 +2,51 @@
 % Please edit documentation in R/younger-than.R
 \name{younger_than}
 \alias{younger_than}
-\title{Criteria Helper Functions for Custom Search}
+\title{Criterion constructor function to be combined in a custom search statement}
 \usage{
 younger_than(seconds, negate = FALSE)
 }
 \arguments{
 \item{seconds}{An integer specifying the number of seconds to be used as
-search criterion.}
+the search criterion.}
 
-\item{negate}{If \code{TRUE}, negates the search and seeks for
-"NOT search_criterion". Default is \code{FALSE}.}
-}
-\value{
-A search string to be used as a \code{custom_request} parameter in
-    \link{custom_search} function.
+\item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
+CRITERIA". Default is \code{FALSE}.}
 }
 \description{
-Criteria helper functions to be combined inside a operator helper
-    function as a custom request in \link{custom_search}.
+Criterion constructor function to be combined in a custom search statement
+}
+\note{
+To be able to use this functionality, the server must support the
+  \code{WITHIN} capability.
 }
 \examples{
-
 \dontrun{
-
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# search
-result <- imapconf \%>\%
-    select_mailbox(mbox = "INBOX") \%>\%
-    custom_search(custom_request =
-                 OR(smaller_than(
-                       size = 512000),
-                    younger_than(
-                       seconds = 3600)
-                   )
-                 )
-# searches for messages that are Smaller Than 512 KB OR Younger Than 3600
-# seconds (or one hour).
-
+# select folder & search
+con$select_folder(name = "INBOX")
+# search for messages containing the string "XYZ@k-state.edu" in the
+#   "FROM" field AND those that are YOUNGER than 3600 seconds (1 hour).
+res <- con$search(request = AND(string(expr = "XYZ@k-state.edu",
+                                      where = "FROM"),
+                               younger_than(seconds = 3600)))
 }
 
 }
 \seealso{
-Other customsearch helper functions: \code{\link{AND}},
-  \code{\link{OR}}, \code{\link{before}},
-  \code{\link{flag}}, \code{\link{larger_than}},
-  \code{\link{older_than}}, \code{\link{on}},
-  \code{\link{sent_before}}, \code{\link{sent_on}},
-  \code{\link{sent_since}}, \code{\link{since}},
-  \code{\link{smaller_than}}, \code{\link{string}}
+Other custom search: 
+\code{\link{AND}()},
+\code{\link{ImapCon}},
+\code{\link{OR}()},
+\code{\link{before}()},
+\code{\link{flag}()},
+\code{\link{larger_than}()},
+\code{\link{older_than}()},
+\code{\link{on}()},
+\code{\link{sent_before}()},
+\code{\link{sent_on}()},
+\code{\link{sent_since}()},
+\code{\link{since}()},
+\code{\link{smaller_than}()},
+\code{\link{string}()}
 }
-\concept{customsearch helper functions}
+\concept{custom search}

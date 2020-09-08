@@ -1,0 +1,827 @@
+---
+title: "Migrating code to mRpostman's R6 sintaxe"
+output: 
+  rmarkdown::html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{Migrating code to mRpostman's R6 sintaxe}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+<style>
+  .col2 {
+    columns: 2 100px;         /* number of columns and width in pixels*/
+    -webkit-columns: 2 100px; /* chrome, safari */
+    -moz-columns: 2 100px;    /* firefox */
+  }
+  <!-- .col3 { -->
+  <!--   columns: 3 100px; -->
+  <!--   -webkit-columns: 3 100px; -->
+  <!--   -moz-columns: 3 100px; -->
+  <!-- } -->
+</style>
+
+## Introduction
+
+This vignette aims to provide an easy source of code migration examples so that old `mRpostman` users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.
+
+This is the summary of the main modifications in the package between versions `0.3.1` and `0.9.0.0`:
+
+* All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
+    
+* The way the connection token is passed between the functions has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests inside the methods that triggers IMAP requests. As a consequence, the password, username and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
+    
+* argument "by" used in search and fetch functions was replaced by `use_uid`, which is a logical with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
+    
+* all functions that returned `invisible(0L)` now return `invisible(TRUE)`
+
+* Users that prefer a tidy approach, only need to apply the pipe `%>%` operator between search and fetch methods (or other complementary operations), in which messages' ids are carried from one level to another. The exposition pipe `%$%` is not necessary anymore.
+
+
+In the following sections, we present some code migration examples between the old and the new version of `mRpostman`.
+
+
+## 1) Configurig the IMAP connection
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+
+library(mRpostman)
+
+# Outlook - Office 365
+imapconf <- configure_imap(url="imaps://outlook.office365.com",
+                           username="your_user@company.com",
+                           password=rstudioapi::askForPassword())
+
+# other IMAP providers that were tested: GMail (imaps://imap.gmail.com), 
+#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
+#   Yandex (imaps://imap.yandex.com)
+
+```
+  
+<br>
+  
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+library(mRpostman)
+
+# Outlook - Office 365
+con <- configure_imap(url="imaps://outlook.office365.com",
+                      username="your_user@company.com",
+                      password=rstudioapi::askForPassword())
+
+# alternative
+con <- ImapCon$new(url="imaps://outlook.office365.com",
+                   username="your_user@company.com",
+                   password=rstudioapi::askForPassword())
+
+```
+
+</div>
+
+Although the object that is created is different (now we have an R6 `ImapCon` class), the code to create a connection object is pretty much the same, but with an alternative that uses the "initialize" method of the R6 class.
+
+Another useful options are: `timeout_ms`, `verbose = TRUE`, and `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, depending on the libcurl version. See `curl::curl_options()`. In this new version there is an important curl parameter exposed, `xoauth2_bearer`, which enables OAuth2.0 authentication. Fore more details, check the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
+
+
+## 2) Listing Server Capabilities
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+imapconf %>%
+  list_server_capabilities()
+```
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+con$list_server_capabilities()
+```
+
+</div>
+
+
+## 3) Mailbox Commands
+
+### 3.1) Listing mail folders
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+# Listing
+imapconf %>%
+  list_mailboxes()
+```
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+# Listing
+con$list_folders()
+```
+</div>
+
+### 3.2) Folder selection
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval = FALSE}
+imapconf %>%
+  select_mailbox(mbox = "INBOX") # only INBOX is case sensitive
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "INBOX")
+```
+</div>
+
+### 3.3) Examining a mail folder
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  examine_mailbox()
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "K-State")
+
+con$examine_folder()
+```
+
+</div>
+
+In the new format, the previous selected folder is kept during the session unless you execute a new selection.
+
+### 3.4) Renaming a mail folder
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+imapconf %>%
+  select_mailbox(mbox = "CRAN messages") %>%
+  rename_mailbox(new_name = "CRAN messages2") %>%
+  list_mailboxes() # and list again to check
+
+```
+
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "CRAN messages")
+
+con$rename_folder(new_name = "CRAN messages2")
+
+con$list_mail_folders() # and list again to check
+```
+
+</div>
+
+
+## 4) Single Search
+
+All search functions now return only the message's ids.
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+result <- imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  search_before(date_char = "02-May-2019", 
+                by = "UID", 
+                flag = "UNANSWERED")
+
+result$msg_id
+
+```
+
+<br>
+<br>
+<br>
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "K-State")
+
+result <- con$search_before(date_char = "02-May-2019",
+                            use_uid = TRUE,
+                            flag = "UNANSWERED")
+
+result
+
+```
+</div>
+
+You can also **NEGATE** the statement to search for messages **NOT BEFORE a date**:
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  search_before(date_char = "02-May-2019", 
+                negate = TRUE, 
+                by = "UID", 
+                flag = "UNANSWERED",
+                esearch = TRUE)
+
+results$msg_id
+
+```
+
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "K-State")
+
+result <- con$search_before(date_char = "02-May-2019",
+                            use_uid = TRUE,
+                            flag = "UNANSWERED",
+                            negate = TRUE)
+
+result
+
+```
+</div>
+
+This pattern is applied to all SEARCH functions.
+
+Special attention should be paid to the `search_string` and `search_flag` methods due to changes in the arguments names and order.
+
+#### Search by string - example 1
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_string(section_or_field = "FROM", string = "hadley@rstudio.com",
+                negate = TRUE) # not FROM "hadley@rstudio.com"
+
+results$msg_id
+
+```
+
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+con$select_folder(name = "INBOX")
+
+result <- con$search_string(expr = "hadley@rstudio.com",
+                            where = "FROM",
+                            negate = TRUE) # not FROM "hadley@rstudio.com"
+
+result
+
+```
+</div>
+
+#### Search by string - example 2
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  search_string(section_or_field = "TEXT", string = "Dear Allan")
+
+```
+
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+con$select_folder(name = "K-State")
+
+result <- con$search_string(expr = "Dear Allan", where = "TEXT")
+
+result
+
+```
+
+#### Search by flag
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval = FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_flag(flag = "RECENT", by = "UID")
+
+```
+
+<br>
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+con$select_folder(name = "INBOX")
+
+result <- con$search_flag(expr = "RECENT", use_uid = TRUE)
+
+result
+
+```
+</div>
+
+Now you can check which flags are available in a mail folder with the `list_flags()` method. In addition, you can pass multiple flags as search criterion.
+
+
+## 5) Custom Search
+
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval=FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  custom_search(custom_request = 
+                 AND(
+                   string(section_or_field = "FROM", string = "@toronto"),
+                   before(date_char = "12-Apr-2019")
+                   )
+               )
+
+results$msg_id
+
+```
+
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+result <- con$search(custom_request = 
+                       AND(
+                         string(expr = "@toronto", where = "FROM"),
+                         before(date_char = "12-Apr-2019")
+                         )
+                     )
+result
+
+```
+
+</div>
+
+
+## 6) Fetch
+
+### 6.1) Fetch body
+
+<div class="col2">
+Previous code:
+```{r, message = FALSE, eval = FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  search_before(date_char = "10-Mar-2019", by = "UID") %$% #exposition pipe operator
+  fetch_full_msg(imapconf = imapconf, msg_id = msg_id,
+                 by="UID", write_to_disk = TRUE, keep_in_mem = TRUE,
+                 partial = "0.789")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+con$select_folder(name = "K-State")
+
+results <- con$search_before(date_char = "10-Mar-2019", use_uid = TRUE) %>% #regular pipe
+  con$fetch_body(use_uid = TRUE, write_to_disk = TRUE, 
+                 keep_in_mem = TRUE, partial = "0.789")
+
+```
+
+</div>
+
+
+### 6.2) Fetch header
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval=FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "K-State") %>%
+  search_since(date_char = "15-Aug-2019", by = "UID") %$% #exposition pipe operator
+  fetch_msg_header(imapconf = imapconf, 
+                   msg_id = msg_id, 
+                   fields = c("DATE", "SUBJECT"),
+                   by = "UID")
+
+```
+
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "K-State")
+
+results <- con$search_since(date_char = "15-Aug-2019", use_uid = TRUE) %>% #regular pipe
+  con$fetch_header(use_uid = TRUE, fields = c("DATE", "SUBJECT"))
+
+```
+
+</div>
+
+### 6.3) Fetch text
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "17-Aug-2019", by = "UID") %$% #exposition pipe operator
+  fetch_msg_text(imapconf = imapconf, msg_id = msg_id, by = "UID", try_b64decode = TRUE)
+
+```
+
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+results <- con$search_since(date_char = "17-Aug-2019", use_uid = TRUE) %>% #regular pipe
+  con$fetch_text(use_uid = TRUE, base64_decode = TRUE))
+
+```
+
+</div>
+
+### 6.4) Fetch metadata
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_on(date_char = "10-May-2019", by = "UID") %$% #exposition pipe operator
+  fetch_msg_metadata(imapconf, msg_id = msg_id, by = "UID",
+                     metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
+
+```
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+results <- con$search_since(date_char = "10-May-2019", use_uid = TRUE) %>% #regular pipe
+  con$fetch_text(use_uid = TRUE, metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
+
+```
+
+</div>
+
+
+You can check metadata options with `metadata_options()`.
+
+
+## 7) Attachments
+
+### 7.1) Attachments listing
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_on(date_char = "23-Sep-2019") %$%
+  fetch_full_msg(imapconf, msg_id=msg_id) %>%
+  list_attachments()
+```
+
+<br>
+<br>
+
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
+  con$fetch_body() %>% # or fetch_text()
+  list_attachments()
+
+```
+
+</div>
+
+Notice that `list_attachment()` is an independent function. It is not a method of the `ImapCon` class that depends on the connection object.
+
+The new version brings an alternative fetching method (`fetch_atachments_list()`) for listing attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
+  con$fetch_attachments_list()
+
+```
+
+
+### 7.2) Attachments Extraction
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_on(date_char = "23-Sep-2019") %$%
+  fetch_full_msg(imapconf, msg_id=msg_id) %>%
+  get_attachments()
+
+```
+
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval=FALSE}
+con$select_folder(name = "INBOX")
+
+results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
+  con$fetch_body() %>% # or fetch_text()
+  get_attachments()
+
+```
+
+</div>
+
+The new version brings an alternative fetching method (`fetch_atachments()`) for downloading attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+
+```{r, message = FALSE, eval=FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
+  con$fetch_attachments()
+
+```
+
+
+
+## 8) Complementary Operations
+
+### 8.1) Copy message(s)
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "CRAN messages2") %>%
+  search_since(date_char = "10-May-2019") %$% #exposition pipe operator
+  copy_msg(imapconf = imapconf, msg_id = msg_id, to_mbox = "INBOX")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "CRAN messages2")
+
+results <- con$search_since(date_char = "10-May-2019") %>%
+  con$copy_msg(to_folder = "INBOX", reselect = FALSE)
+
+```
+
+</div>
+
+### 8.2) Move message(s) (depends on MOVE capability)
+
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "[Gmail]/Sent") %>%
+  search_before(date_char = "10-may-2012") %$% #exposition pipe operator
+  move_msg(imapconf = imapconf, msg_id = msg_id, to_mbox = "CRAN messages2")
+
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "[Gmail]/Sent")
+
+con$search_before(date_char = "10-May-2012") %>%
+  con$move_msg(to_folder = "CRAN messages2", reselect = FALSE)
+
+```
+
+</div>
+
+
+
+### 8.3) Search the minimum message ID with specific flag(s) (depends on ESEARCH capability)
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "[GMail]/Trash") %>%
+  get_min_id(flag = "UNSEEN")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "[GMail]/Trash")
+
+con$esearch_min_id(flag = "UNSEEN")
+
+```
+
+</div>
+
+
+### 8.4) Search the maximum message ID with specific flag(s) (depends on ESEARCH capability)
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+results <- imapconf %>%
+  select_mailbox(mbox = "[Gmail]/Trash") %>%
+  get_max_id(flag = "UNSEEN")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "[GMail]/Trash")
+
+con$esearch_max_id(flag = "UNSEEN")
+
+```
+
+</div>
+
+### 8.5) Delete message(s)
+
+<div class="col2">
+Previous code:
+
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  delete_msg(msg_id = 66128)
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$delete_msg(msg_id = 66128)
+
+```
+
+</div>
+
+### 8.6) Expunge
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "[Gmail]/Trash") %>%
+  delete_msg(msg_id = 71772, by = "UID") %$%
+  expunge(imapconf = imapconf, specific_UID = msg_id)
+
+```
+
+<br>
+<br>
+<br>
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "[GMail]/Trash")
+
+con$delete_msg(msg_id = 71772, use_uid = TRUE) %>%
+  con$expunge() # expunge the specific UID
+
+# or, if the user wants to expunge the entire mail folder:
+con$expunge()
+
+```
+
+</div>
+
+### 8.7) Add/Remove/Replace flags
+
+#### 8.7.1) Add flags
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "18-Aug-2020", by = "UID") %$% #exposition pipe operator
+  add_flags(imapconf = imapconf, msg_id = msg_id, flags_to_set = "\\Seen")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$search_since(date_char = "18-Aug-2020", use_uid = TRUE) %>%
+  con$add_flags(use_uid = TRUE, flags_to_set = "\\Seen") # system flags need the "\\" prefix
+
+```
+
+</div>
+
+#### 8.7.2) Remove flags
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "18-Aug-2020", by = "UID") %$% #exposition pipe operator
+  remove_flags(imapconf = imapconf, msg_id = msg_id, flags_to_unset = "\\Seen")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$search_since(date_char = "18-Aug-2020", use_uid = TRUE) %>%
+  con$remove_flags(use_uid = TRUE, flags_to_unset = "\\Seen") # system flags need the "\\" prefix
+
+```
+
+</div>
+
+
+#### 8.7.3) Replace flags
+
+<div class="col2">
+Previous code:
+
+```{r, message = FALSE, eval = FALSE}
+
+results <- imapconf %>%
+  select_mailbox(mbox = "INBOX") %>%
+  search_since(date_char = "18-Aug-2020", by = "UID") %$% #exposition pipe operator
+  replace_flags(imapconf = imapconf, msg_id = msg_id, flags_to_set = "\\Seen")
+
+```
+
+New format:
+```{r, message = FALSE, eval = FALSE}
+
+con$select_folder(name = "INBOX")
+
+con$search_since(date_char = "18-Aug-2020", use_uid = TRUE) %>%
+  con$replace_flags(use_uid = TRUE, flags_to_set = "\\Seen") # system flags need the "\\" prefix
+
+```
+
+</div>
+
+

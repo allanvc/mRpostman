@@ -2,44 +2,42 @@
 % Please edit documentation in R/list-attachments.R
 \name{list_attachments}
 \alias{list_attachments}
-\title{List Attachments}
+\title{List attachments and content-disposition types}
 \usage{
 list_attachments(msg_list)
 }
 \arguments{
-\item{msg_list}{A \code{list} containing the full messages fetched from
-the server after using \code{\link{fetch_full_msg}}.}
+\item{msg_list}{A \code{list} containing the messages (body or text) fetched
+from the server.}
 }
 \value{
 A \code{list} of \code{data.frames} containing the filenames and its
-    Content-Disposition types for each fetched message.
+  \code{Content-Disposition} types for each fetched message.
 }
 \description{
-List attachments filenames and Content-Disposition types after
-    fetching full messages.
+List attachments and content-disposition types
+}
+\note{
+Please, note that this is an independent function and not an R6 method
+  that depends on the connection object. Therefore, it should be called alone
+  without the ImapCon object.
 }
 \examples{
-
 \dontrun{
+con$select_folder(name = "INBOX")
+# do a search followed by a fetch operation, then extract the attachments' list
+out < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+  con$fetch_body()
+att_list <- list_attachments(msg_list = out)
 
-# configure IMAP
-library(mRpostman)
-imapconf <- configure_imap(url="imaps://your.imap.server.com",
-                           username="your_username",
-                           password=rstudioapi::askForPassword()
-                          )
-
-# listing attachments
-attachments <- imapconf \%>\%
-    select_mailbox(mbox = "TAM") \%>\%
-    search_before(date_char = "10-may-2012", by = "UID") \%$\% #exposition pipe - two argg
-    fetch_full_msg(imapconf = imapconf, msg_id = msg_id) \%>\%
-    list_attachments()
-
+# or
+att_list < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+  con$fetch_body() \%>\%
+  list_attachments()
 }
-
 }
 \seealso{
-Other attachments: \code{\link{get_attachments}}
+Other attachments: 
+\code{\link{ImapCon}}
 }
 \concept{attachments}
