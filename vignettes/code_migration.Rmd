@@ -30,9 +30,9 @@ This is the summary of the main modifications in the package between versions `0
 
 * All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
     
-* The way the connection token is passed between the functions has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests inside the methods that triggers IMAP requests. As a consequence, the password, username and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
+* The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests from the methods that triggers IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
     
-* argument "by" used in search and fetch functions was replaced by `use_uid`, which is a logical with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
+* The "by" argument used in search and fetch functions was replaced by `use_uid`, which is a logical now with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
     
 * all functions that returned `invisible(0L)` now return `invisible(TRUE)`
 
@@ -84,7 +84,7 @@ con <- ImapCon$new(url="imaps://outlook.office365.com",
 
 Although the object that is created is different (now we have an R6 `ImapCon` class), the code to create a connection object is pretty much the same, but with an alternative that uses the "initialize" method of the R6 class.
 
-Another useful options are: `timeout_ms`, `verbose = TRUE`, and `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, depending on the libcurl version. See `curl::curl_options()`. In this new version there is an important curl parameter exposed, `xoauth2_bearer`, which enables OAuth2.0 authentication. Fore more details, check the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
+Another useful options are: `timeout_ms`, `verbose = TRUE`, and `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, depending on the libcurl version installed on the user's machine. See `curl::curl_options()`. In this new version there is an important curl parameter exposed, `xoauth2_bearer`, which enables OAuth2.0 authentication. Fore more details, check the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
 
 
 ## 2) Listing Server Capabilities
@@ -203,6 +203,7 @@ result$msg_id
 
 ```
 
+<br>
 <br>
 <br>
 <br>
@@ -410,7 +411,6 @@ results <- con$search_before(date_char = "10-Mar-2019", use_uid = TRUE) %>% #reg
 
 <div class="col2">
 Previous code:
-
 ```{r, message = FALSE, eval=FALSE}
 results <- imapconf %>%
   select_mailbox(mbox = "K-State") %>%
@@ -421,7 +421,6 @@ results <- imapconf %>%
                    by = "UID")
 
 ```
-
 
 New format:
 ```{r, message = FALSE, eval=FALSE}
