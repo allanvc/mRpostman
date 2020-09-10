@@ -1,10 +1,10 @@
 ---
-title: "Using IMAP OAuth2.0 authentication in mRpostman"
+title: "IMAP OAuth2.0 authentication in mRpostman"
 output: 
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Using IMAP OAuth2.0 authentication in mRpostman}
+  %\VignetteIndexEntry{IMAP OAuth2.0 authentication in mRpostman}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -24,11 +24,11 @@ vignette: >
 
 ## Introduction{#intro}
 
-More and more mail providers are adopting the OAuth2.0 authentication as they preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is definitely a more secure way of authenticating your identity during an IMAP session.
+More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.
 
-In this vignette, we will describe the process of obtaining, using and refreshing an OAuth2.0 token in order to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.
+In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.
 
-__IMPORTANT__: Currently, the only drawback with this approach may be your libcurl version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. From version 7.65.0 (released on May 22, 2019) onward you should be fine. Therefore, we recommend checking to wich libcurl version, the curl R package in linked by executing:
+__IMPORTANT__: Currently, the only drawback with this approach may be your libcurl version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:
 
 ```{r, message = FALSE}
 curl::curl_version()
@@ -97,7 +97,7 @@ Scroll down the page and click "CREATE".
 
 ## Step 3 - Saving the credentials
 
-In the following page, you have your key and client information.
+On the following page, you have your key and client information.
 
 ![](./figures/xoauth/step2_x3x.png){width=680px}
 
@@ -109,11 +109,11 @@ secret = "vsV[...]6m7"
 key = "85169[...]9pk.apps.googleusercontent.com"
 ```
 
-In this same script we use the `httr` package to configure and obtain our token.
+In this same script, we use the `httr` package to configure and obtain our token.
 
 ## Step 4 - Using the `httr` package to retrieve the token
 
-Basically, we need an endpoint, an app configuration, and an scope, which is circumscribed to Gmail. The `httr` have some pre-set endpoints for Google, Yahoo, and other APIs. So, it is really straightforward to define one with `httr`.
+Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The `httr` package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with `httr`.
 
 ```{r, message = FALSE, eval=FALSE}
 endpoint <- httr::oauth_endpoints("google")
@@ -133,7 +133,7 @@ As it is the first time you are trying to access your account using the OAuth2.0
 
 ![](./figures/xoauth/step2_x4.png){width=550px}
 
-After, you will be redirect to a webpage, where you are going to make some confirmations about your identity:
+After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:
 
 <div class="col2">
 

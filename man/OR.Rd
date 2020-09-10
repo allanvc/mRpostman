@@ -2,7 +2,7 @@
 % Please edit documentation in R/OR.R
 \name{OR}
 \alias{OR}
-\title{Relational operator function to construct a custom search statement}
+\title{Relational-operator-function to construct a custom search statement}
 \usage{
 OR(..., negate = FALSE)
 }
@@ -17,7 +17,7 @@ A search string to be used as a \code{request} parameter in
  \code{ImapCon$search()} function.
 }
 \description{
-Relational operator function to construct a custom search statement
+Relational-operator-function to construct a custom search statement
 }
 \examples{
 \dontrun{

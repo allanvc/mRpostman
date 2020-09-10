@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Migrating code to mRpostman’s R6 sintaxe • mRpostman</title>
+<title>Migrating old code to the new mRpostman’s syntax • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Migrating code to mRpostman’s R6 sintaxe">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Migrating old code to the new mRpostman’s syntax">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -63,10 +63,10 @@
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
     <li>
-      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
     </li>
     <li>
-      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -86,7 +86,7 @@
       </header><script src="code_migration_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Migrating code to mRpostman’s R6 sintaxe</h1>
+      <h1>Migrating old code to the new mRpostman’s syntax</h1>
             
       
       
@@ -111,20 +111,20 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>This vignette aims to provide an easy source of code migration examples so that old <code>mRpostman</code> users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.</p>
+<p>This vignette aims to provide an easy source of code migration examples so old <code>mRpostman</code> users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.</p>
 <p>This is the summary of the main modifications in the package between versions <code>0.3.1</code> and <code>0.9.0.0</code>:</p>
 <ul>
 <li><p>All main functions, except <code>list_attachments</code> and the custom-search helper functions, now are methods of the R6 class <code>ImapConf</code>;</p></li>
-<li><p>The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and modified with custom requests from the methods that triggers IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
-<li><p>The “by” argument used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical now with default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
+<li><p>The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and modified with custom requests from the methods that trigger IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
+<li><p>The “by” argument used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical now with the default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
 <li><p>all functions that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code></p></li>
 <li><p>Users that prefer a tidy approach, only need to apply the pipe <code>%&gt;%</code> operator between search and fetch methods (or other complementary operations), in which messages’ ids are carried from one level to another. The exposition pipe <code>%$%</code> is not necessary anymore.</p></li>
 </ul>
 <p>In the following sections, we present some code migration examples between the old and the new version of <code>mRpostman</code>.</p>
 </div>
-<div id="configurig-the-imap-connection" class="section level2">
+<div id="configuring-the-imap-connection" class="section level2">
 <h2 class="hasAnchor">
-<a href="#configurig-the-imap-connection" class="anchor"></a>1) Configurig the IMAP connection</h2>
+<a href="#configuring-the-imap-connection" class="anchor"></a>1) Configuring the IMAP connection</h2>
 <div class="col2">
 <p>Previous code:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</span>
@@ -134,7 +134,7 @@
 <span id="cb1-5"><a href="#cb1-5"></a>                           <span class="dt">username=</span><span class="st">"your_user@company.com"</span>,</span>
 <span id="cb1-6"><a href="#cb1-6"></a>                           <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>())</span>
 <span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># other IMAP providers that were tested: GMail (imaps://imap.gmail.com), </span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), </span></span>
 <span id="cb1-9"><a href="#cb1-9"></a><span class="co">#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),</span></span>
 <span id="cb1-10"><a href="#cb1-10"></a><span class="co">#   Yandex (imaps://imap.yandex.com)</span></span></code></pre></div>
 <p><br></p>
@@ -152,7 +152,7 @@
 <span id="cb2-11"><a href="#cb2-11"></a>                   <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>())</span></code></pre></div>
 </div>
 <p>Although the object that is created is different (now we have an R6 <code>ImapCon</code> class), the code to create a connection object is pretty much the same, but with an alternative that uses the “initialize” method of the R6 class.</p>
-<p>Another useful options are: <code>timeout_ms</code>, <code>verbose = TRUE</code>, and <code>buffersize</code>. Further ‘curl’ options related to IMAP functionalities can be passed to <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, depending on the libcurl version installed on the user’s machine. See <code><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl::curl_options()</a></code>. In this new version there is an important curl parameter exposed, <code>xoauth2_bearer</code>, which enables OAuth2.0 authentication. Fore more details, check the <em>“Using IMAP OAuth2.0 authentication in mRpostman”</em> vignette.</p>
+<p>Other useful options are <code>timeout_ms</code>, <code>verbose = TRUE</code>, and <code>buffersize</code>. Further ‘curl’ options related to IMAP functionalities can be passed to <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, depending on the libcurl version installed on the user’s machine. See <code><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl::curl_options()</a></code>. In this new version, there is an important curl parameter exposed, <code>xoauth2_bearer</code>, which enables OAuth2.0 authentication. For more details, check the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p>
 </div>
 <div id="listing-server-capabilities" class="section level2">
 <h2 class="hasAnchor">
@@ -205,7 +205,7 @@
 <span id="cb10-2"><a href="#cb10-2"></a></span>
 <span id="cb10-3"><a href="#cb10-3"></a>con<span class="op">$</span><span class="kw">examine_folder</span>()</span></code></pre></div>
 </div>
-<p>In the new format, the previous selected folder is kept during the session unless you execute a new selection.</p>
+<p>In the new format, the previously selected folder is kept during the session unless you execute a new selection.</p>
 </div>
 <div id="renaming-a-mail-folder" class="section level3">
 <h3 class="hasAnchor">
@@ -271,7 +271,7 @@
 <span id="cb16-8"><a href="#cb16-8"></a>result</span></code></pre></div>
 </div>
 <p>This pattern is applied to all SEARCH functions.</p>
-<p>Special attention should be paid to the <code>search_string</code> and <code>search_flag</code> methods due to changes in the arguments names and order.</p>
+<p>Special attention should be paid to the <code>search_string</code> and <code>search_flag</code> methods due to changes in the names and order of the arguments.</p>
 <div id="search-by-string---example-1" class="section level4">
 <h4 class="hasAnchor">
 <a href="#search-by-string---example-1" class="anchor"></a>Search by string - example 1</h4>
@@ -326,7 +326,7 @@
 <span id="cb22-4"><a href="#cb22-4"></a></span>
 <span id="cb22-5"><a href="#cb22-5"></a>result</span></code></pre></div>
 </div>
-<p>Now you can check which flags are available in a mail folder with the <code>list_flags()</code> method. In addition, you can pass multiple flags as search criterion.</p>
+<p>Now you can check which flags are available in a mail folder with the <code>list_flags()</code> method. Also, you can pass multiple flags as the search criterion.</p>
 </div>
 </div>
 <div id="custom-search" class="section level2">
@@ -643,7 +643,7 @@
 <a href="#tocnav" class="anchor"></a>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
 <li><a href="#introduction">Introduction</a></li>
-      <li><a href="#configurig-the-imap-connection">1) Configurig the IMAP connection</a></li>
+      <li><a href="#configuring-the-imap-connection">1) Configuring the IMAP connection</a></li>
       <li><a href="#listing-server-capabilities">2) Listing Server Capabilities</a></li>
       <li><a href="#mailbox-commands">3) Mailbox Commands</a></li>
       <li><a href="#single-search">4) Single Search</a></li>

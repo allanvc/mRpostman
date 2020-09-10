@@ -63,10 +63,10 @@
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
     <li>
-      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
     </li>
     <li>
-      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -99,9 +99,13 @@
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
-<p><strong>mRpostman</strong> makes extensive use of ‘curl’ and ‘libcurl’ capabilities, providing tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities.</p>
+<p><code>mRpostman</code> provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for R users to perform data analysis on email data.</p>
 <p>In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.</p>
-<p><strong>IMPORTANT</strong>: In version <code>0.9.0.0</code>, <code>mRpostman</code> went trough thorough changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.2</code>. A detailed vignette on how to migrate your mRpostman’s deprecated code to the new one is availabe at: <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html">“Migrating code to mRpostman’s R6 sintaxe”</a> for more information.</p>
+<p><strong>IMPORTANT</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went trough thorough changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.2</code>. A detailed vignette on how to migrate your mRpostman’s deprecated code to the new syntax is available at <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html">“Migrating old code to the new mRpostman’s syntax”</a> for more information.</p></li>
+<li><p>Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl’s version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl &gt;= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html">“Using IMAP OAuth2.0 authentication in mRpostman”</a></p></li>
+</ol>
 </div>
 <div id="authentication" class="section level2">
 <h2 class="hasAnchor">
@@ -110,7 +114,7 @@
 <div id="allowing-less-secure-apps-access" class="section level3">
 <h3 class="hasAnchor">
 <a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing Less Secure Apps Access</h3>
-<p>When using plain authentication, most of mail providers will require the user to enable the <strong>less secure apps</strong> access. Once it is done, you will be able to access you mailbox using a “third part app” like <code>mRpostman</code>.</p>
+<p>When using plain authentication, most of the mail providers will require the user to enable <strong>less secure apps</strong> access. Once it is done, you will be able to access your mailbox using a “third party app” like <code>mRpostman</code>.</p>
 <p>See the <strong>README.md</strong> for more details on how to allow less secure apps access in some of the most known mail providers.</p>
 <p>If you are using Outlook - Office 365, there’s no need to make any external configuration.</p>
 </div>
@@ -146,7 +150,7 @@
 <div id="how-do-i-start-connection-configuration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-do-i-start-connection-configuration" class="anchor"></a>1) How do I start? (Connection configuration)</h2>
-<p>After enabling (if needed) “Non secure apps access” in your Mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:</p>
+<p>After enabling (if needed) “less secure apps access” in your Mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</span>
 <span id="cb1-2"><a href="#cb1-2"></a></span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="co"># IMAP settings</span></span>
@@ -182,14 +186,14 @@
 <span id="cb1-33"><a href="#cb1-33"></a></span>
 <span id="cb1-34"><a href="#cb1-34"></a><span class="co"># you can try any other Mail provider</span></span></code></pre></div>
 <p>Other useful options are: <code>timeout_ms</code>, <code>verbose = TRUE</code>, <code>buffersize</code>. Further ‘curl’ options related to IMAP functionalities can be passed to <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, but you probably won’t need it. See <code><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl::curl_options()</a></code>.</p>
-<p>Since version <code>0.9.0.0</code>, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the <code>reset_*()</code> methods. This prevents user from having to call <code><a href="../reference/configure_imap.html">configure_imap()</a></code> multiple times during a session or in an script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the <code>timeout_ms</code> and set <code>verbose = FALSE</code>.</p>
+<p>Since version <code>0.9.0.0</code>, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the <code>reset_*()</code> methods. This prevents users from having to call <code><a href="../reference/configure_imap.html">configure_imap()</a></code> multiple times during a session or in a script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the <code>timeout_ms</code> and set <code>verbose = FALSE</code>.</p>
 <p>The <code>con</code> object that we created in the example above has the <code>ImapCon</code> R6 class. Now, almost 99% of the other IMAP commands to be performed on the server will be called following the structure: <code>con$method()</code>. The exceptions are the <code><a href="../reference/list_attachments.html">list_attachments()</a></code> function and the helper functions of the custom-search group.</p>
-<p>As you will see, the R6 framework combined with <code>curl</code> will make this package works such a session based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together, provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.</p>
+<p>As you will see, the R6 framework combined with <code>curl</code> will make this package works such a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.</p>
 </div>
 <div id="server-capabilities" class="section level2">
 <h2 class="hasAnchor">
 <a href="#server-capabilities" class="anchor"></a>2) Server capabilities</h2>
-<p>Once the connection is configured, it is important to know which capabilities your IMAP provider offers to users. This impacts on which type of operations you are allowed to perform. For example, if your server has the <code>WITHIN</code> extension you can use the WITHIN search methods <code>search_younger_than()</code> and <code>search_older_than()</code>; if the server has the <code>ESEARCH</code> capability, besides being allowed to use the <code>esearch_*()</code> methods, you can optimize all your search functions with the <code>esearch = TRUE</code> parameter; if you see the <code>MOVE</code> capability, then you are able to use the <code>move_msg()</code> method. Therefore, in order to know all your server capabilities, you can use <code>list_server_capabliltites</code>.</p>
+<p>Once the connection is configured, it is important to know which capabilities your IMAP provider offers to users. This impacts on which type of operations you are allowed to perform. For example, if your server has the <code>WITHIN</code> extension you can use the WITHIN search methods <code>search_younger_than()</code> and <code>search_older_than()</code>; if the server has the <code>ESEARCH</code> capability, besides being allowed to use the <code>esearch_*()</code> methods, you can optimize all your search functions with the <code>esearch = TRUE</code> parameter; if you see the <code>MOVE</code> capability, then you can use the <code>move_msg()</code> method. Therefore, to know all your server capabilities, you can use <code>list_server_capabliltites</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>con<span class="op">$</span><span class="kw">list_server_capabilities</span>()</span></code></pre></div>
 </div>
 <div id="mailbox-commands" class="section level2">
@@ -204,7 +208,7 @@
 <h3 class="hasAnchor">
 <a href="#creating-a-new-folder" class="anchor"></a>3.2) Creating a new folder</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>con<span class="op">$</span><span class="kw">create_folder</span>(<span class="dt">name =</span> <span class="st">"New Folder"</span>)</span></code></pre></div>
-<p>With the exception of <code>examine_folder()</code> and <code>rename_folder()</code>, from now on, you will have to select a folder to issue further commands.</p>
+<p>Except for <code>examine_folder()</code> and <code>rename_folder()</code>, from now on, you will have to select a folder to issue further commands.</p>
 </div>
 <div id="selecting-a-folder" class="section level3">
 <h3 class="hasAnchor">
@@ -236,19 +240,19 @@
 <div id="flags-listing" class="section level3">
 <h3 class="hasAnchor">
 <a href="#flags-listing" class="anchor"></a>3.6) Flags listing</h3>
-<p>Flags work like tags or labels attached to messages. You can check the options which flags are available, if you are allowed to set custom flags of your own in a mail folder with <code>list_flags()</code> after a mail folder is selected.</p>
+<p>Flags work like tags or labels attached to messages. After a mail folder is selected, you can check which flags are available, and if you are allowed to set custom flags of your own in this folder with <code>list_flags()</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>con<span class="op">$</span><span class="kw">list_flags</span>()</span></code></pre></div>
 </div>
 </div>
 <div id="single-search" class="section level2">
 <h2 class="hasAnchor">
 <a href="#single-search" class="anchor"></a>4) Single-search</h2>
-<p>All search methods will return a numeric vector containing the results from search. This allows users to chain fetch operations together with search one. You can also <strong>NEGATE</strong> all search expressions by setting <code>negate = TRUE</code>.</p>
-<p>If your server supports <strong>ESEARCH</strong>, we recommend you to use it. It will prevent your results from being truncated when there is too many messages ids and you didn’t set a high <code>buffersize</code> in <code>confiure_imap()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. With “ESEARCH”, the results will be condensed to groups of sequence similar to what does. For instance, if your search returns 10000 results, it is better having condensed groups such as <code>1:10, 12, 23:27, ...</code> instead of a sequence of <code>1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...</code>. If you can’t use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> in order to avoid this.</p>
+<p>All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also <strong>NEGATE</strong> all search expressions by setting <code>negate = TRUE</code>.</p>
+<p>If your server supports <strong>ESEARCH</strong>, we recommend you to use it. It will prevent your results from being truncated when there are too many messages ids and you didn’t set a high <code>buffersize</code> in <code>confiure_imap()</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. With “ESEARCH”, the results will be condensed to groups of sequences similar to what does. For instance, if your search returns 10000 results, it is better to have condensed groups such as <code>1:10, 12, 23:27, ...</code> instead of a sequence of <code>1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...</code>. If you can’t use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> to avoid this.</p>
 <div id="search-by-date" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-by-date" class="anchor"></a>4.1) Search by date</h3>
-<p><code>search_before()</code>, <code>search_since()</code>, <code>search_on()</code>, and <code>search_period()</code> use internal date, which reflects the moment when the message was received. <code>search_sent_before()</code>, <code>search_sent_since()</code>, <code>search_sent_on()</code>, and <code>search_sent_period()</code> use the RFC-2822 date header (origination date), which “specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail delivery system” (Resnick, 2008). Dates in both methods must be the same most of time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder, will point out to the date of the copy. Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.</p>
+<p><code>search_before()</code>, <code>search_since()</code>, <code>search_on()</code>, and <code>search_period()</code> use internal date, which reflects the moment when the message was received. <code>search_sent_before()</code>, <code>search_sent_since()</code>, <code>search_sent_on()</code>, and <code>search_sent_period()</code> use the RFC-2822 date header (origination date), which “specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail delivery system” (Resnick, 2008). Dates in both methods must be the same most of the time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder will point out to the date of the copy. Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.</p>
 <div id="by-internal-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#by-internal-date" class="anchor"></a>4.1.1) By internal date</h4>
@@ -261,13 +265,13 @@
 <span id="cb11-3"><a href="#cb11-3"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>)</span>
 <span id="cb11-4"><a href="#cb11-4"></a></span>
 <span id="cb11-5"><a href="#cb11-5"></a>res</span></code></pre></div>
-<p>You can use the UID (unique identifier) instead of the message sequence number <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, and one or more flags as an additional filter to your search. Actually, you can use this in almost every search method of this package.</p>
+<p>You can use the UID (unique identifier) instead of the message sequence number <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span id="cb12-2"><a href="#cb12-2"></a>                         <span class="dt">use_uid =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb12-3"><a href="#cb12-3"></a>                         <span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ANSWERED"</span>, <span class="st">"SEEN"</span>))</span>
 <span id="cb12-4"><a href="#cb12-4"></a></span>
 <span id="cb12-5"><a href="#cb12-5"></a>res</span></code></pre></div>
-<p>Remember that, if your IMAP server has the ESEARCH capability, you can use it. GMail is one of the providers that allows it.</p>
+<p>Remember that, if your IMAP server has the ESEARCH capability, you can use it. Gmail is one of the mail providers that allow it.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span id="cb13-2"><a href="#cb13-2"></a>                         <span class="dt">use_uid =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb13-3"><a href="#cb13-3"></a>                         <span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ANSWERED"</span>, <span class="st">"SEEN"</span>),</span>
@@ -346,7 +350,7 @@
 <h3 class="hasAnchor">
 <a href="#search-by-string" class="anchor"></a>4.2) Search by String</h3>
 <p>You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive.</p>
-<p>You can also <strong>NEGATE</strong> the statement and search for messages (or specific part of a message) not containing that string, and add additional flag filters as well.</p>
+<p>You can also <strong>NEGATE</strong> the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well.</p>
 <p>For the next examples, we are going to select a different mail folder.</p>
 <p>Searching in the “TO” header field:</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"K-State"</span>)</span>
@@ -357,7 +361,7 @@
 <p>Searching in the “SUBJECT” header field:</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"PhD offer"</span>, <span class="dt">where =</span> <span class="st">"SUBJECT"</span>)</span></code></pre></div>
 <p>Searching in the “TEXT” section.</p>
-<p><strong>IMPORTANT</strong>: Since the text may contain raw data, it may not be a super effective search. In this case, searching for a expression in the whole <code>"BODY"</code> may be preferred.</p>
+<p><strong>IMPORTANT</strong>: Since the text may contain raw data, it may not be a super-effective search. In this case, searching for a expression in the whole <code>"BODY"</code> may be preferred.</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1"></a>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"TEXT"</span>)</span></code></pre></div>
 <p>Searching in the “BODY” section.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"BODY"</span>)</span></code></pre></div>
@@ -386,7 +390,7 @@
 <div id="search-by-within-extension" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-by-within-extension" class="anchor"></a>4.5) Search by Within Extension</h3>
-<p>Severs with support to the “WITHIN” EXTENSION enable searching for messages within a span of time, i.e. younger than “x” seconds, or older than “x” seconds. This capability is really rare of find in IMAP servers, but <code>mRpostman</code> has two methods implemented for coping with this capability if it is available.</p>
+<p>Severs with support to the “WITHIN” EXTENSION enable searching for messages within a span, i.e. younger than “x” seconds, or older than “x” seconds. This capability is really rare to find in IMAP servers, but <code>mRpostman</code> has two methods implemented for coping with this capability if it is available.</p>
 <div id="younger-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#younger-than" class="anchor"></a>4.5.1) Younger Than</h4>
@@ -417,7 +421,7 @@
 <span id="cb34-5"><a href="#cb34-5"></a>                                <span class="kw"><a href="../reference/before.html">before</a></span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>)))</span>
 <span id="cb34-6"><a href="#cb34-6"></a></span>
 <span id="cb34-7"><a href="#cb34-7"></a>res</span></code></pre></div>
-<p><strong>Example 2</strong>: Searching (usinbg UID) for messages received from “<span class="citation">@k-state.edu</span>” <strong>OR</strong> “<span class="citation">@ksu.edu</span>”.</p>
+<p><strong>Example 2</strong>: Searching (using UID) for messages received from “<span class="citation">@k-state.edu</span>” <strong>OR</strong> “<span class="citation">@ksu.edu</span>”.</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>con<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/search">search</a></span>(<span class="dt">request =</span> <span class="kw"><a href="../reference/OR.html">OR</a></span>(<span class="kw"><a href="../reference/string.html">string</a></span>(<span class="dt">expr =</span> <span class="st">"@k-state.edu"</span>, <span class="dt">where =</span> <span class="st">"FROM"</span>),</span>
 <span id="cb35-2"><a href="#cb35-2"></a>                        <span class="kw"><a href="../reference/string.html">string</a></span>(<span class="dt">expr =</span> <span class="st">"@ksu.edu"</span>, <span class="dt">where =</span> <span class="st">"FROM"</span>)),</span>
 <span id="cb35-3"><a href="#cb35-3"></a>           <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
@@ -425,12 +429,12 @@
 <div id="fetch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fetch" class="anchor"></a>6) Fetch</h2>
-<p>You can fetch the full content of messages, or their parts, such as the header, text, or specific metadat fields. Besides this, you can also fetch a message attachments list or the attachment files themselves, downloading them to the disk.</p>
+<p>You can fetch the full content of messages, or their parts, such as the header, text, or specific metadata fields. Besides this, you can also fetch a message attachments list or the attachment files themselves, downloading them to the disk.</p>
 <p>We usually fetch messages after a search operation. Given the output of the search functions in <strong>mRpostman</strong>, you can use the pipe <code>%&gt;%</code> to chain the search and the fetch operations together. Using the base R approach is perfectly possible as well.</p>
-<p>In the main fetch methods (those that are not related to attachment fetching), you can choose to write fetch results to disk (working directory) using <code>write_to_disk = TRUE</code>. If you opt to do so, <strong>mRpostman</strong> saves the fetch content to a <code>.txt</code> file in the following folder structure: <code>working directory &gt; imap.server.url &gt; mail folder name</code>. The text files will be named after the id of the fetched message. If the operation was executed using the UID, the “UID” prefix are added to the file names.</p>
+<p>In the main fetch methods (those that are not related to attachment fetching), you can choose to write the fetch results to disk (working directory) using <code>write_to_disk = TRUE</code>. If you opt to do so, <strong>mRpostman</strong> saves the fetched content to a <code>.txt</code> file in the following folder structure: <code>working directory &gt; imap.server.url &gt; mail folder name</code>. The text files will be named after the id of the fetched message. If the operation was executed using the UID, the “UID” prefix is added to the file names.</p>
 <p><strong>IMPORTANT</strong>:</p>
 <ol style="list-style-type: decimal">
-<li><p>If the fetch operation is to be chained after a search, the <code>use_uid</code> arguments in the two operations have to be the same. Otherwise, an error will occur or the the fetch will be performed on wrong messages’ ids.</p></li>
+<li><p>If the fetch operation is to be chained after a search, the <code>use_uid</code> arguments in the two operations have to be the same. Otherwise, an error will occur or the fetch will be performed on wrong messages’ ids.</p></li>
 <li><p>It is always recommended to increase the timeout_ms before <code>fetch_body()</code>, <code>fetch_text()</code>, and <code>fetch_attachents()</code> operations as sometimes the operation may hang for a few seconds while fetching the message parts.</p></li>
 <li><p>if you have configured a connection with <code>verbose = TRUE</code>, it is extremely recommended that you reset it to <code>FALSE</code> before a fetching operation. The <code>verbose = TRUE</code> option fill the console with the whole flux of information between the server and the client, drastically slowing the speed of the process and your R session.</p></li>
 </ol>
@@ -453,7 +457,7 @@
 <span id="cb36-14"><a href="#cb36-14"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"@k-state.edu"</span>, <span class="dt">where =</span> <span class="st">"FROM"</span>)</span>
 <span id="cb36-15"><a href="#cb36-15"></a></span>
 <span id="cb36-16"><a href="#cb36-16"></a>con<span class="op">$</span><span class="kw">fetch_body</span>(<span class="dt">msg_id =</span> res, <span class="dt">write_to_disk =</span> <span class="ot">TRUE</span>, <span class="dt">keep_in_mem =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
-<p>Since the goal here is to write the fetch results to disk, it is recommended that we set <code>keep_in_mem = FALSE</code>. This will optimize the whole operation, because <code>mRpostman</code> will clean the memory after fetching each message as we are not going to use the results in our R session.</p>
+<p>Since the goal here is to write the fetch results to disk, it is recommended that we set <code>keep_in_mem = FALSE</code>. This will optimize the whole operation because <code>mRpostman</code> will clean the memory after fetching each message as we are not going to use the results in our R session.</p>
 <p>Our local folder will be populated with the <code>.txt</code> files of the fetched messages:</p>
 <p><img src="figures/basics/fetch_body.png" style="width:90.0%"></p>
 </div>
@@ -474,7 +478,7 @@
 <span id="cb37-12"><a href="#cb37-12"></a>out &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">fetch_header</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</span>
 <span id="cb37-13"><a href="#cb37-13"></a></span>
 <span id="cb37-14"><a href="#cb37-14"></a>out</span></code></pre></div>
-<p>Note that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also note that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
+<p>Note that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also, note that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
 </div>
 <div id="fetch-text" class="section level3">
 <h3 class="hasAnchor">
@@ -489,14 +493,14 @@
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>out &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_on</span>(<span class="dt">date_char =</span> <span class="st">"15-Aug-2019"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
 <span id="cb39-2"><a href="#cb39-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_metadata</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">metadata =</span> <span class="dt">metadata =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</span></code></pre></div>
 <p>If nothing is specified to the <code>metadata</code> argument, all the metadata fields are fetched by default. To know which are the metadata options of a message, refer to <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
-<p>The are two more fetch methods, but they are going to be presented in the next session, since they are relate to a very special fetch operation.</p>
+<p>There are two more fetch methods, but they are going to be presented in the next session since they are related to a very special fetch operation.</p>
 </div>
 </div>
 <div id="attachments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attachments" class="anchor"></a>7) Attachments</h2>
-<p>Previously, <code>mRpostman</code> had two attachment related functions: <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. Both were to be used after a fetching operation, because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version <code>0.9.0.0</code>: <code>fetch_attachments_list()</code> and <code>fetch_attachments()</code>. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.</p>
-<p>Let’s take a look in the first two attachments functionalities available in <code>mRpostman</code>.</p>
+<p>Previously, <code>mRpostman</code> had two attachment-related functions: <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version <code>0.9.0.0</code>: <code>fetch_attachments_list()</code> and <code>fetch_attachments()</code>. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.</p>
+<p>Let’s take a look at the first two attachments functionalities available in <code>mRpostman</code>.</p>
 <div id="dependent-attachment-operations" class="section level3">
 <h3 class="hasAnchor">
 <a href="#dependent-attachment-operations" class="anchor"></a>7.1) Dependent attachment operations</h3>
@@ -541,7 +545,7 @@
 <div id="optimized-attachment-operations" class="section level3">
 <h3 class="hasAnchor">
 <a href="#optimized-attachment-operations" class="anchor"></a>7.2) Optimized attachment operations</h3>
-<p>As we stated before, the following two methods do not dependent on a previous fetch step, because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.</p>
+<p>As we stated before, the following two methods are not contingent on a previous fetch step because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.</p>
 <p><strong>IMPORTANT</strong>: The same recommendations for the other fetch methods hold in this case: set <code>verbose = FALSE</code> and a high <code>timeout_ms</code>.</p>
 <div id="fetch-attachments-list" class="section level4">
 <h4 class="hasAnchor">
@@ -574,25 +578,25 @@
 <div id="get-minimum-message-id" class="section level3">
 <h3 class="hasAnchor">
 <a href="#get-minimum-message-id" class="anchor"></a>8.2) Get minimum message ID</h3>
-<p>This operation depends on the ESEARCH capability. It will retrieve the <strong>minimum</strong> message id containing an specific flag(s) in the selected mail folder.</p>
+<p>This operation depends on the ESEARCH capability. It will retrieve the <strong>minimum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>con<span class="op">$</span><span class="kw">esearch_min_id</span>(<span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Answered"</span>, <span class="st">"Seen"</span>))</span></code></pre></div>
 </div>
 <div id="get-maximum-message-id" class="section level3">
 <h3 class="hasAnchor">
 <a href="#get-maximum-message-id" class="anchor"></a>8.3) Get maximum message ID</h3>
-<p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>maximum</strong> message id containing an specific flag(s) in the selected mail folder.</p>
+<p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>maximum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>con<span class="op">$</span><span class="kw">esearch_min_id</span>(<span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Answered"</span>, <span class="st">"Seen"</span>))</span></code></pre></div>
 </div>
 <div id="count-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#count-messages" class="anchor"></a>8.4) Count messages</h3>
-<p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>number</strong> of messages with an specific flag(s) in the selected mail folder.</p>
+<p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>number</strong> of messages with a specific flag(s) in the selected mail folder.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>con<span class="op">$</span><span class="kw">esearch_count</span>(<span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Answered"</span>, <span class="st">"Seen"</span>))</span></code></pre></div>
 </div>
 <div id="delete-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#delete-messages" class="anchor"></a>8.5) Delete message(s)</h3>
-<p>This method marks one or more messages with the “\Deleted” system flag. Some servers automatically delete messages marked with this flag, and others require the <code>EXPUNGE</code> command in order to definitely remove the e-mail.</p>
+<p>This method marks one or more messages with the “\Deleted” system flag. Some servers automatically delete messages marked with this flag, and others require the <code>EXPUNGE</code> command to permanently delete the e-mail.</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"Trash"</span>)</span>
 <span id="cb48-2"><a href="#cb48-2"></a></span>
 <span id="cb48-3"><a href="#cb48-3"></a>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"10-may-2012"</span>) <span class="op">%&gt;%</span></span>
@@ -603,7 +607,7 @@
 <div id="expunge" class="section level3">
 <h3 class="hasAnchor">
 <a href="#expunge" class="anchor"></a>8.6) Expunge</h3>
-<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or an specific message using the <code>msg_uid</code> argument. Note the this require the “UID” (unique id) and not sequence numbers.</p>
+<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Note the this requires the “UID” (unique id), not sequence numbers.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="co"># expunge the entire mail folder</span></span>
 <span id="cb50-2"><a href="#cb50-2"></a>con<span class="op">$</span><span class="kw">expunge</span>()</span>
 <span id="cb50-3"><a href="#cb50-3"></a></span>
@@ -667,7 +671,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>This is a know bug of the libcurl library. Please, refer to this <a href="https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">LINK</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>This is a known bug of the libcurl library. Please, refer to this <a href="https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">LINK</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>A message sequence number is a message’s relative position to the oldest message in a mail folder. It may change after deleting or moving messages. If a message is deleted, sequence numbers are reordered to fill the gap. If <code>use_uid = TRUE</code>, the command will be performed using the “UID” or unique identifier, and results are presented as such. UIDs are always the same during the life cycle of a message in a mail folder.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

@@ -1,4 +1,4 @@
-#' Relational operator function to construct a custom search statement
+#' Relational-operator-function to construct a custom search statement
 #' @param ... a combination of criteria constructor functions with its arguments.
 #' @param negate If \code{TRUE}, negates the search and seeks for
 #'   "NOT search_criterion". Default is \code{FALSE}.

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Using IMAP OAuth2.0 authentication in mRpostman • mRpostman</title>
+<title>IMAP OAuth2.0 authentication in mRpostman • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -15,7 +15,7 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Using IMAP OAuth2.0 authentication in mRpostman">
+<script src="../pkgdown.js"></script><meta property="og:title" content="IMAP OAuth2.0 authentication in mRpostman">
 <meta property="og:description" content="">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -63,10 +63,10 @@
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
     <li>
-      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
     </li>
     <li>
-      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -86,7 +86,7 @@
       </header><script src="xoauth2.0_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Using IMAP OAuth2.0 authentication in mRpostman</h1>
+      <h1>IMAP OAuth2.0 authentication in mRpostman</h1>
             
       
       
@@ -111,9 +111,9 @@
 <div id="intro" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intro" class="anchor"></a>Introduction</h2>
-<p>More and more mail providers are adopting the OAuth2.0 authentication as they preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is definitely a more secure way of authenticating your identity during an IMAP session.</p>
-<p>In this vignette, we will describe the process of obtaining, using and refreshing an OAuth2.0 token in order to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
-<p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. From version 7.65.0 (released on May 22, 2019) onward you should be fine. Therefore, we recommend checking to wich libcurl version, the curl R package in linked by executing:</p>
+<p>More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.</p>
+<p>In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
+<p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>curl<span class="op">::</span><span class="kw"><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl_version</a></span>()</span></code></pre></div>
 <pre><code>## $version
 ## [1] "7.68.0"
@@ -201,18 +201,18 @@
 <div id="step-3---saving-the-credentials" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-3---saving-the-credentials" class="anchor"></a>Step 3 - Saving the credentials</h2>
-<p>In the following page, you have your key and client information.</p>
+<p>On the following page, you have your key and client information.</p>
 <p><img src="figures/xoauth/step2_x3x.png" width="680"></p>
 <p>Copy the information above to an R script:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>secret =<span class="st"> "vsV[...]6m7"</span></span>
 <span id="cb3-2"><a href="#cb3-2"></a></span>
 <span id="cb3-3"><a href="#cb3-3"></a>key =<span class="st"> "85169[...]9pk.apps.googleusercontent.com"</span></span></code></pre></div>
-<p>In this same script we use the <code>httr</code> package to configure and obtain our token.</p>
+<p>In this same script, we use the <code>httr</code> package to configure and obtain our token.</p>
 </div>
 <div id="step-4---using-the-httr-package-to-retrieve-the-token" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-4---using-the-httr-package-to-retrieve-the-token" class="anchor"></a>Step 4 - Using the <code>httr</code> package to retrieve the token</h2>
-<p>Basically, we need an endpoint, an app configuration, and an scope, which is circumscribed to Gmail. The <code>httr</code> have some pre-set endpoints for Google, Yahoo, and other APIs. So, it is really straightforward to define one with <code>httr</code>.</p>
+<p>Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The <code>httr</code> package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with <code>httr</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>endpoint &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/oauth_endpoints">oauth_endpoints</a></span>(<span class="st">"google"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2"></a></span>
 <span id="cb4-3"><a href="#cb4-3"></a>gmail_app &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/oauth_app">oauth_app</a></span>(</span>
@@ -226,7 +226,7 @@
 <span id="cb4-11"><a href="#cb4-11"></a>auth_code &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/oauth2.0_token">oauth2.0_token</a></span>(endpoint, <span class="dt">app =</span> gmail_app, <span class="dt">scope =</span> scope)</span></code></pre></div>
 <p>As it is the first time you are trying to access your account using the OAuth2.0 token, you’ll be prompted about caching your credentials on a local file.</p>
 <p><img src="figures/xoauth/step2_x4.png" width="550"></p>
-<p>After, you will be redirect to a webpage, where you are going to make some confirmations about your identity:</p>
+<p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
 <div class="col2">
 <p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br></p>
 <p><img src="figures/xoauth/step2_x6.png" style="width:80.0%"></p>

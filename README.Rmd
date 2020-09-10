@@ -29,21 +29,25 @@ IMAP Toolkit for R
 
 ## Overview
 
-`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for R users to perform Data Analysis on email data.
+`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for users to perform data analysis on email data.
 
 mRpostman's official website: https://allanvc.github.io/mRpostman
 
-**IMPORTANT**: Substantial changes without backward compatibility were implemented between versions 0.3.2 and 0.9.0.0000. Please, check the [changelog](https://allanvc.github.io/mRpostman/news/index.html) or the vignette ["Migrating code to mRpostman's R6 sintaxe"](https://allanvc.github.io/mRpostman/articles/code_migration.html) for more information.
+**IMPORTANT**: 
+
+1. In version `0.9.0.0`, `mRpostman` went trough thorough changes, including ones that have no backward compatibility with versions `<= 0.3.2`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new syntax is available at [_"Migrating old code to the new mRpostman's syntax"_](https://allanvc.github.io/mRpostman/articles/code_migration.html) for more information.
+
+2. Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
 
 ## First things first ... (plain authentication)
 
-Before using **mRpostman**, it is essential to configure your email account. Many mail providers require authorizing **"less secure apps"** to access your account from a third part app, using plain authentication. If you're interested in OAuth2.0 authentication, check the "IMAP OAuth2.0 authentication with mRpostman" vignette.
+Before using **mRpostman**, it is essential to configure access to your email account. Many mail providers enabling the **"less secure apps"** option to allow access from a third-party app, using plain authentication. If you are interested in OAuth2.0 authentication, check the [_"IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
 Let's see how to configure simple plain authentication for Gmail, Yahoo Mail, AOL Mail, and Office 365.
 
 ### Gmail
 
-1) Go to Gmail website and log in with your credentials.
+1) Go to the Gmail website and log in with your credentials.
 
 2) Then, go to https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
@@ -55,7 +59,7 @@ Let's see how to configure simple plain authentication for Gmail, Yahoo Mail, AO
 
 ### Yahoo Mail
 
-1) Go to Yahoo Mail website and log in with your credentials.
+1) Go to the Yahoo Mail website and log in with your credentials.
 
 2) Click on "Account Info".
 
@@ -75,7 +79,7 @@ Let's see how to configure simple plain authentication for Gmail, Yahoo Mail, AO
 
 ### AOL Mail
 
-1) Go to AOL Mail website and log in with your credentials.
+1) Go to the AOL Mail website and log in with your credentials.
 
 2) Click on "Options" and then on "Account Info".
 
@@ -94,13 +98,12 @@ Let's see how to configure simple plain authentication for Gmail, Yahoo Mail, AO
 
 ### Outlook - Office 365
 
-There is no need to execute any external configuration. The parameter `url` in
-`configure_imap()` should be set as `url="imaps://outlook.office365.com"`.
+There is no need to execute any external configuration. Please, notice that the `url` parameter in `configure_imap()` should be set as `url = "imaps://outlook.office365.com"`.
 
 
 ## Introduction
 
-From version 0.9.0.0000 onward, `mRpostman` is implemented under the OO paradigm, based on an R6 class (`ImapCon`), its derived methods and a few independent functions with the aim to perform a myriad of IMAP commands.
+From version 0.9.0.0000 onward, `mRpostman` is implemented under the OO paradigm, based on an R6 class called `ImapCon`, its derived methods, and a few independent functions with the aim to perform a myriad of IMAP commands.
 
 The package is divided in 8 groups of operations. Below, we present all the available methods/functions:
 
@@ -150,7 +153,7 @@ con <- configure_imap(url="imaps://outlook.office365.com",
                       password=rstudioapi::askForPassword()
 )
 
-# other IMAP providers that were tested: GMail (imaps://imap.gmail.com), 
+# other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), 
 #   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
 #   Yandex (imaps://imap.yandex.com)
 
@@ -261,9 +264,19 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
 ## Future Improvements
 
-- add further IMAP functionalities.
-- eliminate the stringr dependency
-- implement a progress bar in fetch operations
+- add further IMAP functionalities;
+- eliminate the stringr dependency in REGEX;
+- implement a progress bar in fetch operations.
+
+## Known bugs
+
+- _search results truncation_: This is a [libcurl's known bug](https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
+
+- _`verbose = TRUE` malfunction on Windows_: This seems to be related to the [`curl` R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
+
+- _shared mailbox access_: This seems to be another [libcurl's bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
+
+- _`xoauth2_bearer` SASL error_: This is related to [old libcurl's versions](https://curl.haxx.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl's version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
 
 ## License
 

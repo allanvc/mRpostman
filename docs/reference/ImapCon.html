@@ -99,10 +99,10 @@
       <a href="../articles/basics.html">mRpostman Basics</a>
     </li>
     <li>
-      <a href="../articles/code_migration.html">Migrating code to mRpostman's R6 sintaxe</a>
+      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
     </li>
     <li>
-      <a href="../articles/xoauth2.0.html">Using IMAP OAuth2.0 authentication in mRpostman</a>
+      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
 </li>
@@ -140,9 +140,11 @@
         
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p><a href='#method-search'><code>ImapCon$search()</code></a>: IMAP queries follows
+    <p><a href='#method-new'><code>ImapCon$new()</code></a>: The <code><a href='configure_imap.html'>configure_imap()</a></code>
+  should be preferred instead of <code>ImapCon$new()</code>.</p>
+<p><a href='#method-search'><code>ImapCon$search()</code></a>: IMAP queries follows
   Polish notation, i.e. operators such as <code>OR</code> come before arguments,
-  e.g. "OR argument1 argument2". Therefore, the relational operators functions
+  e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
   in this package should be used like the following examples:
   <code><a href='OR.html'>OR(before("17-Apr-2015"), string("FROM", "John"))</a></code>. Even though there
   is no "AND" operator in IMAP, this package adds a helper function
@@ -150,34 +152,34 @@
   together, e.g. <code><a href='AND.html'>AND(since("01-Jul-2018"), smaller_than(16000))</a></code>.</p>
 <p><a href='#method-sent_before'><code>ImapCon$sent_before()</code></a>: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.</p>
 <p><a href='#method-search_sent_since'><code>ImapCon$search_sent_since()</code></a>: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.</p>
 <p><a href='#method-search_sent_on'><code>ImapCon$search_sent_on()</code></a>: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.</p>
 <p><a href='#method-search_sent_period'><code>ImapCon$search_sent_period()</code></a>: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.</p>
 <p><a href='#method-search_older_than'><code>ImapCon$search_older_than()</code></a>:
@@ -202,37 +204,25 @@
   operation depends on the <code>ESEARCH</code> extension.</p>
 <p><a href='#method-add_flags'><code>ImapCon$add_flags()</code></a>: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes <code>"\\"</code>.</p>
+  demand that system flags' names be preceded by two backslashes <code>"\\"</code>.</p>
 <p><a href='#method-add_flags'><code>ImapCon$add_flags()</code></a>: <code>add_flags</code>,
-  <code>remove_flags</code> and
-  <code>replace_flags</code>, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.</p>
-<p><a href='#method-add_flags'><code>ImapCon$add_flags()</code></a>: IMAP
-  servers do not allow setting a flag when a message already has
-  its antonym version of it. For example, if a message with a sequence
-  number <code>1</code> already has the "SEEN" flag, it is not allowed to add
-  "UNSEEN" to that. Instead, you have to first remove the "SEEN" flag
-  <code>remove_flags(msg_id = 1, "SEEN")</code> and only then run
-  <code>add_flags(msg_id = 1, "SEEN")</code>. Another option is to
-  completely override all the flags of a message or a set of messages using
-  <code>replace_flags(msg_id = 1, "SEEN")</code>.</p>
+  <code>remove_flags</code>, and <code>replace_flags</code> accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.</p>
 <p><a href='#method-replace_flags'><code>ImapCon$replace_flags()</code></a>: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes <code>"\\"</code>.</p>
+  demand that system-flags names be preceded by two backslashes <code>"\\"</code>.</p>
 <p><a href='#method-replace_flags'><code>ImapCon$replace_flags()</code></a>: <code>add_flags</code>,
-  <code>remove_flags</code> and
-  <code>replace_flags</code>, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.</p>
+  <code>remove_flags</code>, and <code>replace_flags</code> accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.</p>
 <p><a href='#method-remove_flags'><code>ImapCon$remove_flags()</code></a>: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes <code>"\\"</code>.</p>
+  demand that system-flags names be preceded by two backslashes <code>"\\"</code>.</p>
 <p><a href='#method-remove_flags'><code>ImapCon$remove_flags()</code></a>: <code>add_flags</code>,
-  <code>remove_flags</code> and
-  <code>replace_flags</code>, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.</p>
+  <code>remove_flags</code>, and <code>replace_flags</code> accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.</p>
 <p><a href='#method-get_attachments'><code>ImapCon$get_attachments()</code></a>:
   This method is to be used after the body or the
   text part of one or more messages were fetched. This makes sense if the
@@ -396,14 +386,14 @@
 encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p></dd>
     <dt><code>verbose</code></dt><dd><p>If <code>FALSE</code>, mutes the flow of information between the
 server and the client. Default is <code>FALSE</code>.</p></dd>
-    <dt><code>buffersize</code></dt><dd><p>The size in bytes for curl's receive buffer. Default is
-16000 bytes or 16kb, which means it will use the default value of libcurl.
-According to libcurl's documentation, the maximum buffersize is 512kb
+    <dt><code>buffersize</code></dt><dd><p>The size in bytes for the receive buffer. Default is
+16000 bytes or 16kb, which means it will use the libcurl's default value.
+According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passe to <code>buffersize</code> is treated
 as a request, not an order.</p></dd>
-    <dt><code>timeout_ms</code></dt><dd><p>Time in miliseconds (ms) to wait for the execution or
-rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
+    <dt><code>timeout_ms</code></dt><dd><p>Time in milliseconds (ms) to wait for the execution or
+re-execution of a command. Default is 5000ms (or 5 seconds). If a first
+execution is unsuccessful, an error handler in each function (depending on
 the <code>retries</code> value), will try to reconnect or re-execute the command.</p></dd>
     <dt><code>...</code></dt><dd><p>Further curl parameters (see <code><a href='https://jeroen.cran.dev/curl/reference/curl_options.html'>curl::curl_options</a></code>) that
 can be used with the IMAP protocol. Only for advanced users.</p></dd>
@@ -465,9 +455,9 @@ server and the client.</p></dd>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>buffersize</code></dt><dd><p>The size in bytes for curl's receive buffer. Default is
-16000 bytes or 16kb, which means it will use the default value of libcurl.
-According to libcurl's documentation, the maximum buffersize is 512kb
+<dt><code>buffersize</code></dt><dd><p>The size in bytes for the receive buffer. Default is
+16000 bytes or 16kb, which means it will use the libcurl's default value.
+According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passe to <code>buffersize</code> is treated
 as a request, not an order.</p></dd>
 </dl>
@@ -480,9 +470,9 @@ as a request, not an order.</p></dd>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>timeout_ms</code></dt><dd><p>Time in miliseconds (ms) to wait for the execution or
-rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
+<dt><code>timeout_ms</code></dt><dd><p>Time in milliseconds (ms) to wait for the execution or
+re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
+execution is unsuccessful, an error handler in each function (depending on
 the <code>retries</code> value), will try to reconnect or re-execute the command.</p></dd>
 </dl>
 </div>
@@ -544,7 +534,7 @@ Default is <code>1</code>.</p></dd>
 </dl>
 </div>
     <h3>Returns</h3>
-    A <code>lsit</code> containing the mail folder names and their inherent
+    A <code>list</code> containing the mail folder names and their inherent
   structure.
     <h3>Examples</h3>
     <div class="r example copy">
@@ -709,7 +699,7 @@ con$list_flags()
     <div class="arguments">
 <dl class='dl-horizontal'>
 <dt><code>request</code></dt><dd><p>A string directly specifying what to search or
-constructed by a combination of operators helper functions <code><a href='OR.html'>OR</a></code>
+constructed by a combination of relational-operator-helper-functions <code><a href='OR.html'>OR</a></code>
 and <code><a href='AND.html'>AND</a></code>, and criteria helper functions such as
 <code><a href='before.html'>before</a></code>, <code><a href='since.html'>since</a></code>, <code><a href='on.html'>on</a></code>,
 <code><a href='sent_before.html'>sent_before</a></code>, <code><a href='sent_since.html'>sent_since</a></code>, <code><a href='sent_on.html'>sent_on</a></code>,
@@ -771,7 +761,7 @@ con$search(AND(smaller_than(size = "512000"),
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>size</code></dt><dd><p>An integer specifying the number of seconds to be used as
+<dt><code>size</code></dt><dd><p>An integer specifying the number of seconds to be used as the
 search criterion.</p></dd>
     <dt><code>negate</code></dt><dd><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is <code>FALSE</code>.</p></dd>
@@ -783,7 +773,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -823,7 +813,7 @@ con$search_larger_than(size = 512000))
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>size</code></dt><dd><p>An integer specifying the number of seconds to be used as
+<dt><code>size</code></dt><dd><p>An integer specifying the number of seconds to be used as the
 search criterion.</p></dd>
     <dt><code>negate</code></dt><dd><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is <code>FALSE</code>.</p></dd>
@@ -835,7 +825,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -889,7 +879,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -946,7 +936,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1001,7 +991,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1060,7 +1050,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1117,7 +1107,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1171,7 +1161,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1225,7 +1215,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1284,7 +1274,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1366,7 +1356,7 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
 </div>
     <p><hr>
 <a id="method-search_older_than"></a></p><h3>Method <code>search_older_than()</code></h3>
-    Search WITHIN a time period (OLDER)
+    Search WITHIN a specific time (OLDER)
 <h3>Usage</h3>
     <div class="r"><pre>ImapCon$search_older_than(
   seconds,
@@ -1391,7 +1381,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1419,7 +1409,7 @@ con$search_older_than(seconds = 3600, negate = TRUE)
 </div>
     <p><hr>
 <a id="method-search_younger_than"></a></p><h3>Method <code>search_younger_than()</code></h3>
-    Search WITHIN a time period (YOUNGER)
+    Search WITHIN a specific time (YOUNGER)
 <h3>Usage</h3>
     <div class="r"><pre>ImapCon$search_younger_than(
   seconds,
@@ -1444,7 +1434,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1500,7 +1490,7 @@ sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flag</code></dt><dd><p>Optional argument that sets one or more flags as an additional
+    <dt><code>flag</code></dt><dd><p>An optional argument that sets one or more flags as an additional
 filter to the search. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder. Default is <code>NULL</code>.</p></dd>
     <dt><code>esearch</code></dt><dd><p>A logical. Default is <code>FALSE</code>. If the IMAP server has
@@ -1556,7 +1546,7 @@ fetching. Default is <code>TRUE</code>.</p></dd>
     <dt><code>partial</code></dt><dd><p><code>NULL</code> or a character string with format
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is <code>NULL</code>, which will fetch the full specified content.</p></dd>
-    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetch content of each message
+    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with <code><a href='https://www.rdocumentation.org/packages/base/topics/invisible'>invisible()</a></code>. Default is <code>FALSE</code>.</p></dd>
     <dt><code>keep_in_mem</code></dt><dd><p>If <code>TRUE</code>, keeps a copy of each fetch result while
@@ -1623,7 +1613,7 @@ fetching. Default is <code>TRUE</code>.</p></dd>
     <dt><code>partial</code></dt><dd><p><code>NULL</code> or a character string with format
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is <code>NULL</code>, which will fetch the full specified content.</p></dd>
-    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetch content of each message
+    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with <code><a href='https://www.rdocumentation.org/packages/base/topics/invisible'>invisible()</a></code>. Default is <code>FALSE</code>.</p></dd>
     <dt><code>keep_in_mem</code></dt><dd><p>If <code>TRUE</code>, keeps a copy of each fetch result while
@@ -1679,7 +1669,7 @@ command will be performed using the <code>"UID"</code> or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.</p></dd>
     <dt><code>metadata</code></dt><dd><p>An optional <code>character vector</code> specifying one or more
 items of the metadata of a message to fetch. See <a href='metadata_options.html'>metadata_options</a>.</p></dd>
-    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetch content of each message
+    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with <code><a href='https://www.rdocumentation.org/packages/base/topics/invisible'>invisible()</a></code>. Default is <code>FALSE</code>.</p></dd>
     <dt><code>keep_in_mem</code></dt><dd><p>If <code>TRUE</code>, keeps a copy of each fetch result while
@@ -1745,7 +1735,7 @@ fetching. Default is <code>TRUE</code>.</p></dd>
     <dt><code>partial</code></dt><dd><p><code>NULL</code> or a character string with format
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is <code>NULL</code>, which will fetch the full specified content.</p></dd>
-    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetch content of each message
+    <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with <code><a href='https://www.rdocumentation.org/packages/base/topics/invisible'>invisible()</a></code>. Default is <code>FALSE</code>.</p></dd>
     <dt><code>keep_in_mem</code></dt><dd><p>If <code>TRUE</code>, keeps a copy of each fetch result while
@@ -1883,14 +1873,14 @@ con$move(msg = res, to_folder = "Sent")
 </div>
     <p><hr>
 <a id="method-esearch_count"></a></p><h3>Method <code>esearch_count()</code></h3>
-    Count the number of messages with an specific flag(s) in a
+    Count the number of messages with a specific flag(s) in a
   folder (depend on ESEARCH capability)
 <h3>Usage</h3>
     <div class="r"><pre>ImapCon$esearch_count(flag, use_uid = FALSE, retries = 1)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>flag</code></dt><dd><p>Mandatory parameter that specifies one or more flags as a
+<dt><code>flag</code></dt><dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the counting operation. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder.</p></dd>
     <dt><code>use_uid</code></dt><dd><p>Default is <code>FALSE</code>. In this case, results will be
@@ -1986,7 +1976,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>flag</code></dt><dd><p>Mandatory parameter that specifies one or more flags as a
+<dt><code>flag</code></dt><dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder.</p></dd>
     <dt><code>use_uid</code></dt><dd><p>Default is <code>FALSE</code>. In this case, results will be
@@ -2022,7 +2012,7 @@ con$esearch_min_id(flag = "Answered")
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>flag</code></dt><dd><p>Mandatory parameter that specifies one or more flags as a
+<dt><code>flag</code></dt><dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use <a href='#method-list_flags'><code>ImapCon$list_flags()</code></a>
 to list the flags in a selected mail folder.</p></dd>
     <dt><code>use_uid</code></dt><dd><p>Default is <code>FALSE</code>. In this case, results will be
@@ -2051,7 +2041,7 @@ con$esearch_max_id(flag = "Seen")
 </div>
     <p><hr>
 <a id="method-add_flags"></a></p><h3>Method <code>add_flags()</code></h3>
-    Add Flags to message(s)
+    Add flags to one or more messages
 <h3>Usage</h3>
     <div class="r"><pre>ImapCon$add_flags(
   msg_id,
@@ -2071,8 +2061,8 @@ It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flags_to_set</code></dt><dd><p>A <code>character vector</code> containing one ore more flag
-names to add to the specified message ids. If the flag to be set is an
+    <dt><code>flags_to_set</code></dt><dd><p>A <code>character vector</code> containing one or more flag
+names to add to the specified message ids. If the flag to be set is a
 system flag, such as <code>\SEEN</code>, <code>\ANSWERED</code>, the name should be
 preceded by two backslashes <code>\</code>.</p></dd>
     <dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
@@ -2115,8 +2105,8 @@ It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flags_to_set</code></dt><dd><p>A <code>character vector</code> containing one ore more flag
-names that will replace the current ones. If the flag to be set is an
+    <dt><code>flags_to_set</code></dt><dd><p>A <code>character vector</code> containing one or more flag
+names that will replace the current ones. If the flag to be set is a
 system flag, such as <code>\SEEN</code>, <code>\ANSWERED</code>, the name should be
 preceded by two backslashes <code>\</code>.</p></dd>
     <dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
@@ -2160,8 +2150,8 @@ It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.</p></dd>
-    <dt><code>flags_to_unset</code></dt><dd><p>A <code>character vector</code> containing one ore more
-flag names that will be unset (removed). If the flag to be removed is an
+    <dt><code>flags_to_unset</code></dt><dd><p>A <code>character vector</code> containing one or more
+flag names that will be unset (removed). If the flag to be removed is a
 system flag, such as <code>\SEEN</code>, <code>\ANSWERED</code>, the name should be
 preceded by two backslashes <code>\</code>.</p></dd>
     <dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message

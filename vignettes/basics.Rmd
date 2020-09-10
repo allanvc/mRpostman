@@ -11,11 +11,15 @@ vignette: >
 
 ## Introduction
 
-**mRpostman** makes extensive use of 'curl' and 'libcurl' capabilities, providing tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities.
+`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for R users to perform data analysis on email data.
 
 In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.
 
-**IMPORTANT**: In version `0.9.0.0`, `mRpostman` went trough thorough changes, including ones that have no backward compatibility with versions `<= 0.3.2`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new one is availabe at: ["Migrating code to mRpostman's R6 sintaxe"](https://allanvc.github.io/mRpostman/articles/code_migration.html) for more information.
+**IMPORTANT**: 
+
+1. In version `0.9.0.0`, `mRpostman` went trough thorough changes, including ones that have no backward compatibility with versions `<= 0.3.2`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new syntax is available at ["Migrating old code to the new mRpostman's syntax"](https://allanvc.github.io/mRpostman/articles/code_migration.html) for more information.
+
+2. Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the ["Using IMAP OAuth2.0 authentication in mRpostman"](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
 
 ## Authentication
 
@@ -23,7 +27,7 @@ There are two ways of connecting to your IMAP server: using plain or OAuth2.0 au
 
 ### Allowing Less Secure Apps Access
 
-When using plain authentication, most of mail providers will require the user to enable the **less secure apps** access. Once it is done, you will be able to access you mailbox using a "third part app" like `mRpostman`.
+When using plain authentication, most of the mail providers will require the user to enable **less secure apps** access. Once it is done, you will be able to access your mailbox using a "third party app" like `mRpostman`.
 
 See the **README.md** for more details on how to allow less secure apps access in some of the most known mail providers.
 
@@ -56,7 +60,7 @@ The package is now implemented under a OO framework, using an R6 class. The main
 
 ## 1) How do I start? (Connection configuration)
 
-After enabling (if needed) "Non secure apps access" in your Mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:
+After enabling (if needed) "less secure apps access" in your Mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -99,15 +103,15 @@ con <- configure_imap(url="imaps://outlook.office365.com",
 
 Other useful options are: `timeout_ms`, `verbose = TRUE`, `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, but you probably won't need it. See `curl::curl_options()`.
 
-Since version `0.9.0.0`, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the `reset_*()` methods. This prevents user from having to call `configure_imap()` multiple times during a session or in an script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the `timeout_ms` and set `verbose = FALSE`.
+Since version `0.9.0.0`, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the `reset_*()` methods. This prevents users from having to call `configure_imap()` multiple times during a session or in a script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the `timeout_ms` and set `verbose = FALSE`.
 
 The `con` object that we created in the example above has the `ImapCon` R6 class. Now, almost 99\% of the other IMAP commands to be performed on the server will be called following the structure: `con$method()`. The exceptions are the `list_attachments()` function and the helper functions of the custom-search group.
 
-As you will see, the R6 framework combined with `curl` will make this package works such a session based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together, provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
+As you will see, the R6 framework combined with `curl` will make this package works such a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
 
 ## 2) Server capabilities
 
-Once the connection is configured, it is important to know which capabilities your IMAP provider offers to users. This impacts on which type of operations you are allowed to perform. For example, if your server has the `WITHIN` extension you can use the WITHIN search methods `search_younger_than()` and `search_older_than()`; if the server has the `ESEARCH` capability, besides being allowed to use the `esearch_*()` methods, you can optimize all your search functions with the `esearch = TRUE` parameter; if you see the `MOVE` capability, then you are able to use the `move_msg()` method. Therefore, in order to know all your server capabilities, you can use `list_server_capabliltites`.
+Once the connection is configured, it is important to know which capabilities your IMAP provider offers to users. This impacts on which type of operations you are allowed to perform. For example, if your server has the `WITHIN` extension you can use the WITHIN search methods `search_younger_than()` and `search_older_than()`; if the server has the `ESEARCH` capability, besides being allowed to use the `esearch_*()` methods, you can optimize all your search functions with the `esearch = TRUE` parameter; if you see the `MOVE` capability, then you can use the `move_msg()` method. Therefore, to know all your server capabilities, you can use `list_server_capabliltites`.
 
 ```{r, message = FALSE, eval=FALSE}
 con$list_server_capabilities()
@@ -130,7 +134,7 @@ con$list_mail_folders()
 con$create_folder(name = "New Folder")
 ```
 
-With the exception of `examine_folder()` and `rename_folder()`, from now on, you will have to select a folder to issue further commands.
+Except for `examine_folder()` and `rename_folder()`, from now on, you will have to select a folder to issue further commands.
 
 ### 3.3) Selecting a folder
 
@@ -186,7 +190,7 @@ con$rename_folder(name = "Sent", new_name = "Sent2")
 
 ### 3.6) Flags listing
 
-Flags work like tags or labels attached to messages. You can check the options which flags are available, if you are allowed to set custom flags of your own in a mail folder with `list_flags()` after a mail folder is selected.
+Flags work like tags or labels attached to messages. After a mail folder is selected, you can check which flags are available, and if you are allowed to set custom flags of your own in this folder with `list_flags()`.
 
 
 ```{r, message = FALSE, eval=FALSE}
@@ -198,17 +202,17 @@ con$list_flags()
 
 ## 4) Single-search
 
-All search methods will return a numeric vector containing the results from search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
+All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
 
 If your server supports **ESEARCH**, we recommend you to use it. It will prevent your results from being
-truncated when there is too many messages ids and you didn't set a high `buffersize` in `confiure_imap()`^[This is a know bug of the libcurl library. Please, refer to this [LINK](https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)]. With "ESEARCH", the results will be condensed to groups of sequence similar to what \R does. For instance, if your search returns 10000 results, it is better having condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in `configure_imap()` in order to avoid this.
+truncated when there are too many messages ids and you didn't set a high `buffersize` in `confiure_imap()`^[This is a known bug of the libcurl library. Please, refer to this [LINK](https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)]. With "ESEARCH", the results will be condensed to groups of sequences similar to what \R does. For instance, if your search returns 10000 results, it is better to have condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in `configure_imap()` to avoid this.
 
 
 ### 4.1) Search by date
 
 `search_before()`, `search_since()`, `search_on()`, and `search_period()` use internal date, which reflects the moment when the message was received. `search_sent_before()`, `search_sent_since()`, `search_sent_on()`, and
 `search_sent_period()` use the RFC-2822 date header (origination date), which "specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail
-delivery system" (Resnick, 2008). Dates in both methods must be the same most of time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder, will point out to the date of the copy.  Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.
+delivery system" (Resnick, 2008). Dates in both methods must be the same most of the time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder will point out to the date of the copy.  Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.
 
 #### 4.1.1) By internal date
 
@@ -222,7 +226,7 @@ res <- con$search_before(date_char = "07-Sep-2020")
 res
 ```
 
-You can use the UID (unique identifier) instead of the message sequence number ^[A message sequence number is a message's relative position to the oldest message in a mail folder. It may change after deleting or moving messages. If a message is deleted, sequence numbers are reordered to fill the gap. If `use_uid = TRUE`, the command will be performed using the "UID" or unique identifier, and results are presented as such. UIDs are always the same during the life cycle of a message in a mail folder.], and one or more flags as an additional filter to your search. Actually, you can use this in almost every search method of this package.
+You can use the UID (unique identifier) instead of the message sequence number ^[A message sequence number is a message's relative position to the oldest message in a mail folder. It may change after deleting or moving messages. If a message is deleted, sequence numbers are reordered to fill the gap. If `use_uid = TRUE`, the command will be performed using the "UID" or unique identifier, and results are presented as such. UIDs are always the same during the life cycle of a message in a mail folder.], and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -233,7 +237,7 @@ res <- con$search_before(date_char = "07-Sep-2020",
 res
 ```
 
-Remember that, if your IMAP server has the ESEARCH capability, you can use it. GMail is one of the providers that allows it.
+Remember that, if your IMAP server has the ESEARCH capability, you can use it. Gmail is one of the mail providers that allow it.
 
 ```{r, message = FALSE, eval=FALSE}
 res <- con$search_before(date_char = "07-Sep-2020",
@@ -343,7 +347,7 @@ con$search_sent_on(date_char = "30-Jun-2020")
 
 You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive. 
 
-You can also **NEGATE** the statement and search for messages (or specific part of a message) not containing that string, and add additional flag filters as well. 
+You can also **NEGATE** the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well. 
 
 For the next examples, we are going to select a different mail folder.
 
@@ -374,7 +378,7 @@ con$search_string(expr = "PhD offer", where = "SUBJECT")
 
 Searching in the "TEXT" section.
 
-**IMPORTANT**: Since the text may contain raw data, it may not be a super effective search. In this case, searching for a expression in the whole `"BODY"` may be preferred.
+**IMPORTANT**: Since the text may contain raw data, it may not be a super-effective search. In this case, searching for a expression in the whole `"BODY"` may be preferred.
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -419,7 +423,7 @@ con$search_larger_than(size = 512000) # larger than 512KB
 
 ### 4.5) Search by Within Extension
 
-Severs with support to the "WITHIN" EXTENSION enable searching for messages within a span of time, i.e. younger than "x" seconds, or older than "x" seconds. This capability is really rare of find in IMAP servers, but `mRpostman` has two methods implemented for coping with this capability if it is available.
+Severs with support to the "WITHIN" EXTENSION enable searching for messages within a span, i.e. younger than "x" seconds, or older than "x" seconds. This capability is really rare to find in IMAP servers, but `mRpostman` has two methods implemented for coping with this capability if it is available.
 
 #### 4.5.1) Younger Than
 
@@ -457,7 +461,7 @@ res <- con$search(request = AND(string(expr = "Kansas State University", where =
 res
 ```
 
-**Example 2**: Searching (usinbg UID) for messages received from "@k-state.edu" **OR** "@ksu.edu".
+**Example 2**: Searching (using UID) for messages received from "@k-state.edu" **OR** "@ksu.edu".
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -469,15 +473,15 @@ con$search(request = OR(string(expr = "@k-state.edu", where = "FROM"),
 
 ## 6) Fetch
 
-You can fetch the full content of messages, or their parts, such as the header, text, or specific metadat fields. Besides this, you can also fetch a message attachments list or the attachment files themselves, downloading them to the disk.
+You can fetch the full content of messages, or their parts, such as the header, text, or specific metadata fields. Besides this, you can also fetch a message attachments list or the attachment files themselves, downloading them to the disk.
 
 We usually fetch messages after a search operation. Given the output of the search functions in **mRpostman**, you can use the pipe `%>%` to chain the search and the fetch operations together. Using the base R approach is perfectly possible as well.
 
-In the main fetch methods (those that are not related to attachment fetching), you can choose to write fetch results to disk (working directory) using `write_to_disk = TRUE`. If you opt to do so, **mRpostman** saves the fetch content to a `.txt` file in the following folder structure: `working directory > imap.server.url > mail folder name`. The text files will be named after the id of the fetched message. If the operation was executed using the UID, the "UID" prefix are added to the file names.
+In the main fetch methods (those that are not related to attachment fetching), you can choose to write the fetch results to disk (working directory) using `write_to_disk = TRUE`. If you opt to do so, **mRpostman** saves the fetched content to a `.txt` file in the following folder structure: `working directory > imap.server.url > mail folder name`. The text files will be named after the id of the fetched message. If the operation was executed using the UID, the "UID" prefix is added to the file names.
 
 **IMPORTANT**:
 
-1. If the fetch operation is to be chained after a search, the `use_uid` arguments in the two operations have to be the same. Otherwise, an error will occur or the the fetch will be performed on wrong messages' ids.
+1. If the fetch operation is to be chained after a search, the `use_uid` arguments in the two operations have to be the same. Otherwise, an error will occur or the fetch will be performed on wrong messages' ids.
 
 2. It is always recommended to increase the timeout_ms before `fetch_body()`, `fetch_text()`, and `fetch_attachents()` operations as sometimes the operation may hang for a few seconds while fetching the message parts.
 
@@ -505,7 +509,7 @@ res <- con$search_string(expr = "@k-state.edu", where = "FROM")
 con$fetch_body(msg_id = res, write_to_disk = TRUE, keep_in_mem = FALSE)
 ```
 
-Since the goal here is to write the fetch results to disk, it is recommended that we set `keep_in_mem = FALSE`. This will optimize the whole operation, because `mRpostman` will clean the memory after fetching each message as we are not going to use the results in our R session. 
+Since the goal here is to write the fetch results to disk, it is recommended that we set `keep_in_mem = FALSE`. This will optimize the whole operation because `mRpostman` will clean the memory after fetching each message as we are not going to use the results in our R session. 
 
 Our local folder will be populated with the `.txt` files of the fetched messages:
 
@@ -531,7 +535,7 @@ out <- con$fetch_header(use_uid = TRUE, fields = c("DATE", "SUBJECT"))
 out
 ```
 
-Note that, in the example above, we are saving the results to the `out` object in our R session. Also note that we are setting `use_uid = TRUE` in both search and fetch requests.
+Note that, in the example above, we are saving the results to the `out` object in our R session. Also, note that we are setting `use_uid = TRUE` in both search and fetch requests.
 
 
 ### 6.3) Fetch text
@@ -552,14 +556,14 @@ out <- con$search_on(date_char = "15-Aug-2019", use_uid = TRUE) %>%
 
 If nothing is specified to the `metadata` argument, all the metadata fields are fetched by default. To know which are the metadata options of a message, refer to `metadata_options()`.
 
-The are two more fetch methods, but they are going to be presented in the next session, since they are relate to a very special fetch operation.
+There are two more fetch methods, but they are going to be presented in the next session since they are related to a very special fetch operation.
 
 
 ## 7) Attachments
 
-Previously, `mRpostman` had two attachment related functions: `list_attachments()` and `get_attachments()`. Both were to be used after a fetching operation, because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version `0.9.0.0`: `fetch_attachments_list()` and `fetch_attachments()`. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.
+Previously, `mRpostman` had two attachment-related functions: `list_attachments()` and `get_attachments()`. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version `0.9.0.0`: `fetch_attachments_list()` and `fetch_attachments()`. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.
 
-Let's take a look in the first two attachments functionalities available in `mRpostman`.
+Let's take a look at the first two attachments functionalities available in `mRpostman`.
 
 ### 7.1) Dependent attachment operations
 
@@ -614,7 +618,7 @@ The results in your local folder will be like this:
 
 ### 7.2) Optimized attachment operations
 
-As we stated before, the following two methods do not dependent on a previous fetch step, because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.
+As we stated before, the following two methods are not contingent on a previous fetch step because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.
 
 **IMPORTANT**: The same recommendations for the other fetch methods hold in this case: set `verbose = FALSE` and a high `timeout_ms`.
 
@@ -653,7 +657,7 @@ It will automatically re-select the destination folder unless the user sets `res
 
 ### 8.2) Get minimum message ID
 
-This operation depends on the ESEARCH capability. It will retrieve the **minimum** message id containing an specific flag(s) in the selected mail folder.
+This operation depends on the ESEARCH capability. It will retrieve the **minimum** message id containing a specific flag(s) in the selected mail folder.
 
 ```{r, message = FALSE, eval = FALSE}
 con$esearch_min_id(flag = c("Answered", "Seen"))
@@ -661,7 +665,7 @@ con$esearch_min_id(flag = c("Answered", "Seen"))
 
 ### 8.3) Get maximum message ID
 
-This operation also depends on the ESEARCH capability. It will retrieve the **maximum** message id containing an specific flag(s) in the selected mail folder.
+This operation also depends on the ESEARCH capability. It will retrieve the **maximum** message id containing a specific flag(s) in the selected mail folder.
 
 ```{r, message = FALSE, eval = FALSE}
 con$esearch_min_id(flag = c("Answered", "Seen"))
@@ -669,7 +673,7 @@ con$esearch_min_id(flag = c("Answered", "Seen"))
 
 ### 8.4) Count messages
 
-This operation also depends on the ESEARCH capability. It will retrieve the **number** of messages with an specific flag(s) in the selected mail folder.
+This operation also depends on the ESEARCH capability. It will retrieve the **number** of messages with a specific flag(s) in the selected mail folder.
 
 ```{r, message = FALSE, eval = FALSE}
 con$esearch_count(flag = c("Answered", "Seen"))
@@ -677,7 +681,7 @@ con$esearch_count(flag = c("Answered", "Seen"))
 
 ### 8.5) Delete message(s)
 
-This method marks one or more messages with the "\\Deleted" system flag. Some servers automatically delete messages marked with this flag, and others require the `EXPUNGE` command in order to definitely remove the e-mail.
+This method marks one or more messages with the "\\Deleted" system flag. Some servers automatically delete messages marked with this flag, and others require the `EXPUNGE` command to permanently delete the e-mail.
 
 ```{r, message = FALSE, eval = FALSE}
 con$select_folder(name = "Trash")
@@ -694,7 +698,7 @@ con$delete_msg(msg_id = 66128)
 
 ### 8.6) Expunge
 
-Expunges message(s) marked with the "DELETED" flag in a mailbox or an specific message using the `msg_uid` argument. Note the this require the "UID" (unique id) and not sequence numbers.
+Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the `msg_uid` argument. Note the this requires the "UID" (unique id), not sequence numbers.
 
 ```{r, message = FALSE, eval = FALSE}
 
