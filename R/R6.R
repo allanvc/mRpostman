@@ -39,17 +39,19 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
     #' @param verbose If \code{FALSE}, mutes the flow of information between the
     #'   server and the client. Default is \code{FALSE}.
-    #' @param buffersize The size in bytes for curl's receive buffer. Default is
-    #'   16000 bytes or 16kb, which means it will use the default value of libcurl.
-    #'   According to libcurl's documentation, the maximum buffersize is 512kb
+    #' @param buffersize The size in bytes for the receive buffer. Default is
+    #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
+    #'   According to the libcurl's documentation, the maximum buffersize is 512kb
     #'   (or 512000 bytes), but any number passe to \code{buffersize} is treated
     #'   as a request, not an order.
-    #' @param timeout_ms Time in miliseconds (ms) to wait for the execution or
-    #'   rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-    #'   execution is frustrated, an error handler in each function (depending on
+    #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
+    #'   re-execution of a command. Default is 5000ms (or 5 seconds). If a first
+    #'   execution is unsuccessful, an error handler in each function (depending on
     #'   the \code{retries} value), will try to reconnect or re-execute the command.
     #' @param ... Further curl parameters (see \code{curl::curl_options}) that
     #'   can be used with the IMAP protocol. Only for advanced users.
+    #' @note \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap()}}
+    #'   should be preferred instead of \code{ImapCon$new()}.
     #' @return A new `ImapCon` object.
     initialize = function(url,
                           username,
@@ -139,9 +141,9 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param buffersize The size in bytes for curl's receive buffer. Default is
-    #'   16000 bytes or 16kb, which means it will use the default value of libcurl.
-    #'   According to libcurl's documentation, the maximum buffersize is 512kb
+    #' @param buffersize The size in bytes for the receive buffer. Default is
+    #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
+    #'   According to the libcurl's documentation, the maximum buffersize is 512kb
     #'   (or 512000 bytes), but any number passe to \code{buffersize} is treated
     #'   as a request, not an order.
     reset_buffersize = function(buffersize) {
@@ -151,9 +153,9 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param timeout_ms Time in miliseconds (ms) to wait for the execution or
-    #'   rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-    #'   execution is frustrated, an error handler in each function (depending on
+    #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
+    #'   re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
+    #'   execution is unsuccessful, an error handler in each function (depending on
     #'   the \code{retries} value), will try to reconnect or re-execute the command.
     reset_timeout_ms = function(timeout_ms) {
 
@@ -207,7 +209,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description List mail folders in a mailbox.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
-    #' @return A \code{lsit} containing the mail folder names and their inherent
+    #' @return A \code{list} containing the mail folder names and their inherent
     #'   structure.
     #' @examples
     #' \dontrun{
@@ -319,7 +321,7 @@ ImapCon <- R6::R6Class("ImapCon",
     ### custom search
     #' @description Execute a custom search
     #' @param request A string directly specifying what to search or
-    #'   constructed by a combination of operators helper functions \code{\link{OR}}
+    #'   constructed by a combination of relational-operator-helper-functions \code{\link{OR}}
     #'   and \code{\link{AND}}, and criteria helper functions such as
     #'   \code{\link{before}}, \code{\link{since}}, \code{\link{on}},
     #'   \code{\link{sent_before}}, \code{\link{sent_since}}, \code{\link{sent_on}},
@@ -348,7 +350,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follows
     #'   Polish notation, i.e. operators such as \code{OR} come before arguments,
-    #'   e.g. "OR argument1 argument2". Therefore, the relational operators functions
+    #'   e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
     #'   in this package should be used like the following examples:
     #'   \code{OR(before("17-Apr-2015"), string("FROM", "John"))}. Even though there
     #'   is no "AND" operator in IMAP, this package adds a helper function
@@ -381,7 +383,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     ### size search
     #' @description Search by size (LARGER)
-    #' @param size An integer specifying the number of seconds to be used as
+    #' @param size An integer specifying the number of seconds to be used as the
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
@@ -393,7 +395,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -421,7 +423,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Search by size (SMALLER)
-    #' @param size An integer specifying the number of seconds to be used as
+    #' @param size An integer specifying the number of seconds to be used as the
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
@@ -433,7 +435,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -476,7 +478,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -521,7 +523,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -564,7 +566,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -610,7 +612,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -656,7 +658,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -671,10 +673,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-sent_before}{\code{ImapCon$sent_before()}}: Search
     #'   operations that use the origination/RFC-2822 Header date
-    #'   tend to be "slower" than those that use internal date. Although the
-    #'   overhead is minimum, the difference is due to the fact that internal date
+    #'   tend to be "slower" than those that use the internal date. Although the
+    #'   overhead is minimum, the difference is due to the fact that the internal date
     #'   is kept on a database, while the origination date has to be retrieved from
-    #'   inside the message. Therefore, the server need to access each message when
+    #'   inside the message. Therefore, the server needs to access each message when
     #'   executing this type of search. Despite this fact, both dates tend to be the
     #'   same.
     #' @return A \code{numeric vector} containing the message ids.
@@ -706,7 +708,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -721,10 +723,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-search_sent_since}{\code{ImapCon$search_sent_since()}}: Search
     #'   operations that use the origination/RFC-2822 Header date
-    #'   tend to be "slower" than those that use internal date. Although the
-    #'   overhead is minimum, the difference is due to the fact that internal date
+    #'   tend to be "slower" than those that use the internal date. Although the
+    #'   overhead is minimum, the difference is due to the fact that the internal date
     #'   is kept on a database, while the origination date has to be retrieved from
-    #'   inside the message. Therefore, the server need to access each message when
+    #'   inside the message. Therefore, the server needs to access each message when
     #'   executing this type of search. Despite this fact, both dates tend to be the
     #'   same.
     #' @return A \code{numeric vector} containing the message ids.
@@ -756,7 +758,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -771,10 +773,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-search_sent_on}{\code{ImapCon$search_sent_on()}}: Search
     #'   operations that use the origination/RFC-2822 Header date
-    #'   tend to be "slower" than those that use internal date. Although the
-    #'   overhead is minimum, the difference is due to the fact that internal date
+    #'   tend to be "slower" than those that use the internal date. Although the
+    #'   overhead is minimum, the difference is due to the fact that the internal date
     #'   is kept on a database, while the origination date has to be retrieved from
-    #'   inside the message. Therefore, the server need to access each message when
+    #'   inside the message. Therefore, the server needs to access each message when
     #'   executing this type of search. Despite this fact, both dates tend to be the
     #'   same.
     #' @return A \code{numeric vector} containing the message ids.
@@ -810,7 +812,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -825,10 +827,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-search_sent_period}{\code{ImapCon$search_sent_period()}}: Search
     #'   operations that use the origination/RFC-2822 Header date
-    #'   tend to be "slower" than those that use internal date. Although the
-    #'   overhead is minimum, the difference is due to the fact that internal date
+    #'   tend to be "slower" than those that use the internal date. Although the
+    #'   overhead is minimum, the difference is due to the fact that the internal date
     #'   is kept on a database, while the origination date has to be retrieved from
-    #'   inside the message. Therefore, the server need to access each message when
+    #'   inside the message. Therefore, the server needs to access each message when
     #'   executing this type of search. Despite this fact, both dates tend to be the
     #'   same.
     #' @return A \code{numeric vector} containing the message ids.
@@ -894,7 +896,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     ### WITHIN
 
-    #' @description Search WITHIN a time period (OLDER)
+    #' @description Search WITHIN a specific time (OLDER)
     #' @param seconds An integer specifying the number of seconds to be used as
     #'   the search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -907,7 +909,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -939,7 +941,7 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
-    #' @description Search WITHIN a time period (YOUNGER)
+    #' @description Search WITHIN a specific time (YOUNGER)
     #' @param seconds An integer specifying the number of seconds to be used as
     #'   the search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -952,7 +954,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -1000,7 +1002,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command will be performed using the \code{"UID"} or unique identifier,
     #'   and results are presented as such. UIDs are always the same during the
     #'   life cycle of a message in a mail folder.
-    #' @param flag Optional argument that sets one or more flags as an additional
+    #' @param flag An optional argument that sets one or more flags as an additional
     #'   filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder. Default is \code{NULL}.
     #' @param esearch A logical. Default is \code{FALSE}. If the IMAP server has
@@ -1053,7 +1055,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param partial \code{NULL} or a character string with format
     #'   "startchar.endchar" indicating the size (in characters) of a message slice
     #'   to fetch. Default is \code{NULL}, which will fetch the full specified content.
-    #' @param write_to_disk If \code{TRUE}, writes the fetch content of each message
+    #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
     #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
@@ -1114,7 +1116,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param partial \code{NULL} or a character string with format
     #'   "startchar.endchar" indicating the size (in characters) of a message slice
     #'   to fetch. Default is \code{NULL}, which will fetch the full specified content.
-    #' @param write_to_disk If \code{TRUE}, writes the fetch content of each message
+    #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
     #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
@@ -1172,7 +1174,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param partial \code{NULL} or a character string with format
     #'   "startchar.endchar" indicating the size (in characters) of a message slice
     #'   to fetch. Default is \code{NULL}, which will fetch the full specified content.
-    #' @param write_to_disk If \code{TRUE}, writes the fetch content of each message
+    #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
     #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
@@ -1227,7 +1229,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param partial \code{NULL} or a character string with format
     #'   "startchar.endchar" indicating the size (in characters) of a message slice
     #'   to fetch. Default is \code{NULL}, which will fetch the full specified content.
-    #' @param write_to_disk If \code{TRUE}, writes the fetch content of each message
+    #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
     #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
@@ -1366,9 +1368,9 @@ ImapCon <- R6::R6Class("ImapCon",
 
     },
 
-    #' @description Count the number of messages with an specific flag(s) in a
+    #' @description Count the number of messages with a specific flag(s) in a
     #'   folder (depend on ESEARCH capability)
-    #' @param flag Mandatory parameter that specifies one or more flags as a
+    #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -1452,7 +1454,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Search the minimum message id in the selected mail folder
     #'   (depend on ESEARCH capability)
-    #' @param flag Mandatory parameter that specifies one or more flags as a
+    #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -1485,7 +1487,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Search the maximum message id in the selected mail folder
     #'   (depend on ESEARCH capability)
-    #' @param flag Mandatory parameter that specifies one or more flags as a
+    #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -1518,7 +1520,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     # FLAG operations
 
-    #' @description Add Flags to message(s)
+    #' @description Add flags to one or more messages
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
     #' @param use_uid Default is \code{FALSE}. In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
@@ -1527,8 +1529,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
-    #' @param flags_to_set A \code{character vector} containing one ore more flag
-    #'   names to add to the specified message ids. If the flag to be set is an
+    #' @param flags_to_set A \code{character vector} containing one or more flag
+    #'   names to add to the specified message ids. If the flag to be set is a
     #'   system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
@@ -1537,21 +1539,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+    #'   demand that system flags' names be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: \code{add_flags},
-    #'   \code{remove_flags} and
-    #'   \code{replace_flags}, accepts not only flags but also keywords (any word
-    #'   not beginning with two backslashes) which are custom flags defined by
-    #'   the user.
-    #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: IMAP
-    #'   servers do not allow setting a flag when a message already has
-    #'   its antonym version of it. For example, if a message with a sequence
-    #'   number \code{1} already has the "SEEN" flag, it is not allowed to add
-    #'   "UNSEEN" to that. Instead, you have to first remove the "SEEN" flag
-    #'   \code{remove_flags(msg_id = 1, "SEEN")} and only then run
-    #'   \code{add_flags(msg_id = 1, "SEEN")}. Another option is to
-    #'   completely override all the flags of a message or a set of messages using
-    #'   \code{replace_flags(msg_id = 1, "SEEN")}.
+    #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
+    #'   also keywords (any word not beginning with two backslashes) which are
+    #'   custom flags defined by the user.
     #' @return An invisible \code{numeric vector} containing the message ids.
     #' @family complementary operations
     #' @examples
@@ -1578,8 +1570,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
-    #' @param flags_to_set A \code{character vector} containing one ore more flag
-    #'   names that will replace the current ones. If the flag to be set is an
+    #' @param flags_to_set A \code{character vector} containing one or more flag
+    #'   names that will replace the current ones. If the flag to be set is a
     #'   system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
@@ -1588,12 +1580,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+    #'   demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: \code{add_flags},
-    #'   \code{remove_flags} and
-    #'   \code{replace_flags}, accepts not only flags but also keywords (any word
-    #'   not beginning with two backslashes) which are custom flags defined by
-    #'   the user.
+    #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
+    #'   also keywords (any word not beginning with two backslashes) which are
+    #'   custom flags defined by the user.
     #' @return An invisible \code{numeric vector} containing the message ids.
     #' @family complementary operations
     #' @examples
@@ -1621,8 +1612,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
-    #' @param flags_to_unset A \code{character vector} containing one ore more
-    #'   flag names that will be unset (removed). If the flag to be removed is an
+    #' @param flags_to_unset A \code{character vector} containing one or more
+    #'   flag names that will be unset (removed). If the flag to be removed is a
     #'   system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
@@ -1631,12 +1622,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+    #'   demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: \code{add_flags},
-    #'   \code{remove_flags} and
-    #'   \code{replace_flags}, accepts not only flags but also keywords (any word
-    #'   not beginning with two backslashes) which are custom flags defined by
-    #'   the user.
+    #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
+    #'   also keywords (any word not beginning with two backslashes) which are
+    #'   custom flags defined by the user.
     #' @return An invisible \code{numeric vector} containing the message ids.
     #' @family complementary operations
     #' @examples

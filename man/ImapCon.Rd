@@ -8,9 +8,12 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
   class.
 }
 \note{
+\href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap()}}
+  should be preferred instead of \code{ImapCon$new()}.
+
 \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follows
   Polish notation, i.e. operators such as \code{OR} come before arguments,
-  e.g. "OR argument1 argument2". Therefore, the relational operators functions
+  e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
   in this package should be used like the following examples:
   \code{OR(before("17-Apr-2015"), string("FROM", "John"))}. Even though there
   is no "AND" operator in IMAP, this package adds a helper function
@@ -19,37 +22,37 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 
 \href{#method-sent_before}{\code{ImapCon$sent_before()}}: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.
 
 \href{#method-search_sent_since}{\code{ImapCon$search_sent_since()}}: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.
 
 \href{#method-search_sent_on}{\code{ImapCon$search_sent_on()}}: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.
 
 \href{#method-search_sent_period}{\code{ImapCon$search_sent_period()}}: Search
   operations that use the origination/RFC-2822 Header date
-  tend to be "slower" than those that use internal date. Although the
-  overhead is minimum, the difference is due to the fact that internal date
+  tend to be "slower" than those that use the internal date. Although the
+  overhead is minimum, the difference is due to the fact that the internal date
   is kept on a database, while the origination date has to be retrieved from
-  inside the message. Therefore, the server need to access each message when
+  inside the message. Therefore, the server needs to access each message when
   executing this type of search. Despite this fact, both dates tend to be the
   same.
 
@@ -81,43 +84,30 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 
 \href{#method-add_flags}{\code{ImapCon$add_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+  demand that system flags' names be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-add_flags}{\code{ImapCon$add_flags()}}: \code{add_flags},
-  \code{remove_flags} and
-  \code{replace_flags}, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.
-
-\href{#method-add_flags}{\code{ImapCon$add_flags()}}: IMAP
-  servers do not allow setting a flag when a message already has
-  its antonym version of it. For example, if a message with a sequence
-  number \code{1} already has the "SEEN" flag, it is not allowed to add
-  "UNSEEN" to that. Instead, you have to first remove the "SEEN" flag
-  \code{remove_flags(msg_id = 1, "SEEN")} and only then run
-  \code{add_flags(msg_id = 1, "SEEN")}. Another option is to
-  completely override all the flags of a message or a set of messages using
-  \code{replace_flags(msg_id = 1, "SEEN")}.
+  \code{remove_flags}, and \code{replace_flags} accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.
 
 \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+  demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: \code{add_flags},
-  \code{remove_flags} and
-  \code{replace_flags}, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.
+  \code{remove_flags}, and \code{replace_flags} accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.
 
 \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names to be preceded by two backslashes \code{"\\\\"}.
+  demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: \code{add_flags},
-  \code{remove_flags} and
-  \code{replace_flags}, accepts not only flags but also keywords (any word
-  not beginning with two backslashes) which are custom flags defined by
-  the user.
+  \code{remove_flags}, and \code{replace_flags} accept not only flags but
+  also keywords (any word not beginning with two backslashes) which are
+  custom flags defined by the user.
 
 \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
   This method is to be used after the body or the
@@ -795,15 +785,15 @@ encryption when connecting to the IMAP server. Default is \code{TRUE}.}
 \item{\code{verbose}}{If \code{FALSE}, mutes the flow of information between the
 server and the client. Default is \code{FALSE}.}
 
-\item{\code{buffersize}}{The size in bytes for curl's receive buffer. Default is
-16000 bytes or 16kb, which means it will use the default value of libcurl.
-According to libcurl's documentation, the maximum buffersize is 512kb
+\item{\code{buffersize}}{The size in bytes for the receive buffer. Default is
+16000 bytes or 16kb, which means it will use the libcurl's default value.
+According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passe to \code{buffersize} is treated
 as a request, not an order.}
 
-\item{\code{timeout_ms}}{Time in miliseconds (ms) to wait for the execution or
-rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
+\item{\code{timeout_ms}}{Time in milliseconds (ms) to wait for the execution or
+re-execution of a command. Default is 5000ms (or 5 seconds). If a first
+execution is unsuccessful, an error handler in each function (depending on
 the \code{retries} value), will try to reconnect or re-execute the command.}
 
 \item{\code{...}}{Further curl parameters (see \code{curl::curl_options}) that
@@ -897,9 +887,9 @@ Reset the previously informed buffersize parameter
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{buffersize}}{The size in bytes for curl's receive buffer. Default is
-16000 bytes or 16kb, which means it will use the default value of libcurl.
-According to libcurl's documentation, the maximum buffersize is 512kb
+\item{\code{buffersize}}{The size in bytes for the receive buffer. Default is
+16000 bytes or 16kb, which means it will use the libcurl's default value.
+According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passe to \code{buffersize} is treated
 as a request, not an order.}
 }
@@ -918,9 +908,9 @@ Reset the previously informed buffersize parameter
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{timeout_ms}}{Time in miliseconds (ms) to wait for the execution or
-rexecution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
+\item{\code{timeout_ms}}{Time in milliseconds (ms) to wait for the execution or
+re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
+execution is unsuccessful, an error handler in each function (depending on
 the \code{retries} value), will try to reconnect or re-execute the command.}
 }
 \if{html}{\out{</div>}}
@@ -1012,7 +1002,7 @@ Default is \code{1}.}
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A \code{lsit} containing the mail folder names and their inherent
+A \code{list} containing the mail folder names and their inherent
   structure.
 }
 \subsection{Examples}{
@@ -1246,7 +1236,7 @@ Execute a custom search
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{request}}{A string directly specifying what to search or
-constructed by a combination of operators helper functions \code{\link{OR}}
+constructed by a combination of relational-operator-helper-functions \code{\link{OR}}
 and \code{\link{AND}}, and criteria helper functions such as
 \code{\link{before}}, \code{\link{since}}, \code{\link{on}},
 \code{\link{sent_before}}, \code{\link{sent_since}}, \code{\link{sent_on}},
@@ -1323,7 +1313,7 @@ Search by size (LARGER)
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{size}}{An integer specifying the number of seconds to be used as
+\item{\code{size}}{An integer specifying the number of seconds to be used as the
 search criterion.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -1338,7 +1328,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1390,7 +1380,7 @@ Search by size (SMALLER)
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{size}}{An integer specifying the number of seconds to be used as
+\item{\code{size}}{An integer specifying the number of seconds to be used as the
 search criterion.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -1405,7 +1395,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1474,7 +1464,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1546,7 +1536,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1616,7 +1606,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1691,7 +1681,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1763,7 +1753,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1832,7 +1822,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1901,7 +1891,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -1976,7 +1966,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -2082,7 +2072,7 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
 \if{html}{\out{<a id="method-search_older_than"></a>}}
 \if{latex}{\out{\hypertarget{method-search_older_than}{}}}
 \subsection{Method \code{search_older_than()}}{
-Search WITHIN a time period (OLDER)
+Search WITHIN a specific time (OLDER)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_older_than(
   seconds,
@@ -2112,7 +2102,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -2150,7 +2140,7 @@ con$search_older_than(seconds = 3600, negate = TRUE)
 \if{html}{\out{<a id="method-search_younger_than"></a>}}
 \if{latex}{\out{\hypertarget{method-search_younger_than}{}}}
 \subsection{Method \code{search_younger_than()}}{
-Search WITHIN a time period (YOUNGER)
+Search WITHIN a specific time (YOUNGER)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_younger_than(
   seconds,
@@ -2180,7 +2170,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -2252,7 +2242,7 @@ command will be performed using the \code{"UID"} or unique identifier,
 and results are presented as such. UIDs are always the same during the
 life cycle of a message in a mail folder.}
 
-\item{\code{flag}}{Optional argument that sets one or more flags as an additional
+\item{\code{flag}}{An optional argument that sets one or more flags as an additional
 filter to the search. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder. Default is \code{NULL}.}
 
@@ -2324,7 +2314,7 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which will fetch the full specified content.}
 
-\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetch content of each message
+\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
 
@@ -2413,7 +2403,7 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which will fetch the full specified content.}
 
-\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetch content of each message
+\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
 
@@ -2487,7 +2477,7 @@ UIDs are always the same during the life cycle of a message in a mail folder.}
 \item{\code{metadata}}{An optional \code{character vector} specifying one or more
 items of the metadata of a message to fetch. See \link{metadata_options}.}
 
-\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetch content of each message
+\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
 
@@ -2574,7 +2564,7 @@ fetching. Default is \code{TRUE}.}
 "startchar.endchar" indicating the size (in characters) of a message slice
 to fetch. Default is \code{NULL}, which will fetch the full specified content.}
 
-\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetch content of each message
+\item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
 
@@ -2760,7 +2750,7 @@ con$move(msg = res, to_folder = "Sent")
 \if{html}{\out{<a id="method-esearch_count"></a>}}
 \if{latex}{\out{\hypertarget{method-esearch_count}{}}}
 \subsection{Method \code{esearch_count()}}{
-Count the number of messages with an specific flag(s) in a
+Count the number of messages with a specific flag(s) in a
   folder (depend on ESEARCH capability)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$esearch_count(flag, use_uid = FALSE, retries = 1)}\if{html}{\out{</div>}}
@@ -2769,7 +2759,7 @@ Count the number of messages with an specific flag(s) in a
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{flag}}{Mandatory parameter that specifies one or more flags as a
+\item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
 
@@ -2902,7 +2892,7 @@ Search the minimum message id in the selected mail folder
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{flag}}{Mandatory parameter that specifies one or more flags as a
+\item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
 
@@ -2950,7 +2940,7 @@ Search the maximum message id in the selected mail folder
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{flag}}{Mandatory parameter that specifies one or more flags as a
+\item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
 
@@ -2989,7 +2979,7 @@ con$esearch_max_id(flag = "Seen")
 \if{html}{\out{<a id="method-add_flags"></a>}}
 \if{latex}{\out{\hypertarget{method-add_flags}{}}}
 \subsection{Method \code{add_flags()}}{
-Add Flags to message(s)
+Add flags to one or more messages
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$add_flags(
   msg_id,
@@ -3013,8 +3003,8 @@ sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
 
-\item{\code{flags_to_set}}{A \code{character vector} containing one ore more flag
-names to add to the specified message ids. If the flag to be set is an
+\item{\code{flags_to_set}}{A \code{character vector} containing one or more flag
+names to add to the specified message ids. If the flag to be set is a
 system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
 preceded by two backslashes \code{\\}.}
 
@@ -3071,8 +3061,8 @@ sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
 
-\item{\code{flags_to_set}}{A \code{character vector} containing one ore more flag
-names that will replace the current ones. If the flag to be set is an
+\item{\code{flags_to_set}}{A \code{character vector} containing one or more flag
+names that will replace the current ones. If the flag to be set is a
 system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
 preceded by two backslashes \code{\\}.}
 
@@ -3130,8 +3120,8 @@ sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
 
-\item{\code{flags_to_unset}}{A \code{character vector} containing one ore more
-flag names that will be unset (removed). If the flag to be removed is an
+\item{\code{flags_to_unset}}{A \code{character vector} containing one or more
+flag names that will be unset (removed). If the flag to be removed is a
 system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
 preceded by two backslashes \code{\\}.}
 

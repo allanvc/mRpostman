@@ -1,10 +1,10 @@
 ---
-title: "Migrating code to mRpostman's R6 sintaxe"
+title: "Migrating old code to the new mRpostman's syntax"
 output: 
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{Migrating code to mRpostman's R6 sintaxe}
+  %\VignetteIndexEntry{Migrating old code to the new mRpostman's syntax}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -24,15 +24,15 @@ vignette: >
 
 ## Introduction
 
-This vignette aims to provide an easy source of code migration examples so that old `mRpostman` users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.
+This vignette aims to provide an easy source of code migration examples so old `mRpostman` users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.
 
 This is the summary of the main modifications in the package between versions `0.3.1` and `0.9.0.0`:
 
 * All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
     
-* The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests from the methods that triggers IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
+* The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests from the methods that trigger IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
     
-* The "by" argument used in search and fetch functions was replaced by `use_uid`, which is a logical now with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
+* The "by" argument used in search and fetch functions was replaced by `use_uid`, which is a logical now with the default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
     
 * all functions that returned `invisible(0L)` now return `invisible(TRUE)`
 
@@ -42,7 +42,7 @@ This is the summary of the main modifications in the package between versions `0
 In the following sections, we present some code migration examples between the old and the new version of `mRpostman`.
 
 
-## 1) Configurig the IMAP connection
+## 1) Configuring the IMAP connection
 
 <div class="col2">
 Previous code:
@@ -55,7 +55,7 @@ imapconf <- configure_imap(url="imaps://outlook.office365.com",
                            username="your_user@company.com",
                            password=rstudioapi::askForPassword())
 
-# other IMAP providers that were tested: GMail (imaps://imap.gmail.com), 
+# other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), 
 #   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
 #   Yandex (imaps://imap.yandex.com)
 
@@ -84,7 +84,7 @@ con <- ImapCon$new(url="imaps://outlook.office365.com",
 
 Although the object that is created is different (now we have an R6 `ImapCon` class), the code to create a connection object is pretty much the same, but with an alternative that uses the "initialize" method of the R6 class.
 
-Another useful options are: `timeout_ms`, `verbose = TRUE`, and `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, depending on the libcurl version installed on the user's machine. See `curl::curl_options()`. In this new version there is an important curl parameter exposed, `xoauth2_bearer`, which enables OAuth2.0 authentication. Fore more details, check the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
+Other useful options are `timeout_ms`, `verbose = TRUE`, and `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, depending on the libcurl version installed on the user's machine. See `curl::curl_options()`. In this new version, there is an important curl parameter exposed, `xoauth2_bearer`, which enables OAuth2.0 authentication. For more details, check the [_"IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
 
 ## 2) Listing Server Capabilities
@@ -157,7 +157,7 @@ con$examine_folder()
 
 </div>
 
-In the new format, the previous selected folder is kept during the session unless you execute a new selection.
+In the new format, the previously selected folder is kept during the session unless you execute a new selection.
 
 ### 3.4) Renaming a mail folder
 
@@ -254,7 +254,7 @@ result
 
 This pattern is applied to all SEARCH functions.
 
-Special attention should be paid to the `search_string` and `search_flag` methods due to changes in the arguments names and order.
+Special attention should be paid to the `search_string` and `search_flag` methods due to changes in the names and order of the arguments.
 
 #### Search by string - example 1
 
@@ -336,7 +336,7 @@ result
 ```
 </div>
 
-Now you can check which flags are available in a mail folder with the `list_flags()` method. In addition, you can pass multiple flags as search criterion.
+Now you can check which flags are available in a mail folder with the `list_flags()` method. Also, you can pass multiple flags as the search criterion.
 
 
 ## 5) Custom Search

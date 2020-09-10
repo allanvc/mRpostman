@@ -31,14 +31,14 @@ encryption when connecting to the IMAP server. Default is \code{TRUE}.}
 \item{verbose}{If \code{FALSE}, mutes the flow of information between the
 server and the client. Default is \code{FALSE}.}
 
-\item{buffersize}{The size in bytes for curl's receive buffer. Default is
-16000 bytes or 16kb, which means it will use the default value of libcurl.
-According to libcurl's documentation, the maximum buffersize is 512kb
+\item{buffersize}{The size in bytes for the receive buffer. Default is
+16000 bytes or 16kb, which means it will use the libcurl's default value.
+According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passe to \code{buffersize} is treated
 as a request, not an order.}
 
-\item{timeout_ms}{Time in miliseconds (ms) to wait for the execution or
-rexecution of a command. Default is 5000ms (or 5 seconds). If a first
+\item{timeout_ms}{Time in milliseconds (ms) to wait for the execution or
+re-execution of a command. Default is 5000ms (or 5 seconds). If a first
 execution is frustrated, an error handler in each function (depending on
 the \code{retries} value), will try to reconnect or re-execute the command.}
 
