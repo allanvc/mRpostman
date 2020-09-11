@@ -55,9 +55,9 @@ imapconf <- configure_imap(url="imaps://outlook.office365.com",
                            username="your_user@company.com",
                            password=rstudioapi::askForPassword())
 
-# other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), 
-#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
-#   Yandex (imaps://imap.yandex.com)
+# other mail providers that were tested: Gmail (imaps://imap.gmail.com), 
+#   Hotmail ("imaps://imap-mail.outlook.com"), Yahoo (imaps://imap.mail.yahoo.com/), 
+#   AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)
 
 ```
   
@@ -188,7 +188,7 @@ con$list_mail_folders() # and list again to check
 
 ## 4) Single Search
 
-All search functions now return only the message's ids.
+All search functions now return only the message ids.
 
 <div class="col2">
 Previous code:

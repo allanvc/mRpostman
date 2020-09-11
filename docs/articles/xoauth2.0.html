@@ -228,10 +228,10 @@
 <p><img src="figures/xoauth/step2_x4.png" width="550"></p>
 <p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
 <div class="col2">
-<p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br></p>
+<p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br><br></p>
 <p><img src="figures/xoauth/step2_x6.png" style="width:80.0%"></p>
 </div>
-<p>In the end, you should see a new white tab with the message: “Authentication complete. Please close this page and return to R.”</p>
+<p>Finally, you should see a new white tab with the message: <em>“Authentication complete. Please close this page and return to R”</em>.</p>
 </div>
 <div id="step-5---testing-the-imap-connection" class="section level2">
 <h2 class="hasAnchor">
@@ -265,25 +265,26 @@
 <h2 class="hasAnchor">
 <a href="#step-6---refreshing-the-token" class="anchor"></a>Step 6 - Refreshing the token</h2>
 <p>For future sessions (or after a considerable span of time) you’ll need to refresh the previous token. You can use the following function below to achieve that:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>oauth2<span class="fl">.0</span>_refresh &lt;-<span class="st"> </span><span class="cf">function</span>(endpoint, app, auth_code, <span class="dt">type =</span> <span class="ot">NULL</span>) {</span>
-<span id="cb8-2"><a href="#cb8-2"></a>  req &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/POST">POST</a></span>(</span>
-<span id="cb8-3"><a href="#cb8-3"></a>    <span class="dt">url =</span> endpoint<span class="op">$</span>access,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>    <span class="dt">multipart =</span> <span class="ot">FALSE</span>,</span>
-<span id="cb8-5"><a href="#cb8-5"></a>    <span class="dt">body =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</span>
-<span id="cb8-6"><a href="#cb8-6"></a>      <span class="dt">client_id =</span> app<span class="op">$</span>key,</span>
-<span id="cb8-7"><a href="#cb8-7"></a>      <span class="dt">client_secret =</span> app<span class="op">$</span>secret,</span>
-<span id="cb8-8"><a href="#cb8-8"></a>      <span class="dt">grant_type =</span> <span class="st">"refresh_token"</span>,</span>
-<span id="cb8-9"><a href="#cb8-9"></a>      <span class="dt">refresh_token =</span> auth_code<span class="op">$</span>credentials<span class="op">$</span>refresh_token</span>
-<span id="cb8-10"><a href="#cb8-10"></a>    )</span>
-<span id="cb8-11"><a href="#cb8-11"></a>  )</span>
-<span id="cb8-12"><a href="#cb8-12"></a>  content_out &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/content">content</a></span>(req, <span class="dt">type =</span> type)</span>
-<span id="cb8-13"><a href="#cb8-13"></a>  content_out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(content_out, auth_code<span class="op">$</span>credentials<span class="op">$</span>access_token)</span>
-<span id="cb8-14"><a href="#cb8-14"></a>}</span>
-<span id="cb8-15"><a href="#cb8-15"></a></span>
-<span id="cb8-16"><a href="#cb8-16"></a>auth_code_new &lt;-<span class="st"> </span><span class="kw">oauth2.0_refresh</span>(endpoint, <span class="dt">app=</span>gmail_app, <span class="dt">auth_code=</span>auth_code)</span>
-<span id="cb8-17"><a href="#cb8-17"></a></span>
-<span id="cb8-18"><a href="#cb8-18"></a>token &lt;-<span class="st"> </span>auth_code_new<span class="op">$</span>access_token</span></code></pre></div>
-<p>Substitute it in the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>oauth2<span class="fl">.0</span>_refresh &lt;-<span class="st"> </span><span class="cf">function</span>(endpoint, app, auth_code, <span class="dt">type =</span> <span class="ot">NULL</span>) {</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  req &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/POST">POST</a></span>(</span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="dt">url =</span> endpoint<span class="op">$</span>access,</span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="dt">multipart =</span> <span class="ot">FALSE</span>,</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="dt">body =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/list">list</a></span>(</span>
+<span id="cb8-7"><a href="#cb8-7"></a>      <span class="dt">client_id =</span> app<span class="op">$</span>key,</span>
+<span id="cb8-8"><a href="#cb8-8"></a>      <span class="dt">client_secret =</span> app<span class="op">$</span>secret,</span>
+<span id="cb8-9"><a href="#cb8-9"></a>      <span class="dt">grant_type =</span> <span class="st">"refresh_token"</span>,</span>
+<span id="cb8-10"><a href="#cb8-10"></a>      <span class="dt">refresh_token =</span> auth_code<span class="op">$</span>credentials<span class="op">$</span>refresh_token</span>
+<span id="cb8-11"><a href="#cb8-11"></a>    )</span>
+<span id="cb8-12"><a href="#cb8-12"></a>  )</span>
+<span id="cb8-13"><a href="#cb8-13"></a>  content_out &lt;-<span class="st"> </span>httr<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/httr/topics/content">content</a></span>(req, <span class="dt">type =</span> type)</span>
+<span id="cb8-14"><a href="#cb8-14"></a>  content_out &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(content_out, auth_code<span class="op">$</span>credentials<span class="op">$</span>access_token)</span>
+<span id="cb8-15"><a href="#cb8-15"></a>}</span>
+<span id="cb8-16"><a href="#cb8-16"></a></span>
+<span id="cb8-17"><a href="#cb8-17"></a>auth_code_new &lt;-<span class="st"> </span><span class="kw">oauth2.0_refresh</span>(endpoint, <span class="dt">app=</span>gmail_app, <span class="dt">auth_code=</span>auth_code)</span>
+<span id="cb8-18"><a href="#cb8-18"></a></span>
+<span id="cb8-19"><a href="#cb8-19"></a>token &lt;-<span class="st"> </span>auth_code_new<span class="op">$</span>access_token</span></code></pre></div>
+<p>Substitute it into the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
 </div>
   </div>
 

@@ -113,7 +113,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
   This method is to be used after the body or the
   text part of one or more messages were fetched. This makes sense if the
   user is interested in keeping the message content (body or text) besides
-  downloading the message's attachments. Nonetheless, this is not the
+  downloading the message attachments. Nonetheless, this is not the
   recommended approach if the user is only interested in downloading the files
   as the previous fetching operation will probably be costly. In this last
   case, the recommendation is to use
@@ -658,8 +658,7 @@ con$fetch_attachments(msg = res)
 \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
-  Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-  https://tools.ietf.org/html/rfc2183.
+  Header Field, RFC 2183, August 1997, https://tools.ietf.org/html/rfc2183.
 
 \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
@@ -788,7 +787,7 @@ server and the client. Default is \code{FALSE}.}
 \item{\code{buffersize}}{The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
-(or 512000 bytes), but any number passe to \code{buffersize} is treated
+(or 512000 bytes), but any number passed to \code{buffersize} is treated
 as a request, not an order.}
 
 \item{\code{timeout_ms}}{Time in milliseconds (ms) to wait for the execution or
@@ -890,7 +889,7 @@ Reset the previously informed buffersize parameter
 \item{\code{buffersize}}{The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
-(or 512000 bytes), but any number passe to \code{buffersize} is treated
+(or 512000 bytes), but any number passed to \code{buffersize} is treated
 as a request, not an order.}
 }
 \if{html}{\out{</div>}}
@@ -3263,7 +3262,7 @@ out
 \if{html}{\out{<a id="method-fetch_attachments"></a>}}
 \if{latex}{\out{\hypertarget{method-fetch_attachments}{}}}
 \subsection{Method \code{fetch_attachments()}}{
-Fetch messages' attachments
+Fetch message attachments
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$fetch_attachments(
   msg_id,

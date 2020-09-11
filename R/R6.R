@@ -42,7 +42,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param buffersize The size in bytes for the receive buffer. Default is
     #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
     #'   According to the libcurl's documentation, the maximum buffersize is 512kb
-    #'   (or 512000 bytes), but any number passe to \code{buffersize} is treated
+    #'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
     #'   as a request, not an order.
     #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
     #'   re-execution of a command. Default is 5000ms (or 5 seconds). If a first
@@ -144,7 +144,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param buffersize The size in bytes for the receive buffer. Default is
     #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
     #'   According to the libcurl's documentation, the maximum buffersize is 512kb
-    #'   (or 512000 bytes), but any number passe to \code{buffersize} is treated
+    #'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
     #'   as a request, not an order.
     reset_buffersize = function(buffersize) {
 
@@ -1662,7 +1662,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   This method is to be used after the body or the
     #'   text part of one or more messages were fetched. This makes sense if the
     #'   user is interested in keeping the message content (body or text) besides
-    #'   downloading the message's attachments. Nonetheless, this is not the
+    #'   downloading the message attachments. Nonetheless, this is not the
     #'   recommended approach if the user is only interested in downloading the files
     #'   as the previous fetching operation will probably be costly. In this last
     #'   case, the recommendation is to use
@@ -1689,8 +1689,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @references \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
     #'   Troost, R., Dorner, S., and K. Moore (1997), Communicating
     #'   Presentation Information in Internet Messages: The Content-Disposition
-    #'   Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-    #'   https://tools.ietf.org/html/rfc2183.
+    #'   Header Field, RFC 2183, August 1997, https://tools.ietf.org/html/rfc2183.
     #' @return \code{TRUE} if the operation is successful. The files are saved
     #' locally.
     #' @family attachments
@@ -1719,7 +1718,7 @@ ImapCon <- R6::R6Class("ImapCon",
     # list_attachments() doesnt need anything from self, so it will be a specific function and
     #... not a method form an R6 class
 
-    # NEW ATTACHMENT FETCH FUNCTIONS
+    # NEW ATTACHMENT-FETCH FUNCTIONS
 
     #' @description Fetch attachments' list
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
@@ -1755,7 +1754,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     },
 
-    #' @description Fetch messages' attachments
+    #' @description Fetch message attachments
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
     #' @param use_uid Default is \code{FALSE}. In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number

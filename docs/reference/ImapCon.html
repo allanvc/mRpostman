@@ -227,7 +227,7 @@
   This method is to be used after the body or the
   text part of one or more messages were fetched. This makes sense if the
   user is interested in keeping the message content (body or text) besides
-  downloading the message's attachments. Nonetheless, this is not the
+  downloading the message attachments. Nonetheless, this is not the
   recommended approach if the user is only interested in downloading the files
   as the previous fetching operation will probably be costly. In this last
   case, the recommendation is to use
@@ -278,8 +278,7 @@
 <p><a href='#method-get_attachments'><code>ImapCon$get_attachments()</code></a>:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
-  Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-  https://tools.ietf.org/html/rfc2183.</p>
+  Header Field, RFC 2183, August 1997, https://tools.ietf.org/html/rfc2183.</p>
 <p><a href='#method-fetch_attachments'><code>ImapCon$fetch_attachments()</code></a>:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
@@ -389,7 +388,7 @@ server and the client. Default is <code>FALSE</code>.</p></dd>
     <dt><code>buffersize</code></dt><dd><p>The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
-(or 512000 bytes), but any number passe to <code>buffersize</code> is treated
+(or 512000 bytes), but any number passed to <code>buffersize</code> is treated
 as a request, not an order.</p></dd>
     <dt><code>timeout_ms</code></dt><dd><p>Time in milliseconds (ms) to wait for the execution or
 re-execution of a command. Default is 5000ms (or 5 seconds). If a first
@@ -458,7 +457,7 @@ server and the client.</p></dd>
 <dt><code>buffersize</code></dt><dd><p>The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
-(or 512000 bytes), but any number passe to <code>buffersize</code> is treated
+(or 512000 bytes), but any number passed to <code>buffersize</code> is treated
 as a request, not an order.</p></dd>
 </dl>
 </div>
@@ -2255,7 +2254,7 @@ out
 </div>
     <p><hr>
 <a id="method-fetch_attachments"></a></p><h3>Method <code>fetch_attachments()</code></h3>
-    Fetch messages' attachments
+    Fetch message attachments
 <h3>Usage</h3>
     <div class="r"><pre>ImapCon$fetch_attachments(
   msg_id,
