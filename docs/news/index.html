@@ -132,12 +132,12 @@
 <div id="important-message" class="section level3">
 <h3 class="hasAnchor">
 <a href="#important-message" class="anchor"></a>Important message</h3>
-<p>In this version, in order to drastically enhance the package usability, we had to opt for several profound changes with no backward compatibility. We are sorry that this changes will be painful for old users but it will certainly be strongly beneficial even on the short term. The primary update is that <code>mRpostman</code> now is built on an <code>R6</code> class and its methods, providing a much more convenient and elegant way of usage. It is structured following an OO framework which works well either with the tidy style using pipes or under the base R approach. The syntax now will be <code>ConnectionObject$method()</code>, where the <code>ConnectionObject</code> is created with <code><a href="../reference/configure_imap.html">configure_imap()</a></code> or <code>ImapCon$new()</code>. This completely modifies how the connection handle and other configuration information is passed among the methods/functions in <code>mRpostman</code>.</p>
+<p>In this version, in order to drastically enhance the package usability, we had to adopt several profound changes with no backward compatibility. We are sorry that these changes will be painful for old users but it will certainly be strongly beneficial even in the short term. The primary update is that <code>mRpostman</code> now is built on an <code>R6</code> class and its methods, providing a much more convenient and elegant way of usage. It is structured following an OO framework that works well either with the tidy style using pipes or under the base R approach. The syntax now will be <code>ConnectionObject$method()</code>, where the <code>ConnectionObject</code> is created with <code><a href="../reference/configure_imap.html">configure_imap()</a></code> or <code>ImapCon$new()</code>. This completely modifies how the connection handle and other configuration information is passed among the methods/functions in <code>mRpostman</code>.</p>
 <p>This is a summary of the main modifications in the package:</p>
 <ul>
 <li><p>All the main functions, except by <code>list_attachments</code> and the custom-search helper functions, now are methods of the R6 class <code>ImapConf</code>;</p></li>
-<li><p>The way the connection token is passed between the functions has changed. The connection handle is created only inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and only modified with custom requests inside the methods. As a consequence, the password, username and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request functions. They do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
-<li><p>argument “by” used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical with default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
+<li><p>The way the connection token is passed between the functions has changed. The connection handle is created only inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and only modified with custom requests inside the methods. As a consequence, the password, username, and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request-functions. They do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
+<li><p>the argument “by” used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical with default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
 <li><p>all functions that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code></p></li>
 </ul>
 </div>
@@ -247,14 +247,14 @@
 <li>
 <p><code>specific_UID</code> -&gt; <code>msg_uid</code>:</p>
 <ul>
-<li><p>OBS: type has not changed, still a numeric vector containing messages’ uids</p></li>
+<li><p>OBS: type has not changed, still a numeric vector containing message uids</p></li>
 <li><p>Affected functions: <code>expunge()</code></p></li>
 </ul>
 </li>
 <li>
 <p><code>to_mbox</code> -&gt; <code>to_folder</code>:</p>
 <ul>
-<li><p>OBS: type has not changed, still a character vector containing teh folder name</p></li>
+<li><p>OBS: type has not changed, still a character vector containing the folder name</p></li>
 <li><p>Affected functions: <code>copy_msg()</code>, <code>move_msg()</code></p></li>
 </ul>
 </li>
@@ -332,7 +332,7 @@
 <ul>
 <li><p>functions/methods that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> in the previous version, now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code>. Applied to: <code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>get_attachments()</code>, <code>fetch_attachments()</code>, <code>expunge()</code></p></li>
 <li><p>all search functions now return <code>NA</code> when there is no match. The previous behavior was to return 0.</p></li>
-<li><p><code>add/replace/remove_flags()</code> methods now invisibly return the msg_ids in case the user intends to chain aany further operation (perhaps expunge) using pipe.</p></li>
+<li><p><code>add/replace/remove_flags()</code> methods now invisibly return the msg_ids in case the user intends to chain any further operation (perhaps expunge) using the pipe.</p></li>
 </ul>
 </li>
 <li>
@@ -415,7 +415,7 @@
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
-<p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable span of time between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would had lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
+<p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
 <ul>
 <li>applied to: all request functions/methods, such as search, fetch, mailbox operations (except those that don’t need a previously folder selection), and complementary operations</li>
 </ul>
@@ -434,8 +434,8 @@
 <li><p>added the <code>response_error_handling()</code> function to catch operation/resolving timeout errors and login error as well</p></li>
 </ul>
 </li>
-<li><p>All methods work as wrappers to internal functions with similar names and sufix <code>*_int</code></p></li>
-<li><p>Search, Fetch and Complementary functions have a central internal function called <code>execute_*()</code> (configure and) execute the requests to be made to the IMAP server</p></li>
+<li><p>All methods work as wrappers to internal functions with similar names and suffix <code>*_int</code></p></li>
+<li><p>Search, Fetch and Complementary functions have a central internal function called <code>execute_*()</code> that is responsible for configuring and executing the requests towards the IMAP server</p></li>
 <li><p>removed <code>config_handle()</code>as the connection token chain has changed</p></li>
 <li><p>added <code>config_conn_handle()</code> which is called inside the <code>iniliaze()</code> method of the R6 <code>ImapCon</code> class.</p></li>
 <li><p>added <code>adjust_repeated_filenames()</code>, <code>serialize_filenames()</code> and <code>extract_MIME_level_and_filenames()</code> as helper functions to the new attachments fetch operations</p></li>
@@ -449,8 +449,8 @@
 <h3 class="hasAnchor">
 <a href="#other-general-changes" class="anchor"></a>Other general changes:</h3>
 <ul>
-<li><p><code>fetch_attachments_list()</code> and <code>fetch_attachments()</code> are a faster and smart way to respectively list and download messages’ attachments. They do not depend on a former fetching step, unlike <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. the new methods use BODYSTRUCTURE metadata fetching to identify the attachments, and <code>fetch_attachments()</code> also issue a FETCH BODY[level.MIME] command to fetch only the parts of the messages that contain the attachments. This prevent unnecessary fetching when users only want to obtain the attachments. However, <code>get_attachments()</code> and <code><a href="../reference/list_attachments.html">list_attachments()</a></code> are still available in the package.</p></li>
-<li><p>All <code>fetch_*</code> methods, and <code>get_attachments()</code> now use a different path for saving the fetched files. The folder to be created now will have the following structure: imap_server &gt; mail_folder &gt; <messageid> or <messageuid></messageuid></messageid></p></li>
+<li><p><code>fetch_attachments_list()</code> and <code>fetch_attachments()</code> are a faster and smart way to respectively list and download messages’ attachments. They do not depend on a former fetching step, unlike <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. the new methods use BODYSTRUCTURE metadata fetching to identify the attachments, and <code>fetch_attachments()</code> also issue a FETCH BODY[level.MIME] command to fetch only the parts of the messages that contain the attachments. This prevents unnecessary fetching when users are only interested in attachments. However, <code>get_attachments()</code> and <code><a href="../reference/list_attachments.html">list_attachments()</a></code> are still available in the package.</p></li>
+<li><p>All <code>fetch_*</code> methods, and <code>get_attachments()</code> now use a different path for saving the fetched files. The folder to be created now will have the following structure: imap_server &gt; mail_folder &gt; <messageid> or <messageuid>.</messageuid></messageid></p></li>
 <li>
 <p>Fetched messages that are saved to disk will have different filename structures:</p>
 <ul>
@@ -462,7 +462,7 @@
 </li>
 <li><p>Confirmation messages were added to methods: <code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>fetch_*()</code>, <code>add/replace/remove_flags()</code>, <code>get_attachments()</code>, <code>fetch_attachments()</code></p></li>
 <li><p>A startup message informing about the breaking changes of the version were added by creating the zzz.R file</p></li>
-<li><p>Besides the <em><code>mRpostman</code> Basics</em> vignette, two more were added: <em>Migrating code to mRpostman’s R6 sintaxe</em>, and <em>Using IMAP OAuth2.0 authentication in mRpostman</em></p></li>
+<li><p>Besides the <em><code>mRpostman</code> Basics</em> vignette, two more were added: <em>Migrating old code to the new mRpostman’s syntax</em>, and <em>IMAP OAuth2.0 authentication in mRpostman</em></p></li>
 </ul>
 <hr>
 </div>

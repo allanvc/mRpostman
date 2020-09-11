@@ -2,15 +2,15 @@
 
 ### Important message
 
-In this version, in order to drastically enhance the package usability,  we had to opt for several profound changes with no backward compatibility. We are sorry that this changes will be painful for old users but it will certainly be strongly beneficial even on the short term. The primary update is that `mRpostman` now is built on an `R6` class and its methods, providing a much more convenient and elegant way of usage. It is structured following an OO framework which works well either with the tidy style using pipes or under the base R approach. The syntax now will be `ConnectionObject$method()`, where the `ConnectionObject` is created with `configure_imap()` or `ImapCon$new()`. This completely modifies how the connection handle and other configuration information is passed among the methods/functions in `mRpostman`.
+In this version, in order to drastically enhance the package usability,  we had to adopt several profound changes with no backward compatibility. We are sorry that these changes will be painful for old users but it will certainly be strongly beneficial even in the short term. The primary update is that `mRpostman` now is built on an `R6` class and its methods, providing a much more convenient and elegant way of usage. It is structured following an OO framework that works well either with the tidy style using pipes or under the base R approach. The syntax now will be `ConnectionObject$method()`, where the `ConnectionObject` is created with `configure_imap()` or `ImapCon$new()`. This completely modifies how the connection handle and other configuration information is passed among the methods/functions in `mRpostman`.
 
 This is a summary of the main modifications in the package:
 
 * All the main functions, except by `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
     
-* The way the connection token is passed between the functions has changed. The connection handle is created only  inside `configure_imap()` (or `ImapCon$new()`) and only modified with custom requests inside the methods. As a consequence, the password, username and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request functions. They do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
+* The way the connection token is passed between the functions has changed. The connection handle is created only  inside `configure_imap()` (or `ImapCon$new()`) and only modified with custom requests inside the methods. As a consequence, the password, username, and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request-functions. They do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
     
-* argument "by" used in search and fetch functions was replaced by `use_uid`, which is a logical with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
+* the argument "by" used in search and fetch functions was replaced by `use_uid`, which is a logical with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
     
 * all functions that returned `invisible(0L)` now return `invisible(TRUE)`
 
@@ -92,14 +92,14 @@ This is a summary of the main modifications in the package:
         
 * `specific_UID` -> `msg_uid`:
     
-    + OBS: type has not changed, still a numeric vector containing messages' uids
+    + OBS: type has not changed, still a numeric vector containing message uids
     
     + Affected functions: `expunge()`
     
 
 * `to_mbox` -> `to_folder`:
     
-    + OBS: type has not changed, still a character vector containing teh folder name
+    + OBS: type has not changed, still a character vector containing the folder name
     
     + Affected functions: `copy_msg()`, `move_msg()`
 
@@ -160,7 +160,7 @@ This is a summary of the main modifications in the package:
     
     + all search functions now return `NA` when there is no match. The previous behavior was to return 0.
     
-    + `add/replace/remove_flags()` methods now invisibly return the msg_ids in case the user intends to chain aany further operation (perhaps expunge) using pipe.
+    + `add/replace/remove_flags()` methods now invisibly return the msg_ids in case the user intends to chain any further operation (perhaps expunge) using the pipe.
 
 
 * default value of arguments:
@@ -221,7 +221,7 @@ This is a summary of the main modifications in the package:
 
 ### Bug fixes
 
-* retry bug fixed: it was causing the loss of the search and fetch `customrequest` when executing a retry + selection operation or when there was a considerable span of time between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would had lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach
+* retry bug fixed: it was causing the loss of the search and fetch `customrequest` when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach
 
     + applied to: all request functions/methods, such as search, fetch, mailbox operations (except those that don't need a previously folder selection), and complementary operations
     
@@ -236,9 +236,9 @@ This is a summary of the main modifications in the package:
     
     + added the `response_error_handling()` function to catch operation/resolving timeout errors and login error as well
 
-* All methods work as wrappers to internal functions with similar names and sufix `*_int`
+* All methods work as wrappers to internal functions with similar names and suffix `*_int`
 
-* Search, Fetch and Complementary functions have a central internal function called `execute_*()` (configure and) execute the requests to be made to the IMAP server
+* Search, Fetch and Complementary functions have a central internal function called `execute_*()` that is responsible for configuring and executing the requests towards the IMAP server
 
 * removed `config_handle()`as the connection token chain has changed
 
@@ -256,9 +256,9 @@ This is a summary of the main modifications in the package:
 
 ### Other general changes:
 
-* `fetch_attachments_list()` and `fetch_attachments()` are a faster and smart way to respectively list and download messages' attachments. They do not depend on a former fetching step, unlike `list_attachments()` and `get_attachments()`. the new methods use BODYSTRUCTURE metadata fetching to identify the attachments, and `fetch_attachments()` also issue a FETCH BODY[level.MIME] command to fetch only the parts of the messages that contain the attachments. This prevent unnecessary fetching when users only want to obtain the attachments. However, `get_attachments()` and `list_attachments()` are still available in the package.
+* `fetch_attachments_list()` and `fetch_attachments()` are a faster and smart way to respectively list and download messages' attachments. They do not depend on a former fetching step, unlike `list_attachments()` and `get_attachments()`. the new methods use BODYSTRUCTURE metadata fetching to identify the attachments, and `fetch_attachments()` also issue a FETCH BODY[level.MIME] command to fetch only the parts of the messages that contain the attachments. This prevents unnecessary fetching when users are only interested in attachments. However, `get_attachments()` and `list_attachments()` are still available in the package.
 
-* All `fetch_*` methods, and `get_attachments()` now use a different path for saving the fetched files. The folder to be created now will have the following structure: imap_server > mail_folder > <messageID> or <messageUID>
+* All `fetch_*` methods, and `get_attachments()` now use a different path for saving the fetched files. The folder to be created now will have the following structure: imap_server > mail_folder > <messageID> or <messageUID>.
 
 * Fetched messages that are saved to disk will have different filename structures:
     + if `use_uid = FALSE`: body<id>.txt, header<id>.txt, meta<id>.txt, text<id>.txt
@@ -268,7 +268,7 @@ This is a summary of the main modifications in the package:
 
 * A startup message informing about the breaking changes of the version were added by creating the zzz.R file
 
-* Besides the _`mRpostman` Basics_ vignette, two more were added: _Migrating code to mRpostman's R6 sintaxe_, and _Using IMAP OAuth2.0 authentication in mRpostman_
+* Besides the _`mRpostman` Basics_ vignette, two more were added: _Migrating old code to the new mRpostman's syntax_, and _IMAP OAuth2.0 authentication in mRpostman_
 
 ---
 
