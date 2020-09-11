@@ -11,7 +11,7 @@
 #' @param buffersize The size in bytes for the receive buffer. Default is
 #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
 #'   According to the libcurl's documentation, the maximum buffersize is 512kb
-#'   (or 512000 bytes), but any number passe to \code{buffersize} is treated
+#'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
 #'   as a request, not an order.
 #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
 #' re-execution of a command. Default is 5000ms (or 5 seconds). If a first

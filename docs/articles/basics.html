@@ -103,8 +103,8 @@
 <p>In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.</p>
 <p><strong>IMPORTANT</strong>:</p>
 <ol style="list-style-type: decimal">
-<li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went trough thorough changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.2</code>. A detailed vignette on how to migrate your mRpostman’s deprecated code to the new syntax is available at <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html">“Migrating old code to the new mRpostman’s syntax”</a> for more information.</p></li>
-<li><p>Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl’s version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl &gt;= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html">“Using IMAP OAuth2.0 authentication in mRpostman”</a></p></li>
+<li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went trough thorough changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.1</code>. A detailed vignette on how to migrate your mRpostman’s deprecated code to the new syntax is available at <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html"><em>“Migrating old code to the new mRpostman’s syntax”</em></a> for more information.</p></li>
+<li><p>Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl’s version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl &gt;= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using IMAP OAuth2.0 authentication in mRpostman”</em></a></p></li>
 </ol>
 </div>
 <div id="authentication" class="section level2">
@@ -156,35 +156,48 @@
 <span id="cb1-3"><a href="#cb1-3"></a><span class="co"># IMAP settings</span></span>
 <span id="cb1-4"><a href="#cb1-4"></a></span>
 <span id="cb1-5"><a href="#cb1-5"></a><span class="co"># Outlook - Office 365</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(<span class="dt">url=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
-<span id="cb1-7"><a href="#cb1-7"></a>                      <span class="dt">username=</span><span class="st">"your_user@your_company.com"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8"></a>                      <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
-<span id="cb1-9"><a href="#cb1-9"></a>                     )</span>
-<span id="cb1-10"><a href="#cb1-10"></a></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># Gmail</span></span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># con &lt;- configure_imap(url = "imaps://imap.gmail.com",</span></span>
-<span id="cb1-13"><a href="#cb1-13"></a><span class="co">#                       username = "your_user",</span></span>
-<span id="cb1-14"><a href="#cb1-14"></a><span class="co">#                       password = rstudioapi::askForPassword())</span></span>
-<span id="cb1-15"><a href="#cb1-15"></a></span>
-<span id="cb1-16"><a href="#cb1-16"></a><span class="co"># Yahoo Mail</span></span>
-<span id="cb1-17"><a href="#cb1-17"></a><span class="co"># con &lt;- configure_imap(url="imaps://imap.mail.yahoo.com/",</span></span>
-<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#                       username="your_user",</span></span>
-<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#                       password=rstudioapi::askForPassword()</span></span>
-<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#                      )</span></span>
-<span id="cb1-21"><a href="#cb1-21"></a></span>
-<span id="cb1-22"><a href="#cb1-22"></a><span class="co"># AOL Mail</span></span>
-<span id="cb1-23"><a href="#cb1-23"></a><span class="co"># con &lt;- configure_imap(url="imaps://export.imap.aol.com/",</span></span>
-<span id="cb1-24"><a href="#cb1-24"></a><span class="co">#                       username="your_user",</span></span>
-<span id="cb1-25"><a href="#cb1-25"></a><span class="co">#                       password=rstudioapi::askForPassword()</span></span>
-<span id="cb1-26"><a href="#cb1-26"></a><span class="co">#                       )</span></span>
-<span id="cb1-27"><a href="#cb1-27"></a></span>
-<span id="cb1-28"><a href="#cb1-28"></a><span class="co"># Yandex Mail</span></span>
-<span id="cb1-29"><a href="#cb1-29"></a><span class="co"># con &lt;- configure_imap(url="imaps://imap.yandex.com",</span></span>
-<span id="cb1-30"><a href="#cb1-30"></a><span class="co">#                       username="your_user",</span></span>
-<span id="cb1-31"><a href="#cb1-31"></a><span class="co">#                       password=rstudioapi::askForPassword()</span></span>
-<span id="cb1-32"><a href="#cb1-32"></a><span class="co">#                       )</span></span>
-<span id="cb1-33"><a href="#cb1-33"></a></span>
-<span id="cb1-34"><a href="#cb1-34"></a><span class="co"># you can try any other Mail provider</span></span></code></pre></div>
+<span id="cb1-6"><a href="#cb1-6"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-7"><a href="#cb1-7"></a>  <span class="dt">url=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8"></a>  <span class="dt">username=</span><span class="st">"user@your_company.com"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9"></a>  <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-10"><a href="#cb1-10"></a>  )</span>
+<span id="cb1-11"><a href="#cb1-11"></a></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="co"># Gmail</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-14"><a href="#cb1-14"></a>  <span class="dt">url =</span> <span class="st">"imaps://imap.gmail.com"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15"></a>  <span class="dt">username =</span> <span class="st">"user"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16"></a>  <span class="dt">password =</span> rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-17"><a href="#cb1-17"></a>  )</span>
+<span id="cb1-18"><a href="#cb1-18"></a></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co"># Hotmail</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-21"><a href="#cb1-21"></a>  <span class="dt">url =</span> <span class="st">"imaps://imap-mail.outlook.com"</span>,</span>
+<span id="cb1-22"><a href="#cb1-22"></a>  <span class="dt">username =</span> <span class="st">"user@hotmail.com"</span>,</span>
+<span id="cb1-23"><a href="#cb1-23"></a>  <span class="dt">password =</span> rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-24"><a href="#cb1-24"></a>  )</span>
+<span id="cb1-25"><a href="#cb1-25"></a></span>
+<span id="cb1-26"><a href="#cb1-26"></a><span class="co"># Yahoo Mail</span></span>
+<span id="cb1-27"><a href="#cb1-27"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-28"><a href="#cb1-28"></a>  <span class="dt">url=</span><span class="st">"imaps://imap.mail.yahoo.com/"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29"></a>  <span class="dt">username=</span><span class="st">"your_user"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30"></a>  <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-31"><a href="#cb1-31"></a>  )</span>
+<span id="cb1-32"><a href="#cb1-32"></a></span>
+<span id="cb1-33"><a href="#cb1-33"></a><span class="co"># AOL Mail</span></span>
+<span id="cb1-34"><a href="#cb1-34"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-35"><a href="#cb1-35"></a>  <span class="dt">url=</span><span class="st">"imaps://export.imap.aol.com/"</span>,</span>
+<span id="cb1-36"><a href="#cb1-36"></a>  <span class="dt">username=</span><span class="st">"your_user"</span>,</span>
+<span id="cb1-37"><a href="#cb1-37"></a>  <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-38"><a href="#cb1-38"></a>  )</span>
+<span id="cb1-39"><a href="#cb1-39"></a></span>
+<span id="cb1-40"><a href="#cb1-40"></a><span class="co"># Yandex Mail</span></span>
+<span id="cb1-41"><a href="#cb1-41"></a>con &lt;-<span class="st"> </span><span class="kw"><a href="../reference/configure_imap.html">configure_imap</a></span>(</span>
+<span id="cb1-42"><a href="#cb1-42"></a>  <span class="dt">url=</span><span class="st">"imaps://imap.yandex.com"</span>,</span>
+<span id="cb1-43"><a href="#cb1-43"></a>  <span class="dt">username=</span><span class="st">"your_user"</span>,</span>
+<span id="cb1-44"><a href="#cb1-44"></a>  <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>()</span>
+<span id="cb1-45"><a href="#cb1-45"></a>  )</span>
+<span id="cb1-46"><a href="#cb1-46"></a></span>
+<span id="cb1-47"><a href="#cb1-47"></a><span class="co"># ... and any other mail provider with IMAP support</span></span></code></pre></div>
 <p>Other useful options are: <code>timeout_ms</code>, <code>verbose = TRUE</code>, <code>buffersize</code>. Further ‘curl’ options related to IMAP functionalities can be passed to <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, but you probably won’t need it. See <code><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl::curl_options()</a></code>.</p>
 <p>Since version <code>0.9.0.0</code>, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the <code>reset_*()</code> methods. This prevents users from having to call <code><a href="../reference/configure_imap.html">configure_imap()</a></code> multiple times during a session or in a script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the <code>timeout_ms</code> and set <code>verbose = FALSE</code>.</p>
 <p>The <code>con</code> object that we created in the example above has the <code>ImapCon</code> R6 class. Now, almost 99% of the other IMAP commands to be performed on the server will be called following the structure: <code>con$method()</code>. The exceptions are the <code><a href="../reference/list_attachments.html">list_attachments()</a></code> function and the helper functions of the custom-search group.</p>
@@ -478,7 +491,7 @@
 <span id="cb37-12"><a href="#cb37-12"></a>out &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">fetch_header</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</span>
 <span id="cb37-13"><a href="#cb37-13"></a></span>
 <span id="cb37-14"><a href="#cb37-14"></a>out</span></code></pre></div>
-<p>Note that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also, note that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
+<p>Please, notice that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also, notice that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
 </div>
 <div id="fetch-text" class="section level3">
 <h3 class="hasAnchor">
@@ -526,7 +539,7 @@
 <div id="extracting-attachments" class="section level4">
 <h4 class="hasAnchor">
 <a href="#extracting-attachments" class="anchor"></a>7.1.2) Extracting Attachments</h4>
-<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>wd &gt; imap.server.name &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message’s folder.</p>
+<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>wd &gt; imap.server.name &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="co"># using fetch_body()</span></span>
 <span id="cb41-2"><a href="#cb41-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%&gt;%</span></span>
 <span id="cb41-3"><a href="#cb41-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_body</span>(<span class="dt">write_to_disk =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
@@ -607,7 +620,7 @@
 <div id="expunge" class="section level3">
 <h3 class="hasAnchor">
 <a href="#expunge" class="anchor"></a>8.6) Expunge</h3>
-<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Note the this requires the “UID” (unique id), not sequence numbers.</p>
+<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Please, notice that the this requires the “UID” (unique id), not sequence numbers.</p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="co"># expunge the entire mail folder</span></span>
 <span id="cb50-2"><a href="#cb50-2"></a>con<span class="op">$</span><span class="kw">expunge</span>()</span>
 <span id="cb50-3"><a href="#cb50-3"></a></span>
@@ -638,7 +651,7 @@
 <div id="remove-flags" class="section level4">
 <h4 class="hasAnchor">
 <a href="#remove-flags" class="anchor"></a>8.7.3) Remove Flags</h4>
-<p>Note that now we have the <code>flags_to_UNset</code> argument.</p>
+<p>Now we have the <code>flags_to_UNset</code> argument.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
 <span id="cb53-2"><a href="#cb53-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
@@ -660,13 +673,13 @@
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
 <p>Babcock, N. (2016), <em>Introduction to IMAP</em>, Blog, May 2016, <a href="https://nbsoftsolutions.com/blog/introduction-to-imap" class="uri">https://nbsoftsolutions.com/blog/introduction-to-imap</a>.</p>
-<p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501,DOI: 10.17487/RFC3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
+<p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
 <p>Heinlein, P. and Hartleben, P. (2008). The Book of IMAP: Building a Mail Server with Courier and Cyrus. No Starch Press. ISBN 978-1-59327-177-0.</p>
 <p>Ooms, J. (2020), <em>curl: A Modern and Flexible Web Client for R</em>. R package version 4.3, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
 <p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.haxx.se/libcurl/" class="uri">https://curl.haxx.se/libcurl/</a></p>
-<p>Freed, N. and Borenstein, N. (1996), <em>Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</em>, RFC 2046, DOI: 10.17487/RFC2046, November 1996, <a href="https://tools.ietf.org/html/rfc2046" class="uri">https://tools.ietf.org/html/rfc2046</a>.</p>
-<p>Resnick, P. (2001), <em>Internet Message Format</em>, RFC 2822, DOI: 10.17487/RFC2822, April 2001, <a href="https://tools.ietf.org/html/rfc2822" class="uri">https://tools.ietf.org/html/rfc2822</a>.</p>
-<p>Resnick, P. (2008), <em>Internet Message Format</em>, RFC 5322, DOI: 10.17487/RFC5322, October 2008, <a href="https://tools.ietf.org/html/rfc5322" class="uri">https://tools.ietf.org/html/rfc5322</a>.</p>
+<p>Freed, N. and Borenstein, N. (1996), <em>Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</em>, RFC 2046, November 1996, <a href="https://tools.ietf.org/html/rfc2046" class="uri">https://tools.ietf.org/html/rfc2046</a>.</p>
+<p>Resnick, P. (2001), <em>Internet Message Format</em>, RFC 2822, April 2001, <a href="https://tools.ietf.org/html/rfc2822" class="uri">https://tools.ietf.org/html/rfc2822</a>.</p>
+<p>Resnick, P. (2008), <em>Internet Message Format</em>, RFC 5322, October 2008, <a href="https://tools.ietf.org/html/rfc5322" class="uri">https://tools.ietf.org/html/rfc5322</a>.</p>
 </div>
 <div class="footnotes">
 <hr>

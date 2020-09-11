@@ -143,12 +143,13 @@ After, you will be redirected to a webpage, where you are going to make some con
 <br>
 <br>
 <br>
+<br>
 
 ![](./figures/xoauth/step2_x6.png){width=80%}
 </div>
 
 
-In the end, you should see a new white tab with the message: "Authentication complete. Please close this page and return to R."
+Finally, you should see a new white tab with the message: _"Authentication complete. Please close this page and return to R"_.
 
 ## Step 5 - Testing the IMAP connection
 
@@ -191,6 +192,7 @@ If you got some kind of "SASL ..." error in the information flow between the ser
 For future sessions (or after a considerable span of time) you'll need to refresh the previous token. You can use the following function below to achieve that:
 
 ```{r, message = FALSE, eval=FALSE}
+# thanks to jdeboer code at https://github.com/r-lib/httr/issues/31
 oauth2.0_refresh <- function(endpoint, app, auth_code, type = NULL) {
   req <- httr::POST(
     url = endpoint$access,
@@ -211,5 +213,5 @@ auth_code_new <- oauth2.0_refresh(endpoint, app=gmail_app, auth_code=auth_code)
 token <- auth_code_new$access_token
 ```
 
-Substitute it in the `xoauth2_bearer` argument in `configure_imap()` and you are done.
+Substitute it into the `xoauth2_bearer` argument in `configure_imap()` and you are done.
 

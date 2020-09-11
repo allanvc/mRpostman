@@ -34,7 +34,7 @@ mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 
 1.  In version `0.9.0.0`, `mRpostman` went trough thorough changes,
     including ones that have no backward compatibility with versions
-    `<= 0.3.2`. A detailed vignette on how to migrate your mRpostman’s
+    `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman’s
     deprecated code to the new syntax is available at [*“Migrating old
     code to the new mRpostman’s
     syntax”*](https://allanvc.github.io/mRpostman/articles/code_migration.html)
@@ -59,7 +59,21 @@ mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
 vignette.
 
 Let’s see how to configure simple plain authentication for Gmail, Yahoo
-Mail, AOL Mail, and Office 365.
+Mail, AOL Mail, Hotmail, and Office 365.
+
+### Outlook - Office 365
+
+There is no need to execute any external configuration. Please, notice
+that the `url` parameter in `configure_imap()` should be set as `url =
+"imaps://outlook.office365.com"`, and the `username` should be set as
+`user@yourcompany.com`.
+
+### Hotmail
+
+There is no need to execute any external configuration. Please, notice
+that the `url` parameter in `configure_imap()` should be set as `url =
+"imaps://imap-mail.outlook.com"`, and the `username` should be set as
+`user@hotmail.com`.
 
 ### Gmail
 
@@ -105,12 +119,6 @@ Mail, AOL Mail, and Office 365.
 4)  After, set “Allow apps that use less secure sign in” **ON**
 
 ![](man/figures/aol3.png) <!-- <img src="man/figures/aol3.png"> -->
-
-### Outlook - Office 365
-
-There is no need to execute any external configuration. Please, notice
-that the `url` parameter in `configure_imap()` should be set as `url =
-"imaps://outlook.office365.com"`.
 
 ## Introduction
 
@@ -186,9 +194,9 @@ con <- configure_imap(url="imaps://outlook.office365.com",
                       password=rstudioapi::askForPassword()
 )
 
-# other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), 
-#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),
-#   Yandex (imaps://imap.yandex.com)
+# other IMAP providers that were tested: Hotmail ("imaps://imap-mail.outlook.com"),
+#  Gmail (imaps://imap.gmail.com), Yahoo (imaps://imap.mail.yahoo.com/), 
+#  AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)
 
 # you can try another IMAP server and see if it works
 

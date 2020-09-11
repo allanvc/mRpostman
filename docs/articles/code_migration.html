@@ -134,9 +134,9 @@
 <span id="cb1-5"><a href="#cb1-5"></a>                           <span class="dt">username=</span><span class="st">"your_user@company.com"</span>,</span>
 <span id="cb1-6"><a href="#cb1-6"></a>                           <span class="dt">password=</span>rstudioapi<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword">askForPassword</a></span>())</span>
 <span id="cb1-7"><a href="#cb1-7"></a></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># other IMAP providers that were tested: Gmail (imaps://imap.gmail.com), </span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#   Yahoo (imaps://imap.mail.yahoo.com/), AOL (imaps://export.imap.aol.com/),</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#   Yandex (imaps://imap.yandex.com)</span></span></code></pre></div>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="co"># other mail providers that were tested: Gmail (imaps://imap.gmail.com), </span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co">#   Hotmail ("imaps://imap-mail.outlook.com"), Yahoo (imaps://imap.mail.yahoo.com/), </span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="co">#   AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)</span></span></code></pre></div>
 <p><br></p>
 <p>New format:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</span>
@@ -229,7 +229,7 @@
 <div id="single-search" class="section level2">
 <h2 class="hasAnchor">
 <a href="#single-search" class="anchor"></a>4) Single Search</h2>
-<p>All search functions now return only the message’s ids.</p>
+<p>All search functions now return only the message ids.</p>
 <div class="col2">
 <p>Previous code:</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>result &lt;-<span class="st"> </span>imapconf <span class="op">%&gt;%</span></span>
