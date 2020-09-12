@@ -12,6 +12,7 @@ matrix:
         - devel
       env: R_CODECOV=true
     - os: osx
+      osx_image: xcode9.2
       r: 
         - release
         - devel
