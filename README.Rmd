@@ -224,7 +224,7 @@ res3 <- con$search_string(expr = "Welcome!", where = "SUBJECT") %>%
 res3
 ```
 
-## 6) Attachments
+### 6) Attachments
 
 You can list the attachments of one or more messages with:
 
