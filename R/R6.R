@@ -50,7 +50,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   the \code{retries} value), will try to reconnect or re-execute the command.
     #' @param ... Further curl parameters (see \code{curl::curl_options}) that
     #'   can be used with the IMAP protocol. Only for advanced users.
-    #' @note \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap()}}
+    #' @note \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap}}
     #'   should be preferred instead of \code{ImapCon$new()}.
     #' @return A new `ImapCon` object.
     initialize = function(url,

@@ -18,15 +18,15 @@ Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://trav
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
 
-IMAP Toolkit for R
+An IMAP client for R
 
 ## Overview
 
-`mRpostman` provides tools for searching and fetching emails, mailbox
-management, attachment extraction, and several other IMAP
-functionalities. This package makes extensive use of {curl} to implement
-an easy-to-use IMAP client for R, paving the way for users to perform
-data analysis on email data.
+`mRpostman` is an easy-to-use IMAP client that provides tools for
+searching and message fetching, mailbox management, attachment
+extraction, and several other IMAP features, hence paving the way for
+email data analysis from within R. To do so, this package makes
+extensive use of the {curl} package and the libcurl C library.
 
 mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 
@@ -193,7 +193,7 @@ remotes::install_github("allanvc/mRpostman")
 
 ## Basic Usage
 
-### 1\) Configuring an IMAP connection and listing server’s capabilities
+### 1\) Configure an IMAP connection and list the server’s capabilities
 
 ``` r
 
@@ -209,12 +209,12 @@ con <- configure_imap(url="imaps://outlook.office365.com",
 #  Gmail (imaps://imap.gmail.com), Yahoo (imaps://imap.mail.yahoo.com/), 
 #  AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)
 
-# you can try another IMAP server and see if it works
+# Other non-tested mail providers should work as well
 
 con$list_server_capabilities()
 ```
 
-### 2\) Listing your mail folders and select “INBOX”
+### 2\) List mail folders and select “INBOX”
 
 ``` r
 
@@ -225,7 +225,7 @@ con$list_mail_folders()
 con$select_folder(name = "INBOX")
 ```
 
-### 3\) Searching messages by date, with a flag as additional filter
+### 3\) Search messages by date
 
 ``` r
 
@@ -235,6 +235,8 @@ res1
 ```
 
 ### 4\) Customizing a search with multiple criteria
+
+Executing a search by string:
 
 ``` r
 
@@ -285,7 +287,7 @@ con$search_since(date_char = "02-Jan-2020") %>%
 ```
 
 If you want to download the attachments of one or more messages, there
-are two ways of doing that as well.
+are also two ways of doing that.
 
 1)  Using the `get_attachments()` method:
 
@@ -314,7 +316,8 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
   - add further IMAP functionalities;
   - eliminate the {stringr} dependency in REGEX;
-  - implement a progress bar in fetch operations.
+  - implement a progress bar in fetch operations;
+  - implement a function to decode quoted-printable RFC 2047 headers.
 
 ## Known bugs
 
@@ -358,12 +361,15 @@ This package is licensed under the terms of the GPL-3 License.
 
 ## References
 
-Crispin, M., *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC
-3501, DOI: 10.17487/RFC3501, March 2003,
-<https://tools.ietf.org/html/rfc3501>.
+Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*,
+RFC 3501, March 2003, <https://tools.ietf.org/html/rfc3501>.
 
-Ooms, J. curl: *A Modern and Flexible Web Client for R*. R package
-version 3.3, 2019, <https://CRAN.R-project.org/package=curl>
+Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a
+Mail Server with Courier and Cyrus*. No Starch Press. ISBN
+978-1-59327-177-0.
+
+Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
+package version 4.3, <https://CRAN.R-project.org/package=curl>
 
 Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
 <https://curl.haxx.se/libcurl/>

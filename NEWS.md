@@ -6,6 +6,8 @@ In this version, in order to drastically enhance the package usability,  we had 
 
 This is a summary of the main modifications in the package:
 
+* The package title has changed to mRpostman: An IMAP client for R
+
 * All the main functions, except by `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
     
 * The way the connection token is passed between the functions has changed. The connection handle is created only  inside `configure_imap()` (or `ImapCon$new()`) and only modified with custom requests inside the methods. As a consequence, the password, username, and other connection parameters are hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request-functions. They do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
