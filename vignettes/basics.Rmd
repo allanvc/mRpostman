@@ -1,33 +1,33 @@
 ---
-title: "mRpostman Basics"
+title: "mRpostman basics"
 output: 
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
-  %\VignetteIndexEntry{mRpostman Basics}
+  %\VignetteIndexEntry{mRpostman basics}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
 
 ## Introduction
 
-`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} and {libcurl} to implement an easy-to-use IMAP client for R, paving the way for R users to perform data analysis on email data.
+`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use {curl} to implement an easy-to-use IMAP client for R, paving the way for users to perform data analysis on email data.
 
 In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.
 
 **IMPORTANT**: 
 
-1. In version `0.9.0.0`, `mRpostman` went trough thorough changes, including ones that have no backward compatibility with versions `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new syntax is available at [_"Migrating old code to the new mRpostman's syntax"_](https://allanvc.github.io/mRpostman/articles/code_migration.html) for more information.
+1. In version `0.9.0.0`, `mRpostman` went trough substantial changes, including ones that have no backward compatibility with versions `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new syntax is available at [_"Migrating old code to the new mRpostman's syntax"_](https://allanvc.github.io/mRpostman/articles/code_migration.html).
 
-2. Old versions of the libcurl library will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
+2. Old versions of the libcurl C library ({curl}'s main engine) will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
 ## Authentication
 
-There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please refer to the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
+There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please read the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
 
 ### Allowing Less Secure Apps Access
 
-When using plain authentication, most of the mail providers will require the user to enable **less secure apps** access. Once it is done, you will be able to access your mailbox using a "third party app" like `mRpostman`.
+When using plain authentication, most of the mail providers will require the user to enable **less secure apps** access. Once it is done, you will be able to access your mailbox using a "third party app" as `mRpostman`.
 
 See the **README.md** for more details on how to allow less secure apps access in some of the most known mail providers.
 
@@ -35,7 +35,7 @@ If you are using Outlook - Office 365, there's no need to make any external conf
 
 ## Package Structure
 
-The package is now implemented under a OO framework, using an R6 class. The main functionalities of `mRpostman` are implemented as methods of the R6 class called `ImapCon`. These methods are described below:
+The package is now implemented under a OO framework, using an R6 class. The main functionalities of `mRpostman` are implemented as methods of the R6 class called `ImapCon`. There are also a few independent functions. All methods and functions are described below:
 
 
 * **configuration methods**: `configure_imap()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
@@ -60,7 +60,7 @@ The package is now implemented under a OO framework, using an R6 class. The main
 
 ## 1) How do I start? (Connection configuration)
 
-After enabling (if needed) "less secure apps access" in your Mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:
+After enabling (if needed) "less secure apps access" in your mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -114,13 +114,13 @@ con <- configure_imap(
 
 ```
 
-Other useful options are: `timeout_ms`, `verbose = TRUE`, `buffersize`. Further 'curl' options related to IMAP functionalities can be passed to `configure_imap()`, but you probably won't need it. See `curl::curl_options()`.
+Other useful options are: `timeout_ms`, `verbose = TRUE`, `buffersize`. Further {curl} options related to IMAP functionalities can be passed to `configure_imap()`, but you probably won't need it. See `curl::curl_options()`.
 
 Since version `0.9.0.0`, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the `reset_*()` methods. This prevents users from having to call `configure_imap()` multiple times during a session or in a script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the `timeout_ms` and set `verbose = FALSE`.
 
 The `con` object that we created in the example above has the `ImapCon` R6 class. Now, almost 99\% of the other IMAP commands to be performed on the server will be called following the structure: `con$method()`. The exceptions are the `list_attachments()` function and the helper functions of the custom-search group.
 
-As you will see, the R6 framework combined with `curl` will make this package works such a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
+As you will see, the R6 framework combined with {curl} will make this package works such a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
 
 ## 2) Server capabilities
 

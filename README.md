@@ -24,58 +24,72 @@ IMAP Toolkit for R
 
 `mRpostman` provides tools for searching and fetching emails, mailbox
 management, attachment extraction, and several other IMAP
-functionalities. This package makes extensive use of {curl} and
-{libcurl} to implement an easy-to-use IMAP client for R, paving the way
-for users to perform data analysis on email data.
+functionalities. This package makes extensive use of {curl} to implement
+an easy-to-use IMAP client for R, paving the way for users to perform
+data analysis on email data.
 
 mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 
 **IMPORTANT**:
 
-1.  In version `0.9.0.0`, `mRpostman` went trough thorough changes,
+1.  In version `0.9.0.0`, `mRpostman` went trough substantial changes,
     including ones that have no backward compatibility with versions
     `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman’s
     deprecated code to the new syntax is available at [*“Migrating old
     code to the new mRpostman’s
-    syntax”*](https://allanvc.github.io/mRpostman/articles/code_migration.html)
-    for more information.
+    syntax”*](https://allanvc.github.io/mRpostman/articles/code_migration.html).
 
-2.  Old versions of the libcurl library will cause malfunctioning of
-    this package. If your libcurl’s version is above 7.58.0, you should
-    be fine. If you intend to use OAuth 2.0 authentication, then you
-    will need libcurl \>= 7.65.0. To know more about the OAuth 2.0
-    authentication in this package, refer to the [*“IMAP OAuth2.0
-    authentication in
+2.  Old versions of the libcurl C library ({curl}’s main engine) will
+    cause malfunctioning of this package. If your libcurl’s version is
+    above 7.58.0, you should be fine. However, if you intend to use
+    OAuth 2.0 authentication, then you will need libcurl \>= 7.65.0. To
+    know more about the OAuth 2.0 authentication in this package, refer
+    to the [*“Using IMAP OAuth2.0 authentication in
     mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
+    vignette.
 
-## First things first … (plain authentication)
+## Authentication
 
-Before using **mRpostman**, it is essential to configure access to your
-email account. Many mail providers enabling the **“less secure apps”**
-option to allow access from a third-party app, using plain
-authentication. If you are interested in OAuth2.0 authentication, check
-the [*“IMAP OAuth2.0 authentication in
+There are two ways of connecting to your IMAP server: using plain or
+OAuth2.0 authentication. Here, we only describe the plain authentication
+process. If you want to use OAuth2.0 authentication, please read the
+*“Using IMAP OAuth2.0 authentication in mRpostman”* vignette.
+
+### Allowing less secure apps access
+
+When using plain authentication, most of the mail providers will require
+the user to enable **less secure apps** access. Once it is done, you
+will be able to access your mailbox using a “third party app” as
+`mRpostman`.
+
+### Plain authentication
+
+Before using **mRpostman**, it is essential to configure the access to
+your email account. Various mail providers require that you enable
+**“less secure apps”** access to accept plain authentication between
+the IMAP server and a third-party app. If you are interested in OAuth2.0
+authentication, check the [*“IMAP OAuth2.0 authentication in
 mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
 vignette.
 
 Let’s see how to configure simple plain authentication for Gmail, Yahoo
 Mail, AOL Mail, Hotmail, and Office 365.
 
-### Outlook - Office 365
+#### Outlook - Office 365
 
 There is no need to execute any external configuration. Please, notice
 that the `url` parameter in `configure_imap()` should be set as `url =
 "imaps://outlook.office365.com"`, and the `username` should be set as
 `user@yourcompany.com`.
 
-### Hotmail
+#### Hotmail
 
 There is no need to execute any external configuration. Please, notice
 that the `url` parameter in `configure_imap()` should be set as `url =
 "imaps://imap-mail.outlook.com"`, and the `username` should be set as
 `user@hotmail.com`.
 
-### Gmail
+#### Gmail
 
 1)  Go to the Gmail website and log in with your credentials.
 
@@ -86,7 +100,7 @@ that the `url` parameter in `configure_imap()` should be set as `url =
 
 3)  Set “Allow less secure apps” to **ON**.
 
-### Yahoo Mail
+#### Yahoo Mail
 
 1)  Go to the Yahoo Mail website and log in with your credentials.
 
@@ -104,7 +118,7 @@ that the `url` parameter in `configure_imap()` should be set as `url =
 
 <!-- <img src="man/figures/yahoo3.png"> -->
 
-### AOL Mail
+#### AOL Mail
 
 1)  Go to the AOL Mail website and log in with your credentials.
 
@@ -122,13 +136,13 @@ that the `url` parameter in `configure_imap()` should be set as `url =
 
 ## Introduction
 
-From version 0.9.0.0000 onward, `mRpostman` is implemented under the OO
-paradigm, based on an R6 class called `ImapCon`, its derived methods,
-and a few independent functions with the aim to perform a myriad of IMAP
-commands.
+From version 0.9.0.0 onward, `mRpostman` is implemented under the OO
+paradigm, based on an R6 class called `ImapCon`. Its derived methods,
+and a few independent functions enable the R user to perform a myriad of
+IMAP commands.
 
 The package is divided in 8 groups of operations. Below, we present all
-the available methods/functions:
+the available methods and functions:
 
   - 1.  **configuration**: `configure_imap()`;
 
@@ -302,7 +316,7 @@ con$search_since(date_char = "02-Jan-2020") %>%
 ## Future Improvements
 
   - add further IMAP functionalities;
-  - eliminate the stringr dependency in REGEX;
+  - eliminate the {stringr} dependency in REGEX;
   - implement a progress bar in fetch operations.
 
 ## Known bugs
@@ -317,7 +331,7 @@ con$search_since(date_char = "02-Jan-2020") %>%
     `mRpostman` tries to issue a warning for possible truncated values.
 
   - *`verbose = TRUE` malfunction on Windows*: This seems to be related
-    to the [`curl` R
+    to the [{curl} R
     package](https://github.com/jeroen/curl/issues/230). When using the
     `verbose = TRUE` on Windows, the flow of information between the
     IMAP server and the R session presents an intermittent behavior,
