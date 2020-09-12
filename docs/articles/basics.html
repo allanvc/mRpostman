@@ -110,10 +110,10 @@
 <div id="authentication" class="section level2">
 <h2 class="hasAnchor">
 <a href="#authentication" class="anchor"></a>Authentication</h2>
-<p>There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please read the <em>“Using IMAP OAuth2.0 authentication in mRpostman”</em> vignette.</p>
+<p>There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please read the aforementioned vignette.</p>
 <div id="allowing-less-secure-apps-access" class="section level3">
 <h3 class="hasAnchor">
-<a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing Less Secure Apps Access</h3>
+<a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing less secure apps access</h3>
 <p>When using plain authentication, most of the mail providers will require the user to enable <strong>less secure apps</strong> access. Once it is done, you will be able to access your mailbox using a “third party app” as <code>mRpostman</code>.</p>
 <p>See the <strong>README.md</strong> for more details on how to allow less secure apps access in some of the most known mail providers.</p>
 <p>If you are using Outlook - Office 365, there’s no need to make any external configuration.</p>
@@ -211,7 +211,7 @@
 </div>
 <div id="mailbox-commands" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mailbox-commands" class="anchor"></a>3) Mailbox Commands</h2>
+<a href="#mailbox-commands" class="anchor"></a>3) Mailbox commands</h2>
 <div id="listing-folders" class="section level3">
 <h3 class="hasAnchor">
 <a href="#listing-folders" class="anchor"></a>3.1) Listing folders</h3>
@@ -361,7 +361,7 @@
 </div>
 <div id="search-by-string" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-string" class="anchor"></a>4.2) Search by String</h3>
+<a href="#search-by-string" class="anchor"></a>4.2) Search by string</h3>
 <p>You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive.</p>
 <p>You can also <strong>NEGATE</strong> the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well.</p>
 <p>For the next examples, we are going to select a different mail folder.</p>
@@ -396,22 +396,22 @@
 </div>
 <div id="larger-than" class="section level4">
 <h4 class="hasAnchor">
-<a href="#larger-than" class="anchor"></a>4.4.1) Larger Than</h4>
+<a href="#larger-than" class="anchor"></a>4.4.1) Larger than</h4>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1"></a>con<span class="op">$</span><span class="kw">search_larger_than</span>(<span class="dt">size =</span> <span class="dv">512000</span>) <span class="co"># larger than 512KB</span></span></code></pre></div>
 </div>
 </div>
 <div id="search-by-within-extension" class="section level3">
 <h3 class="hasAnchor">
-<a href="#search-by-within-extension" class="anchor"></a>4.5) Search by Within Extension</h3>
+<a href="#search-by-within-extension" class="anchor"></a>4.5) Search by within extension</h3>
 <p>Severs with support to the “WITHIN” EXTENSION enable searching for messages within a span, i.e. younger than “x” seconds, or older than “x” seconds. This capability is really rare to find in IMAP servers, but <code>mRpostman</code> has two methods implemented for coping with this capability if it is available.</p>
 <div id="younger-than" class="section level4">
 <h4 class="hasAnchor">
-<a href="#younger-than" class="anchor"></a>4.5.1) Younger Than</h4>
+<a href="#younger-than" class="anchor"></a>4.5.1) Younger than</h4>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>con<span class="op">$</span><span class="kw">search_younger_than</span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received less than one hour (3600 sec)</span></span></code></pre></div>
 </div>
 <div id="older-than" class="section level4">
 <h4 class="hasAnchor">
-<a href="#older-than" class="anchor"></a>4.5.2) Older Than</h4>
+<a href="#older-than" class="anchor"></a>4.5.2) Older than</h4>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1"></a>con<span class="op">$</span><span class="kw">search_older_than</span>(<span class="dt">seconds =</span> <span class="dv">3600</span>) <span class="co"># msgs received more than one hour ago (3600 sec)</span></span></code></pre></div>
 </div>
 </div>
@@ -580,7 +580,7 @@
 <p>Here we present other functions to perform very useful complementary IMAP operations.</p>
 <div id="copy-messages" class="section level3">
 <h3 class="hasAnchor">
-<a href="#copy-messages" class="anchor"></a>8.1) Copy Message(s)</h3>
+<a href="#copy-messages" class="anchor"></a>8.1) Copy message(s)</h3>
 <p>Copying search results from “INBOX” to “K-State” folder:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span>
 <span id="cb44-2"><a href="#cb44-2"></a></span>
@@ -590,13 +590,13 @@
 </div>
 <div id="get-minimum-message-id" class="section level3">
 <h3 class="hasAnchor">
-<a href="#get-minimum-message-id" class="anchor"></a>8.2) Get minimum message ID</h3>
+<a href="#get-minimum-message-id" class="anchor"></a>8.2) Get minimum message id</h3>
 <p>This operation depends on the ESEARCH capability. It will retrieve the <strong>minimum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>con<span class="op">$</span><span class="kw">esearch_min_id</span>(<span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Answered"</span>, <span class="st">"Seen"</span>))</span></code></pre></div>
 </div>
 <div id="get-maximum-message-id" class="section level3">
 <h3 class="hasAnchor">
-<a href="#get-maximum-message-id" class="anchor"></a>8.3) Get maximum message ID</h3>
+<a href="#get-maximum-message-id" class="anchor"></a>8.3) Get maximum message id</h3>
 <p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>maximum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1"></a>con<span class="op">$</span><span class="kw">esearch_min_id</span>(<span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"Answered"</span>, <span class="st">"Seen"</span>))</span></code></pre></div>
 </div>
@@ -630,12 +630,12 @@
 </div>
 <div id="addremovereplace-flags" class="section level3">
 <h3 class="hasAnchor">
-<a href="#addremovereplace-flags" class="anchor"></a>8.7) Add/Remove/Replace Flags</h3>
+<a href="#addremovereplace-flags" class="anchor"></a>8.7) Add/Remove/Replace flags</h3>
 <p>Adding, removing and replacing one or more flags to messages.</p>
 <p><strong>IMPORTANT</strong>: Differently from the search functions where the (system) flags passed as additional parameters to search methods did not contain “\”, the <code>add/replace/remove_flags()</code> methods require the double backslash when referring to system flags. You can know which are the flags of a mail folder, and if custom flags are allowed, using <code>list_flags()</code>.</p>
 <div id="add-flags" class="section level4">
 <h4 class="hasAnchor">
-<a href="#add-flags" class="anchor"></a>8.7.1) Add Flags</h4>
+<a href="#add-flags" class="anchor"></a>8.7.1) Add flags</h4>
 <div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span>
 <span id="cb51-2"><a href="#cb51-2"></a></span>
 <span id="cb51-3"><a href="#cb51-3"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
@@ -643,14 +643,14 @@
 </div>
 <div id="replace-flags" class="section level4">
 <h4 class="hasAnchor">
-<a href="#replace-flags" class="anchor"></a>8.7.2) Replace Flags</h4>
+<a href="#replace-flags" class="anchor"></a>8.7.2) Replace flags</h4>
 <p>Replaces the existent flags by the one(s) specified in the method.</p>
 <div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
 <span id="cb52-2"><a href="#cb52-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">replace_flags</span>(<span class="dt">flags_to_set =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div id="remove-flags" class="section level4">
 <h4 class="hasAnchor">
-<a href="#remove-flags" class="anchor"></a>8.7.3) Remove Flags</h4>
+<a href="#remove-flags" class="anchor"></a>8.7.3) Remove flags</h4>
 <p>Now we have the <code>flags_to_UNset</code> argument.</p>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
 <span id="cb53-2"><a href="#cb53-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
@@ -658,7 +658,7 @@
 </div>
 <div id="move-messages" class="section level3">
 <h3 class="hasAnchor">
-<a href="#move-messages" class="anchor"></a>8.8) Move Message(s)</h3>
+<a href="#move-messages" class="anchor"></a>8.8) Move message(s)</h3>
 <p><code>move_msg()</code> uses IMAP “MOVE” EXTENSION. Check if your server supports the “MOVE” capability with <code>list_server_capabilities()</code>.</p>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a>con<span class="op">$</span><span class="kw">search_on</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>) <span class="op">%&gt;%</span></span>
 <span id="cb54-2"><a href="#cb54-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">move_msg</span>(<span class="dt">to_folder =</span> <span class="st">"K-State"</span>)</span></code></pre></div>
@@ -700,7 +700,7 @@
       <li><a href="#package-structure">Package Structure</a></li>
       <li><a href="#how-do-i-start-connection-configuration">1) How do I start? (Connection configuration)</a></li>
       <li><a href="#server-capabilities">2) Server capabilities</a></li>
-      <li><a href="#mailbox-commands">3) Mailbox Commands</a></li>
+      <li><a href="#mailbox-commands">3) Mailbox commands</a></li>
       <li><a href="#single-search">4) Single-search</a></li>
       <li><a href="#custom-search">5) Custom-search</a></li>
       <li><a href="#fetch">6) Fetch</a></li>

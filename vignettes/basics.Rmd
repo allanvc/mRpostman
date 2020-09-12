@@ -23,9 +23,9 @@ In this vignette, we present all available methods and functions of this package
 
 ## Authentication
 
-There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please read the _"Using IMAP OAuth2.0 authentication in mRpostman"_ vignette.
+There are two ways of connecting to your IMAP server: using plain or OAuth2.0 authentication. In this vignette, we only describe the plain authentication process. If you want to use OAuth2.0 authentication, please read the aforementioned vignette.
 
-### Allowing Less Secure Apps Access
+### Allowing less secure apps access
 
 When using plain authentication, most of the mail providers will require the user to enable **less secure apps** access. Once it is done, you will be able to access your mailbox using a "third party app" as `mRpostman`.
 
@@ -133,7 +133,7 @@ con$list_server_capabilities()
 
 
 
-## 3) Mailbox Commands
+## 3) Mailbox commands
 
 ### 3.1) Listing folders
 
@@ -356,7 +356,7 @@ con$search_sent_on(date_char = "30-Jun-2020")
                          
 ```
 
-### 4.2) Search by String
+### 4.2) Search by string
 
 You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive. 
 
@@ -428,23 +428,23 @@ The size is specified in bytes.
 con$search_smaller_than(size = 512000) # smaller than 512KB
 ```
 
-#### 4.4.1) Larger Than
+#### 4.4.1) Larger than
 
 ```{r, message = FALSE, eval = FALSE}
 con$search_larger_than(size = 512000) # larger than 512KB
 ```
 
-### 4.5) Search by Within Extension
+### 4.5) Search by within extension
 
 Severs with support to the "WITHIN" EXTENSION enable searching for messages within a span, i.e. younger than "x" seconds, or older than "x" seconds. This capability is really rare to find in IMAP servers, but `mRpostman` has two methods implemented for coping with this capability if it is available.
 
-#### 4.5.1) Younger Than
+#### 4.5.1) Younger than
 
 ```{r, message = FALSE, eval = FALSE}
 con$search_younger_than(seconds = 3600) # msgs received less than one hour (3600 sec)
 ```
 
-#### 4.5.2) Older Than
+#### 4.5.2) Older than
 
 ```{r, message = FALSE, eval = FALSE}
 con$search_older_than(seconds = 3600) # msgs received more than one hour ago (3600 sec)
@@ -654,7 +654,7 @@ con$search_since(date_char = "23-Sep-2019") %>%
 
 Here we present other functions to perform very useful complementary IMAP operations.
 
-### 8.1) Copy Message(s)
+### 8.1) Copy message(s)
 
 Copying search results from "INBOX" to "K-State" folder:
 
@@ -668,7 +668,7 @@ con$search_since(date_char = "10-may-2019") %>%
 
 It will automatically re-select the destination folder unless the user sets `reselect = FALSE`.
 
-### 8.2) Get minimum message ID
+### 8.2) Get minimum message id
 
 This operation depends on the ESEARCH capability. It will retrieve the **minimum** message id containing a specific flag(s) in the selected mail folder.
 
@@ -676,7 +676,7 @@ This operation depends on the ESEARCH capability. It will retrieve the **minimum
 con$esearch_min_id(flag = c("Answered", "Seen"))
 ```
 
-### 8.3) Get maximum message ID
+### 8.3) Get maximum message id
 
 This operation also depends on the ESEARCH capability. It will retrieve the **maximum** message id containing a specific flag(s) in the selected mail folder.
 
@@ -725,14 +725,14 @@ con$delete_msg(msg_id = 71171, use_uid = "UID") %>%
 ```
 
 
-### 8.7) Add/Remove/Replace Flags
+### 8.7) Add/Remove/Replace flags
 
 Adding, removing and replacing one or more flags to messages.
 
 **IMPORTANT**: Differently from the search functions where the (system) flags passed as additional parameters to search methods did not contain "\\", the `add/replace/remove_flags()` methods require the double backslash when referring to system flags. You can know which are the flags of a mail folder, and if custom flags are allowed, using `list_flags()`.
 
 
-#### 8.7.1) Add Flags
+#### 8.7.1) Add flags
 
 ```{r, message = FALSE, eval = FALSE}
 con$select_folder(name = "INBOX")
@@ -742,7 +742,7 @@ con$search_since(date_char = "01-Sep-2020", use_uid = TRUE) %>%
 ```
 
 
-#### 8.7.2) Replace Flags
+#### 8.7.2) Replace flags
 
 Replaces the existent flags by the one(s) specified in the method.
 
@@ -752,7 +752,7 @@ con$search_since(date_char = "01-Sep-2020", use_uid = TRUE) %>%
 ```
 
 
-#### 8.7.3) Remove Flags
+#### 8.7.3) Remove flags
 
 Now we have the `flags_to_UNset` argument.
 
@@ -762,7 +762,7 @@ con$search_since(date_char = "01-Sep-2020", use_uid = TRUE) %>%
 ```
 
 
-### 8.8) Move Message(s)
+### 8.8) Move message(s)
 
 `move_msg()` uses IMAP "MOVE" EXTENSION. Check if your server supports the "MOVE" capability with `list_server_capabilities()`.
 

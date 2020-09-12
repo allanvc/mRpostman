@@ -53,7 +53,7 @@ mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 There are two ways of connecting to your IMAP server: using plain or
 OAuth2.0 authentication. Here, we only describe the plain authentication
 process. If you want to use OAuth2.0 authentication, please read the
-*“Using IMAP OAuth2.0 authentication in mRpostman”* vignette.
+aforementioned vignette.
 
 ### Allowing less secure apps access
 
@@ -67,10 +67,7 @@ will be able to access your mailbox using a “third party app” as
 Before using **mRpostman**, it is essential to configure the access to
 your email account. Various mail providers require that you enable
 **“less secure apps”** access to accept plain authentication between
-the IMAP server and a third-party app. If you are interested in OAuth2.0
-authentication, check the [*“IMAP OAuth2.0 authentication in
-mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
-vignette.
+the IMAP server and a third-party app.
 
 Let’s see how to configure simple plain authentication for Gmail, Yahoo
 Mail, AOL Mail, Hotmail, and Office 365.
