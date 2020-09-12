@@ -1,13 +1,16 @@
 Package: mRpostman
 Type: Package
-Title: IMAP Toolkit
+Title: An IMAP client for R
 Version: 0.9.0.0
 Date: 2020-08-30
 Authors@R: c(
-    person(given="Allan", family="Quadros", email = "allanvcq@gmail.com",
-    role = c("aut", "cre")))
-Description: Provides tools for searching and fetching emails, downloading 
-    attachments, mailbox management, and several other IMAP functionalities.
+    person(given="Allan", family="Quadros",
+    role = c("aut", "cre"),
+    email = "allanvcq@gmail.com",
+    comment = c(ORCID = "0000-0003-3250-5380")))
+Description: An easy-to-use IMAP client that provides tools for searching and 
+    message fetching, mailbox management, attachment extraction, and several other 
+    IMAP features, paving the way for email data analysis.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

@@ -11,7 +11,7 @@ vignette: >
 
 ## Introduction
 
-`mRpostman` provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use {curl} to implement an easy-to-use IMAP client for R, paving the way for users to perform data analysis on email data.
+`mRpostman` is an easy-to-use IMAP client that provides tools for searching and message fetching, mailbox management, attachment extraction, and several other IMAP features, hence paving the way for email data analysis from within R. To do so, this package makes extensive use of the {curl} package and the libcurl C library.
 
 In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.
 
@@ -788,18 +788,20 @@ con$search_on(date_char = "07-Sep-2020") %>%
 
 ## References
 
-Babcock, N. (2016), *Introduction to IMAP*, Blog, May 2016, https://nbsoftsolutions.com/blog/introduction-to-imap.
+Babcock, N. (2016), _Introduction to IMAP_, Blog, May 2016, https://nbsoftsolutions.com/blog/introduction-to-imap.
 
-Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC 3501, March 2003, https://tools.ietf.org/html/rfc3501.
+Crispin, M. (2003), _INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1_, RFC 3501, March 2003, https://tools.ietf.org/html/rfc3501.
 
-Heinlein, P. and Hartleben, P. (2008). The Book of IMAP: Building a Mail Server with Courier and Cyrus. No Starch Press. ISBN 978-1-59327-177-0.
+Freed, N. and Borenstein, N. (1996), _Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types_, RFC 2046, November 1996, https://tools.ietf.org/html/rfc2046.
 
-Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R package version 4.3, https://CRAN.R-project.org/package=curl
+Gungor, A. (2018), _Using IMAP Internal Date for Forensic Email Authentication_, Articles, Forensic Focus, https://www.forensicfocus.com/articles/using-imap-internal-date-for-forensic-email-authentication/
 
-Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*, https://curl.haxx.se/libcurl/
+Heinlein, P. and Hartleben, P. (2008). _The Book of IMAP: Building a Mail Server with Courier and Cyrus_. No Starch Press. ISBN 978-1-59327-177-0.
 
-Freed, N. and Borenstein, N. (1996), *Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types*, RFC 2046, November 1996, https://tools.ietf.org/html/rfc2046.
+Resnick, P. (2001), _Internet Message Format_, RFC 2822, April 2001, https://tools.ietf.org/html/rfc2822.
 
-Resnick, P. (2001), *Internet Message Format*, RFC 2822, April 2001, https://tools.ietf.org/html/rfc2822.
+Resnick, P. (2008), _Internet Message Format_, RFC 5322, October 2008, https://tools.ietf.org/html/rfc5322.
 
-Resnick, P. (2008), *Internet Message Format*, RFC 5322, October 2008, https://tools.ietf.org/html/rfc5322.
+Ooms, J. (2020), _curl: A Modern and Flexible Web Client for R_. R package version 4.3, https://CRAN.R-project.org/package=curl
+
+Stenberg, D. _Libcurl - The Multiprotocol File Transfer Library_, https://curl.haxx.se/libcurl/

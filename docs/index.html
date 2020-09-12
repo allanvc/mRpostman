@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IMAP Toolkit • mRpostman</title>
+<title>An IMAP client for R • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
@@ -15,9 +15,10 @@
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="IMAP Toolkit">
-<meta property="og:description" content="Provides tools for searching and fetching emails, downloading 
-    attachments, mailbox management, and several other IMAP functionalities.">
+<script src="pkgdown.js"></script><meta property="og:title" content="An IMAP client for R">
+<meta property="og:description" content="An easy-to-use IMAP client that provides tools for searching and 
+    message fetching, mailbox management, attachment extraction, and several other 
+    IMAP features, paving the way for email data analysis.">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -100,11 +101,11 @@
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
 
-<p>IMAP Toolkit for R</p>
+<p>An IMAP client for R</p>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><code>mRpostman</code> provides tools for searching and fetching emails, mailbox management, attachment extraction, and several other IMAP functionalities. This package makes extensive use of {curl} to implement an easy-to-use IMAP client for R, paving the way for users to perform data analysis on email data.</p>
+<p><code>mRpostman</code> is an easy-to-use IMAP client that provides tools for searching and message fetching, mailbox management, attachment extraction, and several other IMAP features, hence paving the way for email data analysis from within R. To do so, this package makes extensive use of the {curl} package and the libcurl C library.</p>
 <p>mRpostman’s official website: <a href="https://allanvc.github.io/mRpostman" class="uri">https://allanvc.github.io/mRpostman</a></p>
 <p><strong>IMPORTANT</strong>:</p>
 <ol style="list-style-type: decimal">
@@ -253,9 +254,9 @@
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic Usage</h2>
-<div id="configuring-an-imap-connection-and-listing-servers-capabilities" class="section level3">
+<div id="configure-an-imap-connection-and-list-the-servers-capabilities" class="section level3">
 <h3 class="hasAnchor">
-<a href="#configuring-an-imap-connection-and-listing-servers-capabilities" class="anchor"></a>1) Configuring an IMAP connection and listing server’s capabilities</h3>
+<a href="#configure-an-imap-connection-and-list-the-servers-capabilities" class="anchor"></a>1) Configure an IMAP connection and list the server’s capabilities</h3>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2"></a><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(mRpostman)</span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
@@ -269,13 +270,13 @@
 <span id="cb2-11"><a href="#cb2-11"></a><span class="co">#  Gmail (imaps://imap.gmail.com), Yahoo (imaps://imap.mail.yahoo.com/), </span></span>
 <span id="cb2-12"><a href="#cb2-12"></a><span class="co">#  AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)</span></span>
 <span id="cb2-13"><a href="#cb2-13"></a></span>
-<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># you can try another IMAP server and see if it works</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="co"># Other non-tested mail providers should work as well</span></span>
 <span id="cb2-15"><a href="#cb2-15"></a></span>
 <span id="cb2-16"><a href="#cb2-16"></a>con<span class="op">$</span><span class="kw">list_server_capabilities</span>()</span></code></pre></div>
 </div>
-<div id="listing-your-mail-folders-and-select-inbox" class="section level3">
+<div id="list-mail-folders-and-select-inbox" class="section level3">
 <h3 class="hasAnchor">
-<a href="#listing-your-mail-folders-and-select-inbox" class="anchor"></a>2) Listing your mail folders and select “INBOX”</h3>
+<a href="#list-mail-folders-and-select-inbox" class="anchor"></a>2) List mail folders and select “INBOX”</h3>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
 <span id="cb3-2"><a href="#cb3-2"></a><span class="co"># Listing</span></span>
 <span id="cb3-3"><a href="#cb3-3"></a>con<span class="op">$</span><span class="kw">list_mail_folders</span>()</span>
@@ -283,9 +284,9 @@
 <span id="cb3-5"><a href="#cb3-5"></a><span class="co"># Selecting</span></span>
 <span id="cb3-6"><a href="#cb3-6"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span></code></pre></div>
 </div>
-<div id="searching-messages-by-date-with-a-flag-as-additional-filter" class="section level3">
+<div id="search-messages-by-date" class="section level3">
 <h3 class="hasAnchor">
-<a href="#searching-messages-by-date-with-a-flag-as-additional-filter" class="anchor"></a>3) Searching messages by date, with a flag as additional filter</h3>
+<a href="#search-messages-by-date" class="anchor"></a>3) Search messages by date</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
 <span id="cb4-2"><a href="#cb4-2"></a>res1 &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_on</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3"></a></span>
@@ -294,6 +295,7 @@
 <div id="customizing-a-search-with-multiple-criteria" class="section level3">
 <h3 class="hasAnchor">
 <a href="#customizing-a-search-with-multiple-criteria" class="anchor"></a>4) Customizing a search with multiple criteria</h3>
+<p>Executing a search by string:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
 <span id="cb5-2"><a href="#cb5-2"></a><span class="co"># messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field</span></span>
 <span id="cb5-3"><a href="#cb5-3"></a>res2 &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/search">search</a></span>(<span class="kw"><a href="reference/OR.html">OR</a></span>(</span>
@@ -330,7 +332,7 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
 <span id="cb8-2"><a href="#cb8-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"02-Jan-2020"</span>) <span class="op">%&gt;%</span></span>
 <span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_attachments_list</span>()</span></code></pre></div>
-<p>If you want to download the attachments of one or more messages, there are two ways of doing that as well.</p>
+<p>If you want to download the attachments of one or more messages, there are also two ways of doing that.</p>
 <ol style="list-style-type: upper-alpha">
 <li>Using the <code>get_attachments()</code> method:</li>
 </ol>
@@ -354,7 +356,8 @@
 <ul>
 <li>add further IMAP functionalities;</li>
 <li>eliminate the {stringr} dependency in REGEX;</li>
-<li>implement a progress bar in fetch operations.</li>
+<li>implement a progress bar in fetch operations;</li>
+<li>implement a function to decode quoted-printable RFC 2047 headers.</li>
 </ul>
 </div>
 <div id="known-bugs" class="section level2">
@@ -375,8 +378,9 @@
 <div id="references" class="section level2">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<p>Crispin, M., <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, DOI: 10.17487/RFC3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
-<p>Ooms, J. curl: <em>A Modern and Flexible Web Client for R</em>. R package version 3.3, 2019, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
+<p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
+<p>Heinlein, P. and Hartleben, P. (2008). <em>The Book of IMAP: Building a Mail Server with Courier and Cyrus</em>. No Starch Press. ISBN 978-1-59327-177-0.</p>
+<p>Ooms, J. (2020), <em>curl: A Modern and Flexible Web Client for R</em>. R package version 4.3, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
 <p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.haxx.se/libcurl/" class="uri">https://curl.haxx.se/libcurl/</a></p>
 </div>
 </div>
@@ -401,7 +405,7 @@
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Allan Quadros <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Allan Quadros <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3250-5380" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID" height="16"></a> </li>
 </ul>
 </div>
 

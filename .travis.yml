@@ -15,7 +15,7 @@ matrix:
       r: 
         - release
         - devel
-addons:
-  homebrew:
-    packages:
-    - libgit2
+#addons:
+#  homebrew:
+#    packages:
+#    - libgit2

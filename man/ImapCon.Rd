@@ -8,7 +8,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
   class.
 }
 \note{
-\href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap()}}
+\href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap}}
   should be preferred instead of \code{ImapCon$new()}.
 
 \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follows
