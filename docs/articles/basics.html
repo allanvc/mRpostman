@@ -278,7 +278,7 @@
 <span id="cb11-3"><a href="#cb11-3"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>)</span>
 <span id="cb11-4"><a href="#cb11-4"></a></span>
 <span id="cb11-5"><a href="#cb11-5"></a>res</span></code></pre></div>
-<p>You can use the UID (unique identifier) instead of the message sequence number <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.</p>
+<p>You can use the “UID” (unique identifier) instead of the message sequence number <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>res &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_before</span>(<span class="dt">date_char =</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span id="cb12-2"><a href="#cb12-2"></a>                         <span class="dt">use_uid =</span> <span class="ot">TRUE</span>,</span>
 <span id="cb12-3"><a href="#cb12-3"></a>                         <span class="dt">flag =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"ANSWERED"</span>, <span class="st">"SEEN"</span>))</span>
@@ -491,7 +491,7 @@
 <span id="cb37-12"><a href="#cb37-12"></a>out &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">fetch_header</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">fields =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span>))</span>
 <span id="cb37-13"><a href="#cb37-13"></a></span>
 <span id="cb37-14"><a href="#cb37-14"></a>out</span></code></pre></div>
-<p>Please, notice that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also, notice that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
+<p>Please, note that, in the example above, we are saving the results to the <code>out</code> object in our R session. Also note that we are setting <code>use_uid = TRUE</code> in both search and fetch requests.</p>
 </div>
 <div id="fetch-text" class="section level3">
 <h3 class="hasAnchor">
@@ -620,12 +620,12 @@
 <div id="expunge" class="section level3">
 <h3 class="hasAnchor">
 <a href="#expunge" class="anchor"></a>8.6) Expunge</h3>
-<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Please, notice that the this requires the “UID” (unique id), not sequence numbers.</p>
+<p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Please, note that the this requires the unique id, not sequence numbers. Therefore, we set <code>use_uid = TRUE</code></p>
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a><span class="co"># expunge the entire mail folder</span></span>
 <span id="cb50-2"><a href="#cb50-2"></a>con<span class="op">$</span><span class="kw">expunge</span>()</span>
 <span id="cb50-3"><a href="#cb50-3"></a></span>
 <span id="cb50-4"><a href="#cb50-4"></a><span class="co"># expunge selected msg UID</span></span>
-<span id="cb50-5"><a href="#cb50-5"></a>con<span class="op">$</span><span class="kw">delete_msg</span>(<span class="dt">msg_id =</span> <span class="dv">71171</span>, <span class="dt">use_uid =</span> <span class="st">"UID"</span>) <span class="op">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5"></a>con<span class="op">$</span><span class="kw">delete_msg</span>(<span class="dt">msg_id =</span> <span class="dv">71171</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
 <span id="cb50-6"><a href="#cb50-6"></a><span class="st">  </span><span class="kw">expunge</span>()</span></code></pre></div>
 </div>
 <div id="addremovereplace-flags" class="section level3">

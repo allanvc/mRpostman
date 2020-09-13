@@ -74,14 +74,14 @@ Mail, AOL Mail, Hotmail, and Office 365.
 
 #### Outlook - Office 365
 
-There is no need to execute any external configuration. Please, notice
+There is no need to execute any external configuration. Please, note
 that the `url` parameter in `configure_imap()` should be set as `url =
 "imaps://outlook.office365.com"`, and the `username` should be set as
 `user@yourcompany.com`.
 
 #### Hotmail
 
-There is no need to execute any external configuration. Please, notice
+There is no need to execute any external configuration. Please, note
 that the `url` parameter in `configure_imap()` should be set as `url =
 "imaps://imap-mail.outlook.com"`, and the `username` should be set as
 `user@hotmail.com`.

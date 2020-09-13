@@ -453,7 +453,7 @@
 <span id="cb34-4"><a href="#cb34-4"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_body</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># or fetch_text()</span></span>
 <span id="cb34-5"><a href="#cb34-5"></a><span class="st">  </span><span class="kw"><a href="../reference/list_attachments.html">list_attachments</a></span>()</span></code></pre></div>
 </div>
-<p>Notice that <code>list_attachment()</code> is an independent function. It is not a method of the <code>ImapCon</code> class that depends on the connection object.</p>
+<p>Note that <code>list_attachment()</code> is an independent function. It is not a method of the <code>ImapCon</code> class that depends on the connection object.</p>
 <p>The new version brings an alternative fetching method (<code>fetch_atachments_list()</code>) for listing attachments without the need of previously executing a <code>fetch_body</code> or <code>fetch_text</code> operation:</p>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span>
 <span id="cb35-2"><a href="#cb35-2"></a></span>
