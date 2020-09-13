@@ -56,11 +56,11 @@ Let's see how to configure simple plain authentication for Gmail, Yahoo Mail, AO
 
 #### Outlook - Office 365
 
-There is no need to execute any external configuration. Please, notice that the `url` parameter in `configure_imap()` should be set as `url = "imaps://outlook.office365.com"`, and the `username` should be set as `user@yourcompany.com`.
+There is no need to execute any external configuration. Please, note that the `url` parameter in `configure_imap()` should be set as `url = "imaps://outlook.office365.com"`, and the `username` should be set as `user@yourcompany.com`.
 
 #### Hotmail
 
-There is no need to execute any external configuration. Please, notice that the `url` parameter in `configure_imap()` should be set as `url = "imaps://imap-mail.outlook.com"`, and the `username` should be set as `user@hotmail.com`.
+There is no need to execute any external configuration. Please, note that the `url` parameter in `configure_imap()` should be set as `url = "imaps://imap-mail.outlook.com"`, and the `username` should be set as `user@hotmail.com`.
 
 #### Gmail
 

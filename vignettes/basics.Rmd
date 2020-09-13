@@ -239,7 +239,7 @@ res <- con$search_before(date_char = "07-Sep-2020")
 res
 ```
 
-You can use the UID (unique identifier) instead of the message sequence number ^[A message sequence number is a message's relative position to the oldest message in a mail folder. It may change after deleting or moving messages. If a message is deleted, sequence numbers are reordered to fill the gap. If `use_uid = TRUE`, the command will be performed using the "UID" or unique identifier, and results are presented as such. UIDs are always the same during the life cycle of a message in a mail folder.], and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.
+You can use the "UID" (unique identifier) instead of the message sequence number ^[A message sequence number is a message's relative position to the oldest message in a mail folder. It may change after deleting or moving messages. If a message is deleted, sequence numbers are reordered to fill the gap. If `use_uid = TRUE`, the command will be performed using the "UID" or unique identifier, and results are presented as such. UIDs are always the same during the life cycle of a message in a mail folder.], and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -548,7 +548,7 @@ out <- con$fetch_header(use_uid = TRUE, fields = c("DATE", "SUBJECT"))
 out
 ```
 
-Please, notice that, in the example above, we are saving the results to the `out` object in our R session. Also, notice that we are setting `use_uid = TRUE` in both search and fetch requests.
+Please, note that, in the example above, we are saving the results to the `out` object in our R session. Also note that we are setting `use_uid = TRUE` in both search and fetch requests.
 
 
 ### 6.3) Fetch text
@@ -711,7 +711,7 @@ con$delete_msg(msg_id = 66128)
 
 ### 8.6) Expunge
 
-Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the `msg_uid` argument. Please, notice that the this requires the "UID" (unique id), not sequence numbers.
+Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific message using the `msg_uid` argument. Please, note that the this requires the unique id, not sequence numbers. Therefore, we set `use_uid = TRUE`
 
 ```{r, message = FALSE, eval = FALSE}
 
@@ -719,7 +719,7 @@ Expunges message(s) marked with the "DELETED" flag in a mailbox or a specific me
 con$expunge()
 
 # expunge selected msg UID
-con$delete_msg(msg_id = 71171, use_uid = "UID") %>%
+con$delete_msg(msg_id = 71171, use_uid = TRUE) %>%
   expunge()
 
 ```
