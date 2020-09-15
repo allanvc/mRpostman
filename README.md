@@ -23,10 +23,10 @@ An IMAP Client for R
 ## Overview
 
 `mRpostman` is an easy-to-use IMAP client that provides tools for
-searching and message fetching, mailbox management, attachment
-extraction, and several other IMAP features, hence paving the way for
-email data analysis from within R. To do so, this package makes
-extensive use of the {curl} package and the libcurl C library.
+message searching, selective fetching of message attributes, mailbox
+management, attachment extraction, and several other IMAP features,
+paving the way for email data analysis in R. To do so, this package
+makes extensive use of the {curl} package and the libcurl C library.
 
 mRpostman’s official website: <https://allanvc.github.io/mRpostman>
 
