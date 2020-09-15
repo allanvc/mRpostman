@@ -8,9 +8,9 @@ Authors@R: c(
     role = c("aut", "cre"),
     email = "allanvcq@gmail.com",
     comment = c(ORCID = "0000-0003-3250-5380")))
-Description: An easy-to-use IMAP client that provides tools for searching and 
-    message fetching, mailbox management, attachment extraction, and several other 
-    IMAP features, paving the way for email data analysis.
+Description: An easy-to-use IMAP client that provides tools for message searching,
+    selective fetching of message attributes, mailbox management, attachment extraction, 
+    and several other IMAP features, paving the way for email data analysis.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
