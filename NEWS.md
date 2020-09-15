@@ -1,4 +1,4 @@
-## mRpostman 0.9.0.0 (2020-09-08 Github)
+## mRpostman 0.9.0.0 (2020-09-08 Github/2020-09-15 CRAN)
 
 ### Important message
 

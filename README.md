@@ -18,7 +18,7 @@ Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://trav
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
 
-An IMAP client for R
+An IMAP Client for R
 
 ## Overview
 

@@ -112,7 +112,7 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>This vignette aims to provide an easy source of code migration examples so old <code>mRpostman</code> users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.</p>
-<p>This is the summary of the main modifications in the package between versions <code>0.3.1</code> and <code>0.9.0.0</code>:</p>
+<p>This is the summary of the main modifications in the package between version <code>0.3.1</code> and <code>0.9.0.0</code>:</p>
 <ul>
 <li><p>All main functions, except <code>list_attachments</code> and the custom-search helper functions, now are methods of the R6 class <code>ImapConf</code>;</p></li>
 <li><p>The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and modified with custom requests from the methods that trigger IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>

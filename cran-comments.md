@@ -8,4 +8,7 @@
 * Mac OS X (on travis-ci), devel & release
 
 ## R CMD check results
-0 ERRORs, 0 WARNINGs, 0 NOTES
+0 ERRORs, 0 WARNINGs, 1 NOTE***
+
+***❯ checking for future file timestamps ... NOTE
+  unable to verify current time
