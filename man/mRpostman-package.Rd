@@ -32,7 +32,7 @@ Stenberg, D. \emph{Libcurl - The Multiprotocol File Transfer Library}, \url{http
   Useful links:
 
   \itemize{
-    \item{ \code{mRpostman official website}: \url{https://allanvc.github.io/mRpostman}}
+    \item{ \code{mRpostman official website}: \url{https://allanvc.github.io/mRpostman/}}
   }
 
 }

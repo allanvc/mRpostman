@@ -28,7 +28,7 @@ management, attachment extraction, and several other IMAP features,
 paving the way for email data analysis in R. To do so, this package
 makes extensive use of the {curl} package and the libcurl C library.
 
-mRpostman’s official website: <https://allanvc.github.io/mRpostman>
+mRpostman’s official website: <https://allanvc.github.io/mRpostman/>
 
 **IMPORTANT**:
 
