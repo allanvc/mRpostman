@@ -238,7 +238,7 @@ This is a summary of the main modifications in the package:
     
     + added the `response_error_handling()` function to catch operation/resolving timeout errors and login error as well
 
-* All methods work as wrappers to internal functions with similar names and suffix `*_int`
+* All methods work as wrappers for internal functions with similar names and suffix `*_int`
 
 * Search, Fetch and Complementary functions have a central internal function called `execute_*()` that is responsible for configuring and executing the requests towards the IMAP server
 
