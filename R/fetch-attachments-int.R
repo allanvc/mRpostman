@@ -48,7 +48,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   # forcing retries as an integer
   retries <- as.integer(retries)
 
-  # fetch metada
+  # fetch metadata
   metadata_list <- self$fetch_metadata(msg_id = msg_id,
                                        use_uid = use_uid,
                                        metadata = "BODYSTRUCTURE",
@@ -99,7 +99,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   }
 
   if (!mute) {
-    cat(paste0("\n::mRpostman: attachment(s) fetching is complete."))
+    cat(paste0("\n::mRpostman: the fetch operation is complete.\n"))
   }
 
   return(TRUE)

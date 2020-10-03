@@ -21,7 +21,7 @@ list_server_capabilities_int <- function(self, retries) {
   tryCatch({
     curl::handle_setopt(h, customrequest = "CAPABILITY")
   }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapConf$new().")
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
 
   response <- tryCatch({

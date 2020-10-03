@@ -37,7 +37,7 @@ mRpostman's official website: https://allanvc.github.io/mRpostman/
 
 1. In version `0.9.0.0`, `mRpostman` went trough substantial changes, including ones that have no backward compatibility with versions `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman's deprecated code to the new syntax is available at [_"Migrating old code to the new mRpostman's syntax"_](https://allanvc.github.io/mRpostman/articles/code_migration.html).
 
-2. Old versions of the libcurl C library ({curl}'s main engine) will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. However, if you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
+2. Old versions of the libcurl C library ({curl}'s main engine) will cause the malfunction of this package. If your libcurl's version is above 7.58.0, you should be fine. However, if you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
 ## Authentication
 
@@ -88,7 +88,7 @@ There is no need to execute any external configuration. Please, note that the `u
 ![](man/figures/yahoo2.png)
 <!-- <img src="man/figures/yahoo2.png"> -->
 
-4) After, set "Allow apps that use less secure sign in" **ON**
+4) Then, set "Allow apps that use less secure sign in" **ON**
 
 ![](man/figures/yahoo3.png)
 

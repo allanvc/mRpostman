@@ -74,29 +74,34 @@ fetch_attachments_list_int <- function(self, msg_id, use_uid, retries) {
 
       if (!is.null(out_df)) { #hypothetical case the has_attachments has failed
 
-        out_df$filename <- gsub("\\?\\=\\s*|\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","", out_df$filename)
+        # cleaning encoding strings in filenames, e.g. "=?Windows-1252?Q?Termo_de_extra_SIAPE.?=\r\n =?Windows-1252?Q?pdf?="
+        # pasting the extension to the name when it is
+        # v 0.9.1
+        # rfc2047 header decoding
+        out_df$filename <- rfc2047_header_decode(header = out_df$filename)
 
-        # gsub("\\?\\=\\s*", "", out_df$filename)
-        # "ending with"
-
-        # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
-        # we opted for decoding only dots first to get the correct file extension part
-        out_df$filename <- gsub("=2E|%2E",".", out_df$filename)
+        # out_df$filename <- gsub("\\?\\=\\s*|\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","", out_df$filename)
+        #
+        # # gsub("\\?\\=\\s*", "", out_df$filename)
+        # # "ending with"
+        #
+        # # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
+        # # we opted for decoding only dots first to get the correct file extension part
+        # out_df$filename <- gsub("=2E|%2E",".", out_df$filename)
 
         forbiden_chars <- "[\\/:*?\"<>|]"
         out_df$filename <- gsub(forbiden_chars, "", out_df$filename)
 
         # standard URLdecoding:
-        for (j in seq_along(out_df$filename)) {
-          out_df$filename[j] <- tryCatch({
-            utils::URLdecode(out_df$filename[j])
-          }, warning = function(w) {
-            out_df$filename[j]
-          }, error = function(e) {
-            out_df$filename[j]
-          })
-        }
-
+        # for (j in seq_along(out_df$filename)) {
+        #   out_df$filename[j] <- tryCatch({
+        #     utils::URLdecode(out_df$filename[j])
+        #   }, warning = function(w) {
+        #     out_df$filename[j]
+        #   }, error = function(e) {
+        #     out_df$filename[j]
+        #   })
+        # }
 
         # binding regular attachments and inline attachments
         out <- list(out_df)

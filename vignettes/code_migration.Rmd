@@ -26,7 +26,7 @@ vignette: >
 
 This vignette aims to provide an easy source of code migration examples so old `mRpostman` users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.
 
-This is the summary of the main modifications in the package between version `0.3.1` and `0.9.0.0`:
+This is the summary of the main modifications in the package between versions `0.3.1` and `0.9.0.0`:
 
 * All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
     

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
       </span>
     </div>
 
@@ -203,6 +203,22 @@ can be used with the IMAP protocol. Only for advanced users.</p></td>
     <p>A new `ImapCon` object.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='co'># w/ Plain authentication</span>
+<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'>configure_imap</span>(
+  <span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,
+  <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"user@agency.gov.br"</span>,
+  <span class='kw'>password</span><span class='kw'>=</span><span class='kw pkg'>rstudioapi</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/rstudioapi/topics/askForPassword'>askForPassword</a></span>(),
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># w/ OAuth2.0 authentication</span>
+<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'>configure_imap</span>(
+  <span class='kw'>url</span><span class='kw'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,
+  <span class='kw'>username</span><span class='kw'>=</span><span class='st'>"user@agency.gov.br"</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>xoauth2_bearer</span> <span class='kw'>=</span> <span class='st'>"XX.Ya9..."</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -210,7 +226,9 @@ can be used with the IMAP protocol. Only for advanced users.</p></td>
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

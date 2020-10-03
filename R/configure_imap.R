@@ -21,6 +21,22 @@
 #' can be used with the IMAP protocol. Only for advanced users.
 #' @return A new `ImapCon` object.
 #' @export
+#' @examples
+#' \dontrun{
+#' # w/ Plain authentication
+#' con <- configure_imap(
+#'   url="imaps://outlook.office365.com",
+#'   username="user@agency.gov.br",
+#'   password=rstudioapi::askForPassword(),
+#'   verbose = TRUE)
+#'
+#' # w/ OAuth2.0 authentication
+#' con <- configure_imap(
+#'   url="imaps://outlook.office365.com",
+#'   username="user@agency.gov.br",
+#'   verbose = TRUE,
+#'   xoauth2_bearer = "XX.Ya9...")
+#' }
 configure_imap <- function(url,
                            username,
                            password = NULL,

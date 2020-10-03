@@ -17,7 +17,7 @@ list_mail_folders_int <- function(self, retries) {
   tryCatch({
     curl::handle_setopt(h, customrequest = 'LIST "" *')
   }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapConf$new().")
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
 
   response <- tryCatch({
@@ -59,6 +59,10 @@ list_mail_folders_int <- function(self, retries) {
                                 ))[2]
     # cleaning
     hierarchy_sep <- gsub('\\"', "", hierarchy_sep)
+
+    if (hierarchy_sep == "|") { #v0.9.1 - Yandex uses root|children
+      hierarchy_sep <- paste0('\\', hierarchy_sep)
+    }
 
     pattern_hierarchy_sep = paste0('.', hierarchy_sep, '.')
 

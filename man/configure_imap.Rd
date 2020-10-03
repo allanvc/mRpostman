@@ -51,3 +51,20 @@ A new `ImapCon` object.
 \description{
 Configure and create a new IMAP connection.
 }
+\examples{
+\dontrun{
+# w/ Plain authentication
+con <- configure_imap(
+  url="imaps://outlook.office365.com",
+  username="user@agency.gov.br",
+  password=rstudioapi::askForPassword(),
+  verbose = TRUE)
+
+# w/ OAuth2.0 authentication
+con <- configure_imap(
+  url="imaps://outlook.office365.com",
+  username="user@agency.gov.br",
+  verbose = TRUE,
+  xoauth2_bearer = "XX.Ya9...")
+}
+}

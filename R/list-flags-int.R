@@ -25,7 +25,7 @@ list_flags_int <- function(self, retries) {
     # adding the SELECT mbox customrequest parameter to handle -- will exhibit the flags
     curl::handle_setopt(handle = h, customrequest = paste0("SELECT ", folder))
   }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapConf$new().")
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
 
   response <- tryCatch({
