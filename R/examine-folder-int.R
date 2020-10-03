@@ -55,7 +55,7 @@ examine_folder_int <- function(self, name, retries) {
     # adding the EXAMINE folder customrequest parameter
     curl::handle_setopt(handle = h, customrequest = paste0("EXAMINE ", folder))
   }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
 
   response <- tryCatch({

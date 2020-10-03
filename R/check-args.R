@@ -359,7 +359,7 @@ check_args <- function(...) {
   }
 
 
-  # ACESSORIAL FUNCTIONS
+  # ACCESSORIAL FUNCTIONS
 
   if ("to_folder" %in% names(argg_list)) {
     # if (!is.character(argg_list$to_folder)) {
@@ -442,6 +442,12 @@ check_args <- function(...) {
     assertthat::assert_that(
       is.logical(argg_list$override),
       msg='"override" must be a logical.')
+  }
+
+  if ("header" %in% names(argg_list)) {
+    assertthat::assert_that(
+      is.character(argg_list$header),
+      msg='"header" must be of type character.')
   }
 
   # if (!missing(negate)) {}

@@ -6,20 +6,20 @@ clean_fetch_results <- function(msg_text) {
 
   pattern1 = "\\* \\d+ FETCH.*BODY.*\\{\\d+\\}\r\n"
   # result <- stringr::str_remove(string = msg_text, pattern = pattern1)
-  result <- gsub(pattern1, "", msg_text)
+  result <- gsub(pattern1, "", msg_text, ignore.case = TRUE)
 
   pattern2 = "\\)\r\n[A-Z]\\d+ OK Success\r\n"
   # result <- stringr::str_remove(string = result, pattern = pattern2)
-  result <- gsub(pattern2, "", result)
+  result <- gsub(pattern2, "", result, ignore.case = TRUE)
 
-  pattern3 = "\\)\r\n[A-Z]\\d+ OK FETCH completed.\r\n" #MS Exchange
+  pattern3 = "\\)\r\n[A-Z]\\d+ OK FETCH completed.\r\n" #MS Exchange and yandex
   # result <- stringr::str_remove(string = result, pattern = pattern3)
-  result <- gsub(pattern3, "", result)
+  result <- gsub(pattern3, "", result, ignore.case = TRUE)
 
   # attachments
   pattern4 = "\\)\r\n[A-Z]\\d+ OK FETCH completed\r\n" #MS Exchange
   # result <- stringr::str_remove(string = result, pattern = pattern3)
-  result <- gsub(pattern4, "", result)
+  result <- gsub(pattern4, "", result, ignore.case = TRUE)
 
   # note to self: base R functions like regmatches return error in some cases
   # sub is too slow

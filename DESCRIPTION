@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: An IMAP Client for R
-Version: 0.9.0.0
-Date: 2020-09-15
+Version: 0.9.1
+Date: 2020-10-03
 Authors@R: c(
     person(given="Allan", family="Quadros",
     role = c("aut", "cre"),
@@ -17,6 +17,7 @@ LazyData: true
 Imports: curl,
     R6,
     stringr,
+    stringi,
     magrittr,
     assertthat,
     base64enc,

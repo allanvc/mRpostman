@@ -47,6 +47,8 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
 
   df_meta_to_fetch$adjusted_filenames <- adjust_repeated_filenames(df_meta_to_fetch$filenames)
 
+  df_meta_to_fetch$adjusted_filenames <- rfc2047_header_decode(df_meta_to_fetch$adjusted_filenames)
+
   # loop exec
   for (i in 1:nrow(df_meta_to_fetch)) {
     # print(i)
@@ -100,7 +102,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
             handle = h,
             customrequest = adjusted_fetch_request) #bug: response was NULL when recovering from a fetch timeout error
         }, error = function(e){
-          stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
+          stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
         })
 
         # REQUEST
@@ -140,7 +142,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
       self$get_attachments(msg_list = msg_list,
                            content_disposition = content_disposition,
                            override = override, mute = TRUE)
-      # we still have to inform content_disposition in case there is two different type attachments in the same part
+      # we still have to inform content_disposition in case there is two different types of attachments in the same part
       #.. and one is an unwanted type
 
     } else {

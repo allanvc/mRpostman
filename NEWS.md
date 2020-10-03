@@ -1,3 +1,25 @@
+## mRpostman 0.9.1 (2020-10-03 Github)
+
+### Main features
+* added RFC 2047 quoted-printable and base64 header decoder
+
+### Functions & methods
+* added the `rfc2047_header_decode()` function
+    - it is used inside `get_attachments()` and `fetch_attachments()` for correctly naming the filenames
+    - it is also exported for the user in order to be used for a header decoding operation after a metadata fecthing, for example
+
+### Bug fixes
+
+* `list_mail_folders()`: fixed the regex related to the hierarchy separator to accept the "|" separator. It was causing a misbehavior in Yandex accounts.
+
+* `clean_fetch_results()` (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have `ignore.case = TRUE`. 
+
+### Minor changes
+
+* changed the confirmation message in `fetch_attahments()` "\n::mRpostman: the fetch operation is complete.\n"
+
+
+
 ## mRpostman 0.9.0.0 (2020-09-08 Github/2020-09-15 CRAN)
 
 ### Important message
