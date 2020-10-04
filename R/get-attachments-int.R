@@ -126,8 +126,8 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
         # cleaning encoding strings in filenames, e.g. "=?Windows-1252?Q?Termo_de_extra_SIAPE.?=\r\n =?Windows-1252?Q?pdf?="
         # pasting the extension to the name when it is
         # v 0.9.1
-        # rfc2047 header decoding
-        filenames <- rfc2047_header_decode(header = filenames)
+        # rfc2047 mime header decoding
+        filenames <- decode_mime_header(string = filenames)
         # filenames <- gsub("\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","", filenames)
         # "ending with"
 

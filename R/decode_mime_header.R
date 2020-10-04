@@ -1,40 +1,57 @@
-#' Decode RFC 2047 quoted-printable and base64 headers or strings
-#' @param header A \code{character} vector containing a string to be decoded.
+#' Decode RFC 2047 quoted-printable and base64 MIME headers and strings
+#' @param string A \code{character} vector containing a string to be decoded.
 #' @return A decoded \code{character} vector if applicable.
+#' @note The RFC 2047 (Moore, 1996) presents an encoded-word syntax to be used by e-mail
+#'   clients to display body text and header information in character sets
+#'   other than ASCII. According to the manual, non-ASCII content is encoded as
+#'   an ASCII text string as follows: \code{=?<charset>?<encoding>?<encoded-text>?=}.
+#'   The encoding can be of two types: "B" for "BASE64", or "Q" for quoted-
+#'   printable content (RFC 2045, ). Besides the standard RFC 2047 decoding, this
+#'   function also enables users to decode content that doesn't strictly follow
+#'   the \code{=?<charset>?<encoding>?<encoded-text>?=} RFC 2047 syntax, i.e.
+#'   cases where only the encoded text part is present, such as the quoted-printable
+#'   pattern in the string \code{"Estat=EDstica"} (Estatística, which is the
+#'   equivalent word, in Portuguese, for Statistics).
+#' @references Moore, K. (1996), MIME (Multipurpose Internet Mail Extensions) Part
+#'   Three: Message Header Extensions for Non-ASCII
+#'   Text, RFC 2047, November 1996, https://tools.ietf.org/html/rfc2047.
+#' @references Freed, N., Borenstein, N. (1996), Multipurpose Internet Mail Extensions
+#'   (MIME) Part One: Format of Internet Message Bodies, RFC 2045, November 1996,
+#'   https://tools.ietf.org/html/rfc2045.
 #' @export
 #' @examples
 #' # Simple quoted-printable string - Portuguese example
 #' qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
-#' decoded_string <- rfc2047_header_decode(header = qp_encoded)
+#' decoded_string <- decode_mime_header(string = qp_encoded)
 #'
 #' # Simple quoted-printable string - French example
 #' qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
-#' decoded_string <- rfc2047_header_decode(header = qp_encoded)
+#' decoded_string <- decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 quoted-printable header - Portuguese example
 #' qp_encoded <- "=?iso-8859-1?Q?DIDEC_Capacita=E7=E3o?="
-#' decoded_string <- rfc2047_header_decode(header = qp_encoded)
+#' decoded_string <- decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 quoted-printable - German example
 #' qp_encoded <- "=?UTF-8?Q?stern=2Ede_-_t=C3=A4glich?="
-#' decoded_string <- rfc2047_header_decode(header = qp_encoded)
+#' decoded_string <- decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 base64 - Portuguese example
 #' b64_encoded <- "=?utf-8?B?Sk9BTkEgRlVTQ08gTE9CTyBubyBUZWFtcw==?="
-#' decoded_string <- rfc2047_header_decode(header = b64_encoded)
+#' decoded_string <- decode_mime_header(string = b64_encoded)
 #'
-rfc2047_header_decode <- function(header) {
+decode_mime_header <- function(string) {
 
   # check if it is a character vector
   #check
-  # check_args(header = header)
+  check_args(string = string)
 
   out <- c()
-  for (i in seq_along(header)) { # "vectorized"
+  for (i in seq_along(string)) { # "vectorized"
 
     # i = 1
 
-    x_split <- unlist(strsplit(header[i], "\\?"))
+    x_split <- unlist(strsplit(string[i], "\\?"))
 
     # eliminate repetitions (it happens when a large name occupy more than one line)
     x_split <- unique(x_split)
@@ -80,7 +97,7 @@ rfc2047_header_decode <- function(header) {
 
     } else {
 
-      content <- header[i]
+      content <- string[i]
 
       # first we need to test for b64 encoding
       # because the quoted-printable regex will also capture base64 encoded strings

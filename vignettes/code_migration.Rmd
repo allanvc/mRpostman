@@ -526,7 +526,7 @@ results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
 
 Note that `list_attachment()` is an independent function. It is not a method of the `ImapCon` class that depends on the connection object.
 
-The new version brings an alternative fetching method (`fetch_atachments_list()`) for listing attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+The new version brings an alternative fetch method (`fetch_atachments_list()`) for listing attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -567,7 +567,7 @@ results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
 
 </div>
 
-The new version brings an alternative fetching method (`fetch_atachments()`) for downloading attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+The new version brings an alternative fetch method (`fetch_atachments()`) for downloading attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
 
 ```{r, message = FALSE, eval=FALSE}
 

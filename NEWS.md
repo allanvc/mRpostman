@@ -1,12 +1,12 @@
 ## mRpostman 0.9.1 (2020-10-03 Github)
 
 ### Main features
-* added RFC 2047 quoted-printable and base64 header decoder
+* added RFC 2047 quoted-printable and base64 MIME header decoder
 
 ### Functions & methods
-* added the `rfc2047_header_decode()` function
+* added the `decode_mime_header()` function
     - it is used inside `get_attachments()` and `fetch_attachments()` for correctly naming the filenames
-    - it is also exported for the user in order to be used for a header decoding operation after a metadata fecthing, for example
+    - it is also exported for the user in order to be used for a header decoding operation after fetching metadata, for example.
 
 ### Bug fixes
 
@@ -16,7 +16,7 @@
 
 ### Minor changes
 
-* changed the confirmation message in `fetch_attahments()` "\n::mRpostman: the fetch operation is complete.\n"
+* The confirmation message in `fetch_attahments()` changed to "\n::mRpostman: the fetch operation is complete.\n"
 
 
 

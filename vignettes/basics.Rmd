@@ -574,7 +574,7 @@ There are two more fetch methods, but they are going to be presented in the next
 
 ## 7) Attachments
 
-Previously, `mRpostman` had two attachment-related functions: `list_attachments()` and `get_attachments()`. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version `0.9.0.0`: `fetch_attachments_list()` and `fetch_attachments()`. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.
+Previously, `mRpostman` had two attachment-related functions: `list_attachments()` and `get_attachments()`. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented since version `0.9.0.0`: `fetch_attachments_list()` and `fetch_attachments()`. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation.
 
 Let's take a look at the first two attachments functionalities available in `mRpostman`.
 
@@ -607,7 +607,7 @@ In both examples, the whole message body(ies) or text will be saved to the disk,
 
 #### 7.1.2) Extracting Attachments
 
-`get_attachments()` will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure `wd > imap.server.name > mail folder > msg_id`. The attachment(s) will be inside their respective message folder.
+`get_attachments()` will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure `working directory > imap.server.name > mail folder > msg_id`. The attachment(s) will be inside their respective message folder.
 
 
 ```{r, message = FALSE, eval = FALSE}
@@ -629,9 +629,9 @@ The results in your local folder will be like this:
 ![](figures/basics/get-fetch_attachments1.png){width=90%}
 ![](figures/basics/get-fetch_attachments2.png){width=90%}
 
-### 7.2) Optimized attachment operations
+### 7.2) Direct attachment fetch operations
 
-As we stated before, the following two methods are not contingent on a previous fetch step because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.
+As we stated before, the following two methods are not contingent on a previous fetch step because they execute they own fetching operation. Hence, they consist of an alternative for attachments listing and downloading.
 
 **IMPORTANT**: The same recommendations for the other fetch methods hold in this case: set `verbose = FALSE` and a high `timeout_ms`.
 

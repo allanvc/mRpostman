@@ -78,7 +78,7 @@ fetch_attachments_list_int <- function(self, msg_id, use_uid, retries) {
         # pasting the extension to the name when it is
         # v 0.9.1
         # rfc2047 header decoding
-        out_df$filename <- rfc2047_header_decode(header = out_df$filename)
+        out_df$filename <- decode_mime_header(string = out_df$filename)
 
         # out_df$filename <- gsub("\\?\\=\\s*|\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","", out_df$filename)
         #
