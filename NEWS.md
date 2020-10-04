@@ -7,6 +7,7 @@
 * added the `decode_mime_header()` function
     - it is used inside `get_attachments()` and `fetch_attachments()` for correctly naming the filenames
     - it is also exported for the user in order to be used for a header decoding operation after fetching metadata, for example.
+    - it was necessary to add the {stringi} package as dependency
 
 ### Bug fixes
 
