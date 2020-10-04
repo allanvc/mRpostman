@@ -47,7 +47,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
 
   df_meta_to_fetch$adjusted_filenames <- adjust_repeated_filenames(df_meta_to_fetch$filenames)
 
-  df_meta_to_fetch$adjusted_filenames <- rfc2047_header_decode(df_meta_to_fetch$adjusted_filenames)
+  df_meta_to_fetch$adjusted_filenames <- decode_mime_header(string = df_meta_to_fetch$adjusted_filenames)
 
   # loop exec
   for (i in 1:nrow(df_meta_to_fetch)) {

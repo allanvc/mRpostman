@@ -444,10 +444,10 @@ check_args <- function(...) {
       msg='"override" must be a logical.')
   }
 
-  if ("header" %in% names(argg_list)) {
+  if ("string" %in% names(argg_list)) {
     assertthat::assert_that(
-      is.character(argg_list$header),
-      msg='"header" must be of type character.')
+      is.character(argg_list$string),
+      msg='"string" must be of type character.')
   }
 
   # if (!missing(negate)) {}
