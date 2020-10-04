@@ -512,7 +512,7 @@
 <div id="attachments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attachments" class="anchor"></a>7) Attachments</h2>
-<p>Previously, <code>mRpostman</code> had two attachment-related functions: <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented in version <code>0.9.0.0</code>: <code>fetch_attachments_list()</code> and <code>fetch_attachments()</code>. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation. Therefore, if the user is only interested in obtaining the attachments list or downloading the attachments of a set of messages, the last two options are considerably more efficient.</p>
+<p>Previously, <code>mRpostman</code> had two attachment-related functions: <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented since version <code>0.9.0.0</code>: <code>fetch_attachments_list()</code> and <code>fetch_attachments()</code>. These methods are not contingent on a previous fetch operation, since they are a properly fetch operation.</p>
 <p>Let’s take a look at the first two attachments functionalities available in <code>mRpostman</code>.</p>
 <div id="dependent-attachment-operations" class="section level3">
 <h3 class="hasAnchor">
@@ -539,7 +539,7 @@
 <div id="extracting-attachments" class="section level4">
 <h4 class="hasAnchor">
 <a href="#extracting-attachments" class="anchor"></a>7.1.2) Extracting Attachments</h4>
-<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>wd &gt; imap.server.name &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
+<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>working directory &gt; imap.server.name &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
 <div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a><span class="co"># using fetch_body()</span></span>
 <span id="cb41-2"><a href="#cb41-2"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"23-Sep-2019"</span>) <span class="op">%&gt;%</span></span>
 <span id="cb41-3"><a href="#cb41-3"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_body</span>(<span class="dt">write_to_disk =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
@@ -555,10 +555,10 @@
 <p><img src="figures/basics/get-fetch_attachments1.png" style="width:90.0%"><img src="figures/basics/get-fetch_attachments2.png" style="width:90.0%"></p>
 </div>
 </div>
-<div id="optimized-attachment-operations" class="section level3">
+<div id="direct-attachment-fetch-operations" class="section level3">
 <h3 class="hasAnchor">
-<a href="#optimized-attachment-operations" class="anchor"></a>7.2) Optimized attachment operations</h3>
-<p>As we stated before, the following two methods are not contingent on a previous fetch step because they execute a fetching operation. Hence, they consist of an optimized alternative for attachments listing and downloading.</p>
+<a href="#direct-attachment-fetch-operations" class="anchor"></a>7.2) Direct attachment fetch operations</h3>
+<p>As we stated before, the following two methods are not contingent on a previous fetch step because they execute they own fetching operation. Hence, they consist of an alternative for attachments listing and downloading.</p>
 <p><strong>IMPORTANT</strong>: The same recommendations for the other fetch methods hold in this case: set <code>verbose = FALSE</code> and a high <code>timeout_ms</code>.</p>
 <div id="fetch-attachments-list" class="section level4">
 <h4 class="hasAnchor">

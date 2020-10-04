@@ -133,17 +133,18 @@
 <h3 class="hasAnchor">
 <a href="#main-features" class="anchor"></a>Main features</h3>
 <ul>
-<li>added RFC 2047 quoted-printable and base64 header decoder</li>
+<li>added RFC 2047 quoted-printable and base64 MIME header decoder</li>
 </ul>
 </div>
 <div id="functions--methods" class="section level3">
 <h3 class="hasAnchor">
 <a href="#functions--methods" class="anchor"></a>Functions &amp; methods</h3>
 <ul>
-<li>added the <code><a href="../reference/rfc2047_header_decode.html">rfc2047_header_decode()</a></code> function
+<li>added the <code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code> function
 <ul>
 <li>it is used inside <code>get_attachments()</code> and <code>fetch_attachments()</code> for correctly naming the filenames</li>
-<li>it is also exported for the user in order to be used for a header decoding operation after a metadata fecthing, for example</li>
+<li>it is also exported for the user in order to be used for a header decoding operation after fetching metadata, for example.</li>
+<li>it was necessary to add the {stringi} package as dependency</li>
 </ul>
 </li>
 </ul>
@@ -160,7 +161,7 @@
 <h3 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor changes</h3>
 <ul>
-<li>changed the confirmation message in <code>fetch_attahments()</code> “\n::mRpostman: the fetch operation is complete.\n”</li>
+<li>The confirmation message in <code>fetch_attahments()</code> changed to “\n::mRpostman: the fetch operation is complete.\n”</li>
 </ul>
 </div>
 </div>

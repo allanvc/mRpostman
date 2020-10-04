@@ -84,6 +84,32 @@ decode_quoted_printable <- function (qp_encoded) {
 
   decoded_string <- paste0(decoded_string, collapse = " ")
 
+  decoded_string <- gsub("_", " ", decoded_string) # recommendation https://tools.ietf.org/html/rfc2047#section-4, item 4.2
+  # The "Q" encoding is similar to the "Quoted-Printable" content-
+  #   transfer-encoding defined in RFC 2045.  It is designed to allow text
+  # containing mostly ASCII characters to be decipherable on an ASCII
+  # terminal without decoding.
+  #
+  # (1) Any 8-bit value may be represented by a "=" followed by two
+  # hexadecimal digits.  For example, if the character set in use
+  # were ISO-8859-1, the "=" character would thus be encoded as
+  # "=3D", and a SPACE by "=20".  (Upper case should be used for
+  #                                hexadecimal digits "A" through "F".)
+  #
+  # (2) The 8-bit hexadecimal value 20 (e.g., ISO-8859-1 SPACE) may be
+  # represented as "_" (underscore, ASCII 95.).  (This character may
+  # not pass through some internetwork mail gateways, but its use
+  # will greatly enhance readability of "Q" encoded data with mail
+  # readers that do not support this encoding.)  Note that the "_"
+  # always represents hexadecimal 20, even if the SPACE character
+  # occupies a different code position in the character set in use.
+  #
+  # (3) 8-bit values which correspond to printable ASCII characters other
+  # than "=", "?", and "_" (underscore), MAY be represented as those
+  # characters.  (But see section 5 for restrictions.)  In
+  # particular, SPACE and TAB MUST NOT be represented as themselves
+  # within encoded words.
+
   return(decoded_string)
 
 }
