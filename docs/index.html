@@ -194,51 +194,27 @@
 <p>From version 0.9.0.0 onward, <code>mRpostman</code> is implemented under the OO paradigm, based on an R6 class called <code>ImapCon</code>. Its derived methods, and a few independent functions enable the R user to perform a myriad of IMAP commands.</p>
 <p>The package is divided in 8 groups of operations. Below, we present all the available methods and functions:</p>
 <ul>
-<li><ol style="list-style-type: decimal">
 <li>
-<strong>configuration</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>;</li>
-</ol></li>
-<li><ol start="2" style="list-style-type: decimal">
+<strong>configuration methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server capabilities</strong>: <code>list_server_capabilities()</code>
-</li>
-</ol></li>
-<li><ol start="3" style="list-style-type: decimal">
+<strong>server capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
 <li>
-<strong>mailbox operations</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>;</li>
-</ol></li>
-<li><ol start="4" style="list-style-type: decimal">
+<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
 <li>
-<strong>single search</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
-</ol></li>
+<strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
-<ol start="5" style="list-style-type: decimal">
-<li>
-<strong>custom search</strong>: <code>search</code>
-</li>
-</ol>
-<ul>
-<li>
-<strong>custom search helper functions</strong>:
+<strong>the custom-search method and its helper functions</strong>: <code><a href="https://www.rdocumentation.org/packages/base/topics/search">search()</a></code>;
 <ul>
 <li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>, <code><a href="reference/OR.html">OR()</a></code>;</li>
 <li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>;</li>
 </ul>
 </li>
-</ul>
-</li>
-<li><ol start="6" style="list-style-type: decimal">
 <li>
-<strong>fetch</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
-</ol></li>
-<li><ol start="7" style="list-style-type: decimal">
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>attachments</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
-</ol></li>
-<li><ol start="8" style="list-style-type: decimal">
+<strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>complementary operations</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>esearch_count()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
-</ol></li>
+<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
 </ul>
 </div>
 <div id="installation" class="section level2">
@@ -366,7 +342,7 @@
 <ul>
 <li><p><em>search results truncation</em>: This is a <a href="https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">libcurl’s known bug</a> which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher <code>buffersize</code> value, increasing the buffer capacity, and <code>verbose = TRUE</code> for monitoring the server response for truncated results when executing a search. When possible, <code>mRpostman</code> tries to issue a warning for possible truncated values.</p></li>
 <li><p><em><code>verbose = TRUE</code> malfunction on Windows</em>: This seems to be related to the <a href="https://github.com/jeroen/curl/issues/230">{curl} R package</a>. When using the <code>verbose = TRUE</code> on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.</p></li>
-<li><p><em>shared mailbox access</em>: This seems to be another <a href="https://github.com/allanvc/mRpostman/issues/2">libcurl’s bug</a>, although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.</p></li>
+<li><p><em>shared mailbox access not working</em>: This seems to be another <a href="https://github.com/allanvc/mRpostman/issues/2">libcurl’s bug</a>, although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.</p></li>
 <li><p><em><code>xoauth2_bearer</code> SASL error</em>: This is related to <a href="https://curl.haxx.se/bug/?i=2487">old libcurl’s versions</a> which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.</p></li>
 </ul>
 </div>

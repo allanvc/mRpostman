@@ -1,4 +1,4 @@
-## mRpostman 0.9.1 (2020-10-03 Github)
+## mRpostman 0.9.1 (2020-10-05 Github)
 
 ### Main features
 * added RFC 2047 quoted-printable and base64 MIME header decoder
@@ -15,10 +15,17 @@
 
 * `clean_fetch_results()` (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have `ignore.case = TRUE`. 
 
+* `reset_*()` methods: Except by `reset_password()` and `reset_xoauth2_bearer()`, the other methods were not reflecting the changes in the `ImapCon$con_params` object, although they were succesfully modifying the `ImapCon$con_handle`, which was sufficient to work properly. It could cause the user to thing that the changes wouldn't taking any effect.
+
 ### Minor changes
 
 * The confirmation message in `fetch_attahments()` changed to "\n::mRpostman: the fetch operation is complete.\n"
+* Fixed some minor typographic errors in the vignettes and the README file.
 
+### Changes without backward compatibility
+
+* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;
+* The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
 
 
 ## mRpostman 0.9.0.0 (2020-09-08 Github/2020-09-15 CRAN)

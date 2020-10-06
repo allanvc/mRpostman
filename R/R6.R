@@ -95,11 +95,20 @@ ImapCon <- R6::R6Class("ImapCon",
     },
     # R6 methods
 
-    ## RESET FUNCTIONS
+    ## RESET methods
 
     #' @description Reset the previously informed url
-    #' @param url A character string containing a new url to be set.
-    reset_url = function(url) {
+    #' @param url Deprecated. Use \code{x} instead.
+    #' @param x A character string containing a new url to be set.
+    reset_url = function(url = NULL, x) {
+
+      if (!is.null(url)) {
+        warning('The "url" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        url = x
+      }
+
+      # url = x
       assertthat::assert_that(
         is.character(url),
         msg='Argument "url" must be a string, e.g. "imaps://imap.servername.com".')
@@ -115,67 +124,126 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Reset the previously informed username
-    #' @param username A character string containing a new username to be set.
-    reset_username = function(username) {
+    #' @param username Deprecated. Use \code{x} instead.
+    #' @param x A character string containing a new username to be set.
+    reset_username = function(username = NULL, x) {
 
+      if (!is.null(username)) {
+        warning('The "username" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        username = x
+      }
+
+      # username = x
       modify_con_handle(self, username = username) # same strategy from check_args() to keep a named list
+      self$con_params$username <- username
 
     },
 
     #' @description Reset the previously informed use_ssl parameter
-    #' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
+    #' @param use_ssl Deprecated. Use \code{x} instead.
+    #' @param x A logical indicating the use or not of Secure Sockets Layer
     #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
-    reset_ssl = function(use_ssl) {
+    reset_use_ssl = function(use_ssl, x) {
 
+      if (!is.null(use_ssl)) {
+        warning('The "use_ssl" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        use_ssl = x
+      }
+
+      # use_ssl = x
       modify_con_handle(self, use_ssl = use_ssl)
+      self$con_params$use_ssl <- use_ssl
 
     },
 
     #' @description Reset the previously informed verbose parameter
-    #' @param verbose If \code{FALSE}, mutes the flow of information between the
+    #' @param verbose Deprecated. Use \code{x} instead.
+    #' @param x If \code{FALSE}, mutes the flow of information between the
     #'   server and the client.
-    reset_verbose = function(verbose) {
+    reset_verbose = function(verbose = NULL, x) {
 
+      if (!is.null(verbose)) {
+        warning('The "verbose" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        verbose = x
+      }
+
+      # verbose = x
       modify_con_handle(self, verbose = verbose)
+      self$con_params$verbose <- verbose
 
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param buffersize The size in bytes for the receive buffer. Default is
+    #' @param buffersize Deprecated. Use \code{x} instead.
+    #' @param x The size in bytes for the receive buffer. Default is
     #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
     #'   According to the libcurl's documentation, the maximum buffersize is 512kb
     #'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
     #'   as a request, not an order.
-    reset_buffersize = function(buffersize) {
+    reset_buffersize = function(buffersize = NULL, x) {
 
+      if (!is.null(buffersize)) {
+        warning('The "buffersize" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        buffersize = x
+      }
+
+      # buffersize = x
       modify_con_handle(self, buffersize = buffersize)
+      self$con_params$buffersize <- buffersize
 
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
+    #' @param timeout_ms Deprecated. Use \code{x} instead.
+    #' @param x Time in milliseconds (ms) to wait for the execution or
     #'   re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
     #'   execution is unsuccessful, an error handler in each function (depending on
     #'   the \code{retries} value), will try to reconnect or re-execute the command.
-    reset_timeout_ms = function(timeout_ms) {
+    reset_timeout_ms = function(timeout_ms = NULL, x) {
 
+      if (!is.null(timeout_ms)) {
+        warning('The "timeout_ms" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        timeout_ms = x
+      }
+      # timeout_ms = x
       modify_con_handle(self, timeout_ms = timeout_ms)
+      self$con_params$timeout_ms <- timeout_ms
 
     },
 
     #' @description Reset the previously informed password
-    #' @param password A character string containing the user's password.
-    #' @param xoauth2_bearer A character string containing the oauth2 bearer token.
-    reset_password = function(password) {
+    #' @param password Deprecated. Use \code{x} instead.
+    #' @param x A character string containing the user's password.
+    reset_password = function(password = NULL, x) {
 
+      if (!is.null(password)) {
+        warning('The "password" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        password = x
+      }
+
+      # password = x
       modify_con_handle(self, password = password)
 
     },
 
     #' @description Reset the previously informed oauth2 bearer token
-    #' @param xoauth2_bearer A character string containing the oauth2 bearer token.
-    reset_xoauth2_bearer = function(xoauth2_bearer) {
+    #' @param xoauth2_bearer Deprecated. Use \code{x} instead.
+    #' @param x A character string containing the oauth2 bearer token.
+    reset_xoauth2_bearer = function(xoauth2_bearer = NULL, x) {
 
+      if (!is.null(xoauth2_bearer)) {
+        warning('The "xoauth2_bearer" argument in this method will be deprecated. Use "x" instead.')
+      } else {
+        xoauth2_bearer = x
+      }
+
+      # xoauth2_bearer = x
       modify_con_handle(self, xoauth2_bearer = xoauth2_bearer)
 
     },

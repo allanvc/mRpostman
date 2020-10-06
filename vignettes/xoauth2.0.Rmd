@@ -28,7 +28,7 @@ More and more mail providers are adopting the OAuth2.0 authentication as for the
 
 In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.
 
-__IMPORTANT__: Currently, the only drawback with this approach may be your libcurl version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:
+__IMPORTANT__: Currently, the only drawback with this approach may be your libcurl's version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:
 
 ```{r, message = FALSE}
 curl::curl_version()
