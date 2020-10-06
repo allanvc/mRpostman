@@ -120,25 +120,23 @@ From version 0.9.0.0 onward, `mRpostman` is implemented under the OO paradigm, b
 
 The package is divided in 8 groups of operations. Below, we present all the available methods and functions:
 
-* 1. **configuration**: `configure_imap()`;
-* 2. **server capabilities**: `list_server_capabilities()`
-* 3. **mailbox operations**: `list_mail_folders()`, `select_folder()`, `examine_folder()`,
-`rename_folder()`, `create_folder()`;
-* 4. **single search**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
+* **configuration methods**: `configure_imap()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
+* **server capabilities method**: `list_server_capabilities()`; 
+* **mailbox operations methods**: `list_mail_folders()`, `select_folder()`, `examine_folder()`,
+`rename_folder()`, `create_folder()`, `list_flags()`;
+* **single-search methods**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
 `search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
 `search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
 `search_younger_than()`, `search_older_than()`;
-* 5. **custom search**: `search`
-  * **custom search helper functions**: 
-    + relational operators functions: `AND()`, `OR()`;
-    + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
-    `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
-    `larger_than()`, `younger_than()`, `older_than()`;
-* 6. **fetch**: `fetch_body()`, `fetch_header()`, `fetch_text()`, 
+* **the custom-search method and its helper functions**: `search()`;
+  + relational operators functions: `AND()`, `OR()`;
+  + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
+  `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
+  `larger_than()`, `younger_than()`, `older_than()`;
+* **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`, 
 `fetch_metadata()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* 7. **attachments**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* 8. **complementary operations**: `copy_msg()`, `move_msg()`, `delete_msg()`,  `expunge()`, `esearch_count()`,
-`esearch_min_id()`, `esearch_max_id()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
+* **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
+* **complementary methods**: `copy_msg()`, `move_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count_msg()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`.
 
 ## Installation
 
@@ -290,7 +288,7 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
 - _`verbose = TRUE` malfunction on Windows_: This seems to be related to the [{curl} R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
 
-- _shared mailbox access_: This seems to be another [libcurl's bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
+- _shared mailbox access not working_: This seems to be another [libcurl's bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
 
 - _`xoauth2_bearer` SASL error_: This is related to [old libcurl's versions](https://curl.haxx.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl's version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
 

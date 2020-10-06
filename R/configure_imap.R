@@ -44,7 +44,6 @@ configure_imap <- function(url,
                            use_ssl = TRUE,
                            verbose = FALSE,
                            buffersize = 16000,
-                           # fresh_connect = FALSE,
                            timeout_ms = 5000,
                            ...) {
 
@@ -55,9 +54,11 @@ configure_imap <- function(url,
                      use_ssl = use_ssl,
                      verbose = verbose,
                      buffersize = buffersize,
-                     # fresh_connect = fresh_connect,
                      timeout_ms = timeout_ms,
-                     ...) #ok!
+                     ...)
+
+  # fresh_connect is not supported anymore because the same handle is used during an
+  #  IMAP session. We let the handle manage the connection pool
 
   return(con)
 

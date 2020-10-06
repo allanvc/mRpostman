@@ -505,10 +505,10 @@ In the main fetch methods (those that are not related to attachment fetching), y
 ```{r, message = FALSE, eval = FALSE}
 
 # increasing timeout_ms
-con$reset_timeout_ms(30000) # ... to 30 secs
+con$reset_timeout_ms(x = 30000) # ... to 30 secs
 
 # and supposing that you had verbose = TRUE before
-con$reset_verbose(FALSE)
+con$reset_verbose(x = FALSE)
 
 # tidy approach
 con$search_string(expr = "@k-state.edu", where = "FROM") %>%
