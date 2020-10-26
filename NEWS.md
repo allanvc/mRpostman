@@ -1,4 +1,4 @@
-## mRpostman 0.9.1 (2020-10-05 Github)
+`## mRpostman 0.9.1 (2020-10-08 Github)
 
 ### Main features
 * added RFC 2047 quoted-printable and base64 MIME header decoder
@@ -19,8 +19,9 @@
 
 ### Minor changes
 
-* The confirmation message in `fetch_attahments()` changed to "\n::mRpostman: the fetch operation is complete.\n"
-* Fixed some minor typographic errors in the vignettes and the README file.
+* The confirmation message in `fetch_attahments()` changed to "\n::mRpostman: the fetch operation is complete.\n";
+* Fixed some minor typographic errors in the vignettes and the README file;
+* Adjusted the order of messages printed by `rename_folder()`.
 
 ### Changes without backward compatibility
 

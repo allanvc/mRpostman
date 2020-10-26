@@ -61,7 +61,7 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
         handle = h,
         customrequest = adjusted_fetch_request)
     }, error = function(e){
-      stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
+      stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
     })
 
     # REQUEST
