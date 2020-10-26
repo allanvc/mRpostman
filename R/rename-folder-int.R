@@ -104,7 +104,8 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
       # reselecting
       if (isTRUE(reselect)) {
         # imapconf$folder = new_name
-        out <- select_folder_int(self, name = new_name, mute = mute, retries = 1)
+        out <- select_folder_int(self, name = new_name, mute = TRUE, retries = 1)
+        # need mute = TRUE now in order to not make a messy print when verbose is TRUE
       } else {
         out <- new_name
       }
@@ -119,12 +120,22 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
 
           cat(paste0("::mRpostman: ", '"', self$con_params$folder, '"',
                      " renamed to ", '"', new_name, '".')) # v0.3.2
+          if (reselect) {
+            cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+            # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
+          }
 
         } else {
 
           cat(paste0("::mRpostman: ", '"', name, '"',
                      " renamed to ", '"', new_name, '".')) # v0.3.2
+          if (reselect) {
+            cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+            # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
+          }
         }
+
+
 
       }
 
@@ -135,7 +146,7 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
     # reselecting
     if (isTRUE(reselect)) {
       # imapconf$folder = new_name
-      out <- select_folder_int(self, name = new_name, mute = mute, retries = 1)
+      out <- select_folder_int(self, name = new_name, mute = TRUE, retries = 1)
     } else {
       out <- new_name
     }
@@ -150,11 +161,19 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
 
         cat(paste0("::mRpostman: ", '"', self$con_params$folder, '"',
                    " renamed to ", '"', new_name, '".')) # v0.3.2
+        if (reselect) {
+          cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+          # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
+        }
 
       } else {
 
         cat(paste0("::mRpostman: ", '"', name, '"',
                    " renamed to ", '"', new_name, '".')) # v0.3.2
+        if (reselect) {
+          cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+          # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
+        }
       }
 
     }

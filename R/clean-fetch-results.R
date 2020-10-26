@@ -21,6 +21,10 @@ clean_fetch_results <- function(msg_text) {
   # result <- stringr::str_remove(string = result, pattern = pattern3)
   result <- gsub(pattern4, "", result, ignore.case = TRUE)
 
+  pattern5 = "UID \\d+$"
+  # result <- stringr::str_remove(string = result, pattern = pattern2)
+  result <- gsub(pattern5, "", result, ignore.case = TRUE)
+
   # note to self: base R functions like regmatches return error in some cases
   # sub is too slow
 

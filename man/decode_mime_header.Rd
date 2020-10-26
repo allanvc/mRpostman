@@ -21,12 +21,12 @@ The RFC 2047 (Moore, 1996) presents an encoded-word syntax to be used by e-mail
   other than ASCII. According to the manual, non-ASCII content is encoded as
   an ASCII text string as follows: \code{=?<charset>?<encoding>?<encoded-text>?=}.
   The encoding can be of two types: "B" for "BASE64", or "Q" for quoted-
-  printable content (RFC 2045, ). Besides the standard RFC 2047 decoding, this
-  function also enables users to decode content that doesn't strictly follow
-  the \code{=?<charset>?<encoding>?<encoded-text>?=} RFC 2047 syntax, i.e.
-  cases where only the encoded text part is present, such as the quoted-printable
-  pattern in the string \code{"Estat=EDstica"} (Estatística, which is the
-  equivalent word, in Portuguese, for Statistics).
+  printable content (Freed and Borentein, 1996). Besides the standard RFC 2047
+  decoding, this function also enables users to decode content that does not
+  strictly follow the \code{=?<charset>?<encoding>?<encoded-text>?=} RFC 2047
+  syntax, i.e. cases where only the encoded text part is present, such as the
+  quoted-printable pattern in the string \code{"Estat=EDstica"} (Estatística,
+  which is the equivalent word, in Portuguese, for Statistics).
 }
 \examples{
 # Simple quoted-printable string - Portuguese example
@@ -34,7 +34,7 @@ qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
 decoded_string <- decode_mime_header(string = qp_encoded)
 
 # Simple quoted-printable string - French example
-qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
+qp_encoded <- "sur la route =C3=A0 suivre les voil=C3=A0 bient=C3=B4t qui te d=C3=A9gradent"
 decoded_string <- decode_mime_header(string = qp_encoded)
 
 # RFC 2047 quoted-printable header - Portuguese example
@@ -58,4 +58,8 @@ Moore, K. (1996), MIME (Multipurpose Internet Mail Extensions) Part
 Freed, N., Borenstein, N. (1996), Multipurpose Internet Mail Extensions
   (MIME) Part One: Format of Internet Message Bodies, RFC 2045, November 1996,
   https://tools.ietf.org/html/rfc2045.
+
+Part of the \code{decode_quoted_printable} function used in this object
+  was borrowed from https://github.com/hrbrmstr/hrbrmisc/blob/master/R/qp.r with
+  slight modifications.
 }
