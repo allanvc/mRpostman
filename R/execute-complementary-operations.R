@@ -6,7 +6,7 @@
 #'     be added to the curl handle.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'     is \code{1}.
-#'   @noRd
+#' @noRd
 execute_complementary_operations <- function(self, url, handle,  customrequest,
                                              retries) {
 
