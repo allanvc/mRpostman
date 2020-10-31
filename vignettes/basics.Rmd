@@ -505,10 +505,10 @@ In the main fetch methods (those that are not related to attachment fetching), y
 ```{r, message = FALSE, eval = FALSE}
 
 # increasing timeout_ms
-con$reset_timeout_ms(x = 30000) # ... to 30 secs
+con$reset_timeout_ms(to = 30000) # ... to 30 secs
 
 # and supposing that you had verbose = TRUE before
-con$reset_verbose(x = FALSE)
+con$reset_verbose(to = FALSE)
 
 # tidy approach
 con$search_string(expr = "@k-state.edu", where = "FROM") %>%
@@ -564,7 +564,7 @@ con$search_since(date_char = "15-Aug-2019") %>%
 
 ```{r, message = FALSE, eval = FALSE}
 out <- con$search_on(date_char = "15-Aug-2019", use_uid = TRUE) %>%
-  con$fetch_metadata(use_uid = TRUE, metadata = metadata = c("INTERNALDATE", "UID", "ENVELOPE"))
+  con$fetch_metadata(use_uid = TRUE, attribute = c("INTERNALDATE", "UID", "ENVELOPE"))
 ```
 
 If nothing is specified to the `metadata` argument, all the metadata fields are fetched by default. To know which are the metadata options of a message, refer to `metadata_options()`.

@@ -143,7 +143,7 @@ the available methods and functions:
 
   - **configuration methods**: `configure_imap()`, `reset_url()`,
     `reset_username()`, `reset_password()`, `reset_verbose()`,
-    `reset_buffersize()`, `reset_timeout_ms()`,
+    `reset_use_ssl()`; `reset_buffersize()`, `reset_timeout_ms()`,
     `reset_xoauth2_bearer()`;
   - **server capabilities method**: `list_server_capabilities()`;
   - **mailbox operations methods**: `list_mail_folders()`,

@@ -70,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
       </span>
     </div>
 
@@ -126,9 +126,9 @@
       
     </div>
 
-    <div id="mrpostman-091-2020-10-03-github" class="section level2">
+    <div id="mrpostman-0901000-2020-10-31-github-patch" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-091-2020-10-03-github" class="anchor"></a>mRpostman 0.9.1 (2020-10-03 Github)</h2>
+<a href="#mrpostman-0901000-2020-10-31-github-patch" class="anchor"></a>mRpostman 0.9.0.1000 (2020-10-31 Github patch)</h2>
 <div id="main-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#main-features" class="anchor"></a>Main features</h3>
@@ -142,7 +142,7 @@
 <ul>
 <li>added the <code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code> function
 <ul>
-<li>it is used inside <code>get_attachments()</code> and <code>fetch_attachments()</code> for correctly naming the filenames</li>
+<li>it is used inside <code>get_attachments()</code> and <code>fetch_attachments()</code> for correctly setting the filenames</li>
 <li>it is also exported for the user in order to be used for a header decoding operation after fetching metadata, for example.</li>
 <li>it was necessary to add the {stringi} package as dependency</li>
 </ul>
@@ -162,16 +162,18 @@
 <h3 class="hasAnchor">
 <a href="#minor-changes" class="anchor"></a>Minor changes</h3>
 <ul>
-<li>The confirmation message in <code>fetch_attahments()</code> changed to “\n::mRpostman: the fetch operation is complete.\n”</li>
-<li>Fixed some minor typographic errors in the vignettes and the README file.</li>
+<li>The confirmation message in <code>fetch_attahments()</code> changed to “\n::mRpostman: the fetch operation is complete.\n”;</li>
+<li>Fixed some minor typographic errors in the vignettes and the README file;</li>
+<li>Adjusted the order of messages printed by <code>rename_folder()</code>.</li>
 </ul>
 </div>
 <div id="changes-without-backward-compatibility" class="section level3">
 <h3 class="hasAnchor">
 <a href="#changes-without-backward-compatibility" class="anchor"></a>Changes without backward compatibility</h3>
 <ul>
-<li>The default argument in all <code>reset_*()</code> methods now are <code>x</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;</li>
+<li>The default argument in all <code>reset_*()</code> methods now are <code>to</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1.XXXX;</li>
 <li>The <code>reset_ssl()</code> method had the name changed to <code>reset_use_ssl()</code> to better reflect the connection parameter to be reset.</li>
+<li>the <code>metadata</code> argument in <code>fetch_metadata</code> now is <code>attribute</code>.</li>
 </ul>
 </div>
 </div>
@@ -787,7 +789,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#mrpostman-091-2020-10-03-github">0.9.1</a></li>
+        <li><a href="#mrpostman-0901000-2020-10-31-github-patch">0.9.0.1000</a></li>
         <li><a href="#mrpostman-0900-2020-09-08-github2020-09-15-cran">0.9.0.0</a></li>
         <li><a href="#mrpostman-031-2020-03-27-github-2020-04-18-cran">0.3.1</a></li>
         <li><a href="#mrpostman-030-2019-10-07">0.3.0</a></li>

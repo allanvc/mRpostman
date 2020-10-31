@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
       </span>
     </div>
 
@@ -455,10 +455,10 @@
 <h3 class="hasAnchor">
 <a href="#fetch-body" class="anchor"></a>6.1) Fetch body</h3>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="co"># increasing timeout_ms</span></span>
-<span id="cb36-2"><a href="#cb36-2"></a>con<span class="op">$</span><span class="kw">reset_timeout_ms</span>(<span class="dt">x =</span> <span class="dv">30000</span>) <span class="co"># ... to 30 secs</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>con<span class="op">$</span><span class="kw">reset_timeout_ms</span>(<span class="dt">to =</span> <span class="dv">30000</span>) <span class="co"># ... to 30 secs</span></span>
 <span id="cb36-3"><a href="#cb36-3"></a></span>
 <span id="cb36-4"><a href="#cb36-4"></a><span class="co"># and supposing that you had verbose = TRUE before</span></span>
-<span id="cb36-5"><a href="#cb36-5"></a>con<span class="op">$</span><span class="kw">reset_verbose</span>(<span class="dt">x =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb36-5"><a href="#cb36-5"></a>con<span class="op">$</span><span class="kw">reset_verbose</span>(<span class="dt">to =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb36-6"><a href="#cb36-6"></a></span>
 <span id="cb36-7"><a href="#cb36-7"></a><span class="co"># tidy approach</span></span>
 <span id="cb36-8"><a href="#cb36-8"></a>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"@k-state.edu"</span>, <span class="dt">where =</span> <span class="st">"FROM"</span>) <span class="op">%&gt;%</span></span>
@@ -504,7 +504,7 @@
 <h3 class="hasAnchor">
 <a href="#fetch-metadata" class="anchor"></a>6.4) Fetch metadata</h3>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>out &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_on</span>(<span class="dt">date_char =</span> <span class="st">"15-Aug-2019"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb39-2"><a href="#cb39-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_metadata</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">metadata =</span> <span class="dt">metadata =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</span></code></pre></div>
+<span id="cb39-2"><a href="#cb39-2"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_metadata</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">attribute =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</span></code></pre></div>
 <p>If nothing is specified to the <code>metadata</code> argument, all the metadata fields are fetched by default. To know which are the metadata options of a message, refer to <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
 <p>There are two more fetch methods, but they are going to be presented in the next session since they are related to a very special fetch operation.</p>
 </div>

@@ -25,9 +25,12 @@
 #' @param base64_decode If \code{TRUE}, tries to guess and decode the fetched
 #'   text from base64 format to \code{character}. Default is \code{FALSE}. Only
 #'   used in the \code{fetch_text()} case.
+#' @param metadata_attribute String containing the meta attributes if applicable. Default
+#'   is \code{NULL}.
 #'   @noRd
 execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_disk,
-                               keep_in_mem, retries, fetch_type, base64_decode = FALSE) {
+                               keep_in_mem, retries, fetch_type, base64_decode = FALSE,
+                               metadata_attribute = NULL) {
 
   # base64_decode is only used for fetch_text_int
 
@@ -80,13 +83,15 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
       if (isTRUE(base64_decode)) {
         msg_list[[idx]] <- decode_base64_text_if_needed(
           clean_fetch_results(
-            rawToChar(response$headers)
+            rawToChar(response$headers),
+            metadata_attribute #v0.9.2
           )
         )
 
       } else {
         msg_list[[idx]] <- clean_fetch_results(
-          rawToChar(response$headers)
+          rawToChar(response$headers),
+          metadata_attribute # v0.9.2
         )
 
       }

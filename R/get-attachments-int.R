@@ -23,15 +23,19 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
   check_args(msg_list = msg_list, content_disposition = content_disposition,
              override = override, mute = mute)
 
-  # retireves only base64 encoded attachments for now
+  # retrieves only base64 encoded attachments for now
 
-  # preparing mbox part of the directory for saving
-  # folder <- adjust_folder_name(self$folder)
+  # self = con
+  # override = FALSE
 
-  # mbox = attr(msg_list, "mbox")
+  # preparing mail folder name part of the directory for saving
+
   folder_clean = gsub("%20", "_", self$con_params$folder)
   forbiden_chars <- "[\\/:*?\"<>|]"
   folder_clean = gsub(forbiden_chars, "", folder_clean)
+
+  # msg_list = text
+  # content_disposition = "both"
 
   for (i in seq_along(msg_list)) {
     # i = 1
@@ -42,6 +46,13 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
     msg = msg_list[[i]]
 
     if (has_attachment(msg, call_from = "get_attachments")) {
+
+
+      # v0.9.1.0100
+      pattern_content_type = 'Content-Type:[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--'
+      full_content_types <- unlist(regmatches(msg, gregexpr(pattern_content_type, msg)))
+
+      full_content_types <- full_content_types[grepl('Content-Transfer-Encoding: base64', full_content_types)]
 
       # 1) full attachments excerpts (with attachment "headers")
       # v0.3.1 - added support to inline attachments; added content_disposition argument
@@ -57,9 +68,11 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
       }
 
       # this REGEX works with IMAP and MS/Exchange protocols
-      full_attachments <- unlist(regmatches(msg, gregexpr(pattern, msg)))
+      full_attachments <- unlist(regmatches(full_content_types, gregexpr(pattern, full_content_types)))
       # substr(full_attachments[1], 1, 1000)
       # starting from full attachments to get filenames and text after
+
+      rm(full_content_types)
 
       # 2) extract only text
 
@@ -72,6 +85,7 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
 
       attachments_text <- sub('.*Content-', '', full_attachments, ignore.case = TRUE) # sub extracts only the first match
+
       # we extract from the last match onwards
 
       pattern2 = "\\r\\n[^ ]+\\r\\n" # lines that do not contain space
@@ -101,6 +115,7 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
       # attachments_text <- gsub("^\r\n","", attachments_text) # "beggining with" #
       attachments_text <- gsub("^[\r\n]+","", attachments_text) # "beggining with" #V0.9.0.0
+      # attachments_text[8]
 
       # attachments_text <- gsub("^Content-Transfer-Encoding: base64\r\n\r\n","", attachments_text,
       #                          ignore.case = TRUE) # "beggining with"
