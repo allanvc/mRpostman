@@ -37,6 +37,17 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   # folder <- adjust_folder_name(self$folder)
 
   # mbox = attr(msg_list, "mbox")
+  # self = con
+  # msg_id = 4160
+  # msg_id = 3977
+  # msg_id = 60813
+  # msg_id = 62168
+  # msg_id = 83040
+  # msg_id = 4239
+  # use_uid = FALSE
+  # use_uid = TRUE
+  # retries = 1
+  # content_disposition = "both"
   folder_clean = gsub("%20", "_", self$con_params$folder)
   forbiden_chars <- "[\\/:*?\"<>|]"
   folder_clean = gsub(forbiden_chars, "", folder_clean)
@@ -51,7 +62,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   # fetch metadata
   metadata_list <- self$fetch_metadata(msg_id = msg_id,
                                        use_uid = use_uid,
-                                       metadata = "BODYSTRUCTURE",
+                                       attribute = "BODYSTRUCTURE",
                                        write_to_disk = FALSE,
                                        keep_in_mem = TRUE,
                                        mute = TRUE, #not needed
@@ -79,6 +90,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
       id_folder <- id
     }
 
+    # print(id)
     df_meta_to_fetch <- extract_MIME_level_and_filenames(meta, use_uid)
     # i = 6
 

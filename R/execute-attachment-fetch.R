@@ -28,6 +28,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
 
   url <- self$con_params$url
   # url <- con$url
+  # override = FALSE
 
   h <- self$con_handle
   # h <- con$con_handle
@@ -50,81 +51,91 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
   df_meta_to_fetch$adjusted_filenames <- decode_mime_header(string = df_meta_to_fetch$adjusted_filenames)
 
   # loop exec
+  last_level = 0
   for (i in 1:nrow(df_meta_to_fetch)) {
     # print(i)
     # i = 1
     # idx = idx + 1
+    current_level = df_meta_to_fetch$MIME_level[i]
 
-    adjusted_fetch_request <- gsub(pattern = "#", replacement = id, x = fetch_request)
+    if (current_level != last_level) {
 
-    adjusted_fetch_request <- gsub(pattern = "level.MIME",
-                                   replacement = df_meta_to_fetch$MIME_level[i],
-                                   x = adjusted_fetch_request)
+      adjusted_fetch_request <- gsub(pattern = "#", replacement = id, x = fetch_request)
 
-    tryCatch({
-      curl::handle_setopt(
-        handle = h,
-        customrequest = adjusted_fetch_request)
-    }, error = function(e){
-      stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-    })
+      adjusted_fetch_request <- gsub(pattern = "level.MIME",
+                                     replacement = df_meta_to_fetch$MIME_level[i],
+                                     x = adjusted_fetch_request)
 
-    # REQUEST
-    response <- tryCatch({
-      curl::curl_fetch_memory(url, handle = h)
-    }, error = function(e){
-      # print(e$message)
-      response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+      # self$select_folder("INBOX")
+      tryCatch({
+        curl::handle_setopt(
+          handle = h,
+          customrequest = adjusted_fetch_request)
+      }, error = function(e){
+        stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+      })
 
-    })
+      # REQUEST
+      response <- tryCatch({
+        curl::curl_fetch_memory(url, handle = h)
+      }, error = function(e){
+        # print(e$message)
+        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
 
-    # print(exists("response")); print(exists("response")); print(exists("response"))
+      })
 
-    if (!is.null(response)) {
+      # print(exists("response")); print(exists("response")); print(exists("response"))
 
-      attachment <- clean_fetch_results(
-        rawToChar(response$headers))
+      if (!is.null(response)) {
+
+        # msg_text = rawToChar(response$headers)
+        attachment <- clean_fetch_results(
+          rawToChar(response$headers), attachment_fetch = TRUE)
 
 
-    } else {
-      count_retries = 0 #the first try was already counted
-      # FORCE appending fresh_connect
-      # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-      select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0) # ok! v0.0.9
-      # select folder will automatically adjust the folde rname inside
+      } else {
+        count_retries = 0 #the first try was already counted
+        # FORCE appending fresh_connect
+        # curl::handle_setopt(handle = h, fresh_connect = TRUE)
+        select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0) # ok! v0.0.9
+        # select folder will automatically adjust the folde rname inside
 
-      while (is.null(response) && count_retries < retries) {
-        count_retries = count_retries + 1
+        while (is.null(response) && count_retries < retries) {
+          count_retries = count_retries + 1
 
-        # reset customrequest in handle
-        tryCatch({
-          curl::handle_setopt(
-            handle = h,
-            customrequest = adjusted_fetch_request) #bug: response was NULL when recovering from a fetch timeout error
-        }, error = function(e){
-          stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-        })
+          # reset customrequest in handle
+          tryCatch({
+            curl::handle_setopt(
+              handle = h,
+              customrequest = adjusted_fetch_request) #bug: response was NULL when recovering from a fetch timeout error
+          }, error = function(e){
+            stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+          })
 
-        # REQUEST
-        response <- tryCatch({
-          curl::curl_fetch_memory(url, handle = h)
-        }, error = function(e){
-          # print(e$message)
-          response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+          # REQUEST
+          response <- tryCatch({
+            curl::curl_fetch_memory(url, handle = h)
+          }, error = function(e){
+            # print(e$message)
+            response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
 
-        })
+          })
 
-        if (!is.null(response)) {
+          if (!is.null(response)) {
 
-          attachment <- clean_fetch_results(
-            rawToChar(response$headers))
+            attachment <- clean_fetch_results(
+              rawToChar(response$headers), attachment_fetch = TRUE)
 
-        } else {
-          stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
+          } else {
+            stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
 
-        }
-      } #while
-    } #else-response
+          }
+        } #while
+      } #else-response
+
+    }
+
+    last_level = current_level # v0.9.1 # skips leveling up the fetching when there are more than one attachment in a unique level
 
 
     # saving the file:

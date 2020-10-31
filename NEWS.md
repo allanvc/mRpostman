@@ -1,11 +1,11 @@
-`## mRpostman 0.9.1 (2020-10-08 Github)
+## mRpostman 0.9.0.1000 (2020-10-31 Github patch)
 
 ### Main features
 * added RFC 2047 quoted-printable and base64 MIME header decoder
 
 ### Functions & methods
 * added the `decode_mime_header()` function
-    - it is used inside `get_attachments()` and `fetch_attachments()` for correctly naming the filenames
+    - it is used inside `get_attachments()` and `fetch_attachments()` for correctly setting the filenames
     - it is also exported for the user in order to be used for a header decoding operation after fetching metadata, for example.
     - it was necessary to add the {stringi} package as dependency
 
@@ -25,8 +25,9 @@
 
 ### Changes without backward compatibility
 
-* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;
+* The default argument in all `reset_*()` methods now are `to` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1.XXXX;
 * The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
+* the `metadata` argument in `fetch_metadata` now is `attribute`.
 
 
 ## mRpostman 0.9.0.0 (2020-09-08 Github/2020-09-15 CRAN)

@@ -13,7 +13,8 @@ execute_fetch_loop(
   keep_in_mem,
   retries,
   fetch_type,
-  base64_decode = FALSE
+  base64_decode = FALSE,
+  metadata_attribute = NULL
 )
 }
 \arguments{
@@ -50,7 +51,10 @@ text, or metadata fetch.}
 
 \item{base64_decode}{If \code{TRUE}, tries to guess and decode the fetched
 text from base64 format to \code{character}. Default is \code{FALSE}. Only
-used in the \code{fetch_text()} case.
+used in the \code{fetch_text()} case.}
+
+\item{metadata_attribute}{String containing the meta attributes if applicable. Default
+is \code{NULL}.
 @noRd}
 }
 \description{

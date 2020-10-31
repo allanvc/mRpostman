@@ -337,16 +337,16 @@ check_args <- function(...) {
   }
 
   # fetch_metadata
-  if ("metadata" %in% names(argg_list)) {
+  if ("attribute" %in% names(argg_list)) {
     # if (!any(is.null(argg_list$metadata), is.character(argg_list$metadata))) {
     #   stop('"metadata" must be NULL or a character vector. See metadata_options().')
     # }
     assertthat::assert_that(
       any(
-        is.null(argg_list$metadata),
-        is.character(argg_list$metadata)
+        is.null(argg_list$attribute),
+        is.character(argg_list$attribute)
       ),
-      msg='"metadata" must be NULL or a character vector. See metadata_options().')
+      msg='"attribute" must be NULL or a character vector. See metadata_options().')
   }
 
   if ("base64_decode" %in% names(argg_list)) {

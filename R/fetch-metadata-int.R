@@ -1,4 +1,4 @@
-#' Fetch message metadata
+#' Fetch message's metadata
 #' @param msg_id A \code{numeric vector} containing one or more message ids.
 #' @param use_uid Default is \code{FALSE}. In this case, results will be
 #'   presented as message's sequence numbers. A message sequence number is a
@@ -8,8 +8,8 @@
 #'   command will be performed using the \code{"UID"} or unique identifier,
 #'   and results are presented as such. UIDs are always the same during the
 #'   life cycle of a message.
-#' @param metadata An optional \code{character vector} specifying one or more
-#'   items of the metadata of a message to fetch. See \link{metadata_options}.
+#' @param attribute An optional \code{character vector} specifying one or more
+#'   attributes of the metadata of a message to fetch. See \link{metadata_options}.
 #' @param peek If \code{TRUE}, it does not mark messages as "read" after
 #'   fetching. Default is \code{TRUE}.
 #' @param partial \code{NULL} or a character string with format
@@ -28,19 +28,19 @@
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
 #' @noRd
-fetch_metadata_int <- function(self, msg_id, use_uid, metadata, write_to_disk,
+fetch_metadata_int <- function(self, msg_id, use_uid, attribute, write_to_disk,
                                keep_in_mem, mute, retries) {
 
   #check
-  check_args(msg_id = msg_id, use_uid = use_uid, metadata = metadata,
+  check_args(msg_id = msg_id, use_uid = use_uid, attribute = attribute,
              write_to_disk = write_to_disk, keep_in_mem = keep_in_mem,
              mute = mute, retries = retries)
 
-  if (is.null(metadata)) {
-    metadata <- metadata_options()
+  if (is.null(attribute)) {
+    attribute <- metadata_options()
   }
 
-  metadata <- paste0(metadata, collapse = " ")
+  attribute <- paste0(attribute, collapse = " ")
 
   # use_uid
   if (isTRUE(use_uid)) {
@@ -49,14 +49,14 @@ fetch_metadata_int <- function(self, msg_id, use_uid, metadata, write_to_disk,
     use_uid_string = NULL
   }
 
-  fetch_request <- paste0(use_uid_string, "FETCH ", "#", " (", metadata, ")") # "#" serves as a place holder for the msg's ids
+  fetch_request <- paste0(use_uid_string, "FETCH ", "#", " (", attribute, ")") # "#" serves as a place holder for the msg's ids
 
   # loop exec
   fetch_type = "metadata"
   msg_list <- execute_fetch_loop(self = self, msg_id = msg_id, fetch_request = fetch_request,
                                  use_uid = use_uid, write_to_disk = write_to_disk,
                                  keep_in_mem = keep_in_mem, retries = retries,
-                                 fetch_type = fetch_type)
+                                 fetch_type = fetch_type, metadata_attribute = attribute)
 
 
   if (isFALSE(keep_in_mem)) {

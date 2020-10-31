@@ -73,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
       </span>
     </div>
 
@@ -404,36 +404,36 @@ can be used with the IMAP protocol. Only for advanced users.</p></dd>
 <a id="method-reset_url"></a></p><h3>Method <code>reset_url()</code></h3>
     Reset the previously informed url
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_url(url = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_url(url = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>url</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>A character string containing a new url to be set.</p></dd>
+<dt><code>url</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>A character string containing a new url to be set.</p></dd>
 </dl>
 </div>
     <p><hr>
 <a id="method-reset_username"></a></p><h3>Method <code>reset_username()</code></h3>
     Reset the previously informed username
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_username(username = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_username(username = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>username</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>A character string containing a new username to be set.</p></dd>
+<dt><code>username</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>A character string containing a new username to be set.</p></dd>
 </dl>
 </div>
     <p><hr>
 <a id="method-reset_use_ssl"></a></p><h3>Method <code>reset_use_ssl()</code></h3>
     Reset the previously informed use_ssl parameter
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_use_ssl(use_ssl, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_use_ssl(use_ssl, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>use_ssl</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>A logical indicating the use or not of Secure Sockets Layer
+<dt><code>use_ssl</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>A logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p></dd>
 </dl>
 </div>
@@ -441,12 +441,12 @@ encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p>
 <a id="method-reset_verbose"></a></p><h3>Method <code>reset_verbose()</code></h3>
     Reset the previously informed verbose parameter
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_verbose(verbose = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_verbose(verbose = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>verbose</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>If <code>FALSE</code>, mutes the flow of information between the
+<dt><code>verbose</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>If <code>FALSE</code>, mutes the flow of information between the
 server and the client.</p></dd>
 </dl>
 </div>
@@ -454,12 +454,12 @@ server and the client.</p></dd>
 <a id="method-reset_buffersize"></a></p><h3>Method <code>reset_buffersize()</code></h3>
     Reset the previously informed buffersize parameter
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_buffersize(buffersize = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_buffersize(buffersize = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>buffersize</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>The size in bytes for the receive buffer. Default is
+<dt><code>buffersize</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passed to <code>buffersize</code> is treated
@@ -470,12 +470,12 @@ as a request, not an order.</p></dd>
 <a id="method-reset_timeout_ms"></a></p><h3>Method <code>reset_timeout_ms()</code></h3>
     Reset the previously informed buffersize parameter
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_timeout_ms(timeout_ms = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_timeout_ms(timeout_ms = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>timeout_ms</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>Time in milliseconds (ms) to wait for the execution or
+<dt><code>timeout_ms</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>Time in milliseconds (ms) to wait for the execution or
 re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
 execution is unsuccessful, an error handler in each function (depending on
 the <code>retries</code> value), will try to reconnect or re-execute the command.</p></dd>
@@ -485,24 +485,24 @@ the <code>retries</code> value), will try to reconnect or re-execute the command
 <a id="method-reset_password"></a></p><h3>Method <code>reset_password()</code></h3>
     Reset the previously informed password
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_password(password = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_password(password = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>password</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>A character string containing the user's password.</p></dd>
+<dt><code>password</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>A character string containing the user's password.</p></dd>
 </dl>
 </div>
     <p><hr>
 <a id="method-reset_xoauth2_bearer"></a></p><h3>Method <code>reset_xoauth2_bearer()</code></h3>
     Reset the previously informed oauth2 bearer token
 <h3>Usage</h3>
-    <div class="r"><pre>ImapCon$reset_xoauth2_bearer(xoauth2_bearer = NULL, x)</pre></div>
+    <div class="r"><pre>ImapCon$reset_xoauth2_bearer(xoauth2_bearer = NULL, to)</pre></div>
     <h3>Arguments</h3>
     <div class="arguments">
 <dl class='dl-horizontal'>
-<dt><code>xoauth2_bearer</code></dt><dd><p>Deprecated. Use <code>x</code> instead.</p></dd>
-    <dt><code>x</code></dt><dd><p>A character string containing the oauth2 bearer token.</p></dd>
+<dt><code>xoauth2_bearer</code></dt><dd><p>Deprecated. Use <code>to</code> instead.</p></dd>
+    <dt><code>to</code></dt><dd><p>A character string containing the oauth2 bearer token.</p></dd>
 </dl>
 </div>
     <p><hr>
@@ -1656,7 +1656,7 @@ out &lt;- con$fetch_header()
     <div class="r"><pre>ImapCon$fetch_metadata(
   msg_id,
   use_uid = FALSE,
-  metadata = NULL,
+  attribute = NULL,
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
   mute = FALSE,
@@ -1673,8 +1673,8 @@ It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If <code>TRUE</code>, the
 command will be performed using the <code>"UID"</code> or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.</p></dd>
-    <dt><code>metadata</code></dt><dd><p>An optional <code>character vector</code> specifying one or more
-items of the metadata of a message to fetch. See <a href='metadata_options.html'>metadata_options</a>.</p></dd>
+    <dt><code>attribute</code></dt><dd><p>An optional <code>character vector</code> specifying one or more
+attributes of the metadata of a message to fetch. See <a href='metadata_options.html'>metadata_options</a>.</p></dd>
     <dt><code>write_to_disk</code></dt><dd><p>If <code>TRUE</code>, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with <code><a href='https://www.rdocumentation.org/packages/base/topics/invisible'>invisible()</a></code>. Default is <code>FALSE</code>.</p></dd>

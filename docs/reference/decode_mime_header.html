@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
       </span>
     </div>
 
@@ -157,12 +157,12 @@
   other than ASCII. According to the manual, non-ASCII content is encoded as
   an ASCII text string as follows: <code>=?&lt;charset&gt;?&lt;encoding&gt;?&lt;encoded-text&gt;?=</code>.
   The encoding can be of two types: "B" for "BASE64", or "Q" for quoted-
-  printable content (RFC 2045, ). Besides the standard RFC 2047 decoding, this
-  function also enables users to decode content that doesn't strictly follow
-  the <code>=?&lt;charset&gt;?&lt;encoding&gt;?&lt;encoded-text&gt;?=</code> RFC 2047 syntax, i.e.
-  cases where only the encoded text part is present, such as the quoted-printable
-  pattern in the string <code>"Estat=EDstica"</code> (Estatística, which is the
-  equivalent word, in Portuguese, for Statistics).</p>
+  printable content (Freed and Borentein, 1996). Besides the standard RFC 2047
+  decoding, this function also enables users to decode content that does not
+  strictly follow the <code>=?&lt;charset&gt;?&lt;encoding&gt;?&lt;encoded-text&gt;?=</code> RFC 2047
+  syntax, i.e. cases where only the encoded text part is present, such as the
+  quoted-printable pattern in the string <code>"Estat=EDstica"</code> (Estatística,
+  which is the equivalent word, in Portuguese, for Statistics).</p>
     
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
@@ -172,6 +172,9 @@
 <p>Freed, N., Borenstein, N. (1996), Multipurpose Internet Mail Extensions
   (MIME) Part One: Format of Internet Message Bodies, RFC 2045, November 1996,
   https://tools.ietf.org/html/rfc2045.</p>
+<p>Part of the <code>decode_quoted_printable</code> function used in this object
+  was borrowed from https://github.com/hrbrmstr/hrbrmisc/blob/master/R/qp.r with
+  slight modifications.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -180,7 +183,7 @@
 <span class='no'>decoded_string</span> <span class='kw'>&lt;-</span> <span class='fu'>decode_mime_header</span>(<span class='kw'>string</span> <span class='kw'>=</span> <span class='no'>qp_encoded</span>)
 
 <span class='co'># Simple quoted-printable string - French example</span>
-<span class='no'>qp_encoded</span> <span class='kw'>&lt;-</span> <span class='st'>"Minist=E9rio_da_Educa=E7=E3o"</span>
+<span class='no'>qp_encoded</span> <span class='kw'>&lt;-</span> <span class='st'>"sur la route =C3=A0 suivre les voil=C3=A0 bient=C3=B4t qui te d=C3=A9gradent"</span>
 <span class='no'>decoded_string</span> <span class='kw'>&lt;-</span> <span class='fu'>decode_mime_header</span>(<span class='kw'>string</span> <span class='kw'>=</span> <span class='no'>qp_encoded</span>)
 
 <span class='co'># RFC 2047 quoted-printable header - Portuguese example</span>

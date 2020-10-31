@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
       </span>
     </div>
 
@@ -144,7 +144,8 @@
   <span class='no'>keep_in_mem</span>,
   <span class='no'>retries</span>,
   <span class='no'>fetch_type</span>,
-  <span class='kw'>base64_decode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>base64_decode</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>metadata_attribute</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
 )</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -201,7 +202,12 @@ text, or metadata fetch.</p></td>
       <th>base64_decode</th>
       <td><p>If <code>TRUE</code>, tries to guess and decode the fetched
 text from base64 format to <code>character</code>. Default is <code>FALSE</code>. Only
-used in the <code>fetch_text()</code> case.
+used in the <code>fetch_text()</code> case.</p></td>
+    </tr>
+    <tr>
+      <th>metadata_attribute</th>
+      <td><p>String containing the meta attributes if applicable. Default
+is <code>NULL</code>.
 @noRd</p></td>
     </tr>
     </table>

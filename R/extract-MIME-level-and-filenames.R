@@ -13,9 +13,13 @@
 extract_MIME_level_and_filenames <- function(meta, use_uid) {
 
   if(isTRUE(use_uid)) {
-    meta <- gsub("FETCH \\(UID \\d+ BODYSTRUCTURE \\(", "", meta)
+    meta <- gsub("FETCH \\(UID \\d+ BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE)
+    meta <- gsub("\\* \\d+ FETCH \\(BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE) #v0.9.1 -- IMAP server (Office 365 changed behavior)
+    meta <- gsub("^BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE) #v0.9.1 -- IMAP server (Office 365 changed behavior)
+    meta <- gsub("^UID \\d+ BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE) #v0.9.1 -- Gmail
   } else {
-    meta <- gsub("FETCH \\(BODYSTRUCTURE \\(", "", meta)
+    meta <- gsub("FETCH \\(BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE)
+    meta <- gsub("^BODYSTRUCTURE \\(", "", meta, ignore.case = TRUE) #v0.9.1 -- IMAP server (Office 365 changed behavior)
   }
 
   meta <- gsub('\\)$', "", meta)
@@ -33,16 +37,17 @@ extract_MIME_level_and_filenames <- function(meta, use_uid) {
     char <- substr(meta, j, j)
 
     if(char == "("){
-      paren_sum = paren_sum + 1 # supposing it will never be negative
+      paren_sum = paren_sum + 1 # supposing it will never be negative # sums opening parenthesis
 
-      if (grepl("attachment|ATTACHMENT", substr(meta, j, j + 15), ignore.case = TRUE)) {
-        # attachment_init_char <- c(attachment_init_char, j + 1) # extrai desse ponto até o final da string, para depois extrair o nome
+      if (grepl("attachment", substr(meta, j, j + 15), ignore.case = TRUE) && grepl("filename", substr(meta, j + 15, j + 30), ignore.case = TRUE)) { #v0.9.1 bug fix when multiple attacments are in the same boundary
+        # .. it would be a dismatch between the filenames and the calculated parts - so we only consider the (attachment (filename ...)) as a MIME part
+
         content_type <- c(content_type, "attachment")
         attachments_MIME_level <- c(attachments_MIME_level, count_MIME_levels + 1)
       }
 
-      if (grepl("inline|INLINE", substr(meta, j, j + 15), ignore.case = TRUE)) {
-        # attachment_init_char <- c(attachment_init_char, j + 1) # extrai desse ponto até o final da string, para depois extrair o nome
+      if (grepl("inline|INLINE", substr(meta, j, j + 11), ignore.case = TRUE) && grepl("filename", substr(meta, j + 11, j + 30), ignore.case = TRUE)) {
+
         content_type <- c(content_type, "inline")
         attachments_MIME_level <- c(attachments_MIME_level, count_MIME_levels + 1)
       }
@@ -77,15 +82,19 @@ extract_MIME_level_and_filenames <- function(meta, use_uid) {
                                    row.names = NULL,
                                    stringsAsFactors = FALSE)
 
-    df_meta_to_fetch$filenames <- gsub("\\?\\=\\s*|\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","",
-                                      df_meta_to_fetch$filenames)
+    # df_meta_to_fetch$filenames <- gsub("\\?\\=\\s*|\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","",
+    #                                   df_meta_to_fetch$filenames)
+
+    df_meta_to_fetch$filenames <- gsub("\r\n","",
+                                       df_meta_to_fetch$filenames)
 
     # gsub("\\?\\=\\s*", "", out_df$filenames)
     # "ending with"
 
     # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
     # we opted for decoding only dots first to get the correct file extension part
-    df_meta_to_fetch$filenames <- gsub("=2E|%2E",".", df_meta_to_fetch$filenames)
+    # df_meta_to_fetch$filenames <- gsub("=2E|%2E",".", df_meta_to_fetch$filenames)
+    df_meta_to_fetch$filenames <- decode_mime_header(df_meta_to_fetch$filenames)
 
     forbiden_chars <- "[\\/:*?\"<>|]"
     df_meta_to_fetch$filenames <- gsub(forbiden_chars, "", df_meta_to_fetch$filenames)

@@ -19,7 +19,7 @@ fetch_attachments_list_int <- function(self, msg_id, use_uid, retries) {
   # fetch metada
   metadata_list <- self$fetch_metadata(msg_id = msg_id,
                                        use_uid = use_uid,
-                                       metadata = "BODYSTRUCTURE",
+                                       attribute = "BODYSTRUCTURE",
                                        write_to_disk = FALSE,
                                        keep_in_mem = TRUE,
                                        mute = TRUE, #not needed
