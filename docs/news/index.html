@@ -70,7 +70,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.5000</span>
       </span>
     </div>
 
@@ -126,9 +126,31 @@
       
     </div>
 
-    <div id="mrpostman-0901000-2020-10-31-github-patch" class="section level2">
+    <div id="mrpostman-0905000-2020-10-31-github-patch-2020-11-05-cran" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-0901000-2020-10-31-github-patch" class="anchor"></a>mRpostman 0.9.0.1000 (2020-10-31 Github patch)</h2>
+<a href="#mrpostman-0905000-2020-10-31-github-patch-2020-11-05-cran" class="anchor"></a>mRpostman 0.9.0.5000 (2020-10-31 Github patch/ 2020-11-05 CRAN)</h2>
+<ul>
+<li>Adds to the stable version all changes of the development version <code>0.9.0.0100</code>, plus:</li>
+</ul>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<ul>
+<li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others</p></li>
+<li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case</p></li>
+</ul>
+</div>
+<div id="changes-without-backward-compatibility" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changes-without-backward-compatibility" class="anchor"></a>Changes without backward compatibility</h3>
+<ul>
+<li>The default argument in all <code>reset_*()</code> methods now are <code>x</code> in order to prevent wordy method calls and repetition. The older ones were deprecated in this version.</li>
+</ul>
+</div>
+</div>
+    <div id="mrpostman-0901000-2020-10-26-github-patch" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-0901000-2020-10-26-github-patch" class="anchor"></a>mRpostman 0.9.0.1000 (2020-10-26 Github patch)</h2>
 <div id="main-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#main-features" class="anchor"></a>Main features</h3>
@@ -149,9 +171,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level3">
+<div id="bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>list_mail_folders()</code>: fixed the regex related to the hierarchy separator to accept the “|” separator. It was causing a misbehavior in Yandex accounts.</p></li>
 <li><p><code>clean_fetch_results()</code> (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have <code>ignore.case = TRUE</code>.</p></li>
@@ -167,11 +189,11 @@
 <li>Adjusted the order of messages printed by <code>rename_folder()</code>.</li>
 </ul>
 </div>
-<div id="changes-without-backward-compatibility" class="section level3">
+<div id="changes-without-backward-compatibility-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#changes-without-backward-compatibility" class="anchor"></a>Changes without backward compatibility</h3>
+<a href="#changes-without-backward-compatibility-1" class="anchor"></a>Changes without backward compatibility</h3>
 <ul>
-<li>The default argument in all <code>reset_*()</code> methods now are <code>to</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1.XXXX;</li>
+<li>The default argument in all <code>reset_*()</code> methods now are <code>x</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.0.5000;</li>
 <li>The <code>reset_ssl()</code> method had the name changed to <code>reset_use_ssl()</code> to better reflect the connection parameter to be reset.</li>
 <li>the <code>metadata</code> argument in <code>fetch_metadata</code> now is <code>attribute</code>.</li>
 </ul>
@@ -193,9 +215,9 @@
 <li><p>all functions that returned <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(0L)</a></code> now return <code><a href="https://www.rdocumentation.org/packages/base/topics/invisible">invisible(TRUE)</a></code></p></li>
 </ul>
 </div>
-<div id="changes-without-backward-compatibility-1" class="section level3">
+<div id="changes-without-backward-compatibility-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#changes-without-backward-compatibility-1" class="anchor"></a>Changes without backward compatibility</h3>
+<a href="#changes-without-backward-compatibility-2" class="anchor"></a>Changes without backward compatibility</h3>
 <div id="more-appropriate-function-names-old-function---new-method" class="section level4">
 <h4 class="hasAnchor">
 <a href="#more-appropriate-function-names-old-function---new-method" class="anchor"></a>More appropriate function names [old function -&gt; new method]:</h4>
@@ -462,9 +484,9 @@
 </ul>
 </div>
 </div>
-<div id="bug-fixes-1" class="section level3">
+<div id="bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
 <p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
@@ -789,7 +811,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#mrpostman-0901000-2020-10-31-github-patch">0.9.0.1000</a></li>
+        <li><a href="#mrpostman-0905000-2020-10-31-github-patch-2020-11-05-cran">0.9.0.5000</a></li>
+        <li><a href="#mrpostman-0901000-2020-10-26-github-patch">0.9.0.1000</a></li>
         <li><a href="#mrpostman-0900-2020-09-08-github2020-09-15-cran">0.9.0.0</a></li>
         <li><a href="#mrpostman-031-2020-03-27-github-2020-04-18-cran">0.3.1</a></li>
         <li><a href="#mrpostman-030-2019-10-07">0.3.0</a></li>

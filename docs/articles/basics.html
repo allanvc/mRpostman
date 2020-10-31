@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.5000</span>
       </span>
     </div>
 
@@ -127,9 +127,9 @@
 <li>
 <strong>configuration methods</strong>: <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
+<strong>server-capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
 <li>
-<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
+<strong>mailbox-operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
 <li>
 <strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
@@ -455,10 +455,10 @@
 <h3 class="hasAnchor">
 <a href="#fetch-body" class="anchor"></a>6.1) Fetch body</h3>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a><span class="co"># increasing timeout_ms</span></span>
-<span id="cb36-2"><a href="#cb36-2"></a>con<span class="op">$</span><span class="kw">reset_timeout_ms</span>(<span class="dt">to =</span> <span class="dv">30000</span>) <span class="co"># ... to 30 secs</span></span>
+<span id="cb36-2"><a href="#cb36-2"></a>con<span class="op">$</span><span class="kw">reset_timeout_ms</span>(<span class="dt">x =</span> <span class="dv">30000</span>) <span class="co"># ... to 30 secs</span></span>
 <span id="cb36-3"><a href="#cb36-3"></a></span>
 <span id="cb36-4"><a href="#cb36-4"></a><span class="co"># and supposing that you had verbose = TRUE before</span></span>
-<span id="cb36-5"><a href="#cb36-5"></a>con<span class="op">$</span><span class="kw">reset_verbose</span>(<span class="dt">to =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb36-5"><a href="#cb36-5"></a>con<span class="op">$</span><span class="kw">reset_verbose</span>(<span class="dt">x =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb36-6"><a href="#cb36-6"></a></span>
 <span id="cb36-7"><a href="#cb36-7"></a><span class="co"># tidy approach</span></span>
 <span id="cb36-8"><a href="#cb36-8"></a>con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"@k-state.edu"</span>, <span class="dt">where =</span> <span class="st">"FROM"</span>) <span class="op">%&gt;%</span></span>

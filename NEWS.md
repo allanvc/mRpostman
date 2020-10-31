@@ -1,4 +1,20 @@
-## mRpostman 0.9.0.1000 (2020-10-31 Github patch)
+## mRpostman 0.9.0.5000 (2020-10-31 Github patch/ 2020-11-05 CRAN)
+
+- Adds to the stable version all changes of the development version `0.9.0.0100`, plus:
+
+### Bug fixes
+
+- adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others
+
+- fixed the misbehavior for the attachment fetching of message in message attachments. Now, either `fetch_attachments()` and `fetch_text/body()` + `get_attachments()` combo can handle this specific case
+
+### Changes without backward compatibility
+
+* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones were deprecated in this version.
+
+
+
+## mRpostman 0.9.0.1000 (2020-10-26 Github patch)
 
 ### Main features
 * added RFC 2047 quoted-printable and base64 MIME header decoder
@@ -25,7 +41,7 @@
 
 ### Changes without backward compatibility
 
-* The default argument in all `reset_*()` methods now are `to` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1.XXXX;
+* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.0.5000;
 * The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
 * the `metadata` argument in `fetch_metadata` now is `attribute`.
 
