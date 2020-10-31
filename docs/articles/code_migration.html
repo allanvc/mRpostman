@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.1000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.0.5000</span>
       </span>
     </div>
 
@@ -427,9 +427,9 @@
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>con<span class="op">$</span><span class="kw">select_folder</span>(<span class="dt">name =</span> <span class="st">"INBOX"</span>)</span>
 <span id="cb32-2"><a href="#cb32-2"></a></span>
 <span id="cb32-3"><a href="#cb32-3"></a>results &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"10-May-2019"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#regular pipe</span></span>
-<span id="cb32-4"><a href="#cb32-4"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_text</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">metadata =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</span></code></pre></div>
+<span id="cb32-4"><a href="#cb32-4"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">fetch_text</span>(<span class="dt">use_uid =</span> <span class="ot">TRUE</span>, <span class="dt">attribute =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span>))</span></code></pre></div>
 </div>
-<p>You can check metadata options with <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
+<p>You can check the available metadata attributes with <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
 </div>
 </div>
 <div id="attachments" class="section level2">

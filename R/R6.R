@@ -98,20 +98,14 @@ ImapCon <- R6::R6Class("ImapCon",
     ## RESET methods
 
     #' @description Reset the previously informed url
-    #' @param url Deprecated. Use \code{to} instead.
-    #' @param to A character string containing a new url to be set.
-    reset_url = function(url = NULL, to) {
+    #' @param x A character string containing a new url to be set.
+    reset_url = function(x) {
 
-      if (!is.null(url)) {
-        warning('The "url" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        url = to
-      }
+      url = x
 
-      # url = to
       assertthat::assert_that(
         is.character(url),
-        msg='Argument "to" must be a string, e.g. "imaps://imap.servername.com".')
+        msg='Argument "x" must be a string, e.g. "imaps://imap.servername.com".')
 
       url <- utils::URLencode(gsub("/+$", "", url))
       check_url <- grepl("^(imap|imaps)://\\w", url)
@@ -124,51 +118,34 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Reset the previously informed username
-    #' @param username Deprecated. Use \code{to} instead.
-    #' @param to A character string containing a new username to be set.
-    reset_username = function(username = NULL, to) {
+    #' @param x A character string containing a new username to be set.
+    reset_username = function(x) {
 
-      if (!is.null(username)) {
-        warning('The "username" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        username = to
-      }
+      username = x
 
-      # username = to
       modify_con_handle(self, username = username) # same strategy from check_args() to keep a named list
       self$con_params$username <- username
 
     },
 
     #' @description Reset the previously informed use_ssl parameter
-    #' @param use_ssl Deprecated. Use \code{to} instead.
-    #' @param to A logical indicating the use or not of Secure Sockets Layer
+    #' @param x A logical indicating the use or not of Secure Sockets Layer
     #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
-    reset_use_ssl = function(use_ssl, to) {
+    reset_use_ssl = function(x) {
 
-      if (!is.null(use_ssl)) {
-        warning('The "use_ssl" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        use_ssl = to
-      }
+      use_ssl = x
 
-      # use_ssl = to
       modify_con_handle(self, use_ssl = use_ssl)
       self$con_params$use_ssl <- use_ssl
 
     },
 
     #' @description Reset the previously informed verbose parameter
-    #' @param verbose Deprecated. Use \code{to} instead.
-    #' @param to If \code{FALSE}, mutes the flow of information between the
+    #' @param x If \code{FALSE}, mutes the flow of information between the
     #'   server and the client.
-    reset_verbose = function(verbose = NULL, to) {
+    reset_verbose = function(x) {
 
-      if (!is.null(verbose)) {
-        warning('The "verbose" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        verbose = to
-      }
+      verbose = x
 
       # verbose = to
       modify_con_handle(self, verbose = verbose)
@@ -177,73 +154,50 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param buffersize Deprecated. Use \code{to} instead.
-    #' @param to The size in bytes for the receive buffer. Default is
+    #' @param x The size in bytes for the receive buffer. Default is
     #'   16000 bytes or 16kb, which means it will use the libcurl's default value.
     #'   According to the libcurl's documentation, the maximum buffersize is 512kb
     #'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
     #'   as a request, not an order.
-    reset_buffersize = function(buffersize = NULL, to) {
+    reset_buffersize = function(x) {
 
-      if (!is.null(buffersize)) {
-        warning('The "buffersize" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        buffersize = to
-      }
+      buffersize = x
 
-      # buffersize = to
       modify_con_handle(self, buffersize = buffersize)
       self$con_params$buffersize <- buffersize
 
     },
 
     #' @description Reset the previously informed buffersize parameter
-    #' @param timeout_ms Deprecated. Use \code{to} instead.
-    #' @param to Time in milliseconds (ms) to wait for the execution or
+    #' @param x Time in milliseconds (ms) to wait for the execution or
     #'   re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
     #'   execution is unsuccessful, an error handler in each function (depending on
     #'   the \code{retries} value), will try to reconnect or re-execute the command.
-    reset_timeout_ms = function(timeout_ms = NULL, to) {
+    reset_timeout_ms = function(x) {
 
-      if (!is.null(timeout_ms)) {
-        warning('The "timeout_ms" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        timeout_ms = to
-      }
-      # timeout_ms = to
+      timeout_ms = x
+
       modify_con_handle(self, timeout_ms = timeout_ms)
       self$con_params$timeout_ms <- timeout_ms
 
     },
 
     #' @description Reset the previously informed password
-    #' @param password Deprecated. Use \code{to} instead.
-    #' @param to A character string containing the user's password.
-    reset_password = function(password = NULL, to) {
+    #' @param x A character string containing the user's password.
+    reset_password = function(x) {
 
-      if (!is.null(password)) {
-        warning('The "password" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        password = to
-      }
+      password = x
 
-      # password = to
       modify_con_handle(self, password = password)
 
     },
 
     #' @description Reset the previously informed oauth2 bearer token
-    #' @param xoauth2_bearer Deprecated. Use \code{to} instead.
-    #' @param to A character string containing the oauth2 bearer token.
-    reset_xoauth2_bearer = function(xoauth2_bearer = NULL, to) {
+    #' @param x A character string containing the oauth2 bearer token.
+    reset_xoauth2_bearer = function(x) {
 
-      if (!is.null(xoauth2_bearer)) {
-        warning('The "xoauth2_bearer" argument in this method will be deprecated. Use "to" instead.')
-      } else {
-        xoauth2_bearer = to
-      }
+      xoauth2_bearer = x
 
-      # xoauth2_bearer = x
       modify_con_handle(self, xoauth2_bearer = xoauth2_bearer)
 
     },
@@ -1498,7 +1452,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
 
-    #' @description Expunge the selected mail folder or specific message(s) (by UID)
+    #' @description Permanently removes all or specific messages marked as deleted from the selected folder
     #' @param msg_uid A \code{numeric vector} containing one or more messages UIDs.
     #'   Only UIDs are allowed in this operation (note the "u" in msg_\emph{u}id).
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message

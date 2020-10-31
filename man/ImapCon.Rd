@@ -810,15 +810,13 @@ A new `ImapCon` object.
 \subsection{Method \code{reset_url()}}{
 Reset the previously informed url
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_url(url = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_url(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{url}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{A character string containing a new url to be set.}
+\item{\code{x}}{A character string containing a new url to be set.}
 }
 \if{html}{\out{</div>}}
 }
@@ -829,15 +827,13 @@ Reset the previously informed url
 \subsection{Method \code{reset_username()}}{
 Reset the previously informed username
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_username(username = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_username(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{username}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{A character string containing a new username to be set.}
+\item{\code{x}}{A character string containing a new username to be set.}
 }
 \if{html}{\out{</div>}}
 }
@@ -848,15 +844,13 @@ Reset the previously informed username
 \subsection{Method \code{reset_use_ssl()}}{
 Reset the previously informed use_ssl parameter
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_use_ssl(use_ssl, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_use_ssl(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{use_ssl}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{A logical indicating the use or not of Secure Sockets Layer
+\item{\code{x}}{A logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to the IMAP server. Default is \code{TRUE}.}
 }
 \if{html}{\out{</div>}}
@@ -868,15 +862,13 @@ encryption when connecting to the IMAP server. Default is \code{TRUE}.}
 \subsection{Method \code{reset_verbose()}}{
 Reset the previously informed verbose parameter
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_verbose(verbose = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_verbose(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{verbose}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{If \code{FALSE}, mutes the flow of information between the
+\item{\code{x}}{If \code{FALSE}, mutes the flow of information between the
 server and the client.}
 }
 \if{html}{\out{</div>}}
@@ -888,15 +880,13 @@ server and the client.}
 \subsection{Method \code{reset_buffersize()}}{
 Reset the previously informed buffersize parameter
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_buffersize(buffersize = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_buffersize(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{buffersize}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{The size in bytes for the receive buffer. Default is
+\item{\code{x}}{The size in bytes for the receive buffer. Default is
 16000 bytes or 16kb, which means it will use the libcurl's default value.
 According to the libcurl's documentation, the maximum buffersize is 512kb
 (or 512000 bytes), but any number passed to \code{buffersize} is treated
@@ -911,15 +901,13 @@ as a request, not an order.}
 \subsection{Method \code{reset_timeout_ms()}}{
 Reset the previously informed buffersize parameter
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_timeout_ms(timeout_ms = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_timeout_ms(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{timeout_ms}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{Time in milliseconds (ms) to wait for the execution or
+\item{\code{x}}{Time in milliseconds (ms) to wait for the execution or
 re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
 execution is unsuccessful, an error handler in each function (depending on
 the \code{retries} value), will try to reconnect or re-execute the command.}
@@ -933,15 +921,13 @@ the \code{retries} value), will try to reconnect or re-execute the command.}
 \subsection{Method \code{reset_password()}}{
 Reset the previously informed password
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_password(password = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_password(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{password}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{A character string containing the user's password.}
+\item{\code{x}}{A character string containing the user's password.}
 }
 \if{html}{\out{</div>}}
 }
@@ -952,15 +938,13 @@ Reset the previously informed password
 \subsection{Method \code{reset_xoauth2_bearer()}}{
 Reset the previously informed oauth2 bearer token
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_xoauth2_bearer(xoauth2_bearer = NULL, to)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$reset_xoauth2_bearer(x)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{xoauth2_bearer}}{Deprecated. Use \code{to} instead.}
-
-\item{\code{to}}{A character string containing the oauth2 bearer token.}
+\item{\code{x}}{A character string containing the oauth2 bearer token.}
 }
 \if{html}{\out{</div>}}
 }
@@ -2857,7 +2841,7 @@ con$delete_msg(flag = c("Flagged", "Answered"))
 \if{html}{\out{<a id="method-expunge"></a>}}
 \if{latex}{\out{\hypertarget{method-expunge}{}}}
 \subsection{Method \code{expunge()}}{
-Expunge the selected mail folder or specific message(s) (by UID)
+Permanently removes all or specific messages marked as deleted from the selected folder
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$expunge(msg_uid = NULL, mute = FALSE, retries = 1)}\if{html}{\out{</div>}}
 }
