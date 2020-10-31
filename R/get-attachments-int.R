@@ -50,9 +50,9 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
       # v0.9.1.0100
       pattern_content_type = 'Content-Type:[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--'
-      full_content_types <- unlist(regmatches(msg, gregexpr(pattern_content_type, msg)))
+      full_content_types <- unlist(regmatches(msg, gregexpr(pattern_content_type, msg, ignore.case = TRUE)))
 
-      full_content_types <- full_content_types[grepl('Content-Transfer-Encoding: base64', full_content_types)]
+      full_content_types <- full_content_types[grepl('Content-Transfer-Encoding: base64', full_content_types, ignore.case = TRUE)]
 
       # 1) full attachments excerpts (with attachment "headers")
       # v0.3.1 - added support to inline attachments; added content_disposition argument
@@ -68,7 +68,7 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
       }
 
       # this REGEX works with IMAP and MS/Exchange protocols
-      full_attachments <- unlist(regmatches(full_content_types, gregexpr(pattern, full_content_types)))
+      full_attachments <- unlist(regmatches(full_content_types, gregexpr(pattern, full_content_types, ignore.case = TRUE)))
       # substr(full_attachments[1], 1, 1000)
       # starting from full attachments to get filenames and text after
 
@@ -91,7 +91,9 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
       pattern2 = "\\r\\n[^ ]+\\r\\n" # lines that do not contain space
 
       attachments_text <- unlist(regmatches(attachments_text,
-                                            regexec(pattern2, attachments_text, perl=TRUE)))
+                                            regexec(pattern2, attachments_text,
+                                                    perl = TRUE,
+                                                    ignore.case = TRUE)))
 
       # it has to be in this order
 
@@ -128,7 +130,8 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
       # ..we have already selected only the attachments
       pattern = 'filename=\"(.*?)\"[\r\n|;]'
       # this REGEX works with IMAP and MS/Exchange protocols
-      filenames <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
+      filenames <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments,
+                                                               ignore.case = TRUE)))
 
       # sanitizing
       rm(full_attachments)
@@ -143,23 +146,6 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
         # v 0.9.1
         # rfc2047 mime header decoding
         filenames <- decode_mime_header(string = filenames)
-        # filenames <- gsub("\\?=\r\n\\s*|=\\?[A-Za-z0-9-]+\\?Q\\?|\\?=$","", filenames)
-        # "ending with"
-
-        # substituting URI encoding of a dot (=2E|%2E) -- it happens with yandex mail in some cases
-        # we opted for decoding only dots first to get the correct file extension part
-        # filenames <- gsub("=2E|%2E",".", filenames)
-
-        # standard URLdecoding:
-        # for (j in seq_along(filenames)) {
-        #   filenames[j] <- tryCatch({
-        #     filenames[j] <- utils::URLdecode(filenames[j])
-        #   }, warning = function(w) {
-        #     filenames[j]
-        #   }, error = function(e) {
-        #     filenames[j]
-        #   })
-        # }
 
         # removing problematic Win-*NIX-OSX characters from filenames
         # forbiden_chars <- "[\\/:*?\"<>|]"

@@ -27,7 +27,7 @@
 #'   used in the \code{fetch_text()} case.
 #' @param metadata_attribute String containing the meta attributes if applicable. Default
 #'   is \code{NULL}.
-#'   @noRd
+#' @noRd
 execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_disk,
                                keep_in_mem, retries, fetch_type, base64_decode = FALSE,
                                metadata_attribute = NULL) {

@@ -1,4 +1,4 @@
-## mRpostman 0.9.0.5000 (2020-10-31 Github patch/ 2020-11-05 CRAN)
+## mRpostman 0.9.2 (2020-10-31 Github/ 2020-11-05 CRAN)
 
 - Adds to the stable version all changes of the development version `0.9.0.0100`, plus:
 
@@ -14,7 +14,7 @@
 
 
 
-## mRpostman 0.9.0.1000 (2020-10-26 Github patch)
+## mRpostman 0.9.1-1 (2020-10-26 Github patch)
 
 ### Main features
 * added RFC 2047 quoted-printable and base64 MIME header decoder
@@ -41,7 +41,7 @@
 
 ### Changes without backward compatibility
 
-* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.0.5000;
+* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;
 * The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
 * the `metadata` argument in `fetch_metadata` now is `attribute`.
 

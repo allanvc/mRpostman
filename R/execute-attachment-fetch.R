@@ -20,7 +20,7 @@
 #'   name, which will be uses to create a local folder.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
-#'   @noRd
+#' @noRd
 execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetch_request,
                                      folder_clean, url_folder, content_disposition,
                                      override, retries) {
