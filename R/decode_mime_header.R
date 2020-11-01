@@ -105,7 +105,7 @@ decode_mime_header <- function(string) {
       # first we need to test for b64 encoding
       # because the quoted-printable regex will also capture base64 encoded strings
       # but the contrary is not true
-      if (grepl(pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$", x = content)) {
+      if (grepl(pattern = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)$", x = content)) {
         # sol: https://stackoverflow.com/questions/8571501/how-to-check-whether-a-string-is-base64-encoded-or-not
         decoded_string <- tryCatch({
           rawToChar(base64enc::base64decode(content))

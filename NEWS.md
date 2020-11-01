@@ -1,12 +1,15 @@
-## mRpostman 0.9.2 (2020-10-31 Github/ 2020-11-05 CRAN)
+## mRpostman 0.9.1-2 (2020-11-01 Github patch)
 
-- Adds to the stable version all changes of the development version `0.9.0.0100`, plus:
 
 ### Bug fixes
 
-- adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others
+- adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;
 
-- fixed the misbehavior for the attachment fetching of message in message attachments. Now, either `fetch_attachments()` and `fetch_text/body()` + `get_attachments()` combo can handle this specific case
+- fixed the misbehavior for the attachment fetching of message in message attachments. Now, either `fetch_attachments()` and `fetch_text/body()` + `get_attachments()` combo can handle this specific case;
+
+- changed the attachment identification to the "name" field instead of the "filename". In very rare cases, the "filename" field identification fails because of encoding errors on the sender's side;
+
+- incorrect decoding of ordinary words (such as "ResearchGate", for instance) in `decode_mime_header()`.
 
 ### Changes without backward compatibility
 
@@ -41,7 +44,7 @@
 
 ### Changes without backward compatibility
 
-* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;
+* The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1-2;
 * The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
 * the `metadata` argument in `fetch_metadata` now is `attribute`.
 

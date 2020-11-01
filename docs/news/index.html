@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-2</span>
       </span>
     </div>
 
@@ -140,18 +140,17 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="mrpostman-092-2020-10-31-github-2020-11-05-cran" class="section level2">
+    <div id="mrpostman-091-2-2020-11-01-github-patch" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-092-2020-10-31-github-2020-11-05-cran" class="anchor"></a>mRpostman 0.9.2 (2020-10-31 Github/ 2020-11-05 CRAN)</h2>
-<ul>
-<li>Adds to the stable version all changes of the development version <code>0.9.0.0100</code>, plus:</li>
-</ul>
+<a href="#mrpostman-091-2-2020-11-01-github-patch" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
 <div id="bug-fixes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
 <ul>
-<li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others</p></li>
-<li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case</p></li>
+<li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;</p></li>
+<li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case;</p></li>
+<li><p>changed the attachment identification to the “name” field instead of the “filename”. In very rare cases, the “filename” field identification fails because of encoding errors on the sender’s side;</p></li>
+<li><p>incorrect decoding of ordinary words (such as “ResearchGate”, for instance) in <code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code>.</p></li>
 </ul>
 </div>
 <div id="changes-without-backward-compatibility" class="section level3">
@@ -207,7 +206,7 @@
 <h3 class="hasAnchor">
 <a href="#changes-without-backward-compatibility-1" class="anchor"></a>Changes without backward compatibility</h3>
 <ul>
-<li>The default argument in all <code>reset_*()</code> methods now are <code>x</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.2;</li>
+<li>The default argument in all <code>reset_*()</code> methods now are <code>x</code> in order to prevent wordy method calls and repetition. The older ones will be deprecated in version 0.9.1-2;</li>
 <li>The <code>reset_ssl()</code> method had the name changed to <code>reset_use_ssl()</code> to better reflect the connection parameter to be reset.</li>
 <li>the <code>metadata</code> argument in <code>fetch_metadata</code> now is <code>attribute</code>.</li>
 </ul>
