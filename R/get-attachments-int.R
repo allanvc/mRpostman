@@ -34,11 +34,12 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
   forbiden_chars <- "[\\/:*?\"<>|]"
   folder_clean = gsub(forbiden_chars, "", folder_clean)
 
-  # msg_list = text
+  # msg_list = body
   # content_disposition = "both"
 
   for (i in seq_along(msg_list)) {
     # i = 1
+    # print(names(msg_list[i]))
 
     id = names(msg_list[i]) # doing this to conserve name attribute
     id = unlist(regmatches(id, regexec("UID\\d+|\\d+", id)))
@@ -50,9 +51,10 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
       # v0.9.1.0100
       pattern_content_type = 'Content-Type:[\t|\r|\n|\r\n|a-zA-Z0-9 ]+(.*?)--'
-      full_content_types <- unlist(regmatches(msg, gregexpr(pattern_content_type, msg, ignore.case = TRUE)))
+      full_content_types <- unlist(regmatches(msg, gregexpr(pattern_content_type, msg, ignore.case = TRUE))) # using perl is importnt here in case we have invalid multibyte string error (see msg 4217 (UID 61071) in Office 365)
 
-      full_content_types <- full_content_types[grepl('Content-Transfer-Encoding: base64', full_content_types, ignore.case = TRUE)]
+      full_content_types <- full_content_types[grepl('Content-Transfer-Encoding: base64', full_content_types,
+                                                     ignore.case = TRUE)]
 
       # 1) full attachments excerpts (with attachment "headers")
       # v0.3.1 - added support to inline attachments; added content_disposition argument
@@ -68,11 +70,10 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
       }
 
       # this REGEX works with IMAP and MS/Exchange protocols
-      full_attachments <- unlist(regmatches(full_content_types, gregexpr(pattern, full_content_types, ignore.case = TRUE)))
+      full_attachments <- unlist(regmatches(full_content_types, gregexpr(pattern, full_content_types,
+                                                                         ignore.case = TRUE)))
       # substr(full_attachments[1], 1, 1000)
       # starting from full attachments to get filenames and text after
-
-      rm(full_content_types)
 
       # 2) extract only text
 
@@ -86,55 +87,44 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
       attachments_text <- sub('.*Content-', '', full_attachments, ignore.case = TRUE) # sub extracts only the first match
 
+      rm(full_attachments)
+
       # we extract from the last match onwards
 
       pattern2 = "\\r\\n[^ ]+\\r\\n" # lines that do not contain space
 
       attachments_text <- unlist(regmatches(attachments_text,
                                             regexec(pattern2, attachments_text,
-                                                    perl = TRUE,
-                                                    ignore.case = TRUE)))
+                                                    perl = TRUE)))
 
       # it has to be in this order
 
-      # substr(attachments_text[1], 1, 1000)
-      # deu erro em um do yahoo
-      # 1) podemos ou pegar tudo que vier depois de \\r\\n\\r\\n pq vem sempre pulado linha
-      # 2) ou entao tudo que tiver depois da ultima aparicao da palvra content, depois
-      # descontar tudo que aparece depois do primeiro \\r\\n, depois limpar algum que sobrar
-      # 3) tudo que tiver depois da ultima aparicao da palvra content, depois
-      # descartar tudo que aparece entre content e \\r\\n que contenha primeiro espaco (copiar estrategioa anterior),
-      # depois limpar algum que sobrar
-
-      # pattern2 = "\\r\\n\\r\\n.*"
-      # # pattern2 = "\\r\\n\\r\\n(.*)"
-      # pattern2 = "\r\n+[^\r\n]*\r\n*(?!.*Content).*"
-      #
-      # pattern2 = "[\\r\\n]+(?!.*Content).*"
-      #
-      # pattern2 = ".*[^(Content)]+$"
-
-
       # attachments_text <- gsub("^\r\n","", attachments_text) # "beggining with" #
-      attachments_text <- gsub("^[\r\n]+","", attachments_text) # "beggining with" #V0.9.0.0
+      # attachments_text <- gsub("^[\r\n]+","", attachments_text) # "beggining with" #V0.9.0.0
+      attachments_text <- gsub("^[\r\n\t]+","", attachments_text) # "beggining with" #V0.9.2
       # attachments_text[8]
 
       # attachments_text <- gsub("^Content-Transfer-Encoding: base64\r\n\r\n","", attachments_text,
       #                          ignore.case = TRUE) # "beggining with"
 
       attachments_text <- gsub("[\r\n]+[-]*$","", attachments_text) # "ending with"
+      # substr(attachments_text, 1, 1000)
+      # substr(full_attachments, 1, 1000)
+      # substr(msg, 1, 1000)
 
 
       # 3) extract attachment filenames:
       # v0.3.1 - simplified REGEX - we do not need to worry about getting ordinary text
       # ..we have already selected only the attachments
-      pattern = 'filename=\"(.*?)\"[\r\n|;]'
+      # pattern = 'filename=\"(.*?)\"[\r\n+|;]'
+      # filenames <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments)))
+      pattern = 'name=\"(.*?)\"[\r\n+|;]' # v0.9.2
       # this REGEX works with IMAP and MS/Exchange protocols
-      filenames <- unlist(regmatches(full_attachments, regexec(pattern, full_attachments,
-                                                               ignore.case = TRUE)))
+      filenames <- unlist(regmatches(full_content_types, regexec(pattern, full_content_types,
+                                                                 ignore.case = TRUE)))
 
       # sanitizing
-      rm(full_attachments)
+      rm(full_content_types)
 
       # v0.3.1 - to avoid errors in case NULL
       if(!is.null(filenames)){ # here we have to run the rest of the code inside the condition

@@ -6,7 +6,7 @@ has_attachment <- function(msg, call_from) {
 
   if (call_from == "list_attachments" | call_from == "get_attachments") {
     check <- grepl(pattern = "Content-Disposition: (attachment|inline)",
-                    x = msg)
+                    x = msg, ignore.case = TRUE)
     return(check)
 
   } else {
