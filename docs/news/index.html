@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-3</span>
       </span>
     </div>
 
@@ -140,9 +140,34 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mrpostman-091-3-2020-11-08-github-patch" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-091-3-2020-11-08-github-patch" class="anchor"></a>mRpostman 0.9.1-3 (2020-11-08 Github patch)</h2>
+<div id="new-features" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>New features</h3>
+<ul>
+<li><p>added the <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code> function. It will be particularly useful for cleaning and preparing message text retrieved with <code>fetch_body(..., mime_level = 1)</code>. These texts can be used for sentiment analysis and other text mining tasks;</p></li>
+<li><p>added internal functions <code>decode_mime_text()</code> and <code>decode_quoted_printable_text()</code>. The second is called by the first one;</p></li>
+<li><p>renamed the original <code>decode_quoted_printable</code> called from <code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code> to <code>decode_quoted_printable_text()</code>;</p></li>
+<li><p>included the <code>xml2</code> and the <code>rvest</code> packages as dependencies because of the addition of the <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code>.</p></li>
+</ul>
+</div>
+</div>
     <div id="mrpostman-091-2-2020-11-01-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-2-2020-11-01-github-patch" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h3>
+<ul>
+<li>added the <code>mime_level</code> argument to the <code>fetch_body()</code> method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.</li>
+</ul>
+</div>
+</div>
+    <div id="mrpostman-091-2-2020-11-01-github-patch-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-091-2-2020-11-01-github-patch-1" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
 <div id="bug-fixes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>

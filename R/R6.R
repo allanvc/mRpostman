@@ -1072,6 +1072,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
+    #' @param mime_level An \code{integer} specifying MIME multipart to fetch from
+    #'   the message's body. Default is \code{NULL}, which retrieves the full body content.
     #' @param peek If \code{TRUE}, it does not mark messages as "read" after
     #'   fetching. Default is \code{TRUE}.
     #' @param partial \code{NULL} or a character string with format
@@ -1105,10 +1107,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
     #'
     #' }
-    fetch_body = function(msg_id, use_uid = FALSE, peek = TRUE,
+    fetch_body = function(msg_id, use_uid = FALSE, mime_level = NULL, peek = TRUE,
                           partial = NULL, write_to_disk = FALSE,
                           keep_in_mem = TRUE, mute = FALSE, retries = 1) {
-      out <- fetch_body_int(self, msg_id, use_uid, peek, partial, write_to_disk,
+      out <- fetch_body_int(self, msg_id, use_uid, mime_level, peek, partial, write_to_disk,
                             keep_in_mem, mute, retries)
 
       if (isTRUE(write_to_disk)) {

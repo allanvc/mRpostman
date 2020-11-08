@@ -8,6 +8,8 @@
 #'   command will be performed using the \code{"UID"} or unique identifier,
 #'   and results are presented as such. UIDs are always the same during the
 #'   life cycle of a message.
+#' @param mime_level An \code{integer} specifying MIME multipart to fetch from
+#'   the message's body. Default is \code{NULL}, which retrieves the full body content.
 #' @param peek If \code{TRUE}, it does not mark messages as "read" after
 #'   fetching. Default is \code{TRUE}.
 #' @param partial \code{NULL} or a character string with format
@@ -26,11 +28,17 @@
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
 #' @noRd
-fetch_body_int <- function(self, msg_id, use_uid, peek, partial, write_to_disk,
+fetch_body_int <- function(self, msg_id, use_uid, mime_level, peek, partial, write_to_disk,
                            keep_in_mem, mute, retries) {
 
-  if (isFALSE(keep_in_mem)) { # only for the fetch_body e fetch_text
+  if (isFALSE(keep_in_mem)) { # only for the fetch_body and fetch_text
     warning('"keep_in_mem = FALSE" will not alow you to use list_attachments() or get_attachments() after fetching.')
+  }
+
+  if (!is.null(mime_level)) { # only for the fetch_body
+    assertthat::assert_that(
+      is.integer(mime_level),
+      msg='"mime_level" must be an integer.')
   }
 
   #check
@@ -40,9 +48,15 @@ fetch_body_int <- function(self, msg_id, use_uid, peek, partial, write_to_disk,
 
   # peek
   if (isTRUE(peek)) {
-    body_string = " BODY.PEEK[]"
+    body_string = " BODY.PEEK[MIME.level]"
   } else {
-    body_string = " BODY[]"
+    body_string = " BODY[MIME.level]"
+  }
+
+  if (!is.null(mime_level)) {
+    body_string <- gsub('MIME.level', mime_level, body_string)
+  } else {
+    body_string <- gsub('MIME.level', '', body_string)
   }
 
   # partial

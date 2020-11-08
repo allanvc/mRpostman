@@ -18,8 +18,8 @@
 #' @references Freed, N., Borenstein, N. (1996), Multipurpose Internet Mail Extensions
 #'   (MIME) Part One: Format of Internet Message Bodies, RFC 2045, November 1996,
 #'   https://tools.ietf.org/html/rfc2045.
-#' @references Part of the \code{decode_quoted_printable} function used in this object
-#'   was borrowed from https://github.com/hrbrmstr/hrbrmisc/blob/master/R/qp.r with
+#' @references Internal parts of this object, regarding the quoted printable type,
+#'   were borrowed from https://github.com/hrbrmstr/hrbrmisc/blob/master/R/qp.r with
 #'   slight modifications.
 #' @export
 #' @examples
@@ -91,7 +91,7 @@ decode_mime_header <- function(string) {
       content <- x_split[3]
 
       if (encoding == "Q" | encoding == "q") {
-        decoded_string <- decode_quoted_printable(qp_encoded = content)
+        decoded_string <- decode_quoted_printable_header(qp_encoded = content)
       } else if (encoding == "B" | encoding == "b") {
         decoded_string <- rawToChar(base64enc::base64decode(content))
       } else {
@@ -114,7 +114,7 @@ decode_mime_header <- function(string) {
         })
 
       } else if (grepl(pattern = "[\\x80-\\xff]", x = content)) { # assim reconhece direto sem precisar transformar!!
-        decoded_string <- decode_quoted_printable(qp_encoded = content)
+        decoded_string <- decode_quoted_printable_header(qp_encoded = content)
 
       } else {
         decoded_string <- content

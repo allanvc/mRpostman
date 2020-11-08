@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: An IMAP Client for R
-Version: 0.9.1-2
-Date: 2020-11-01
+Version: 0.9.1-3
+Date: 2020-11-05
 Authors@R: c(
     person(given="Allan", family="Quadros",
     role = c("aut", "cre"),
@@ -21,7 +21,9 @@ Imports: curl,
     magrittr,
     assertthat,
     base64enc,
-    utils
+    utils,
+    rvest,
+    xml2
 Depends: R (>= 3.1.0)
 BugReports: https://github.com/allanvc/mRpostman/issues
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)

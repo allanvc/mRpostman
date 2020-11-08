@@ -1,8 +1,8 @@
-#' Decode quoted-printable header
+#' Decode quoted-printable text
 #' @param qp_encoded A \code{character} vector containing a quoted-printable string
 #'   to be decoded.
 #' @noRd
-decode_quoted_printable_header <- function (qp_encoded) {
+decode_quoted_printable_text <- function (qp_encoded) {
   # adapted from @hbrmstr original function:
   # https://stackoverflow.com/questions/40976213/decoding-quoted-printable-string-in-r
 
@@ -84,7 +84,9 @@ decode_quoted_printable_header <- function (qp_encoded) {
 
   decoded_string <- paste0(decoded_string, collapse = " ")
 
-  decoded_string <- gsub("_", " ", decoded_string) # recommendation https://tools.ietf.org/html/rfc2047#section-4, item 4.2
+  # decoded_string <- gsub("_", " ", decoded_string) # recommendation https://tools.ietf.org/html/rfc2047#section-4, item 4.2
+  # ONLY AVAILABLE FOR THE decode_quoted_printable_header() version
+
   # The "Q" encoding is similar to the "Quoted-Printable" content-
   #   transfer-encoding defined in RFC 2045.  It is designed to allow text
   # containing mostly ASCII characters to be decipherable on an ASCII
