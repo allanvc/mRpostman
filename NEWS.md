@@ -1,3 +1,23 @@
+## mRpostman 0.9.1-3 (2020-11-08 Github patch)
+
+### New features
+
+- added the `clean_msg_text()` function. It will be particularly useful for cleaning and preparing message text retrieved with `fetch_body(..., mime_level = 1)`. These texts can be used for sentiment analysis and other text mining tasks;
+
+- added internal functions `decode_mime_text()` and `decode_quoted_printable_text()`. The second is called by the first one;  
+
+- renamed the original `decode_quoted_printable` called from `decode_mime_header()` to `decode_quoted_printable_text()`;
+
+- included the `xml2` and the `rvest` packages as dependencies because of the addition of the `clean_msg_text()`.
+
+
+## mRpostman 0.9.1-2 (2020-11-01 Github patch)
+
+### New features
+
+- added the `mime_level` argument to the `fetch_body()` method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.
+
+
 ## mRpostman 0.9.1-2 (2020-11-01 Github patch)
 
 

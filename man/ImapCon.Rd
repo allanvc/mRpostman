@@ -2282,6 +2282,7 @@ Fetch message body (message's full content)
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$fetch_body(
   msg_id,
   use_uid = FALSE,
+  mime_level = NULL,
   peek = TRUE,
   partial = NULL,
   write_to_disk = FALSE,
@@ -2303,6 +2304,9 @@ It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
+
+\item{\code{mime_level}}{An \code{integer} specifying MIME multipart to fetch from
+the message's body. Default is \code{NULL}, which retrieves the full body content.}
 
 \item{\code{peek}}{If \code{TRUE}, it does not mark messages as "read" after
 fetching. Default is \code{TRUE}.}
