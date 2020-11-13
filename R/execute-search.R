@@ -134,10 +134,11 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
   response <- fix_search_stripping(response) # it does not have any effect on MS Exchange
 
   if (length(response) > 5000) {
-    warning('The server has returned > 5000 results and may have truncated some lines.\n
-    Check it by setting "verbose = TRUE" in ImapConf$new().\n
-    Consider increasing "buffersize" and/or setting "esearch = TRUE", if supported.
-    ')
+    warning(
+    'The server has returned > 5000 results and may have truncated some lines.\n
+    Check it by setting "verbose = TRUE".\n
+    Consider increasing "buffersize" and/or setting "esearch = TRUE", if supported.'
+    )
   }
 
   # if (isTRUE(return_imapconf)) {

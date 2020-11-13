@@ -6,6 +6,13 @@
 #' @examples
 #' \dontrun{
 #' # w/ Plain authentication
+#' con <- configure_imap(
+#'   url="imaps://outlook.office365.com",
+#'   username="user@agency.gov.br",
+#'   password=rstudioapi::askForPassword(),
+#'   verbose = TRUE)
+#'
+#' # OR
 #' con <- ImapCon$new(
 #'   url="imaps://outlook.office365.com",
 #'   username="user@agency.gov.br",
@@ -13,11 +20,19 @@
 #'   verbose = TRUE)
 #'
 #' # w/ OAuth2.0 authentication
+#' con <- configure_imap(
+#'   url="imaps://outlook.office365.com",
+#'   username="user@agency.gov.br",
+#'   verbose = TRUE,
+#'   xoauth2_bearer = "XX.Ya9...")
+#'
+#' # OR
 #' con <- ImapCon$new(
 #'   url="imaps://outlook.office365.com",
 #'   username="user@agency.gov.br",
 #'   verbose = TRUE,
 #'   xoauth2_bearer = "XX.Ya9...")
+#'
 #' }
 #'
 #'
@@ -45,9 +60,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   (or 512000 bytes), but any number passed to \code{buffersize} is treated
     #'   as a request, not an order.
     #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
-    #'   re-execution of a command. Default is 5000ms (or 5 seconds). If a first
-    #'   execution is unsuccessful, an error handler in each function (depending on
-    #'   the \code{retries} value), will try to reconnect or re-execute the command.
+    #'   re-execution of a command. Default is 0, which means that no timeout limit is
+    #'   set.
     #' @param ... Further curl parameters (see \code{curl::curl_options}) that
     #'   can be used with the IMAP protocol. Only for advanced users.
     #' @note \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap}}
@@ -60,22 +74,8 @@ ImapCon <- R6::R6Class("ImapCon",
                           use_ssl = TRUE,
                           verbose = FALSE,
                           buffersize = 16000,
-                          # fresh_connect = FALSE,
-                          timeout_ms = 5000,
+                          timeout_ms = 0,
                           ...) {
-
-      # self$con_params$url <- utils::URLencode(gsub("/+$", "", url))
-      #
-      # self$con_params$verbose <- verbose # so we can call Sys.sleep inside functions
-
-
-      # self$con_params$use_ssl = use_ssl
-      #
-      # self$con_params$verbose <- verbose
-      #
-      # self$con_params$buffersize <- buffersize
-      #
-      # self$con_params$timeout_ms <- timeout_ms
 
       out <- config_con_handle_and_params(url = url, username = username,
                                    password = password, xoauth2_bearer = xoauth2_bearer,
@@ -170,9 +170,8 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Reset the previously informed buffersize parameter
     #' @param x Time in milliseconds (ms) to wait for the execution or
-    #'   re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
-    #'   execution is unsuccessful, an error handler in each function (depending on
-    #'   the \code{retries} value), will try to reconnect or re-execute the command.
+    #'   re-execution of a command. Default is 0, which means that no timeout limit is
+    #'   set.
     reset_timeout_ms = function(x) {
 
       timeout_ms = x
@@ -488,8 +487,8 @@ ImapCon <- R6::R6Class("ImapCon",
     ### search by date
     #' @description Search by internal date (BEFORE)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -531,9 +530,9 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Search by internal date (SINCE)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
-    #'   \code{POSIX*} like objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
+    #'   \code{POSIX*} like objects, since IMAP servers use this uncommon date format.
     #'   \code{POSIX*} like, since IMAP servers like this not so common date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
@@ -576,8 +575,8 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Search by internal date (ON)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -619,11 +618,11 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Search by internal date (Period)
     #' @param since_date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param before_date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -666,10 +665,10 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
-    #' @description Search by origination (RFC-2822 Header) date (SENT BEFORE)
+    #' @description Search by origination date  (RFC 2822 Header - SENT BEFORE)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -716,10 +715,10 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
-    #' @description Search by origination (RFC-2822 Header) date (SENT SINCE)
+    #' @description Search by origination date (RFC 2822 Header - SENT SINCE)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -766,10 +765,10 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
-    #' @description Search by origination (RFC-2822 Header) date (SENT ON)
+    #' @description Search by origination date (RFC 2822 Header - SENT ON)
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -817,13 +816,13 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
-    #' @description Search by origination (RFC-2822 Header) date (SENT Period)
+    #' @description Search by origination date (RFC 2822 Header - SENT Period)
     #' @param since_date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param before_date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-    #'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-    #'   objects, since IMAP servers use this unusual date format.
+    #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+    #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -1563,7 +1562,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system flags' names be preceded by two backslashes \code{"\\\\"}.
+    #'   demand system flag names to be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: \code{add_flags},
     #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
     #'   also keywords (any word not beginning with two backslashes) which are
@@ -1604,7 +1603,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
+    #'   demand system flag names to be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: \code{add_flags},
     #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
     #'   also keywords (any word not beginning with two backslashes) which are
@@ -1646,7 +1645,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Default is \code{1}.
     #' @note \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: Unlike the
     #'   search operations, the add/replace/delete flags operations
-    #'   demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
+    #'   demand system flag names to be preceded by two backslashes \code{"\\\\"}.
     #' @note \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: \code{add_flags},
     #'   \code{remove_flags}, and \code{replace_flags} accept not only flags but
     #'   also keywords (any word not beginning with two backslashes) which are

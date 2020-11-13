@@ -1,3 +1,11 @@
+## mRpostman 0.9.1-4 (2020-11-12 Github patch)
+
+### New features
+
+- changes the default value of the `timeout_ms` parameter to `0`, which is the default value in libcurl, meaning that no timeout is specified.
+
+---
+
 ## mRpostman 0.9.1-3 (2020-11-08 Github patch)
 
 ### New features
@@ -10,6 +18,7 @@
 
 - included the `xml2` and the `rvest` packages as dependencies because of the addition of the `clean_msg_text()`.
 
+---
 
 ## mRpostman 0.9.1-2 (2020-11-01 Github patch)
 
@@ -35,7 +44,7 @@
 
 * The default argument in all `reset_*()` methods now are `x` in order to prevent wordy method calls and repetition. The older ones were deprecated in this version.
 
-
+---
 
 ## mRpostman 0.9.1-1 (2020-10-26 Github patch)
 
@@ -68,6 +77,7 @@
 * The `reset_ssl()` method had the name changed to `reset_use_ssl()` to better reflect the connection parameter to be reset.
 * the `metadata` argument in `fetch_metadata` now is `attribute`.
 
+---
 
 ## mRpostman 0.9.0.0 (2020-09-08 Github/2020-09-15 CRAN)
 
@@ -86,7 +96,6 @@ This is a summary of the main modifications in the package:
 * the argument "by" used in search and fetch functions was replaced by `use_uid`, which is a logical with default value set as `FALSE`. This is equivalent to the former `by = MSN` default configuration.
     
 * all functions that returned `invisible(0L)` now return `invisible(TRUE)`
-
 
 
 ### Changes without backward compatibility

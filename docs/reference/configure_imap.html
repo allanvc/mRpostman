@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-4</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@
   use_ssl <span class='op'>=</span> <span class='cn'>TRUE</span>,
   verbose <span class='op'>=</span> <span class='cn'>FALSE</span>,
   buffersize <span class='op'>=</span> <span class='fl'>16000</span>,
-  timeout_ms <span class='op'>=</span> <span class='fl'>5000</span>,
+  timeout_ms <span class='op'>=</span> <span class='fl'>0</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -198,9 +198,8 @@ as a request, not an order.</p></td>
     <tr>
       <th>timeout_ms</th>
       <td><p>Time in milliseconds (ms) to wait for the execution or
-re-execution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
-the <code>retries</code> value), will try to reconnect or re-execute the command.</p></td>
+re-execution of a command. Default is 0, which means that no timeout limit is
+set.</p></td>
     </tr>
     <tr>
       <th>...</th>

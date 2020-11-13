@@ -84,7 +84,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 
 \href{#method-add_flags}{\code{ImapCon$add_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system flags' names be preceded by two backslashes \code{"\\\\"}.
+  demand system flag names to be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-add_flags}{\code{ImapCon$add_flags()}}: \code{add_flags},
   \code{remove_flags}, and \code{replace_flags} accept not only flags but
@@ -93,7 +93,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 
 \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
+  demand system flag names to be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: \code{add_flags},
   \code{remove_flags}, and \code{replace_flags} accept not only flags but
@@ -102,7 +102,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 
 \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: Unlike the
   search operations, the add/replace/delete flags operations
-  demand that system-flags names be preceded by two backslashes \code{"\\\\"}.
+  demand system flag names to be preceded by two backslashes \code{"\\\\"}.
 
 \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: \code{add_flags},
   \code{remove_flags}, and \code{replace_flags} accept not only flags but
@@ -163,6 +163,13 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 \examples{
 \dontrun{
 # w/ Plain authentication
+con <- configure_imap(
+  url="imaps://outlook.office365.com",
+  username="user@agency.gov.br",
+  password=rstudioapi::askForPassword(),
+  verbose = TRUE)
+
+# OR
 con <- ImapCon$new(
   url="imaps://outlook.office365.com",
   username="user@agency.gov.br",
@@ -170,11 +177,19 @@ con <- ImapCon$new(
   verbose = TRUE)
 
 # w/ OAuth2.0 authentication
+con <- configure_imap(
+  url="imaps://outlook.office365.com",
+  username="user@agency.gov.br",
+  verbose = TRUE,
+  xoauth2_bearer = "XX.Ya9...")
+
+# OR
 con <- ImapCon$new(
   url="imaps://outlook.office365.com",
   username="user@agency.gov.br",
   verbose = TRUE,
   xoauth2_bearer = "XX.Ya9...")
+
 }
 
 
@@ -762,7 +777,7 @@ Configure and create a new IMAP connection.
   use_ssl = TRUE,
   verbose = FALSE,
   buffersize = 16000,
-  timeout_ms = 5000,
+  timeout_ms = 0,
   ...
 )}\if{html}{\out{</div>}}
 }
@@ -791,9 +806,8 @@ According to the libcurl's documentation, the maximum buffersize is 512kb
 as a request, not an order.}
 
 \item{\code{timeout_ms}}{Time in milliseconds (ms) to wait for the execution or
-re-execution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is unsuccessful, an error handler in each function (depending on
-the \code{retries} value), will try to reconnect or re-execute the command.}
+re-execution of a command. Default is 0, which means that no timeout limit is
+set.}
 
 \item{\code{...}}{Further curl parameters (see \code{curl::curl_options}) that
 can be used with the IMAP protocol. Only for advanced users.}
@@ -908,9 +922,8 @@ Reset the previously informed buffersize parameter
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{x}}{Time in milliseconds (ms) to wait for the execution or
-re-xecution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is unsuccessful, an error handler in each function (depending on
-the \code{retries} value), will try to reconnect or re-execute the command.}
+re-execution of a command. Default is 0, which means that no timeout limit is
+set.}
 }
 \if{html}{\out{</div>}}
 }
@@ -1446,8 +1459,8 @@ Search by internal date (BEFORE)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1516,9 +1529,9 @@ Search by internal date (SINCE)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.
-\code{POSIX*} like objects, since IMAP servers use this unusual date format.
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.
+\code{POSIX*} like objects, since IMAP servers use this uncommon date format.
 \code{POSIX*} like, since IMAP servers like this not so common date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -1588,8 +1601,8 @@ Search by internal date (ON)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1659,12 +1672,12 @@ Search by internal date (Period)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{since_date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{before_date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1719,7 +1732,7 @@ con$search_period(since_date_char = "02-Jan-2020",
 \if{html}{\out{<a id="method-search_sent_before"></a>}}
 \if{latex}{\out{\hypertarget{method-search_sent_before}{}}}
 \subsection{Method \code{search_sent_before()}}{
-Search by origination (RFC-2822 Header) date (SENT BEFORE)
+Search by origination date  (RFC 2822 Header - SENT BEFORE)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_sent_before(
   date_char,
@@ -1735,8 +1748,8 @@ Search by origination (RFC-2822 Header) date (SENT BEFORE)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1788,7 +1801,7 @@ con$search_sent_before(date = "02-Jan-2020", use_uid = TRUE)
 \if{html}{\out{<a id="method-search_sent_since"></a>}}
 \if{latex}{\out{\hypertarget{method-search_sent_since}{}}}
 \subsection{Method \code{search_sent_since()}}{
-Search by origination (RFC-2822 Header) date (SENT SINCE)
+Search by origination date (RFC 2822 Header - SENT SINCE)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_sent_since(
   date_char,
@@ -1804,8 +1817,8 @@ Search by origination (RFC-2822 Header) date (SENT SINCE)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1857,7 +1870,7 @@ con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
 \if{html}{\out{<a id="method-search_sent_on"></a>}}
 \if{latex}{\out{\hypertarget{method-search_sent_on}{}}}
 \subsection{Method \code{search_sent_on()}}{
-Search by origination (RFC-2822 Header) date (SENT ON)
+Search by origination date (RFC 2822 Header - SENT ON)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_sent_on(
   date_char,
@@ -1873,8 +1886,8 @@ Search by origination (RFC-2822 Header) date (SENT ON)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -1927,7 +1940,7 @@ con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
 \if{html}{\out{<a id="method-search_sent_period"></a>}}
 \if{latex}{\out{\hypertarget{method-search_sent_period}{}}}
 \subsection{Method \code{search_sent_period()}}{
-Search by origination (RFC-2822 Header) date (SENT Period)
+Search by origination date (RFC 2822 Header - SENT Period)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$search_sent_period(
   since_date_char,
@@ -1944,12 +1957,12 @@ Search by origination (RFC-2822 Header) date (SENT Period)
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{since_date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{before_date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
-"01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this unusual date format.}
+"01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
