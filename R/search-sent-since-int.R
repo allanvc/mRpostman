@@ -1,6 +1,6 @@
-#' Search by origination (RFC-2822 Header) date (SENT SINCE)
+#' Search by origination date (RFC-2822 Header - SENT SINCE)
 #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
-#'   "01-Apr-2019". We opted for not to use \code{Date} or \code{POSIX*} like
+#'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
 #'   objects, since IMAP servers use this unusual date format.
 #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 #'   CRITERIA". Default is \code{FALSE}.

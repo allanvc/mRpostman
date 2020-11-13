@@ -12,7 +12,7 @@ configure_imap(
   use_ssl = TRUE,
   verbose = FALSE,
   buffersize = 16000,
-  timeout_ms = 5000,
+  timeout_ms = 0,
   ...
 )
 }
@@ -38,9 +38,8 @@ According to the libcurl's documentation, the maximum buffersize is 512kb
 as a request, not an order.}
 
 \item{timeout_ms}{Time in milliseconds (ms) to wait for the execution or
-re-execution of a command. Default is 5000ms (or 5 seconds). If a first
-execution is frustrated, an error handler in each function (depending on
-the \code{retries} value), will try to reconnect or re-execute the command.}
+re-execution of a command. Default is 0, which means that no timeout limit is
+set.}
 
 \item{...}{Further curl parameters (see \code{curl::curl_options}) that
 can be used with the IMAP protocol. Only for advanced users.}
