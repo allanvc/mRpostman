@@ -44,6 +44,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   # msg_id = 62168
   # msg_id = 83040
   # msg_id = 4239
+  # msg_id = 141
   # use_uid = FALSE
   # use_uid = TRUE
   # retries = 1

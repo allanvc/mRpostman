@@ -40,7 +40,7 @@ clean_fetch_results <- function(msg_text, metadata_attribute = NULL, attachment_
   result <- gsub(pattern7, "", result, ignore.case = TRUE)
 
   if (isTRUE(attachment_fetch)) { # in order to not have problem with fetcH_body/text + get_attachments() combo
-    pattern8 = "==\r\n FLAGS \\((.*?)\\)" # important for fetch_attachments with use_uid = FALSE - it returns the msg flags after the attachment part on Office 365
+    pattern8 = "==\r\n FLAGS \\((.*?)\\)|=\r\n FLAGS \\((.*?)\\)" # important for fetch_attachments with use_uid = FALSE - it returns the msg flags after the attachment part on Office 365
     result <- gsub(pattern8, "", result, ignore.case = TRUE)
   }
 
