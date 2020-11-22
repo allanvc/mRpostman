@@ -1,3 +1,11 @@
+## mRpostman 0.9.1-5 (2020-11-18 Github patch)
+
+### Bug fixes
+
+- fixed the `pattern8` regex in `clean_fetch_results()`.
+
+---
+
 ## mRpostman 0.9.1-4 (2020-11-12 Github patch)
 
 ### New features

@@ -277,10 +277,9 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
 ## Future Improvements
 
-- add further IMAP functionalities;
+- add further IMAP features;
 - eliminate the {stringr} dependency in REGEX;
 - implement a progress bar in fetch operations;
-- implement a function to decode quoted-printable RFC 2047 headers.
 
 ## Known bugs
 
