@@ -119,10 +119,11 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
         folder_clean = gsub(forbiden_chars, "", folder_clean)
 
         # url <- "imaps://outlook.office365.com/"
-        url_folder <- unlist(regmatches(url, gregexpr("://(.*?)(/|.)$", url)))
-        url_folder = gsub(forbiden_chars, "", url_folder)
+        # url_folder <- unlist(regmatches(url, gregexpr("://(.*?)(/|.)$", url)))
+        user_folder <- self$con_params$username
+        user_folder = gsub(forbiden_chars, "", user_folder)
 
-        complete_path <- paste0("./", url_folder, "/", folder_clean)
+        complete_path <- paste0("./", user_folder, "/", folder_clean)
         dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 
         write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
@@ -185,10 +186,10 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
             folder_clean = gsub(forbiden_chars, "", folder_clean)
 
             # url <- "imaps://outlook.office365.com/"
-            url_folder <- regmatches(url, gregexpr("://(.*?)(/|.)$", url))
-            url_folder = gsub(forbiden_chars, "", url_folder)
+            # url_folder <- regmatches(url, gregexpr("://(.*?)(/|.)$", url))
+            user_folder = gsub(forbiden_chars, "", user_folder)
 
-            complete_path <- paste0("./", url_folder, "/", folder_clean)
+            complete_path <- paste0("./", user_folder, "/", folder_clean)
             dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 
             write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
