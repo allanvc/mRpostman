@@ -158,10 +158,11 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
         adjusted_filenames <- adjust_repeated_filenames(filenames)
 
         # url <- "imaps://outlook.office365.com/"
-        url_folder <- unlist(regmatches(self$con_params$url, gregexpr("://(.*?)(/|.)$", self$con_params$url)))
-        url_folder = gsub(forbiden_chars, "", url_folder)
+        # url_folder <- unlist(regmatches(self$con_params$url, gregexpr("://(.*?)(/|.)$", self$con_params$url)))
+        user_folder <- self$con_params$username
+        user_folder = gsub(forbiden_chars, "", user_folder)
 
-        complete_path <- paste0("./", url_folder, "/", folder_clean, "/", id)
+        complete_path <- paste0("./", user_folder, "/", folder_clean, "/", id)
         # complete_path <- paste0("./", folder_clean, "/", id)
         dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 

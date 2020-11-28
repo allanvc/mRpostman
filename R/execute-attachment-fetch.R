@@ -2,7 +2,6 @@
 #' @param self The R6 connection object.
 #' @param id A message id obtained inside the main loop in \code{fetch_attachments_int}.
 #' @param id_folder The name of the folder containing the message id.
-#' @param url_folder The name of the folder containing the message url of the IMAP server.
 #' @param content_disposition A \code{string} indicating which type of
 #'   "Content-Disposition" attachments should be retrieved. The options are
 #'   \code{both}, \code{attachment}, and \code{inline}. Default is
@@ -22,7 +21,7 @@
 #'   is \code{1}.
 #' @noRd
 execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetch_request,
-                                     folder_clean, url_folder, content_disposition,
+                                     folder_clean, content_disposition,
                                      override, retries) {
 
 
@@ -160,10 +159,11 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
 
       forbiden_chars <- "[\\/:*?\"<>|]"
       # url <- "imaps://outlook.office365.com/"
-      url_folder <- regmatches(url, gregexpr("://(.*?)(/|.)$", url))
-      url_folder = gsub(forbiden_chars, "", url_folder)
+      # url_folder <- regmatches(url, gregexpr("://(.*?)(/|.)$", url))
+      user_folder <- self$con_params$username
+      user_folder = gsub(forbiden_chars, "", user_folder)
 
-      complete_path <- paste0("./", url_folder, "/", folder_clean, "/", id_folder)
+      complete_path <- paste0("./", user_folder, "/", folder_clean, "/", id_folder)
       # complete_path <- paste0("./", folder_clean, "/", id)
       dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 

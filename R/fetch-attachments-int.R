@@ -54,8 +54,8 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
   folder_clean = gsub(forbiden_chars, "", folder_clean)
 
   # url <- "imaps://outlook.office365.com/"
-  url_folder <- unlist(regmatches(self$con_params$url, gregexpr("://(.*?)(/|.)$", self$con_params$url)))
-  url_folder = gsub(forbiden_chars, "", url_folder)
+  # url_folder <- unlist(regmatches(self$con_params$url, gregexpr("://(.*?)(/|.)$", self$con_params$url)))
+  # url_folder = gsub(forbiden_chars, "", url_folder)
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -103,7 +103,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
 
       if (nrow(df_meta_to_fetch) > 0) {
         execute_attachment_fetch(self, id, id_folder, df_meta_to_fetch, fetch_request,
-                                 folder_clean, url_folder, content_disposition,
+                                 folder_clean, content_disposition,
                                  override, retries)
       } # if not, do nothing
 

@@ -1,3 +1,11 @@
+## mRpostman 0.9.1-6 (2020-11-28 Github patch)
+
+### Changes
+
+- modifies the behaviour for assigning names to the local folders. Instead of using the url, now the package uses the "/username/mailbox" as the 'root' directory for saving messages and attachments. For example: `./allanvcq@gmail.com/INBOX/UID1430/` instead of "imap.gmail.com/INBOX/UID1430". This will allow users to better differentiate between local folders, when using different mailboxes in the same server.
+
+---
+
 ## mRpostman 0.9.1-5 (2020-11-18 Github patch)
 
 ### Bug fixes
