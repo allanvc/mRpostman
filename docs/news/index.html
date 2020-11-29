@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -140,6 +140,42 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mrpostman-100-2020-11-29-cran-update" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-100-2020-11-29-cran-update" class="anchor"></a>mRpostman 1.0.0 (2020-11-29 CRAN update)</h2>
+<div id="changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changes" class="anchor"></a>Changes</h3>
+<ul>
+<li>incorporates all the changes/updates from GitHub patches <code>0.9.1-1</code> to <code>0.9.1-6</code>.</li>
+</ul>
+<hr>
+</div>
+</div>
+    <div id="mrpostman-091-6-2020-11-28-github-patch" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-091-6-2020-11-28-github-patch" class="anchor"></a>mRpostman 0.9.1-6 (2020-11-28 Github patch)</h2>
+<div id="changes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#changes-1" class="anchor"></a>Changes</h3>
+<ul>
+<li>modifies the behaviour for assigning names to the local folders. Instead of using the url, now the package uses the “/username/mailbox” as the ‘root’ directory for saving messages and attachments. For example: <code>./allanvcq@gmail.com/INBOX/UID1430/</code> instead of “imap.gmail.com/INBOX/UID1430”. This will allow users to better differentiate between local folders, when using different mailboxes in the same server.</li>
+</ul>
+<hr>
+</div>
+</div>
+    <div id="mrpostman-091-5-2020-11-18-github-patch" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-091-5-2020-11-18-github-patch" class="anchor"></a>mRpostman 0.9.1-5 (2020-11-18 Github patch)</h2>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<ul>
+<li>fixed the <code>pattern8</code> regex in <code>clean_fetch_results()</code>.</li>
+</ul>
+<hr>
+</div>
+</div>
     <div id="mrpostman-091-4-2020-11-12-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-4-2020-11-12-github-patch" class="anchor"></a>mRpostman 0.9.1-4 (2020-11-12 Github patch)</h2>
@@ -181,9 +217,9 @@
     <div id="mrpostman-091-2-2020-11-01-github-patch-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-2-2020-11-01-github-patch-1" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
-<div id="bug-fixes" class="section level3">
+<div id="bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;</p></li>
 <li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case;</p></li>
@@ -223,9 +259,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-1" class="section level3">
+<div id="bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>list_mail_folders()</code>: fixed the regex related to the hierarchy separator to accept the “|” separator. It was causing a misbehavior in Yandex accounts.</p></li>
 <li><p><code>clean_fetch_results()</code> (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have <code>ignore.case = TRUE</code>.</p></li>
@@ -537,9 +573,9 @@
 </ul>
 </div>
 </div>
-<div id="bug-fixes-2" class="section level3">
+<div id="bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
 <p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>

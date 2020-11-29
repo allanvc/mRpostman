@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.9.1-4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -180,7 +180,7 @@
 <p>The package is divided in 8 groups of operations. Below, we present all the available methods and functions:</p>
 <ul>
 <li>
-<strong>configuration methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
+<strong>configuration methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
 <strong>server capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
 <li>
@@ -221,7 +221,7 @@
 <a href="#1-configure-an-imap-connection-and-list-the-servers-capabilities" class="anchor"></a>1) Configure an IMAP connection and list the server’s capabilities</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">mRpostman</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/">mRpostman</a></span><span class="op">)</span>
 
 <span class="co"># Outlook - Office 365</span>
 <span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,
@@ -320,20 +320,19 @@
 <h2 class="hasAnchor">
 <a href="#future-improvements" class="anchor"></a>Future Improvements</h2>
 <ul>
-<li>add further IMAP functionalities;</li>
+<li>add further IMAP features;</li>
 <li>eliminate the {stringr} dependency in REGEX;</li>
 <li>implement a progress bar in fetch operations;</li>
-<li>implement a function to decode quoted-printable RFC 2047 headers.</li>
 </ul>
 </div>
 <div id="known-bugs" class="section level2">
 <h2 class="hasAnchor">
 <a href="#known-bugs" class="anchor"></a>Known bugs</h2>
 <ul>
-<li><p><em>search results truncation</em>: This is a <a href="https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">libcurl’s known bug</a> which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher <code>buffersize</code> value, increasing the buffer capacity, and <code>verbose = TRUE</code> for monitoring the server response for truncated results when executing a search. When possible, <code>mRpostman</code> tries to issue a warning for possible truncated values.</p></li>
+<li><p><em>search results truncation</em>: This is a <a href="https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">libcurl’s known bug</a> which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher <code>buffersize</code> value, increasing the buffer capacity, and <code>verbose = TRUE</code> for monitoring the server response for truncated results when executing a search. When possible, <code>mRpostman</code> tries to issue a warning for possible truncated values.</p></li>
 <li><p><em><code>verbose = TRUE</code> malfunction on Windows</em>: This seems to be related to the <a href="https://github.com/jeroen/curl/issues/230">{curl} R package</a>. When using the <code>verbose = TRUE</code> on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.</p></li>
 <li><p><em>shared mailbox access not working</em>: This seems to be another <a href="https://github.com/allanvc/mRpostman/issues/2">libcurl’s bug</a>, although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.</p></li>
-<li><p><em><code>xoauth2_bearer</code> SASL error</em>: This is related to <a href="https://curl.haxx.se/bug/?i=2487">old libcurl’s versions</a> which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.</p></li>
+<li><p><em><code>xoauth2_bearer</code> SASL error</em>: This is related to <a href="https://curl.se/bug/?i=2487">old libcurl’s versions</a> which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.</p></li>
 </ul>
 </div>
 <div id="license" class="section level2">
@@ -347,7 +346,7 @@
 <p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, March 2003, <a href="https://tools.ietf.org/html/rfc3501" class="uri">https://tools.ietf.org/html/rfc3501</a>.</p>
 <p>Heinlein, P. and Hartleben, P. (2008). <em>The Book of IMAP: Building a Mail Server with Courier and Cyrus</em>. No Starch Press. ISBN 978-1-59327-177-0.</p>
 <p>Ooms, J. (2020), <em>curl: A Modern and Flexible Web Client for R</em>. R package version 4.3, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
-<p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.haxx.se/libcurl/" class="uri">https://curl.haxx.se/libcurl/</a></p>
+<p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.se/libcurl/" class="uri">https://curl.se/libcurl/</a></p>
 </div>
 </div>
   </div>
@@ -360,7 +359,7 @@
 </li>
 <li>Browse source code at <br><a href="https://github.com/allanvc/mRpostman/">https://​github.com/​allanvc/​mRpostman/​</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/allanvc/mRpostman/issues">https://​github.com/​allanvc/​mRpostman/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/allanvc/mRpostman/issues/">https://​github.com/​allanvc/​mRpostman/​issues/​</a>
 </li>
 </ul>
 </div>
