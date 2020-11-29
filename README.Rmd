@@ -283,13 +283,13 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
 ## Known bugs
 
-- _search results truncation_: This is a [libcurl's known bug](https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
+- _search results truncation_: This is a [libcurl's known bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumscribe this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
 
 - _`verbose = TRUE` malfunction on Windows_: This seems to be related to the [{curl} R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
 
 - _shared mailbox access not working_: This seems to be another [libcurl's bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumscribe this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
 
-- _`xoauth2_bearer` SASL error_: This is related to [old libcurl's versions](https://curl.haxx.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl's version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
+- _`xoauth2_bearer` SASL error_: This is related to [old libcurl's versions](https://curl.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl's version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
 
 ## License
 
@@ -303,4 +303,4 @@ Heinlein, P. and Hartleben, P. (2008). _The Book of IMAP: Building a Mail Server
 
 Ooms, J. (2020), _curl: A Modern and Flexible Web Client for R_. R package version 4.3, https://CRAN.R-project.org/package=curl
 
-Stenberg, D. _Libcurl - The Multiprotocol File Transfer Library_, https://curl.haxx.se/libcurl/
+Stenberg, D. _Libcurl - The Multiprotocol File Transfer Library_, https://curl.se/libcurl/

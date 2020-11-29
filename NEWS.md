@@ -1,3 +1,11 @@
+## mRpostman 1.0.0 (2020-11-29 CRAN update)
+
+### Changes
+
+- incorporates all the changes/updates from GitHub patches `0.9.1-1` to `0.9.1-6`.
+
+---
+
 ## mRpostman 0.9.1-6 (2020-11-28 Github patch)
 
 ### Changes

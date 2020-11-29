@@ -143,7 +143,7 @@ the available methods and functions:
 
   - **configuration methods**: `configure_imap()`, `reset_url()`,
     `reset_username()`, `reset_password()`, `reset_verbose()`,
-    `reset_buffersize()`, `reset_timeout_ms()`,
+    `reset_use_ssl()`, `reset_buffersize()`, `reset_timeout_ms()`,
     `reset_xoauth2_bearer()`;
   - **server capabilities method**: `list_server_capabilities()`;
   - **mailbox operations methods**: `list_mail_folders()`,
@@ -305,15 +305,14 @@ con$search_since(date_char = "02-Jan-2020") %>%
 
 ## Future Improvements
 
-  - add further IMAP functionalities;
+  - add further IMAP features;
   - eliminate the {stringr} dependency in REGEX;
   - implement a progress bar in fetch operations;
-  - implement a function to decode quoted-printable RFC 2047 headers.
 
 ## Known bugs
 
   - *search results truncation*: This is a [libcurl’s known
-    bug](https://curl.haxx.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)
+    bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)
     which causes the search results to be truncated when there is a
     large number of message ids returned. To circumscribe this problem,
     you can set a higher `buffersize` value, increasing the buffer
@@ -337,8 +336,8 @@ con$search_since(date_char = "02-Jan-2020") %>%
     direct regular connection.
 
   - *`xoauth2_bearer` SASL error*: This is related to [old libcurl’s
-    versions](https://curl.haxx.se/bug/?i=2487) which causes the access
-    token to not be properly passed to the server. This bug was fixed in
+    versions](https://curl.se/bug/?i=2487) which causes the access token
+    to not be properly passed to the server. This bug was fixed in
     libcurl 7.65.0. The problem is that many Linux distributions, such
     as Ubuntu 18.04, still provide libcurl 7.58.0 in their official
     distribution (libcurl4-openssl-dev). If you use a newer Linux distro
@@ -363,4 +362,4 @@ Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
 package version 4.3, <https://CRAN.R-project.org/package=curl>
 
 Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
-<https://curl.haxx.se/libcurl/>
+<https://curl.se/libcurl/>

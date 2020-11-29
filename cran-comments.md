@@ -1,4 +1,4 @@
-**mRpostman - Update to v0.9.1-3**
+**mRpostman - Update to v1.0.0**
 
 ## Test environments
 * local Ubuntu 20.04, R 4.0.3
