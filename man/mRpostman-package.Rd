@@ -5,7 +5,9 @@
 \title{An IMAP client for R}
 
 \description{
-  \pkg{mRpostman} is an easy-to-use IMAP client that provides tools for searching and message fetching, mailbox management, attachment extraction, and several other IMAP features, hence paving the way for email data analysis from within \R. To do so, this package makes extensive use of the \pkg{curl} package and the libcurl C library.
+  \pkg{mRpostman} is an easy-to-use IMAP client that provides tools for message searching,
+    selective fetching of message attributes, mailbox management, attachment extraction,
+    and several other IMAP features, paving the way for e-mail data analysis in \R.
 }
 
 
@@ -23,7 +25,7 @@ Heinlein, P. and Hartleben, P. (2008). \emph{The Book of IMAP: Building a Mail S
 
 Ooms, J. (2020). \emph{curl: A Modern and Flexible Web Client for R}. R package version 4.3, \url{https://CRAN.R-project.org/package=curl}.
 
-Stenberg, D. \emph{Libcurl - The Multiprotocol File Transfer Library}, \url{https://curl.haxx.se/libcurl/}.
+Stenberg, D. \emph{Libcurl - The Multiprotocol File Transfer Library}, \url{https://curl.se/libcurl/}.
 
 }
 
