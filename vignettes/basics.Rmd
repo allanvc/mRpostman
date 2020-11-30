@@ -804,4 +804,4 @@ Resnick, P. (2008), _Internet Message Format_, RFC 5322, October 2008, https://t
 
 Ooms, J. (2020), _curl: A Modern and Flexible Web Client for R_. R package version 4.3, https://CRAN.R-project.org/package=curl
 
-Stenberg, D. _Libcurl - The Multiprotocol File Transfer Library_, https://curl.haxx.se/libcurl/
+Stenberg, D. _Libcurl - The Multiprotocol File Transfer Library_, https://curl.se/libcurl/
