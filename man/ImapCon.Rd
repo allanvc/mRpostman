@@ -1323,7 +1323,7 @@ Search by size (LARGER)
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{size}}{An integer specifying the number of seconds to be used as the
+\item{\code{size}}{An integer specifying the size in bytes to be used as the
 search criterion.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
@@ -1390,7 +1390,7 @@ Search by size (SMALLER)
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{size}}{An integer specifying the number of seconds to be used as the
+\item{\code{size}}{An integer specifying the size in bytes to be used as the
 search criterion.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH

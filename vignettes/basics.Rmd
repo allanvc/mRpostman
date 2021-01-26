@@ -369,7 +369,7 @@ Searching in the "TO" header field:
 ```{r, message = FALSE, eval=FALSE}
 con$select_folder(name = "K-State")
 
-con$search_string(expr = "hadley@rstudio.com", where = "TO")
+con$search_string(expr = "xpto@k-state.com", where = "TO")
 
 ```
 
@@ -526,7 +526,7 @@ Since the goal here is to write the fetch results to disk, it is recommended tha
 
 Our local folder will be populated with the `.txt` files of the fetched messages:
 
-![](figures/basics/fetch_body.png){width=90%}
+![](figures/basics/fetch-body.png){width=80%}
 
 ### 6.2) Fetch header
 
@@ -607,7 +607,7 @@ In both examples, the whole message body(ies) or text will be saved to the disk,
 
 #### 7.1.2) Extracting Attachments
 
-`get_attachments()` will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure `working directory > imap.server.name > mail folder > msg_id`. The attachment(s) will be inside their respective message folder.
+`get_attachments()` will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure `working directory > username > mail folder > msg_id`. The attachment(s) will be inside their respective message folder.
 
 
 ```{r, message = FALSE, eval = FALSE}
@@ -626,8 +626,8 @@ con$search_since(date_char = "23-Sep-2019") %>%
 
 The results in your local folder will be like this:
 
-![](figures/basics/get-fetch_attachments1.png){width=90%}
-![](figures/basics/get-fetch_attachments2.png){width=90%}
+![](figures/basics/attach1.png){width=80%}
+![](figures/basics/attach2.png){width=80%}
 
 ### 7.2) Direct attachment fetch operations
 

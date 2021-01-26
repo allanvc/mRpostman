@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
       </span>
     </div>
 
@@ -162,7 +162,7 @@
 <a href="#how-do-i-start-connection-configuration" class="anchor"></a>1) How do I start? (Connection configuration)</h2>
 <p>After enabling (if needed) “less secure apps access” in your mail provider or obtaining an OAuth2.0 token, you have to configure an IMAP connection:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/">mRpostman</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span>
 
 <span class="co"># IMAP settings</span>
 
@@ -402,7 +402,7 @@
 <div class="sourceCode" id="cb24"><pre class="downlit">
 <span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"K-State"</span><span class="op">)</span>
 
-<span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"hadley@rstudio.com"</span>, where <span class="op">=</span> <span class="st">"TO"</span><span class="op">)</span></pre></div>
+<span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"xpto@k-state.com"</span>, where <span class="op">=</span> <span class="st">"TO"</span><span class="op">)</span></pre></div>
 <p>Searching in the “FROM” header field:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit">
 <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"xpto@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span></pre></div>
@@ -516,7 +516,7 @@
 <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">res</span>, write_to_disk <span class="op">=</span> <span class="cn">TRUE</span>, keep_in_mem <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
 <p>Since the goal here is to write the fetch results to disk, it is recommended that we set <code>keep_in_mem = FALSE</code>. This will optimize the whole operation because <code>mRpostman</code> will clean the memory after fetching each message as we are not going to use the results in our R session.</p>
 <p>Our local folder will be populated with the <code>.txt</code> files of the fetched messages:</p>
-<p><img src="figures/basics/fetch_body.png" style="width:90.0%"></p>
+<p><img src="figures/basics/fetch-body.png" style="width:80.0%"></p>
 </div>
 <div id="fetch-header" class="section level3">
 <h3 class="hasAnchor">
@@ -587,7 +587,7 @@
 <div id="extracting-attachments" class="section level4">
 <h4 class="hasAnchor">
 <a href="#extracting-attachments" class="anchor"></a>7.1.2) Extracting Attachments</h4>
-<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>working directory &gt; imap.server.name &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
+<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder with the inside the structure <code>working directory &gt; username &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
 <div class="sourceCode" id="cb41"><pre class="downlit">
 <span class="co"># using fetch_body()</span>
 <span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op">%&gt;%</span>
@@ -601,7 +601,7 @@
   <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="va">con</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></pre></div>
 <p>The results in your local folder will be like this:</p>
-<p><img src="figures/basics/get-fetch_attachments1.png" style="width:90.0%"><img src="figures/basics/get-fetch_attachments2.png" style="width:90.0%"></p>
+<p><img src="figures/basics/attach1.png" style="width:80.0%"><img src="figures/basics/attach2.png" style="width:80.0%"></p>
 </div>
 </div>
 <div id="direct-attachment-fetch-operations" class="section level3">
