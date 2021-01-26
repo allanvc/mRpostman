@@ -1,3 +1,13 @@
+## mRpostman 1.0.1 (2021-01-13 Github patch)
+
+### Bug fixes
+
+- typos in documentation ("Basics" vignette)
+- typos in the methods and functions documentation
+- updated figures in "Basics" vignette
+
+---
+
 ## mRpostman 1.0.0 (2020-11-29 CRAN update)
 
 ### Changes

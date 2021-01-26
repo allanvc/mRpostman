@@ -404,7 +404,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     ### size search
     #' @description Search by size (LARGER)
-    #' @param size An integer specifying the number of seconds to be used as the
+    #' @param size An integer specifying the size in bytes to be used as the
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
@@ -444,7 +444,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Search by size (SMALLER)
-    #' @param size An integer specifying the number of seconds to be used as the
+    #' @param size An integer specifying the size in bytes to be used as the
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
