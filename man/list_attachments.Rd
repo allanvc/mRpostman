@@ -26,12 +26,12 @@ Please, note that this is an independent function and not an R6 method
 \dontrun{
 con$select_folder(name = "INBOX")
 # do a search followed by a fetch operation, then extract the attachments' list
-out < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_body()
 att_list <- list_attachments(msg_list = out)
 
 # or
-att_list < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+att_list <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_body() \%>\%
   list_attachments()
 }

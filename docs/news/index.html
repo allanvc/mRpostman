@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
       </span>
     </div>
 
@@ -140,12 +140,35 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mrpostman-102-2021-04-14-github-patch" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-102-2021-04-14-github-patch" class="anchor"></a>mRpostman 1.0.2 (2021-04-14 Github patch)</h2>
+<div id="documentation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h3>
+<ul>
+<li>typos in <code><a href="../reference/list_attachments.html">list_attachments()</a></code>
+</li>
+<li>typos in <code>README.Rmd</code>
+</li>
+</ul>
+</div>
+<div id="methods--functions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#methods--functions" class="anchor"></a>Methods &amp; Functions</h3>
+<ul>
+<li>updated completion msg in all fetch methods to: <code>"\n::mRpostman: fetch operation is complete.\n"</code>
+</li>
+</ul>
+<hr>
+</div>
+</div>
     <div id="mrpostman-101-2021-01-13-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-101-2021-01-13-github-patch" class="anchor"></a>mRpostman 1.0.1 (2021-01-13 Github patch)</h2>
-<div id="bug-fixes" class="section level3">
+<div id="documentation-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<a href="#documentation-1" class="anchor"></a>Documentation</h3>
 <ul>
 <li>typos in documentation (“Basics” vignette)</li>
 <li>typos in the methods and functions documentation</li>
@@ -181,9 +204,9 @@
     <div id="mrpostman-091-5-2020-11-18-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-5-2020-11-18-github-patch" class="anchor"></a>mRpostman 0.9.1-5 (2020-11-18 Github patch)</h2>
-<div id="bug-fixes-1" class="section level3">
+<div id="bug-fixes" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>fixed the <code>pattern8</code> regex in <code>clean_fetch_results()</code>.</li>
 </ul>
@@ -227,13 +250,9 @@
 <li>added the <code>mime_level</code> argument to the <code>fetch_body()</code> method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.</li>
 </ul>
 </div>
-</div>
-    <div id="mrpostman-091-2-2020-11-01-github-patch-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#mrpostman-091-2-2020-11-01-github-patch-1" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
-<div id="bug-fixes-2" class="section level3">
+<div id="bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;</p></li>
 <li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case;</p></li>
@@ -273,9 +292,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level3">
+<div id="bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>list_mail_folders()</code>: fixed the regex related to the hierarchy separator to accept the “|” separator. It was causing a misbehavior in Yandex accounts.</p></li>
 <li><p><code>clean_fetch_results()</code> (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have <code>ignore.case = TRUE</code>.</p></li>
@@ -587,9 +606,9 @@
 </ul>
 </div>
 </div>
-<div id="bug-fixes-4" class="section level3">
+<div id="bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
 <p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
@@ -693,9 +712,9 @@
 </li>
 </ul>
 </div>
-<div id="documentation" class="section level3">
+<div id="documentation-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h3>
+<a href="#documentation-2" class="anchor"></a>Documentation</h3>
 <ul>
 <li>DESCRIPTION FILE:
 <ul>
@@ -788,9 +807,9 @@
 <li><p>changed all imaps://imap.gmail.com server examples to a generic one: imaps://your.imap.server.com</p></li>
 </ul>
 </div>
-<div id="documentation-1" class="section level3">
+<div id="documentation-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-1" class="anchor"></a>Documentation</h3>
+<a href="#documentation-3" class="anchor"></a>Documentation</h3>
 <ul>
 <li>DESCRIPTION FILE:
 <ul>

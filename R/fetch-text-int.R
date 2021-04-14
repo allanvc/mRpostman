@@ -72,7 +72,7 @@ fetch_text_int <- function(self, msg_id, use_uid, peek, partial, write_to_disk,
     rm(msg_list)
 
     if (!mute) {
-      cat(paste0("\n::mRpostman: the fetch operation is complete.\n")) # v0.3.2
+      cat(paste0("\n::mRpostman: fetch operation is complete.\n")) # v0.3.2
       # using the folder name without any transformation
     }
 
