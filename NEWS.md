@@ -1,6 +1,19 @@
+## mRpostman 1.0.2 (2021-04-14 Github patch)
+
+### Documentation
+
+- typos in `list_attachments()`
+- typos in `README.Rmd`
+
+### Methods & Functions
+
+- updated completion msg in all fetch methods to: `"\n::mRpostman: fetch operation is complete.\n"`
+
+---
+
 ## mRpostman 1.0.1 (2021-01-13 Github patch)
 
-### Bug fixes
+### Documentation
 
 - typos in documentation ("Basics" vignette)
 - typos in the methods and functions documentation
@@ -59,10 +72,6 @@
 ### New features
 
 - added the `mime_level` argument to the `fetch_body()` method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.
-
-
-## mRpostman 0.9.1-2 (2020-11-01 Github patch)
-
 
 ### Bug fixes
 
@@ -532,8 +541,7 @@ This is a summary of the main modifications in the package:
 * README.md:
     + changed section "First Things First" to "Allowing Less Secure Apps Access"
 
-
-***
+---
 
 ## mRpostman 0.2.0 (2019-08-18 - CRAN submission)
 
@@ -546,6 +554,6 @@ This is a summary of the main modifications in the package:
 
 - changed package logo
 
-***
+---
 
 ## mRpostman 0.1.0 (2019-08-13 - Github release)
