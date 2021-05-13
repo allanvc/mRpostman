@@ -12,7 +12,7 @@ matrix:
         - devel
       env: R_CODECOV=true
     - os: osx
-      disable_homebrew: true
+      osx_image: xcode12.2
       r: 
         - release
         - devel
