@@ -12,6 +12,7 @@ matrix:
         - devel
       env: R_CODECOV=true
     - os: osx
+      disable_homebrew: true
       r: 
         - release
         - devel
