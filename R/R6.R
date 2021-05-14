@@ -1797,6 +1797,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command. Default
     #'   is \code{1}.
+    #' @param as_is If \code{TRUE} then write out attachments without base64 decodeing. Default is \code{FALSE}.
     #' @note \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}: All
     #'   attachments will be stored in a folder labeled with the message id
     #'   inside the \code{working directory > servername > foldername}.
@@ -1836,9 +1837,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'
     #' }
     fetch_attachments = function(msg_id, use_uid = FALSE, content_disposition = "both",
-                                 override = FALSE, mute = FALSE, retries = 1) {
+                                 override = FALSE, mute = FALSE, retries = 1, as_is=FALSE) {
       out <- fetch_attachments_int(self, msg_id, use_uid, content_disposition,
-                                   override, mute, retries)
+                                   override, mute, retries, as_is)
 
       invisible(out)
 

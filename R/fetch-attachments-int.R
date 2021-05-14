@@ -17,9 +17,10 @@
 #'   containing the same name in the local directory. Default is \code{FALSE}.
 #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
 #'   when the command is successfully executed. Default is \code{FALSE}.
+#' @param as_is If \code{TRUE} then write out attachment without base64 decodeing
 #' @noRd
 fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, override,
-                                  mute, retries) {
+                                  mute, retries, as_is) {
 
   #check
   check_args(msg_id = msg_id, use_uid = use_uid, content_disposition = content_disposition,
@@ -104,7 +105,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
       if (nrow(df_meta_to_fetch) > 0) {
         execute_attachment_fetch(self, id, id_folder, df_meta_to_fetch, fetch_request,
                                  folder_clean, content_disposition,
-                                 override, retries)
+                                 override, retries, as_is)
       } # if not, do nothing
 
     } #if not, do nothing
