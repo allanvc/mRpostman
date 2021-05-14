@@ -3285,7 +3285,8 @@ Fetch message attachments
   content_disposition = "both",
   override = FALSE,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  as_is = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -3316,6 +3317,8 @@ when the command is successfully executed. Default is \code{FALSE}.}
 
 \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
+
+\item{\code{as_is}}{If \code{TRUE} then write out attachments without base64 decodeing. Default is \code{FALSE}.}
 }
 \if{html}{\out{</div>}}
 }
