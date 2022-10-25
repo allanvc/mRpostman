@@ -1,8 +1,8 @@
-**mRpostman - Update to v1.0.0**
+**mRpostman - Update to v1.1.0**
 
 ## Test environments
-* local Ubuntu 20.04, R 4.0.3
-* local Windows 10, R 4.0.2
+* local Ubuntu 20.04, R release
+* local Windows 10, R release
 * win-builder: devel, release & oldrelease
 * ubuntu 14.04 (on travis-ci), devel & release
 * Mac OS X (on travis-ci), devel & release
