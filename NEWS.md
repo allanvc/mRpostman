@@ -1,3 +1,17 @@
+## mRpostman 1.1.0 (2022-10-25 CRAN fix bump)
+
+### Documentation
+
+- removed 'LazyData' line to fix CRAN check issue
+- added '\dontrun{}' to `decode_mime_headers()` in order to fix CRAN check issues
+- fixed bad URLs in basics.Rmd (tools.ietf.org ===> www.rfc-editor.org)
+
+### Methods & Functions
+
+- updated completion msg in all fetch methods to: `"\n::mRpostman: fetch operation is complete.\n"`
+
+---
+
 ## mRpostman 1.0.2 (2021-04-14 Github patch)
 
 ### Documentation

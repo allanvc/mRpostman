@@ -29,6 +29,9 @@ The RFC 2047 (Moore, 1996) presents an encoded-word syntax to be used by e-mail
   which is the equivalent word, in Portuguese, for Statistics).
 }
 \examples{
+\dontrun{
+# The examples below runs smoothly on any computer. The 'dontrun' flag is just to skip CRAN checks.
+
 # Simple quoted-printable string - Portuguese example
 qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
 decoded_string <- decode_mime_header(string = qp_encoded)
@@ -48,6 +51,7 @@ decoded_string <- decode_mime_header(string = qp_encoded)
 # RFC 2047 base64 - Portuguese example
 b64_encoded <- "=?utf-8?B?Sk9BTkEgRlVTQ08gTE9CTyBubyBUZWFtcw==?="
 decoded_string <- decode_mime_header(string = b64_encoded)
+}
 
 }
 \references{
