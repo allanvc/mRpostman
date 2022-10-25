@@ -19,7 +19,7 @@
 
 \references{
 
-Crispin, M. (2003), \emph{INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1}, RFC 3501, March 2003, \url{https://tools.ietf.org/html/rfc3501}.
+Crispin, M. (2003), \emph{INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1}, RFC 3501, March 2003, \url{https://www.rfc-editor.org/rfc/rfc3501}.
 
 Heinlein, P. and Hartleben, P. (2008). \emph{The Book of IMAP: Building a Mail Server with Courier and Cyrus}. No Starch Press. ISBN 978-1-59327-177-0.
 

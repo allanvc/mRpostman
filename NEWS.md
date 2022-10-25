@@ -4,7 +4,7 @@
 
 - removed 'LazyData' line to fix CRAN check issue
 - added '\dontrun{}' to `decode_mime_headers()` in order to fix CRAN check issues
-- fixed bad URLs in basics.Rmd (tools.ietf.org ===> www.rfc-editor.org)
+- fixed bad URLs everywhere (tools.ietf.org/html/... ===> www.rfc-editor.org/rfc/...)
 
 ### Methods & Functions
 

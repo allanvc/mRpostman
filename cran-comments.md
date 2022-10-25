@@ -4,7 +4,7 @@
 * local Ubuntu 20.04, R release
 * local Windows 10, R release
 * win-builder: devel, release & oldrelease
-* ubuntu 14.04 (on travis-ci), devel & release
+* Ubuntu 14.04 (on travis-ci), devel & release
 * Mac OS X (on travis-ci), devel & release
 
 ## R CMD check results
