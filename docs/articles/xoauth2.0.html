@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,18 +40,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -77,8 +73,8 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/allanvc/mRpostman/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+  <a href="https://github.com/allanvc/mRpostman/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -92,14 +88,13 @@
 
       
 
-      </header><script src="xoauth2.0_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="xoauth2.0_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="xoauth2.0_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>IMAP OAuth2.0 authentication in mRpostman</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/allanvc/mRpostman/blob/master/vignettes/xoauth2.0.Rmd"><code>vignettes/xoauth2.0.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/vignettes/xoauth2.0.Rmd" class="external-link"><code>vignettes/xoauth2.0.Rmd</code></a></small>
       <div class="hidden name"><code>xoauth2.0.Rmd</code></div>
 
     </div>
@@ -118,45 +113,45 @@
   <!--   -moz-columns: 3 100px; -->
   <!-- } -->
 </style>
-<div id="intro" class="section level2">
-<h2 class="hasAnchor">
-<a href="#intro" class="anchor"></a>Introduction</h2>
+<div class="section level2">
+<h2 id="intro">Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
+</h2>
 <p>More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.</p>
 <p>In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
 <p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl’s version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.cran.dev/curl/reference/curl_options.html">curl_version</a></span><span class="op">(</span><span class="op">)</span></pre></div>
-<pre><code>## $version
-## [1] "7.68.0"
-## 
-## $ssl_version
-## [1] "OpenSSL/1.1.1f"
-## 
-## $libz_version
-## [1] "1.2.11"
-## 
-## $libssh_version
-## [1] "libssh/0.9.3/openssl/zlib"
-## 
-## $libidn_version
-## [1] "2.2.0"
-## 
-## $host
-## [1] "x86_64-pc-linux-gnu"
-## 
-## $protocols
-##  [1] "dict"   "file"   "ftp"    "ftps"   "gopher" "http"   "https"  "imap"  
-##  [9] "imaps"  "ldap"   "ldaps"  "pop3"   "pop3s"  "rtmp"   "rtsp"   "scp"   
-## [17] "sftp"   "smb"    "smbs"   "smtp"   "smtps"  "telnet" "tftp"  
-## 
-## $ipv6
-## [1] TRUE
-## 
-## $http2
-## [1] TRUE
-## 
-## $idn
-## [1] TRUE</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/curl_options.html" class="external-link">curl_version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $version</span></span>
+<span><span class="co">## [1] "7.68.0"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $ssl_version</span></span>
+<span><span class="co">## [1] "OpenSSL/1.1.1f"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $libz_version</span></span>
+<span><span class="co">## [1] "1.2.11"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $libssh_version</span></span>
+<span><span class="co">## [1] "libssh/0.9.3/openssl/zlib"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $libidn_version</span></span>
+<span><span class="co">## [1] "2.2.0"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $host</span></span>
+<span><span class="co">## [1] "x86_64-pc-linux-gnu"</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $protocols</span></span>
+<span><span class="co">##  [1] "dict"   "file"   "ftp"    "ftps"   "gopher" "http"   "https"  "imap"  </span></span>
+<span><span class="co">##  [9] "imaps"  "ldap"   "ldaps"  "pop3"   "pop3s"  "rtmp"   "rtsp"   "scp"   </span></span>
+<span><span class="co">## [17] "sftp"   "smb"    "smbs"   "smtp"   "smtps"  "telnet" "tftp"  </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $ipv6</span></span>
+<span><span class="co">## [1] TRUE</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $http2</span></span>
+<span><span class="co">## [1] TRUE</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $idn</span></span>
+<span><span class="co">## [1] TRUE</span></span></code></pre>
 <p>The steps involved in configuring and obtaining an OAuth2.0 access token can be summarized as follows:</p>
 <ul>
 <li><ol style="list-style-type: decimal">
@@ -179,10 +174,10 @@
 </ol></li>
 </ul>
 </div>
-<div id="step-1---creating-a-new-api-project" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-1---creating-a-new-api-project" class="anchor"></a>Step 1 - Creating a new API project</h2>
-<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="uri">https://console.developers.google.com/apis/</a>. Assuming that you don’t have any pre-existent project, you should see this page:</p>
+<div class="section level2">
+<h2 id="step-1---creating-a-new-api-project">Step 1 - Creating a new API project<a class="anchor" aria-label="anchor" href="#step-1---creating-a-new-api-project"></a>
+</h2>
+<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="external-link uri">https://console.developers.google.com/apis/</a>. Assuming that you don’t have any pre-existent project, you should see this page:</p>
 <!-- ![](man/figures/aol3.png) -->
 <p><img src="figures/xoauth/step1_1.png" width="700"></p>
 <p>Then, click on “Create New Project”</p>
@@ -190,9 +185,9 @@
 <p><img src="figures/xoauth/step1_1x.png" style="width:60.0%"></p>
 <p>After a few seconds, the project is created.</p>
 </div>
-<div id="step-2---creating-new-credentials" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-2---creating-new-credentials" class="anchor"></a>Step 2 - Creating new credentials</h2>
+<div class="section level2">
+<h2 id="step-2---creating-new-credentials">Step 2 - Creating new credentials<a class="anchor" aria-label="anchor" href="#step-2---creating-new-credentials"></a>
+</h2>
 <p>Once the project is created, we move to the credentials part.</p>
 <p>Click on “CREDENTIALS” in the menu on the left:</p>
 <p><img src="figures/xoauth/step2_1x.png" width="250"></p>
@@ -209,34 +204,34 @@
 <p><img src="figures/xoauth/step2_x2.png" style="width:60.0%"></p>
 <p>Scroll down the page and click “CREATE”.</p>
 </div>
-<div id="step-3---saving-the-credentials" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-3---saving-the-credentials" class="anchor"></a>Step 3 - Saving the credentials</h2>
+<div class="section level2">
+<h2 id="step-3---saving-the-credentials">Step 3 - Saving the credentials<a class="anchor" aria-label="anchor" href="#step-3---saving-the-credentials"></a>
+</h2>
 <p>On the following page, you have your key and client information.</p>
 <p><img src="figures/xoauth/step2_x3x.png" width="680"></p>
 <p>Copy the information above to an R script:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="va">secret</span> <span class="op">=</span> <span class="st">"vsV[...]6m7"</span>
-
-<span class="va">key</span> <span class="op">=</span> <span class="st">"85169[...]9pk.apps.googleusercontent.com"</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">secret</span> <span class="op">=</span> <span class="st">"vsV[...]6m7"</span></span>
+<span></span>
+<span><span class="va">key</span> <span class="op">=</span> <span class="st">"85169[...]9pk.apps.googleusercontent.com"</span></span></code></pre></div>
 <p>In this same script, we use the <code>httr</code> package to configure and obtain our token.</p>
 </div>
-<div id="step-4---using-the-httr-package-to-retrieve-the-token" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-4---using-the-httr-package-to-retrieve-the-token" class="anchor"></a>Step 4 - Using the <code>httr</code> package to retrieve the token</h2>
+<div class="section level2">
+<h2 id="step-4---using-the-httr-package-to-retrieve-the-token">Step 4 - Using the <code>httr</code> package to retrieve the token<a class="anchor" aria-label="anchor" href="#step-4---using-the-httr-package-to-retrieve-the-token"></a>
+</h2>
 <p>Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The <code>httr</code> package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with <code>httr</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="va">endpoint</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span>
-
-<span class="va">gmail_app</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_app.html">oauth_app</a></span><span class="op">(</span>
-  <span class="st">"xpto-allan"</span>,
-  key <span class="op">=</span> <span class="va">key</span>,
-  secret <span class="op">=</span> <span class="va">secret</span>
-<span class="op">)</span>
-
-<span class="va">scope</span> <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span>
-
-<span class="va">auth_code</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html">oauth2.0_token</a></span><span class="op">(</span><span class="va">endpoint</span>, app <span class="op">=</span> <span class="va">gmail_app</span>, scope <span class="op">=</span> <span class="va">scope</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">endpoint</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html" class="external-link">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">gmail_app</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_app.html" class="external-link">oauth_app</a></span><span class="op">(</span></span>
+<span>  <span class="st">"xpto-allan"</span>,</span>
+<span>  key <span class="op">=</span> <span class="va">key</span>,</span>
+<span>  secret <span class="op">=</span> <span class="va">secret</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">scope</span> <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
+<span></span>
+<span><span class="va">auth_code</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">oauth2.0_token</a></span><span class="op">(</span><span class="va">endpoint</span>, app <span class="op">=</span> <span class="va">gmail_app</span>, scope <span class="op">=</span> <span class="va">scope</span><span class="op">)</span></span></code></pre></div>
 <p>As it is the first time you are trying to access your account using the OAuth2.0 token, you’ll be prompted about caching your credentials on a local file.</p>
 <p><img src="figures/xoauth/step2_x4.png" width="550"></p>
 <p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
@@ -246,57 +241,57 @@
 </div>
 <p>Finally, you should see a new white tab with the message: <em>“Authentication complete. Please close this page and return to R”</em>.</p>
 </div>
-<div id="step-5---testing-the-imap-connection" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-5---testing-the-imap-connection" class="anchor"></a>Step 5 - Testing the IMAP connection</h2>
+<div class="section level2">
+<h2 id="step-5---testing-the-imap-connection">Step 5 - Testing the IMAP connection<a class="anchor" aria-label="anchor" href="#step-5---testing-the-imap-connection"></a>
+</h2>
 <p>Now we can test our IMAP connection with <code>mRpostman</code>, using the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
 <p>First, we put our access token into a different object. This is not mandatory. You can pass the <code>auth_code$access_token</code> directly to the <code>xoauth2_bearer</code> argument. Your token should be a large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute the line <code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>Finally, we configure an IMAP connection and test it:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span>
-<span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://imap.gmail.com"</span>,
-                      username <span class="op">=</span> <span class="st">"user@gmail.com"</span>,
-                      use_ssl <span class="op">=</span> <span class="cn">TRUE</span>,
-                      verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-                      xoauth2_bearer <span class="op">=</span> <span class="va">token</span>
-                      <span class="op">)</span>
-
-<span class="va">con</span><span class="op">$</span><span class="fu">list_server_capabilities</span><span class="op">(</span><span class="op">)</span></pre></div>
-<pre><code>##  [1] "IMAP4rev1"            "UNSELECT"             "IDLE"                
-##  [4] "NAMESPACE"            "QUOTA"                "ID"                  
-##  [7] "XLIST"                "CHILDREN"             "X-GM-EXT-1"          
-## [10] "UIDPLUS"              "COMPRESS=DEFLATE"     "ENABLE"              
-## [13] "MOVE"                 "CONDSTORE"            "ESEARCH"             
-## [16] "UTF8=ACCEPT"          "LIST-EXTENDED"        "LIST-STATUS"         
-## [19] "LITERAL-"             "SPECIAL-USE"          "APPENDLIMIT=35651584"</code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/" class="external-link">mRpostman</a></span><span class="op">)</span></span>
+<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://imap.gmail.com"</span>,</span>
+<span>                      username <span class="op">=</span> <span class="st">"user@gmail.com"</span>,</span>
+<span>                      use_ssl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                      verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                      xoauth2_bearer <span class="op">=</span> <span class="va">token</span></span>
+<span>                      <span class="op">)</span></span>
+<span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">list_server_capabilities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  [1] "IMAP4rev1"            "UNSELECT"             "IDLE"                </span></span>
+<span><span class="co">##  [4] "NAMESPACE"            "QUOTA"                "ID"                  </span></span>
+<span><span class="co">##  [7] "XLIST"                "CHILDREN"             "X-GM-EXT-1"          </span></span>
+<span><span class="co">## [10] "UIDPLUS"              "COMPRESS=DEFLATE"     "ENABLE"              </span></span>
+<span><span class="co">## [13] "MOVE"                 "CONDSTORE"            "ESEARCH"             </span></span>
+<span><span class="co">## [16] "UTF8=ACCEPT"          "LIST-EXTENDED"        "LIST-STATUS"         </span></span>
+<span><span class="co">## [19] "LITERAL-"             "SPECIAL-USE"          "APPENDLIMIT=35651584"</span></span></code></pre>
 <p>If you got some kind of “SASL …” error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the <a href="#intro">Introduction</a>. Therefore, it still has the Oauth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you’ll have to dig on the internet how to solve it.</p>
 </div>
-<div id="step-6---refreshing-the-token" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-6---refreshing-the-token" class="anchor"></a>Step 6 - Refreshing the token</h2>
+<div class="section level2">
+<h2 id="step-6---refreshing-the-token">Step 6 - Refreshing the token<a class="anchor" aria-label="anchor" href="#step-6---refreshing-the-token"></a>
+</h2>
 <p>For future sessions (or after a considerable span of time) you’ll need to refresh the previous token. You can use the following function below to achieve that:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span>
-<span class="va">oauth2.0_refresh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">endpoint</span>, <span class="va">app</span>, <span class="va">auth_code</span>, <span class="va">type</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/POST.html">POST</a></span><span class="op">(</span>
-    url <span class="op">=</span> <span class="va">endpoint</span><span class="op">$</span><span class="va">access</span>,
-    multipart <span class="op">=</span> <span class="cn">FALSE</span>,
-    body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-      client_id <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">key</span>,
-      client_secret <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">secret</span>,
-      grant_type <span class="op">=</span> <span class="st">"refresh_token"</span>,
-      refresh_token <span class="op">=</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">refresh_token</span>
-    <span class="op">)</span>
-  <span class="op">)</span>
-  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/content.html">content</a></span><span class="op">(</span><span class="va">req</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span>
-  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">content_out</span>, <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="va">auth_code_new</span> <span class="op">&lt;-</span> <span class="fu">oauth2.0_refresh</span><span class="op">(</span><span class="va">endpoint</span>, app<span class="op">=</span><span class="va">gmail_app</span>, auth_code<span class="op">=</span><span class="va">auth_code</span><span class="op">)</span>
-
-<span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code_new</span><span class="op">$</span><span class="va">access_token</span></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span></span>
+<span><span class="va">oauth2.0_refresh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">endpoint</span>, <span class="va">app</span>, <span class="va">auth_code</span>, <span class="va">type</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></span><span class="op">(</span></span>
+<span>    url <span class="op">=</span> <span class="va">endpoint</span><span class="op">$</span><span class="va">access</span>,</span>
+<span>    multipart <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>    body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>      client_id <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">key</span>,</span>
+<span>      client_secret <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">secret</span>,</span>
+<span>      grant_type <span class="op">=</span> <span class="st">"refresh_token"</span>,</span>
+<span>      refresh_token <span class="op">=</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">refresh_token</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span>  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/content.html" class="external-link">content</a></span><span class="op">(</span><span class="va">req</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span></span>
+<span>  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">content_out</span>, <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">auth_code_new</span> <span class="op">&lt;-</span> <span class="fu">oauth2.0_refresh</span><span class="op">(</span><span class="va">endpoint</span>, app<span class="op">=</span><span class="va">gmail_app</span>, auth_code<span class="op">=</span><span class="va">auth_code</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code_new</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>Substitute it into the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
 </div>
   </div>
@@ -312,11 +307,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Allan Quadros.</p>
+  <p></p>
+<p>Developed by Allan Quadros.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -324,6 +321,8 @@
 
   
 
+
+  
 
   </body>
 </html>

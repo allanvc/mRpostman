@@ -673,13 +673,13 @@ con$fetch_attachments(msg = res)
 \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
-  Header Field, RFC 2183, August 1997, https://tools.ietf.org/html/rfc2183.
+  Header Field, RFC 2183, August 1997, https://www.rfc-editor.org/rfc/rfc2183.
 
 \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
   Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-  https://tools.ietf.org/html/rfc2183.
+  https://www.rfc-editor.org/rfc/rfc2183.
 }
 \seealso{
 Other custom search: 
