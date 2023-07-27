@@ -2,19 +2,17 @@
 output: github_document
 ---
 
-<!-- This document must be rendered in RStudio using the option "knitr with parameters" or rmarkdown::render("MyDocument.Rmd", params = list(password = "my_password"))-->
-
-<!-- README.md is generated from README.Rmd. Please edit .Rmd file -->
-
-```{r, echo = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-"
+  fig.path = "man/figures/README-",
+  out.width = "100%"
 )
+options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
-# mRpostman <img src="man/figures/logo.png" align="right" width="70" />
+# mRpostman <img src="man/figures/logo.png" align="right" width="138" />
 
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->

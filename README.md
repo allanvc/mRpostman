@@ -1,8 +1,5 @@
 
-<!-- This document must be rendered in RStudio using the option "knitr with parameters" or rmarkdown::render("MyDocument.Rmd", params = list(password = "my_password"))-->
-<!-- README.md is generated from README.Rmd. Please edit .Rmd file -->
-
-# mRpostman <img src="man/figures/logo.png" align="right" width="140" />
+# mRpostman <img src="man/figures/logo.png" align="right" width="138" />
 
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
