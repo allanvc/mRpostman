@@ -1,7 +1,8 @@
 
-# mRpostman
+<!-- # mRpostman -->
 
-<!-- # mRpostman <img src="man/figures/logo.png" align="right" width="138" /> -->
+# mRpostman <img src="man/figures/logo.png" align="right" width="138" />
+
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
