@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="mRpostman">
 <title>IMAP OAuth2.0 authentication in mRpostman • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="IMAP OAuth2.0 authentication in mRpostman">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="IMAP OAuth2.0 authentication in mRpostman">
 <meta property="og:description" content="mRpostman">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -25,78 +25,66 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/basics.html">mRpostman basics</a>
-    </li>
-    <li>
-      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
-    </li>
-    <li>
-      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/allanvc/mRpostman/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/basics.html">mRpostman basics</a>
+    <a class="dropdown-item" href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
+    <a class="dropdown-item" href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/allanvc/mRpostman/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>IMAP OAuth2.0 authentication in mRpostman</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>IMAP OAuth2.0 authentication in mRpostman</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/vignettes/xoauth2.0.Rmd" class="external-link"><code>vignettes/xoauth2.0.Rmd</code></a></small>
-      <div class="hidden name"><code>xoauth2.0.Rmd</code></div>
-
+      <div class="d-none name"><code>xoauth2.0.Rmd</code></div>
     </div>
 
     
@@ -116,9 +104,22 @@
 <div class="section level2">
 <h2 id="intro">Introduction<a class="anchor" aria-label="anchor" href="#intro"></a>
 </h2>
-<p>More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.</p>
-<p>In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
-<p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl’s version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:</p>
+<p>More and more mail providers are adopting the OAuth2.0 authentication
+as for their preferred method. Although there may be some pain involved
+in the process of configuring and obtaining an access token, it is a
+more secure way of authenticating your identity during an IMAP
+session.</p>
+<p>In this vignette, we will describe the process of obtaining, using,
+and refreshing an OAuth2.0 token to establish a connection with the
+Gmail IMAP server. This process will be very likely the same when trying
+to replicate it in other mail providers, such as AOL, Yahoo, Outlook
+Office 365, and many others.</p>
+<p><strong>IMPORTANT</strong>: Currently, the only drawback with this
+approach may be your libcurl’s version. The libcurl functionality
+responsible for transmitting the token was not working properly in old
+libcurl versions. If you have version 7.65.0 (released on May 22, 2019)
+or above installed, you should be fine. Therefore, we recommend checking
+to which libcurl version, the curl R package is linked by executing:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/curl_options.html" class="external-link">curl_version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## $version</span></span>
@@ -152,7 +153,8 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## $idn</span></span>
 <span><span class="co">## [1] TRUE</span></span></code></pre>
-<p>The steps involved in configuring and obtaining an OAuth2.0 access token can be summarized as follows:</p>
+<p>The steps involved in configuring and obtaining an OAuth2.0 access
+token can be summarized as follows:</p>
 <ul>
 <li><ol style="list-style-type: decimal">
 <li>creating a new API project in the Google Account Console</li>
@@ -177,11 +179,14 @@
 <div class="section level2">
 <h2 id="step-1---creating-a-new-api-project">Step 1 - Creating a new API project<a class="anchor" aria-label="anchor" href="#step-1---creating-a-new-api-project"></a>
 </h2>
-<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="external-link uri">https://console.developers.google.com/apis/</a>. Assuming that you don’t have any pre-existent project, you should see this page:</p>
+<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="external-link uri">https://console.developers.google.com/apis/</a>. Assuming
+that you don’t have any pre-existent project, you should see this
+page:</p>
 <!-- ![](man/figures/aol3.png) -->
 <p><img src="figures/xoauth/step1_1.png" width="700"></p>
 <p>Then, click on “Create New Project”</p>
-<p>On the next screen, type a name for your project. Here, we go with “xpto-allan”:</p>
+<p>On the next screen, type a name for your project. Here, we go with
+“xpto-allan”:</p>
 <p><img src="figures/xoauth/step1_1x.png" style="width:60.0%"></p>
 <p>After a few seconds, the project is created.</p>
 </div>
@@ -194,13 +199,15 @@
 <p><br></p>
 <p>You should see the following screen:</p>
 <p><img src="figures/xoauth/step2_2x.png" width="750"></p>
-<p><br> On the top menu, click on “+ CREATE CREDENTIALS”, then on “OAuth client ID”.</p>
+<p><br> On the top menu, click on “+ CREATE CREDENTIALS”, then on “OAuth
+client ID”.</p>
 <p><img src="figures/xoauth/step2_3.png" width="550"></p>
 <p><br></p>
 <p>You should see the following screen. Select “Web Application”.</p>
 <p><img src="figures/xoauth/step2_x1.png" width="550"></p>
 <p><br></p>
-<p>In the following screen, fill in the name of the OAuth2.0 client. You chose “mRpostman”, but you can choose the name of your preference.</p>
+<p>In the following screen, fill in the name of the OAuth2.0 client. You
+chose “mRpostman”, but you can choose the name of your preference.</p>
 <p><img src="figures/xoauth/step2_x2.png" style="width:60.0%"></p>
 <p>Scroll down the page and click “CREATE”.</p>
 </div>
@@ -214,12 +221,17 @@
 <code class="sourceCode R"><span><span class="va">secret</span> <span class="op">=</span> <span class="st">"vsV[...]6m7"</span></span>
 <span></span>
 <span><span class="va">key</span> <span class="op">=</span> <span class="st">"85169[...]9pk.apps.googleusercontent.com"</span></span></code></pre></div>
-<p>In this same script, we use the <code>httr</code> package to configure and obtain our token.</p>
+<p>In this same script, we use the <code>httr</code> package to
+configure and obtain our token.</p>
 </div>
 <div class="section level2">
-<h2 id="step-4---using-the-httr-package-to-retrieve-the-token">Step 4 - Using the <code>httr</code> package to retrieve the token<a class="anchor" aria-label="anchor" href="#step-4---using-the-httr-package-to-retrieve-the-token"></a>
+<h2 id="step-4---using-the-httr-package-to-retrieve-the-token">Step 4 - Using the <code>httr</code> package to retrieve the
+token<a class="anchor" aria-label="anchor" href="#step-4---using-the-httr-package-to-retrieve-the-token"></a>
 </h2>
-<p>Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The <code>httr</code> package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with <code>httr</code>.</p>
+<p>Now, we need an endpoint, an app configuration, and a scope, which is
+circumscribed to Gmail. The <code>httr</code> package has some pre-set
+endpoints for Google, Yahoo, and other APIs. So, it is very
+straightforward to define one with <code>httr</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">endpoint</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html" class="external-link">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span></span>
 <span></span>
@@ -232,20 +244,32 @@
 <span><span class="va">scope</span> <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
 <span></span>
 <span><span class="va">auth_code</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">oauth2.0_token</a></span><span class="op">(</span><span class="va">endpoint</span>, app <span class="op">=</span> <span class="va">gmail_app</span>, scope <span class="op">=</span> <span class="va">scope</span><span class="op">)</span></span></code></pre></div>
-<p>As it is the first time you are trying to access your account using the OAuth2.0 token, you’ll be prompted about caching your credentials on a local file.</p>
+<p>As it is the first time you are trying to access your account using
+the OAuth2.0 token, you’ll be prompted about caching your credentials on
+a local file.</p>
 <p><img src="figures/xoauth/step2_x4.png" width="550"></p>
-<p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
+<p>After, you will be redirected to a webpage, where you are going to
+make some confirmations about your identity:</p>
 <div class="col2">
 <p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br><br></p>
 <p><img src="figures/xoauth/step2_x6.png" style="width:80.0%"></p>
 </div>
-<p>Finally, you should see a new white tab with the message: <em>“Authentication complete. Please close this page and return to R”</em>.</p>
+<p>Finally, you should see a new white tab with the message:
+<em>“Authentication complete. Please close this page and return to
+R”</em>.</p>
 </div>
 <div class="section level2">
 <h2 id="step-5---testing-the-imap-connection">Step 5 - Testing the IMAP connection<a class="anchor" aria-label="anchor" href="#step-5---testing-the-imap-connection"></a>
 </h2>
-<p>Now we can test our IMAP connection with <code>mRpostman</code>, using the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
-<p>First, we put our access token into a different object. This is not mandatory. You can pass the <code>auth_code$access_token</code> directly to the <code>xoauth2_bearer</code> argument. Your token should be a large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute the line <code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
+<p>Now we can test our IMAP connection with <code>mRpostman</code>,
+using the <code>xoauth2_bearer</code> argument in
+<code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
+<p>First, we put our access token into a different object. This is not
+mandatory. You can pass the <code>auth_code$access_token</code> directly
+to the <code>xoauth2_bearer</code> argument. Your token should be a
+large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute
+the line
+<code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>Finally, we configure an IMAP connection and test it:</p>
@@ -266,12 +290,20 @@
 <span><span class="co">## [13] "MOVE"                 "CONDSTORE"            "ESEARCH"             </span></span>
 <span><span class="co">## [16] "UTF8=ACCEPT"          "LIST-EXTENDED"        "LIST-STATUS"         </span></span>
 <span><span class="co">## [19] "LITERAL-"             "SPECIAL-USE"          "APPENDLIMIT=35651584"</span></span></code></pre>
-<p>If you got some kind of “SASL …” error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the <a href="#intro">Introduction</a>. Therefore, it still has the Oauth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you’ll have to dig on the internet how to solve it.</p>
+<p>If you got some kind of “SASL …” error in the information flow
+between the server and mRpostman, your libcurl version may be older than
+the 7.65 we mentioned in the <a href="#intro">Introduction</a>.
+Therefore, it still has the Oauth2.0 bearer bug. If this is the case you
+should update it. Or, perhaps your libcurl version is updated, but your
+curl R package is pointing to an older version of libcurl in your disk.
+In this case, you’ll have to dig on the internet how to solve it.</p>
 </div>
 <div class="section level2">
 <h2 id="step-6---refreshing-the-token">Step 6 - Refreshing the token<a class="anchor" aria-label="anchor" href="#step-6---refreshing-the-token"></a>
 </h2>
-<p>For future sessions (or after a considerable span of time) you’ll need to refresh the previous token. You can use the following function below to achieve that:</p>
+<p>For future sessions (or after a considerable span of time) you’ll
+need to refresh the previous token. You can use the following function
+below to achieve that:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span></span>
 <span><span class="va">oauth2.0_refresh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">endpoint</span>, <span class="va">app</span>, <span class="va">auth_code</span>, <span class="va">type</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
@@ -292,35 +324,29 @@
 <span><span class="va">auth_code_new</span> <span class="op">&lt;-</span> <span class="fu">oauth2.0_refresh</span><span class="op">(</span><span class="va">endpoint</span>, app<span class="op">=</span><span class="va">gmail_app</span>, auth_code<span class="op">=</span><span class="va">auth_code</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code_new</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
-<p>Substitute it into the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
+<p>Substitute it into the <code>xoauth2_bearer</code> argument in
+<code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Allan Quadros.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 

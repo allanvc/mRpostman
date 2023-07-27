@@ -4,7 +4,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="An easy-to-use IMAP client that provides tools for message searching,
+    selective fetching of message attributes, mailbox management, attachment extraction, 
+    and several other IMAP features, paving the way for e-mail data analysis in R.">
 <title>An IMAP Client for R • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,12 +15,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
 <meta property="og:description" content="An easy-to-use IMAP client that provides tools for message searching,
     selective fetching of message attributes, mailbox management, attachment extraction, 
     and several other IMAP features, paving the way for e-mail data analysis in R.">
@@ -27,75 +29,68 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">mRpostman</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/basics.html">mRpostman basics</a>
-    </li>
-    <li>
-      <a href="articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
-    </li>
-    <li>
-      <a href="articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/allanvc/mRpostman/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/basics.html">mRpostman basics</a>
+    <a class="dropdown-item" href="articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
+    <a class="dropdown-item" href="articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/allanvc/mRpostman/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="mrpostman-">mRpostman <a class="anchor" aria-label="anchor" href="#mrpostman-"></a>
+</h1>
+</div>
+<!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
+<!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
+<!-- one space after links to display badges side by side -->
+<!-- [![Travis-CI Build Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://travis-ci.org/allanvc/mRpostman)  -->
+<!-- badges: start -->
 
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="mrpostman-">mRpostman <img src="reference/figures/logo.png" align="right" width="140"><a class="anchor" aria-label="anchor" href="#mrpostman-"></a>
-</h1></div>
-<!-- # mRpostman <img src="man/figures/logo.png" align="right" /> --><!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) --><!-- one space after links to display badges side by side -->
+<p><a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://www.r-pkg.org/badges/version/mRpostman" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/mRpostman" alt="Downloads from the RStudio CRAN mirror"></a> <a href="https://opensource.org/licenses/GPL-3.0" class="external-link"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a> <!-- badges: end --></p>
 <p>An IMAP Client for R</p>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -140,7 +135,9 @@
 <li><p>Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="external-link uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p></li>
 </ol>
 <p><img src="reference/figures/gmail1.png"><!-- <img src="man/figures/gmail1.png"> --></p>
-<ol start="3" style="list-style-type: decimal"><li>Set “Allow less secure apps” to <strong>ON</strong>.</li></ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Set “Allow less secure apps” to <strong>ON</strong>.</li>
+</ol>
 </div>
 <div class="section level4">
 <h4 id="yahoo-mail">Yahoo Mail<a class="anchor" aria-label="anchor" href="#yahoo-mail"></a>
@@ -150,10 +147,14 @@
 <li><p>Click on “Account Info”.</p></li>
 </ol>
 <p><img src="reference/figures/yahoo1.png"><!-- <img src="man/figures/yahoo1.png"> --></p>
-<ol start="3" style="list-style-type: decimal"><li>Click on “Account Security” on the left menu.</li></ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Click on “Account Security” on the left menu.</li>
+</ol>
 <p><img src="reference/figures/yahoo2.png"><!-- <img src="man/figures/yahoo2.png"> --></p>
-<ol start="4" style="list-style-type: decimal"><li>Then, set “Allow apps that use less secure sign in” <strong>ON</strong>
-</li></ol>
+<ol start="4" style="list-style-type: decimal">
+<li>Then, set “Allow apps that use less secure sign in” <strong>ON</strong>
+</li>
+</ol>
 <p><img src="reference/figures/yahoo3.png"></p>
 <!-- <img src="man/figures/yahoo3.png"> -->
 </div>
@@ -165,10 +166,14 @@
 <li><p>Click on “Options” and then on “Account Info”.</p></li>
 </ol>
 <p><img src="reference/figures/aol1.png"><!-- <img src="man/figures/aol1.png"> --></p>
-<ol start="3" style="list-style-type: decimal"><li>Click on “Account Security” on the left menu.</li></ol>
+<ol start="3" style="list-style-type: decimal">
+<li>Click on “Account Security” on the left menu.</li>
+</ol>
 <p><img src="reference/figures/aol2.png"><!-- <img src="man/figures/aol2.png"> --></p>
-<ol start="4" style="list-style-type: decimal"><li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
-</li></ol>
+<ol start="4" style="list-style-type: decimal">
+<li>After, set “Allow apps that use less secure sign in” <strong>ON</strong>
+</li>
+</ol>
 <p><img src="reference/figures/aol3.png"><!-- <img src="man/figures/aol3.png"> --></p>
 </div>
 </div>
@@ -188,7 +193,8 @@
 <li>
 <strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
-<strong>the custom-search method and its helper functions</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>;<ul>
+<strong>the custom-search method and its helper functions</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>;
+<ul>
 <li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>, <code><a href="reference/OR.html">OR()</a></code>;</li>
 <li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>;</li>
 </ul>
@@ -216,15 +222,16 @@
 <h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
 </h2>
 <div class="section level3">
-<h3 id="1-configure-an-imap-connection-and-list-the-servers-capabilities">1) Configure an IMAP connection and list the server’s capabilities<a class="anchor" aria-label="anchor" href="#1-configure-an-imap-connection-and-list-the-servers-capabilities"></a>
+<h3 id="id_1-configure-an-imap-connection-and-list-the-servers-capabilities">1) Configure an IMAP connection and list the server’s capabilities<a class="anchor" aria-label="anchor" href="#id_1-configure-an-imap-connection-and-list-the-servers-capabilities"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/" class="external-link">mRpostman</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/" class="external-link">mRpostman</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Outlook - Office 365</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
 <span>                      username<span class="op">=</span><span class="st">"your_user@company.com"</span>,</span>
-<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstudioapi/man/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># other IMAP providers that were tested: Hotmail ("imaps://imap-mail.outlook.com"),</span></span>
@@ -236,29 +243,32 @@
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_server_capabilities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="2-list-mail-folders-and-select-inbox">2) List mail folders and select “INBOX”<a class="anchor" aria-label="anchor" href="#2-list-mail-folders-and-select-inbox"></a>
+<h3 id="id_2-list-mail-folders-and-select-inbox">2) List mail folders and select “INBOX”<a class="anchor" aria-label="anchor" href="#id_2-list-mail-folders-and-select-inbox"></a>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Listing</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Listing</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_mail_folders</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Selecting</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="3-search-messages-by-date">3) Search messages by date<a class="anchor" aria-label="anchor" href="#3-search-messages-by-date"></a>
+<h3 id="id_3-search-messages-by-date">3) Search messages by date<a class="anchor" aria-label="anchor" href="#id_3-search-messages-by-date"></a>
 </h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res1</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="4-customizing-a-search-with-multiple-criteria">4) Customizing a search with multiple criteria<a class="anchor" aria-label="anchor" href="#4-customizing-a-search-with-multiple-criteria"></a>
+<h3 id="id_4-customizing-a-search-with-multiple-criteria">4) Customizing a search with multiple criteria<a class="anchor" aria-label="anchor" href="#id_4-customizing-a-search-with-multiple-criteria"></a>
 </h3>
 <p>Executing a search by string:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field</span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="fu"><a href="reference/OR.html">OR</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"TO"</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@ksu.edu"</span>, where <span class="op">=</span> <span class="st">"TO"</span><span class="op">)</span></span>
@@ -267,39 +277,52 @@
 <span><span class="va">res2</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="5-fetch-messages-text-using-single-search-results">5) Fetch messages’ text using single-search results<a class="anchor" aria-label="anchor" href="#5-fetch-messages-text-using-single-search-results"></a>
+<h3 id="id_5-fetch-messages-text-using-single-search-results">5) Fetch messages’ text using single-search results<a class="anchor" aria-label="anchor" href="#id_5-fetch-messages-text-using-single-search-results"></a>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"Welcome!"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"Welcome!"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># also writes results to disk</span></span>
 <span></span>
 <span><span class="va">res3</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="6-attachments">6) Attachments<a class="anchor" aria-label="anchor" href="#6-attachments"></a>
+<h3 id="id_6-attachments">6) Attachments<a class="anchor" aria-label="anchor" href="#id_6-attachments"></a>
 </h3>
 <p>You can list the attachments of one or more messages with:</p>
-<ol style="list-style-type: decimal"><li>the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</li></ol>
+<ol style="list-style-type: decimal">
+<li>the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</li>
+</ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
 <span>  <span class="fu"><a href="reference/list_attachments.html">list_attachments</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># does not depend on the 'con' object</span></span></code></pre></div>
 <p>… or more directly with:</p>
-<ol start="2" style="list-style-type: decimal"><li><code>fetch_attachments_list()</code></li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li><code>fetch_attachments_list()</code></li>
+</ol>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If you want to download the attachments of one or more messages, there are also two ways of doing that.</p>
-<ol style="list-style-type: decimal"><li>Using the <code>get_attachments()</code> method:</li></ol>
+<ol style="list-style-type: decimal">
+<li>Using the <code>get_attachments()</code> method:</li>
+</ol>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>… and more directly with the</p>
-<ol start="2" style="list-style-type: decimal"><li>
-<code>fetch_attachments()</code> method:</li></ol>
+<ol start="2" style="list-style-type: decimal">
+<li>
+<code>fetch_attachments()</code> method:</li>
+</ol>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<code class="sourceCode R"><span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -336,10 +359,7 @@
 <p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.se/libcurl/" class="external-link uri">https://curl.se/libcurl/</a></p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=mRpostman" class="external-link">View on CRAN</a></li>
@@ -373,32 +393,28 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/allanvc/mRpostman" class="external-link"><img src="https://travis-ci.org/allanvc/mRpostman.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://www.r-pkg.org/badges/version/mRpostman" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/mRpostman" alt="Downloads from the RStudio CRAN mirror"></a></li>
-<li><a href="https://opensource.org/licenses/GPL-3.0" class="external-link"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a></li>
+<li><a href="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Allan Quadros.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 
