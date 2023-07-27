@@ -4,7 +4,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="mRpostman">
 <title>Migrating old code to the new mRpostman's syntax • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
@@ -12,12 +13,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Migrating old code to the new mRpostman's syntax">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Migrating old code to the new mRpostman's syntax">
 <meta property="og:description" content="mRpostman">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -25,78 +25,66 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.0</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/basics.html">mRpostman basics</a>
-    </li>
-    <li>
-      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
-    </li>
-    <li>
-      <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
-    </li>
-  </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/allanvc/mRpostman/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul>
-</div>
-<!--/.nav-collapse -->
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="../articles/basics.html">mRpostman basics</a>
+    <a class="dropdown-item" href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
+    <a class="dropdown-item" href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
   </div>
-<!--/.container -->
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
+      </ul>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/allanvc/mRpostman/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
-<!--/.navbar -->
 
-      
+    
+  </div>
+</nav><div class="container template-article">
 
-      </header><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Migrating old code to the new mRpostman’s syntax</h1>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+      <img src="../logo.png" class="logo" alt=""><h1>Migrating old code to the new mRpostman's syntax</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/vignettes/code_migration.Rmd" class="external-link"><code>vignettes/code_migration.Rmd</code></a></small>
-      <div class="hidden name"><code>code_migration.Rmd</code></div>
-
+      <div class="d-none name"><code>code_migration.Rmd</code></div>
     </div>
 
     
@@ -116,16 +104,41 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This vignette aims to provide an easy source of code migration examples so old <code>mRpostman</code> users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.</p>
-<p>This is the summary of the main modifications in the package between versions <code>0.3.1</code> and <code>0.9.X</code>:</p>
+<p>This vignette aims to provide an easy source of code migration
+examples so old <code>mRpostman</code> users can transition between the
+old version and the new format which implements an OO approach trough
+the use of R6 class and methods.</p>
+<p>This is the summary of the main modifications in the package between
+versions <code>0.3.1</code> and <code>0.9.X</code>:</p>
 <ul>
-<li><p>All main functions, except <code>list_attachments</code> and the custom-search helper functions, now are methods of the R6 class <code>ImapConf</code>;</p></li>
-<li><p>The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and modified with custom requests from the methods that trigger IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use <code>config_handle()</code> anymore, and a call to <code>curl::set_opt()</code> is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.</p></li>
-<li><p>The “by” argument used in search and fetch functions was replaced by <code>use_uid</code>, which is a logical now with the default value set as <code>FALSE</code>. This is equivalent to the former <code>by = MSN</code> default configuration.</p></li>
-<li><p>all functions that returned <code>invisible(0L)</code> now return <code>invisible(TRUE)</code></p></li>
-<li><p>Users that prefer a tidy approach, only need to apply the pipe <code>%&gt;%</code> operator between search and fetch methods (or other complementary operations), in which messages’ ids are carried from one level to another. The exposition pipe <code>%$%</code> is not necessary anymore.</p></li>
+<li><p>All main functions, except <code>list_attachments</code> and the
+custom-search helper functions, now are methods of the R6 class
+<code>ImapConf</code>;</p></li>
+<li><p>The way the connection token is passed through functions (now
+methods) has changed. The connection handle is created inside
+<code><a href="../reference/configure_imap.html">configure_imap()</a></code> (or <code>ImapCon$new()</code>) and
+modified with custom requests from the methods that trigger IMAP
+commands. As a consequence, the password is now hidden inside the curl
+handle C pointer, resulting in a more secure token chain. This resulted
+in changes in every request function. These functions (that are methods
+now) do not use <code>config_handle()</code> anymore, and a call to
+<code>curl::set_opt()</code> is made in every request function so that a
+custom request is supplied or replaced by a new one in the original
+handle.</p></li>
+<li><p>The “by” argument used in search and fetch functions was replaced
+by <code>use_uid</code>, which is a logical now with the default value
+set as <code>FALSE</code>. This is equivalent to the former
+<code>by = MSN</code> default configuration.</p></li>
+<li><p>all functions that returned <code>invisible(0L)</code> now return
+<code>invisible(TRUE)</code></p></li>
+<li><p>Users that prefer a tidy approach, only need to apply the pipe
+<code>%&gt;%</code> operator between search and fetch methods (or other
+complementary operations), in which messages’ ids are carried from one
+level to another. The exposition pipe <code>%$%</code> is not necessary
+anymore.</p></li>
 </ul>
-<p>In the following sections, we present some code migration examples between the old and the new version of <code>mRpostman</code>.</p>
+<p>In the following sections, we present some code migration examples
+between the old and the new version of <code>mRpostman</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="configuring-the-imap-connection">1) Configuring the IMAP connection<a class="anchor" aria-label="anchor" href="#configuring-the-imap-connection"></a>
@@ -138,7 +151,7 @@
 <span><span class="co"># Outlook - Office 365</span></span>
 <span><span class="va">imapconf</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
 <span>                           username<span class="op">=</span><span class="st">"your_user@company.com"</span>,</span>
-<span>                           password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstudioapi/man/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>                           password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># other mail providers that were tested: Gmail (imaps://imap.gmail.com), </span></span>
 <span><span class="co">#   Hotmail ("imaps://imap-mail.outlook.com"), Yahoo (imaps://imap.mail.yahoo.com/), </span></span>
@@ -151,15 +164,26 @@
 <span><span class="co"># Outlook - Office 365</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
 <span>                      username<span class="op">=</span><span class="st">"your_user@company.com"</span>,</span>
-<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstudioapi/man/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># alternative</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="va"><a href="../reference/ImapCon.html">ImapCon</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
 <span>                   username<span class="op">=</span><span class="st">"your_user@company.com"</span>,</span>
-<span>                   password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rstudioapi/man/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                   password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Although the object that is created is different (now we have an R6 <code>ImapCon</code> class), the code to create a connection object is pretty much the same, but with an alternative that uses the “initialize” method of the R6 class.</p>
-<p>Other useful options are <code>timeout_ms</code>, <code>verbose = TRUE</code>, and <code>buffersize</code>. Further ‘curl’ options related to IMAP functionalities can be passed to <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, depending on the libcurl version installed on the user’s machine. See <code><a href="https://rdrr.io/pkg/curl/man/curl_options.html" class="external-link">curl::curl_options()</a></code>. In this new version, there is an important curl parameter exposed, <code>xoauth2_bearer</code>, which enables OAuth2.0 authentication. For more details, check the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html" class="external-link"><em>“IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p>
+<p>Although the object that is created is different (now we have an R6
+<code>ImapCon</code> class), the code to create a connection object is
+pretty much the same, but with an alternative that uses the “initialize”
+method of the R6 class.</p>
+<p>Other useful options are <code>timeout_ms</code>,
+<code>verbose = TRUE</code>, and <code>buffersize</code>. Further ‘curl’
+options related to IMAP functionalities can be passed to
+<code><a href="../reference/configure_imap.html">configure_imap()</a></code>, depending on the libcurl version
+installed on the user’s machine. See <code><a href="https://rdrr.io/pkg/curl/man/curl_options.html" class="external-link">curl::curl_options()</a></code>.
+In this new version, there is an important curl parameter exposed,
+<code>xoauth2_bearer</code>, which enables OAuth2.0 authentication. For
+more details, check the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html" class="external-link"><em>“IMAP
+OAuth2.0 authentication in mRpostman”</em></a> vignette.</p>
 </div>
 <div class="section level2">
 <h2 id="listing-server-capabilities">2) Listing Server Capabilities<a class="anchor" aria-label="anchor" href="#listing-server-capabilities"></a>
@@ -220,7 +244,8 @@
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">examine_folder</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>In the new format, the previously selected folder is kept during the session unless you execute a new selection.</p>
+<p>In the new format, the previously selected folder is kept during the
+session unless you execute a new selection.</p>
 </div>
 <div class="section level3">
 <h3 id="renaming-a-mail-folder">3.4) Renaming a mail folder<a class="anchor" aria-label="anchor" href="#renaming-a-mail-folder"></a>
@@ -267,7 +292,8 @@
 <span></span>
 <span><span class="va">result</span></span></code></pre></div>
 </div>
-<p>You can also <strong>NEGATE</strong> the statement to search for messages <strong>NOT BEFORE a date</strong>:</p>
+<p>You can also <strong>NEGATE</strong> the statement to search for
+messages <strong>NOT BEFORE a date</strong>:</p>
 <div class="col2">
 <p>Previous code:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -292,7 +318,9 @@
 <span><span class="va">result</span></span></code></pre></div>
 </div>
 <p>This pattern is applied to all SEARCH functions.</p>
-<p>Special attention should be paid to the <code>search_string</code> and <code>search_flag</code> methods due to changes in the names and order of the arguments.</p>
+<p>Special attention should be paid to the <code>search_string</code>
+and <code>search_flag</code> methods due to changes in the names and
+order of the arguments.</p>
 <div class="section level4">
 <h4 id="search-by-string---example-1">Search by string - example 1<a class="anchor" aria-label="anchor" href="#search-by-string---example-1"></a>
 </h4>
@@ -353,7 +381,9 @@
 <span></span>
 <span><span class="va">result</span></span></code></pre></div>
 </div>
-<p>Now you can check which flags are available in a mail folder with the <code>list_flags()</code> method. Also, you can pass multiple flags as the search criterion.</p>
+<p>Now you can check which flags are available in a mail folder with the
+<code>list_flags()</code> method. Also, you can pass multiple flags as
+the search criterion.</p>
 </div>
 </div>
 <div class="section level2">
@@ -465,7 +495,8 @@
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"10-May-2019"</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co">#regular pipe</span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>use_uid <span class="op">=</span> <span class="cn">TRUE</span>, attribute <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>You can check the available metadata attributes with <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
+<p>You can check the available metadata attributes with
+<code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
 </div>
 </div>
 <div class="section level2">
@@ -491,8 +522,13 @@
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># or fetch_text()</span></span>
 <span>  <span class="fu"><a href="../reference/list_attachments.html">list_attachments</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>Note that <code>list_attachment()</code> is an independent function. It is not a method of the <code>ImapCon</code> class that depends on the connection object.</p>
-<p>The new version brings an alternative fetch method (<code>fetch_atachments_list()</code>) for listing attachments without the need of previously executing a <code>fetch_body</code> or <code>fetch_text</code> operation:</p>
+<p>Note that <code>list_attachment()</code> is an independent function.
+It is not a method of the <code>ImapCon</code> class that depends on the
+connection object.</p>
+<p>The new version brings an alternative fetch method
+(<code>fetch_atachments_list()</code>) for listing attachments without
+the need of previously executing a <code>fetch_body</code> or
+<code>fetch_text</code> operation:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
@@ -519,7 +555,10 @@
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># or fetch_text()</span></span>
 <span>  <span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<p>The new version brings an alternative fetch method (<code>fetch_atachments()</code>) for downloading attachments without the need of previously executing a <code>fetch_body</code> or <code>fetch_text</code> operation:</p>
+<p>The new version brings an alternative fetch method
+(<code>fetch_atachments()</code>) for downloading attachments without
+the need of previously executing a <code>fetch_body</code> or
+<code>fetch_text</code> operation:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
@@ -567,7 +606,8 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="search-the-minimum-message-id-with-specific-flags-depends-on-esearch-capability">8.3) Search the minimum message ID with specific flag(s) (depends on ESEARCH capability)<a class="anchor" aria-label="anchor" href="#search-the-minimum-message-id-with-specific-flags-depends-on-esearch-capability"></a>
+<h3 id="search-the-minimum-message-id-with-specific-flags-depends-on-esearch-capability">8.3) Search the minimum message ID with specific flag(s) (depends on
+ESEARCH capability)<a class="anchor" aria-label="anchor" href="#search-the-minimum-message-id-with-specific-flags-depends-on-esearch-capability"></a>
 </h3>
 <div class="col2">
 <p>Previous code:</p>
@@ -583,7 +623,8 @@
 </div>
 </div>
 <div class="section level3">
-<h3 id="search-the-maximum-message-id-with-specific-flags-depends-on-esearch-capability">8.4) Search the maximum message ID with specific flag(s) (depends on ESEARCH capability)<a class="anchor" aria-label="anchor" href="#search-the-maximum-message-id-with-specific-flags-depends-on-esearch-capability"></a>
+<h3 id="search-the-maximum-message-id-with-specific-flags-depends-on-esearch-capability">8.4) Search the maximum message ID with specific flag(s) (depends on
+ESEARCH capability)<a class="anchor" aria-label="anchor" href="#search-the-maximum-message-id-with-specific-flags-depends-on-esearch-capability"></a>
 </h3>
 <div class="col2">
 <p>Previous code:</p>
@@ -695,33 +736,26 @@
 </div>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  <aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Allan Quadros.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer></main>
 </div>
 
   
-
 
   
 

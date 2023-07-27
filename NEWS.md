@@ -1,3 +1,11 @@
+## mRpostman 1.1.1 (2023-07-27 Github patch)
+
+### Documentation
+
+- changed unit test to Github Actions CI/CD
+
+---
+
 ## mRpostman 1.1.0 (2022-10-25 CRAN fix bump)
 
 ### Documentation

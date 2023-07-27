@@ -8,3 +8,5 @@
 ^NEWS\.md$
 ^\.travis\.yml$
 ^\.httr-oauth$
+^\.github$
+^codecov\.yml$

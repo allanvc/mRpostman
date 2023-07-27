@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: An IMAP Client for R
-Version: 1.1.0
-Date: 2022-10-25
+Version: 1.1.1
+Date: 2023-07-27
 Authors@R: c(
     person(given="Allan", family="Quadros",
     role = c("aut", "cre"),
@@ -29,4 +29,4 @@ BugReports: https://github.com/allanvc/mRpostman/issues/
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3

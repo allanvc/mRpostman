@@ -712,60 +712,60 @@ Other attachments:
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
-\item \href{#method-new}{\code{ImapCon$new()}}
-\item \href{#method-reset_url}{\code{ImapCon$reset_url()}}
-\item \href{#method-reset_username}{\code{ImapCon$reset_username()}}
-\item \href{#method-reset_use_ssl}{\code{ImapCon$reset_use_ssl()}}
-\item \href{#method-reset_verbose}{\code{ImapCon$reset_verbose()}}
-\item \href{#method-reset_buffersize}{\code{ImapCon$reset_buffersize()}}
-\item \href{#method-reset_timeout_ms}{\code{ImapCon$reset_timeout_ms()}}
-\item \href{#method-reset_password}{\code{ImapCon$reset_password()}}
-\item \href{#method-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
-\item \href{#method-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
-\item \href{#method-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
-\item \href{#method-select_folder}{\code{ImapCon$select_folder()}}
-\item \href{#method-examine_folder}{\code{ImapCon$examine_folder()}}
-\item \href{#method-create_folder}{\code{ImapCon$create_folder()}}
-\item \href{#method-rename_folder}{\code{ImapCon$rename_folder()}}
-\item \href{#method-list_flags}{\code{ImapCon$list_flags()}}
-\item \href{#method-search}{\code{ImapCon$search()}}
-\item \href{#method-search_larger_than}{\code{ImapCon$search_larger_than()}}
-\item \href{#method-search_smaller_than}{\code{ImapCon$search_smaller_than()}}
-\item \href{#method-search_before}{\code{ImapCon$search_before()}}
-\item \href{#method-search_since}{\code{ImapCon$search_since()}}
-\item \href{#method-search_on}{\code{ImapCon$search_on()}}
-\item \href{#method-search_period}{\code{ImapCon$search_period()}}
-\item \href{#method-search_sent_before}{\code{ImapCon$search_sent_before()}}
-\item \href{#method-search_sent_since}{\code{ImapCon$search_sent_since()}}
-\item \href{#method-search_sent_on}{\code{ImapCon$search_sent_on()}}
-\item \href{#method-search_sent_period}{\code{ImapCon$search_sent_period()}}
-\item \href{#method-search_flag}{\code{ImapCon$search_flag()}}
-\item \href{#method-search_older_than}{\code{ImapCon$search_older_than()}}
-\item \href{#method-search_younger_than}{\code{ImapCon$search_younger_than()}}
-\item \href{#method-search_string}{\code{ImapCon$search_string()}}
-\item \href{#method-fetch_body}{\code{ImapCon$fetch_body()}}
-\item \href{#method-fetch_header}{\code{ImapCon$fetch_header()}}
-\item \href{#method-fetch_metadata}{\code{ImapCon$fetch_metadata()}}
-\item \href{#method-fetch_text}{\code{ImapCon$fetch_text()}}
-\item \href{#method-copy_msg}{\code{ImapCon$copy_msg()}}
-\item \href{#method-move_msg}{\code{ImapCon$move_msg()}}
-\item \href{#method-esearch_count}{\code{ImapCon$esearch_count()}}
-\item \href{#method-delete_msg}{\code{ImapCon$delete_msg()}}
-\item \href{#method-expunge}{\code{ImapCon$expunge()}}
-\item \href{#method-esearch_min_id}{\code{ImapCon$esearch_min_id()}}
-\item \href{#method-esearch_max_id}{\code{ImapCon$esearch_max_id()}}
-\item \href{#method-add_flags}{\code{ImapCon$add_flags()}}
-\item \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}
-\item \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}
-\item \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}
-\item \href{#method-fetch_attachments_list}{\code{ImapCon$fetch_attachments_list()}}
-\item \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}
-\item \href{#method-clone}{\code{ImapCon$clone()}}
+\item \href{#method-ImapCon-new}{\code{ImapCon$new()}}
+\item \href{#method-ImapCon-reset_url}{\code{ImapCon$reset_url()}}
+\item \href{#method-ImapCon-reset_username}{\code{ImapCon$reset_username()}}
+\item \href{#method-ImapCon-reset_use_ssl}{\code{ImapCon$reset_use_ssl()}}
+\item \href{#method-ImapCon-reset_verbose}{\code{ImapCon$reset_verbose()}}
+\item \href{#method-ImapCon-reset_buffersize}{\code{ImapCon$reset_buffersize()}}
+\item \href{#method-ImapCon-reset_timeout_ms}{\code{ImapCon$reset_timeout_ms()}}
+\item \href{#method-ImapCon-reset_password}{\code{ImapCon$reset_password()}}
+\item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
+\item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
+\item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
+\item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
+\item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
+\item \href{#method-ImapCon-create_folder}{\code{ImapCon$create_folder()}}
+\item \href{#method-ImapCon-rename_folder}{\code{ImapCon$rename_folder()}}
+\item \href{#method-ImapCon-list_flags}{\code{ImapCon$list_flags()}}
+\item \href{#method-ImapCon-search}{\code{ImapCon$search()}}
+\item \href{#method-ImapCon-search_larger_than}{\code{ImapCon$search_larger_than()}}
+\item \href{#method-ImapCon-search_smaller_than}{\code{ImapCon$search_smaller_than()}}
+\item \href{#method-ImapCon-search_before}{\code{ImapCon$search_before()}}
+\item \href{#method-ImapCon-search_since}{\code{ImapCon$search_since()}}
+\item \href{#method-ImapCon-search_on}{\code{ImapCon$search_on()}}
+\item \href{#method-ImapCon-search_period}{\code{ImapCon$search_period()}}
+\item \href{#method-ImapCon-search_sent_before}{\code{ImapCon$search_sent_before()}}
+\item \href{#method-ImapCon-search_sent_since}{\code{ImapCon$search_sent_since()}}
+\item \href{#method-ImapCon-search_sent_on}{\code{ImapCon$search_sent_on()}}
+\item \href{#method-ImapCon-search_sent_period}{\code{ImapCon$search_sent_period()}}
+\item \href{#method-ImapCon-search_flag}{\code{ImapCon$search_flag()}}
+\item \href{#method-ImapCon-search_older_than}{\code{ImapCon$search_older_than()}}
+\item \href{#method-ImapCon-search_younger_than}{\code{ImapCon$search_younger_than()}}
+\item \href{#method-ImapCon-search_string}{\code{ImapCon$search_string()}}
+\item \href{#method-ImapCon-fetch_body}{\code{ImapCon$fetch_body()}}
+\item \href{#method-ImapCon-fetch_header}{\code{ImapCon$fetch_header()}}
+\item \href{#method-ImapCon-fetch_metadata}{\code{ImapCon$fetch_metadata()}}
+\item \href{#method-ImapCon-fetch_text}{\code{ImapCon$fetch_text()}}
+\item \href{#method-ImapCon-copy_msg}{\code{ImapCon$copy_msg()}}
+\item \href{#method-ImapCon-move_msg}{\code{ImapCon$move_msg()}}
+\item \href{#method-ImapCon-esearch_count}{\code{ImapCon$esearch_count()}}
+\item \href{#method-ImapCon-delete_msg}{\code{ImapCon$delete_msg()}}
+\item \href{#method-ImapCon-expunge}{\code{ImapCon$expunge()}}
+\item \href{#method-ImapCon-esearch_min_id}{\code{ImapCon$esearch_min_id()}}
+\item \href{#method-ImapCon-esearch_max_id}{\code{ImapCon$esearch_max_id()}}
+\item \href{#method-ImapCon-add_flags}{\code{ImapCon$add_flags()}}
+\item \href{#method-ImapCon-replace_flags}{\code{ImapCon$replace_flags()}}
+\item \href{#method-ImapCon-remove_flags}{\code{ImapCon$remove_flags()}}
+\item \href{#method-ImapCon-get_attachments}{\code{ImapCon$get_attachments()}}
+\item \href{#method-ImapCon-fetch_attachments_list}{\code{ImapCon$fetch_attachments_list()}}
+\item \href{#method-ImapCon-fetch_attachments}{\code{ImapCon$fetch_attachments()}}
+\item \href{#method-ImapCon-clone}{\code{ImapCon$clone()}}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-new"></a>}}
-\if{latex}{\out{\hypertarget{method-new}{}}}
+\if{html}{\out{<a id="method-ImapCon-new"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-new}{}}}
 \subsection{Method \code{new()}}{
 Configure and create a new IMAP connection.
 \subsection{Usage}{
@@ -819,8 +819,8 @@ A new `ImapCon` object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_url"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_url}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_url"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_url}{}}}
 \subsection{Method \code{reset_url()}}{
 Reset the previously informed url
 \subsection{Usage}{
@@ -836,8 +836,8 @@ Reset the previously informed url
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_username"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_username}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_username"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_username}{}}}
 \subsection{Method \code{reset_username()}}{
 Reset the previously informed username
 \subsection{Usage}{
@@ -853,8 +853,8 @@ Reset the previously informed username
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_use_ssl"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_use_ssl}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_use_ssl"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_use_ssl}{}}}
 \subsection{Method \code{reset_use_ssl()}}{
 Reset the previously informed use_ssl parameter
 \subsection{Usage}{
@@ -871,8 +871,8 @@ encryption when connecting to the IMAP server. Default is \code{TRUE}.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_verbose"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_verbose}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_verbose"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_verbose}{}}}
 \subsection{Method \code{reset_verbose()}}{
 Reset the previously informed verbose parameter
 \subsection{Usage}{
@@ -889,8 +889,8 @@ server and the client.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_buffersize"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_buffersize}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_buffersize"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_buffersize}{}}}
 \subsection{Method \code{reset_buffersize()}}{
 Reset the previously informed buffersize parameter
 \subsection{Usage}{
@@ -910,8 +910,8 @@ as a request, not an order.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_timeout_ms"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_timeout_ms}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_timeout_ms"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_timeout_ms}{}}}
 \subsection{Method \code{reset_timeout_ms()}}{
 Reset the previously informed buffersize parameter
 \subsection{Usage}{
@@ -929,8 +929,8 @@ set.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_password"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_password}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_password"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_password}{}}}
 \subsection{Method \code{reset_password()}}{
 Reset the previously informed password
 \subsection{Usage}{
@@ -946,8 +946,8 @@ Reset the previously informed password
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-reset_xoauth2_bearer"></a>}}
-\if{latex}{\out{\hypertarget{method-reset_xoauth2_bearer}{}}}
+\if{html}{\out{<a id="method-ImapCon-reset_xoauth2_bearer"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-reset_xoauth2_bearer}{}}}
 \subsection{Method \code{reset_xoauth2_bearer()}}{
 Reset the previously informed oauth2 bearer token
 \subsection{Usage}{
@@ -963,8 +963,8 @@ Reset the previously informed oauth2 bearer token
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_server_capabilities"></a>}}
-\if{latex}{\out{\hypertarget{method-list_server_capabilities}{}}}
+\if{html}{\out{<a id="method-ImapCon-list_server_capabilities"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-list_server_capabilities}{}}}
 \subsection{Method \code{list_server_capabilities()}}{
 List the server's IMAP capabilities.
 \subsection{Usage}{
@@ -995,8 +995,8 @@ cap
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_mail_folders"></a>}}
-\if{latex}{\out{\hypertarget{method-list_mail_folders}{}}}
+\if{html}{\out{<a id="method-ImapCon-list_mail_folders"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-list_mail_folders}{}}}
 \subsection{Method \code{list_mail_folders()}}{
 List mail folders in a mailbox.
 \subsection{Usage}{
@@ -1028,8 +1028,8 @@ folders
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-select_folder"></a>}}
-\if{latex}{\out{\hypertarget{method-select_folder}{}}}
+\if{html}{\out{<a id="method-ImapCon-select_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-select_folder}{}}}
 \subsection{Method \code{select_folder()}}{
 Select a mail folder.
 \subsection{Usage}{
@@ -1066,8 +1066,8 @@ con$select_mail_folder(name = "INBOX")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-examine_folder"></a>}}
-\if{latex}{\out{\hypertarget{method-examine_folder}{}}}
+\if{html}{\out{<a id="method-ImapCon-examine_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-examine_folder}{}}}
 \subsection{Method \code{examine_folder()}}{
 Examine the number of messages in a mail folder.
 \subsection{Usage}{
@@ -1106,8 +1106,8 @@ con$examine_folder("Sent")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-create_folder"></a>}}
-\if{latex}{\out{\hypertarget{method-create_folder}{}}}
+\if{html}{\out{<a id="method-ImapCon-create_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-create_folder}{}}}
 \subsection{Method \code{create_folder()}}{
 Create a new mail folder.
 \subsection{Usage}{
@@ -1143,8 +1143,8 @@ con$create_folder(name = "New Folder Name")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-rename_folder"></a>}}
-\if{latex}{\out{\hypertarget{method-rename_folder}{}}}
+\if{html}{\out{<a id="method-ImapCon-rename_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-rename_folder}{}}}
 \subsection{Method \code{rename_folder()}}{
 Rename a mail folder.
 \subsection{Usage}{
@@ -1196,8 +1196,8 @@ con$rename_folder(name = "Folder A", new_name = "Folder B")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-list_flags"></a>}}
-\if{latex}{\out{\hypertarget{method-list_flags}{}}}
+\if{html}{\out{<a id="method-ImapCon-list_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-list_flags}{}}}
 \subsection{Method \code{list_flags()}}{
 List flags in a selected mail folder
 \subsection{Usage}{
@@ -1228,8 +1228,8 @@ con$list_flags()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search"></a>}}
-\if{latex}{\out{\hypertarget{method-search}{}}}
+\if{html}{\out{<a id="method-ImapCon-search"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search}{}}}
 \subsection{Method \code{search()}}{
 Execute a custom search
 \subsection{Usage}{
@@ -1305,8 +1305,8 @@ con$search(AND(smaller_than(size = "512000"),
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_larger_than"></a>}}
-\if{latex}{\out{\hypertarget{method-search_larger_than}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_larger_than"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_larger_than}{}}}
 \subsection{Method \code{search_larger_than()}}{
 Search by size (LARGER)
 \subsection{Usage}{
@@ -1372,8 +1372,8 @@ con$search_larger_than(size = 512000))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_smaller_than"></a>}}
-\if{latex}{\out{\hypertarget{method-search_smaller_than}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_smaller_than"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_smaller_than}{}}}
 \subsection{Method \code{search_smaller_than()}}{
 Search by size (SMALLER)
 \subsection{Usage}{
@@ -1440,8 +1440,8 @@ con$search_smaller_than(size = 512000))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_before"></a>}}
-\if{latex}{\out{\hypertarget{method-search_before}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_before"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_before}{}}}
 \subsection{Method \code{search_before()}}{
 Search by internal date (BEFORE)
 \subsection{Usage}{
@@ -1510,8 +1510,8 @@ con$search_before(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_since"></a>}}
-\if{latex}{\out{\hypertarget{method-search_since}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_since"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_since}{}}}
 \subsection{Method \code{search_since()}}{
 Search by internal date (SINCE)
 \subsection{Usage}{
@@ -1582,8 +1582,8 @@ con$search_since(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_on"></a>}}
-\if{latex}{\out{\hypertarget{method-search_on}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_on"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_on}{}}}
 \subsection{Method \code{search_on()}}{
 Search by internal date (ON)
 \subsection{Usage}{
@@ -1652,8 +1652,8 @@ con$search_on(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_period"></a>}}
-\if{latex}{\out{\hypertarget{method-search_period}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_period"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_period}{}}}
 \subsection{Method \code{search_period()}}{
 Search by internal date (Period)
 \subsection{Usage}{
@@ -1729,8 +1729,8 @@ con$search_period(since_date_char = "02-Jan-2020",
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_sent_before"></a>}}
-\if{latex}{\out{\hypertarget{method-search_sent_before}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_sent_before"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_sent_before}{}}}
 \subsection{Method \code{search_sent_before()}}{
 Search by origination date  (RFC 2822 Header - SENT BEFORE)
 \subsection{Usage}{
@@ -1798,8 +1798,8 @@ con$search_sent_before(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_sent_since"></a>}}
-\if{latex}{\out{\hypertarget{method-search_sent_since}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_sent_since"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_sent_since}{}}}
 \subsection{Method \code{search_sent_since()}}{
 Search by origination date (RFC 2822 Header - SENT SINCE)
 \subsection{Usage}{
@@ -1867,8 +1867,8 @@ con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_sent_on"></a>}}
-\if{latex}{\out{\hypertarget{method-search_sent_on}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_sent_on"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_sent_on}{}}}
 \subsection{Method \code{search_sent_on()}}{
 Search by origination date (RFC 2822 Header - SENT ON)
 \subsection{Usage}{
@@ -1937,8 +1937,8 @@ con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_sent_period"></a>}}
-\if{latex}{\out{\hypertarget{method-search_sent_period}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_sent_period"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_sent_period}{}}}
 \subsection{Method \code{search_sent_period()}}{
 Search by origination date (RFC 2822 Header - SENT Period)
 \subsection{Usage}{
@@ -2014,8 +2014,8 @@ con$search_sent_period(since_date_char = "02-Jan-2020",
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_flag"></a>}}
-\if{latex}{\out{\hypertarget{method-search_flag}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_flag"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_flag}{}}}
 \subsection{Method \code{search_flag()}}{
 Search by flag(s)
 \subsection{Usage}{
@@ -2079,8 +2079,8 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_older_than"></a>}}
-\if{latex}{\out{\hypertarget{method-search_older_than}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_older_than"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_older_than}{}}}
 \subsection{Method \code{search_older_than()}}{
 Search WITHIN a specific time (OLDER)
 \subsection{Usage}{
@@ -2147,8 +2147,8 @@ con$search_older_than(seconds = 3600, negate = TRUE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_younger_than"></a>}}
-\if{latex}{\out{\hypertarget{method-search_younger_than}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_younger_than"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_younger_than}{}}}
 \subsection{Method \code{search_younger_than()}}{
 Search WITHIN a specific time (YOUNGER)
 \subsection{Usage}{
@@ -2215,8 +2215,8 @@ con$search_younger_than(seconds = 3600)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-search_string"></a>}}
-\if{latex}{\out{\hypertarget{method-search_string}{}}}
+\if{html}{\out{<a id="method-ImapCon-search_string"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-search_string}{}}}
 \subsection{Method \code{search_string()}}{
 Search by string or expression
 \subsection{Usage}{
@@ -2287,8 +2287,8 @@ con$search_string(expr = "@k-state.edu", where = "FROM")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_body"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_body}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_body"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_body}{}}}
 \subsection{Method \code{fetch_body()}}{
 Fetch message body (message's full content)
 \subsection{Usage}{
@@ -2371,8 +2371,8 @@ con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_header"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_header}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_header"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_header}{}}}
 \subsection{Method \code{fetch_header()}}{
 Fetch message header
 \subsection{Usage}{
@@ -2459,8 +2459,8 @@ out <- con$fetch_header()
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_metadata"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_metadata}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_metadata}{}}}
 \subsection{Method \code{fetch_metadata()}}{
 Fetch message metadata
 \subsection{Usage}{
@@ -2540,8 +2540,8 @@ out <- con$fetch_metadata(msg = res)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_text"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_text}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_text"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_text}{}}}
 \subsection{Method \code{fetch_text()}}{
 Fetch message text
 \subsection{Usage}{
@@ -2629,8 +2629,8 @@ con$fetch_text(msg = res,
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-copy_msg"></a>}}
-\if{latex}{\out{\hypertarget{method-copy_msg}{}}}
+\if{html}{\out{<a id="method-ImapCon-copy_msg"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-copy_msg}{}}}
 \subsection{Method \code{copy_msg()}}{
 Copy message(s) between the selected folder and another one
 \subsection{Usage}{
@@ -2695,8 +2695,8 @@ con$copy(msg = res, to_folder = "Sent")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-move_msg"></a>}}
-\if{latex}{\out{\hypertarget{method-move_msg}{}}}
+\if{html}{\out{<a id="method-ImapCon-move_msg"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-move_msg}{}}}
 \subsection{Method \code{move_msg()}}{
 Move message(s) between the selected folder and another one
 \subsection{Usage}{
@@ -2761,8 +2761,8 @@ con$move(msg = res, to_folder = "Sent")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-esearch_count"></a>}}
-\if{latex}{\out{\hypertarget{method-esearch_count}{}}}
+\if{html}{\out{<a id="method-ImapCon-esearch_count"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esearch_count}{}}}
 \subsection{Method \code{esearch_count()}}{
 Count the number of messages with a specific flag(s) in a
   folder (depend on ESEARCH capability)
@@ -2809,8 +2809,8 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-delete_msg"></a>}}
-\if{latex}{\out{\hypertarget{method-delete_msg}{}}}
+\if{html}{\out{<a id="method-ImapCon-delete_msg"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-delete_msg}{}}}
 \subsection{Method \code{delete_msg()}}{
 Delete message(s) in the selected mail folder
 \subsection{Usage}{
@@ -2855,8 +2855,8 @@ con$delete_msg(flag = c("Flagged", "Answered"))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-expunge"></a>}}
-\if{latex}{\out{\hypertarget{method-expunge}{}}}
+\if{html}{\out{<a id="method-ImapCon-expunge"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-expunge}{}}}
 \subsection{Method \code{expunge()}}{
 Permanently removes all or specific messages marked as deleted from the selected folder
 \subsection{Usage}{
@@ -2894,8 +2894,8 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-esearch_min_id"></a>}}
-\if{latex}{\out{\hypertarget{method-esearch_min_id}{}}}
+\if{html}{\out{<a id="method-ImapCon-esearch_min_id"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esearch_min_id}{}}}
 \subsection{Method \code{esearch_min_id()}}{
 Search the minimum message id in the selected mail folder
   (depend on ESEARCH capability)
@@ -2942,8 +2942,8 @@ con$esearch_min_id(flag = "Answered")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-esearch_max_id"></a>}}
-\if{latex}{\out{\hypertarget{method-esearch_max_id}{}}}
+\if{html}{\out{<a id="method-ImapCon-esearch_max_id"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esearch_max_id}{}}}
 \subsection{Method \code{esearch_max_id()}}{
 Search the maximum message id in the selected mail folder
   (depend on ESEARCH capability)
@@ -2990,8 +2990,8 @@ con$esearch_max_id(flag = "Seen")
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-add_flags"></a>}}
-\if{latex}{\out{\hypertarget{method-add_flags}{}}}
+\if{html}{\out{<a id="method-ImapCon-add_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-add_flags}{}}}
 \subsection{Method \code{add_flags()}}{
 Add flags to one or more messages
 \subsection{Usage}{
@@ -3048,8 +3048,8 @@ con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-replace_flags"></a>}}
-\if{latex}{\out{\hypertarget{method-replace_flags}{}}}
+\if{html}{\out{<a id="method-ImapCon-replace_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-replace_flags}{}}}
 \subsection{Method \code{replace_flags()}}{
 Replace the current flags of one or more messages
 \subsection{Usage}{
@@ -3107,8 +3107,8 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-remove_flags"></a>}}
-\if{latex}{\out{\hypertarget{method-remove_flags}{}}}
+\if{html}{\out{<a id="method-ImapCon-remove_flags"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-remove_flags}{}}}
 \subsection{Method \code{remove_flags()}}{
 Remove flag(s) of one or more messages
 \subsection{Usage}{
@@ -3165,8 +3165,8 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-get_attachments"></a>}}
-\if{latex}{\out{\hypertarget{method-get_attachments}{}}}
+\if{html}{\out{<a id="method-ImapCon-get_attachments"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-get_attachments}{}}}
 \subsection{Method \code{get_attachments()}}{
 Extract attached file(s) from fetched message(s)
 \subsection{Usage}{
@@ -3223,8 +3223,8 @@ con$get_attachments(msg_list = out)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_attachments_list"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_attachments_list}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_attachments_list"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_attachments_list}{}}}
 \subsection{Method \code{fetch_attachments_list()}}{
 Fetch attachments' list
 \subsection{Usage}{
@@ -3274,8 +3274,8 @@ out
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-fetch_attachments"></a>}}
-\if{latex}{\out{\hypertarget{method-fetch_attachments}{}}}
+\if{html}{\out{<a id="method-ImapCon-fetch_attachments"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_attachments}{}}}
 \subsection{Method \code{fetch_attachments()}}{
 Fetch message attachments
 \subsection{Usage}{
@@ -3343,8 +3343,8 @@ con$fetch_attachments(msg = res)
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-clone"></a>}}
-\if{latex}{\out{\hypertarget{method-clone}{}}}
+\if{html}{\out{<a id="method-ImapCon-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{
