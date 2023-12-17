@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -139,7 +139,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>An IMAP Connection Class</h1>
-    <small class="dont-index">Source: <a href='https://github.com/allanvc/mRpostman/blob/HEAD/R/R6.R'><code>R/R6.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/allanvc/mRpostman/blob/master/R/R6.R'><code>R/R6.R</code></a></small>
     <div class="hidden name"><code>ImapCon.Rd</code></div>
     </div>
 
@@ -2282,7 +2282,8 @@ con$search_since(date_char = "20-Aug-2020") %&gt;%
 <span>  <span class='va'>msg_list</span>,</span>
 <span>  content_disposition <span class='op'>=</span> <span class='st'>"both"</span>,</span>
 <span>  override <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
-<span>  mute <span class='op'>=</span> <span class='cn'>FALSE</span></span>
+<span>  mute <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span></span>
 <span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2301,6 +2302,9 @@ command is successfully executed. Default is <code>FALSE</code>.</p></dd>
 
 <dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
 when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>as_is</code></dt><dd><p>If <code>TRUE</code> then write out attachments without base64
+decoding. Default is <code>FALSE</code>.</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
@@ -2369,7 +2373,8 @@ out
 <span>  content_disposition <span class='op'>=</span> <span class='st'>"both"</span>,</span>
 <span>  override <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
 <span>  mute <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
-<span>  retries <span class='op'>=</span> <span class='fl'>1</span></span>
+<span>  retries <span class='op'>=</span> <span class='fl'>1</span>,</span>
+<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span></span>
 <span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2398,6 +2403,9 @@ when the command is successfully executed. Default is <code>FALSE</code>.</p></d
 
 <dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command. Default
 is <code>1</code>.</p></dd>
+
+<dt><code>as_is</code></dt><dd><p>If <code>TRUE</code> then write out attachments without base64
+decoding. Default is <code>FALSE</code>.</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>

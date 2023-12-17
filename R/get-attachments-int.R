@@ -10,9 +10,11 @@
 #'   containing the same name in the local directory. Default is \code{FALSE}.
 #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
 #'   when the command is successfully executed. Default is \code{FALSE}.
+#' @param as_is If \code{TRUE} then write out attachments without base64
+#'   decoding. Default is \code{FALSE}.
 #' @noRd
 get_attachments_int <- function(self, msg_list, content_disposition, override,
-                                mute) {
+                                mute, as_is) {
 
   # previous folder selection checking
   if (is.na(self$con_params$folder)) {
@@ -190,31 +192,42 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
           # complete_path_with_filename <- serialize_filename(
           #   prefix = paste0(complete_path, "/", filenames[i]))
 
-          # saving attachments
-          # thank's to:
-          # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
-          # writing binary file
-          temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
-          conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
-          writeBin(attachments_text[i], conn)
-          close(conn)
-          # decoding from BIN to the appropriate file extension
-          inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
-          outconn <- file(complete_path_with_filename,"wb")
+          # bypass proposed by @waternumbers at https://github.com/allanvc/mRpostman/pull/8
+          # It was originally proposed to fecth_attachments(), but ...
+          # I incorporated it  in get_attachments() as well
+          if (as_is) {
+            ## write out the file directly to the final file name
+            writeBin(attachments_text[i], complete_path_with_filename)
+          } else {
+            # saving attachments
+            # thank's to:
+            # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
+            # writing binary file
+            temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
+            conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
+            writeBin(attachments_text[i], conn)
+            close(conn)
+            # decoding from BIN to the appropriate file extension
+            inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
+            outconn <- file(complete_path_with_filename,"wb")
 
-          # base64 text decoding
-          tryCatch({
-            base64enc::base64decode(what=inconn, output=outconn)
-          }, error = function(e) {
-            warning(paste0("Base64 text decoding failed for", adjusted_filenames[i]))
-          })
+            # base64 text decoding
+            tryCatch({
+              base64enc::base64decode(what=inconn, output=outconn)
+            }, error = function(e) {
+              warning(paste0("Base64 text decoding failed for", adjusted_filenames[i]))
+            })
 
-          close(inconn)
-          close(outconn)
+            close(inconn)
+            close(outconn)
 
-          unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
-          # From unlink() help: Not deleting a non-existent file is not a failure
-          # we don't need a tryCatch()
+            unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
+            # From unlink() help: Not deleting a non-existent file is not a failure
+            # we don't need a tryCatch()
+
+
+          }
+
 
         }
 

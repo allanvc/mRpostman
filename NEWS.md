@@ -1,3 +1,13 @@
+## mRpostman 1.1.2 (2023-12-17 CRAN update)
+
+### Methods & Functions
+
+- `clean_fetch_results()`: added argument `useBytes = TRUE` to all `gsub()` calls. According to Kurt Hornik, "fetching fails using current versions of R for some contents with non-ASCII characters".
+
+- Added bypass argument `as_is` to methods/functions `get_attachments()`, `execute_fetch_attachments()`, `fetch_attachments()`; and `as_is` functionality to `get_attachments()` and `execute_fetch_attachments` as proposed by Pauls Smith to handle non-base64 files.
+
+---
+
 ## mRpostman 1.1.1 (2023-07-27 Github patch)
 
 ### Documentation

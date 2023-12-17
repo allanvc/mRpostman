@@ -3174,7 +3174,8 @@ Extract attached file(s) from fetched message(s)
   msg_list,
   content_disposition = "both",
   override = FALSE,
-  mute = FALSE
+  mute = FALSE,
+  as_is = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -3195,6 +3196,9 @@ command is successfully executed. Default is \code{FALSE}.}
 
 \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
+
+\item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
+decoding. Default is \code{FALSE}.}
 }
 \if{html}{\out{</div>}}
 }
@@ -3285,7 +3289,8 @@ Fetch message attachments
   content_disposition = "both",
   override = FALSE,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  as_is = FALSE
 )}\if{html}{\out{</div>}}
 }
 
@@ -3316,6 +3321,9 @@ when the command is successfully executed. Default is \code{FALSE}.}
 
 \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
+
+\item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
+decoding. Default is \code{FALSE}.}
 }
 \if{html}{\out{</div>}}
 }
