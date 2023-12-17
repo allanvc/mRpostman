@@ -1681,6 +1681,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   command is successfully executed. Default is \code{FALSE}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param as_is If \code{TRUE} then write out attachments without base64
+    #'   decoding. Default is \code{FALSE}.
     #' @note \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
     #'   This method is to be used after the body or the
     #'   text part of one or more messages were fetched. This makes sense if the
@@ -1730,9 +1732,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$get_attachments(msg_list = out)
     #' }
     get_attachments = function(msg_list, content_disposition = "both",
-                               override = FALSE, mute = FALSE) {
+                               override = FALSE, mute = FALSE, as_is = FALSE) {
       out <- get_attachments_int(self, msg_list, content_disposition, override,
-                                 mute)
+                                 mute, as_is)
 
       invisible(out)
 
@@ -1797,6 +1799,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command. Default
     #'   is \code{1}.
+    #' @param as_is If \code{TRUE} then write out attachments without base64
+    #'   decoding. Default is \code{FALSE}.
     #' @note \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}: All
     #'   attachments will be stored in a folder labeled with the message id
     #'   inside the \code{working directory > servername > foldername}.
@@ -1836,9 +1840,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'
     #' }
     fetch_attachments = function(msg_id, use_uid = FALSE, content_disposition = "both",
-                                 override = FALSE, mute = FALSE, retries = 1) {
+                                 override = FALSE, mute = FALSE, retries = 1,
+                                 as_is = FALSE) {
       out <- fetch_attachments_int(self, msg_id, use_uid, content_disposition,
-                                   override, mute, retries)
+                                   override, mute, retries, as_is)
 
       invisible(out)
 

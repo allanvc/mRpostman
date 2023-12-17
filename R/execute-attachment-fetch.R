@@ -19,10 +19,12 @@
 #'   name, which will be uses to create a local folder.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
+#' @param as_is If \code{TRUE} then write out attachments without base64
+#'   decoding. Default is \code{FALSE}.
 #' @noRd
 execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetch_request,
                                      folder_clean, content_disposition,
-                                     override, retries) {
+                                     override, retries, as_is) {
 
 
   url <- self$con_params$url
@@ -183,34 +185,38 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
       # # base64 encoding
       # if (encodings[i] == "base64") {
 
-      # saving attachments
-      # thank's to:
-      # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
-      # writing binary file
-      temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
-      conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
-      writeBin(attachment, conn)
-      close(conn)
-      # decoding from BIN to the appropriate file extension
-      inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
-      outconn <- file(complete_path_with_filename,"wb")
+      if (as_is) {
+        ## write out the file directly to the final file name
+        writeBin(attachment, complete_path_with_filename)
+      } else {
+        # saving attachments
+        # thank's to:
+        # https://stackoverflow.com/questions/36708191/convert-base64-to-png-jpeg-file-in-r
+        # writing binary file
+        temp_bin_name <- paste0(sample(letters, 4), sample(0:9, 4), collapse="")
+        conn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"wb")
+        writeBin(attachment, conn)
+        close(conn)
+        # decoding from BIN to the appropriate file extension
+        inconn <- file(paste0(complete_path, "/", temp_bin_name, ".bin"),"rb")
+        outconn <- file(complete_path_with_filename,"wb")
 
-      # base64 text decoding
-      tryCatch({
-        base64enc::base64decode(what=inconn, output=outconn)
-      }, error = function(e) {
-        warning(paste0("Base64 text decoding failed for", df_meta_to_fetch$filenames[i]))
-      })
+        # base64 text decoding
+        tryCatch({
+          base64enc::base64decode(what=inconn, output=outconn)
+        }, error = function(e) {
+          warning(paste0("Base64 text decoding failed for", df_meta_to_fetch$filenames[i]))
+        })
 
-      close(inconn)
-      close(outconn)
+        close(inconn)
+        close(outconn)
 
-      unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
-      # From unlink() help: Not deleting a non-existent file is not a failure
-      # we don't need a tryCatch()
+        unlink(paste0(complete_path, "/", temp_bin_name, ".bin")) # deleting binary file
+        # From unlink() help: Not deleting a non-existent file is not a failure
+        # we don't need a tryCatch()
 
-      # }
-
+        # }
+      }
     }
 
 

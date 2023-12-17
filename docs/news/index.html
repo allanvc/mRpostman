@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -137,9 +137,31 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md'><code>NEWS.md</code></a></small>
+      <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mrpostman-112-2023-12-17-cran-update" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-112-2023-12-17-cran-update" class="anchor"></a>mRpostman 1.1.2 (2023-12-17 CRAN update)</h2>
+<div id="methods--functions" class="section level3">
+<h3 class="hasAnchor">
+<a href="#methods--functions" class="anchor"></a>Methods &amp; Functions</h3>
+<ul>
+<li><p><code>clean_fetch_results()</code>: added argument
+<code>useBytes = TRUE</code> to all <code><a href="https://rdrr.io/r/base/grep.html">gsub()</a></code> calls. According
+to Kurt Hornik, “fetching fails using current versions of R for some
+contents with non-ASCII characters”.</p></li>
+<li><p>Added bypass argument <code>as_is</code> to methods/functions
+<code>get_attachments()</code>,
+<code>execute_fetch_attachments()</code>,
+<code>fetch_attachments()</code>; and <code>as_is</code> functionality
+to <code>get_attachments()</code> and
+<code>execute_fetch_attachments</code> as proposed by Pauls Smith to
+handle non-base64 files.</p></li>
+</ul>
+<hr>
+</div>
+</div>
     <div id="mrpostman-111-2023-07-27-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-111-2023-07-27-github-patch" class="anchor"></a>mRpostman 1.1.1 (2023-07-27 Github patch)</h2>
@@ -166,9 +188,9 @@ fix CRAN check issues</li>
 www.rfc-editor.org/rfc/…)</li>
 </ul>
 </div>
-<div id="methods--functions" class="section level3">
+<div id="methods--functions-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#methods--functions" class="anchor"></a>Methods &amp; Functions</h3>
+<a href="#methods--functions-1" class="anchor"></a>Methods &amp; Functions</h3>
 <ul>
 <li>updated completion msg in all fetch methods to:
 <code>"\n::mRpostman: fetch operation is complete.\n"</code>
@@ -190,9 +212,9 @@ www.rfc-editor.org/rfc/…)</li>
 </li>
 </ul>
 </div>
-<div id="methods--functions-1" class="section level3">
+<div id="methods--functions-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#methods--functions-1" class="anchor"></a>Methods &amp; Functions</h3>
+<a href="#methods--functions-2" class="anchor"></a>Methods &amp; Functions</h3>
 <ul>
 <li>updated completion msg in all fetch methods to:
 <code>"\n::mRpostman: fetch operation is complete.\n"</code>
