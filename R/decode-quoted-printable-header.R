@@ -70,13 +70,14 @@ decode_quoted_printable_header <- function (qp_encoded) {
 
   decoded_string <- stringi::stri_replace_all_fixed(qp_encoded_split, qp_before, qp_after, vectorize_all=FALSE)
 
-  tryCatch({ # sometimes it works with one backslash, sometimes it doesn't
-    Encoding(decoded_string[grepl(pattern = "[\x80-\xff]", x = decoded_string, useBytes = TRUE)]) <- "latin1"
+  tryCatch({ # sometimes it works with one backslash, sometimes it doesn't (NOT ANYMORE AS OF 24-08-05)
+    Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string)]) <- "latin1"
     # if (grepl(pattern = "[\x80-\xff]", x = decoded_string)) {
     #   Encoding(decoded_string) <- "latin1"
     # }
   }, error = function(e) {
-    Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string, useBytes = TRUE)]) <- "latin1"
+    message("Only Latin-1 characters allowed for now!")
+    #Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string)]) <- "latin1"
     # if (grepl(pattern = "[\\x80-\\xff]", x = decoded_string)) {
     #   Encoding(decoded_string) <- "latin1"
     # }

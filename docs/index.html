@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -117,7 +117,11 @@ mailbox management, attachment extraction, and several other IMAP
 features. The aim of this package is to pave the way for email data
 analysis in R. To do so, <code>mRpostman</code> makes extensive use of
 the {curl} package and the libcurl C library.</p>
-<p>mRpostman’s official website: <a href="https://allanvc.github.io/mRpostman/" class="uri">https://allanvc.github.io/mRpostman/</a></p>
+<p><code>mRpostman</code>’s official website: <a href="https://allanvc.github.io/mRpostman/" class="uri">https://allanvc.github.io/mRpostman/</a></p>
+<p>Cite <code>mRpostman</code>: A. V. C. Quadros, “mRpostman: An IMAP
+Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4,
+2024, <a href="https://doi.org/10.5334/jors.480">doi:
+10.5334/jors.480</a>. Refer to <code>citation("mRpostman")</code>.</p>
 <p><strong>IMPORTANT</strong>:</p>
 <ol>
 <li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went
@@ -132,84 +136,76 @@ above 7.58.0, you should be fine. In case you intend to use OAuth 2.0
 authentication, then you will need libcurl &gt;= 7.65.0. To learn more
 about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using
 IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
+<li><p>Most mail providers discontinued less secure apps access. If it
+is still available and you are comfortable with this type of access you
+can enable this option for your account on your mail provider. Some
+providers, such as Yahoo Mail, also offer the option to generate
+password to be used by third-party apps such as mRpostman. The other
+option, as mentioned above, is to set up OAuth2 (two-factor
+authentication) in order to access your mailbox. Please also refer to
+the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using
+IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
 </ol>
 </div>
-<div id="authentication" class="section level2">
+<div id="providers-and-their-imap-urls" class="section level2">
 <h2 class="hasAnchor">
-<a href="#authentication" class="anchor"></a>Authentication</h2>
-<p>There are two ways of connecting to your IMAP server: using plain or
-OAuth2.0 authentication. Here, we only describe the plain authentication
-process. If you want to use OAuth2.0 authentication, please read the
-aforementioned vignette.</p>
-<div id="allowing-less-secure-apps-access" class="section level3">
-<h3 class="hasAnchor">
-<a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing less secure apps access</h3>
-<p>When using plain authentication, most of the mail providers will
-require the user to enable <strong>less secure apps</strong> access.
-Once it is done, you will be able to access your mailbox using a “third
-party app” as <code>mRpostman</code>.</p>
-</div>
-<div id="plain-authentication" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plain-authentication" class="anchor"></a>Plain authentication</h3>
-<p>Before using <code>mRpostman</code>, it is essential to configure the
-access to your email account. Various mail providers require that you
-enable <strong>“less secure apps”</strong> access to accept plain
-authentication between the IMAP server and a third-party app.</p>
-<p>Let’s see how to configure simple plain authentication for Gmail,
-Yahoo Mail, AOL Mail, Hotmail, and Office 365.</p>
-<div id="outlook---office-365" class="section level4">
-<h4 class="hasAnchor">
-<a href="#outlook---office-365" class="anchor"></a>Outlook - Office 365</h4>
-<p>There is no need to execute any external configuration. Please, note
-that the <code>url</code> parameter in <code><a href="reference/configure_imap.html">configure_imap()</a></code>
-should be set as <code>url = "imaps://outlook.office365.com"</code>, and
-the <code>username</code> should be set as
-<code>user@yourcompany.com</code>.</p>
-</div>
-<div id="hotmail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#hotmail" class="anchor"></a>Hotmail</h4>
-<p>There is no need to execute any external configuration. Please, note
-that the <code>url</code> parameter in <code><a href="reference/configure_imap.html">configure_imap()</a></code>
-should be set as <code>url = "imaps://imap-mail.outlook.com"</code>, and
-the <code>username</code> should be set as
-<code>user@hotmail.com</code>.</p>
-</div>
-<div id="gmail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#gmail" class="anchor"></a>Gmail</h4>
-<p>1) Go to the Gmail website and log in with your credentials.</p>
-<p>2) Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p>
-<p><img src="reference/figures/gmail1.png"><!-- <img src="man/figures/gmail1.png"> --></p>
-<p>3) Set “Allow less secure apps” to <strong>ON</strong>.</p>
-</div>
-<div id="yahoo-mail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#yahoo-mail" class="anchor"></a>Yahoo Mail</h4>
-<p>1) Go to the Yahoo Mail website and log in with your credentials.</p>
-<p>2) Click on “Account Info”.</p>
-<p><img src="reference/figures/yahoo1.png"><!-- <img src="man/figures/yahoo1.png"> --></p>
-<p>3) Click on “Account Security” on the left menu.</p>
-<p><img src="reference/figures/yahoo2.png"><!-- <img src="man/figures/yahoo2.png"> --></p>
-<p>4) Then, set “Allow apps that use less secure sign in”
-<strong>ON</strong></p>
-<p><img src="reference/figures/yahoo3.png"></p>
-<!-- <img src="man/figures/yahoo3.png"> -->
-</div>
-<div id="aol-mail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#aol-mail" class="anchor"></a>AOL Mail</h4>
-<p>1) Go to the AOL Mail website and log in with your credentials.</p>
-<p>2) Click on “Options” and then on “Account Info”.</p>
-<p><img src="reference/figures/aol1.png"><!-- <img src="man/figures/aol1.png"> --></p>
-<p>3) Click on “Account Security” on the left menu.</p>
-<p><img src="reference/figures/aol2.png"><!-- <img src="man/figures/aol2.png"> --></p>
-<p>4) After, set “Allow apps that use less secure sign in”
-<strong>ON</strong></p>
-<p><img src="reference/figures/aol3.png"><!-- <img src="man/figures/aol3.png"> --></p>
-</div>
-</div>
+<a href="#providers-and-their-imap-urls" class="anchor"></a>Providers and their IMAP urls</h2>
+<table class="table">
+<thead><tr class="header">
+<th><strong>Provider</strong></th>
+<th><strong>IMAP Server</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gmail</td>
+<td><code>imap.gmail.com</code></td>
+</tr>
+<tr class="even">
+<td>Office 365</td>
+<td>
+<code>outlook.office365.com</code>*</td>
+</tr>
+<tr class="odd">
+<td>Outlook.com (Hotmail and Live.com)</td>
+<td><code>imap-mail.outlook.com</code></td>
+</tr>
+<tr class="even">
+<td>Yahoo Mail</td>
+<td><code>imap.mail.yahoo.com</code></td>
+</tr>
+<tr class="odd">
+<td>iCloud Mail</td>
+<td><code>imap.mail.me.com</code></td>
+</tr>
+<tr class="even">
+<td>AOL Mail</td>
+<td><code>imap.aol.com</code></td>
+</tr>
+<tr class="odd">
+<td>Zoho Mail</td>
+<td><code>imap.zoho.com</code></td>
+</tr>
+<tr class="even">
+<td>Yandex Mail</td>
+<td><code>imap.yandex.com</code></td>
+</tr>
+<tr class="odd">
+<td>GMX Mail</td>
+<td><code>imap.gmx.com</code></td>
+</tr>
+<tr class="even">
+<td>Mail.com</td>
+<td><code>imap.mail.com</code></td>
+</tr>
+<tr class="odd">
+<td>FastMail</td>
+<td><code>imap.fastmail.com</code></td>
+</tr>
+</tbody>
+</table>
+<p>* For Office 365 accounts, the <code>username</code> should be set as
+<code>user@yourcompany.com</code> or
+<code>user@youruniversity.edu</code> for example.</p>
 </div>
 <div id="introduction" class="section level2">
 <h2 class="hasAnchor">
@@ -474,6 +470,12 @@ Library</em>, <a href="https://curl.se/libcurl/" class="uri">https://curl.se/lib
 <li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
 </ul>
 </div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing mRpostman</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -487,7 +489,7 @@ Library</em>, <a href="https://curl.se/libcurl/" class="uri">https://curl.se/lib
 <ul class="list-unstyled">
 <li><a href="https://cran.r-project.org/package=mRpostman"><img src="https://www.r-pkg.org/badges/version/mRpostman" alt="CRAN_Status_Badge"></a></li>
 <li><a href="https://cran.r-project.org/package=mRpostman"><img src="https://cranlogs.r-pkg.org/badges/mRpostman" alt="Downloads from the RStudio CRAN mirror"></a></li>
-<li><a href="https://opensource.org/licenses/GPL-3.0"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a></li>
+<li><a href="https://opensource.org/license/gpl-3-0/"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a></li>
 <li><a href="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>

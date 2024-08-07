@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
 
       
 
-      </header><script src="basics_files/header-attrs-2.23/header-attrs.js"></script><div class="row">
+      </header><script src="basics_files/header-attrs-2.27/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>mRpostman basics</h1>
@@ -130,27 +130,76 @@ cause malfunctioning of this package. If your libcurl’s version is above
 authentication, then you will need libcurl &gt;= 7.65.0. To know more
 about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using
 IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
+<li><p>Most mail providers discontinued less secure apps access. If it
+is still available and you are comfortable with this type of access you
+can enable this option for your account on your mail provider. Some
+providers, such as Yahoo Mail, also offer the option to generate
+password to be used by third-party apps such as mRpostman. The other
+option, as mentioned above, is to set up OAuth2 (two-factor
+authentication) in order to access your mailbox. Please also refer to
+the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using
+IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
 </ol>
 </div>
-<div id="authentication" class="section level2">
+<div id="providers-and-their-imap-urls" class="section level2">
 <h2 class="hasAnchor">
-<a href="#authentication" class="anchor"></a>Authentication</h2>
-<p>There are two ways of connecting to your IMAP server: using plain or
-OAuth2.0 authentication. In this vignette, we only describe the plain
-authentication process. If you want to use OAuth2.0 authentication,
-please read the aforementioned vignette.</p>
-<div id="allowing-less-secure-apps-access" class="section level3">
-<h3 class="hasAnchor">
-<a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing less secure apps access</h3>
-<p>When using plain authentication, most of the mail providers will
-require the user to enable <strong>less secure apps</strong> access.
-Once it is done, you will be able to access your mailbox using a “third
-party app” as <code>mRpostman</code>.</p>
-<p>See the <strong>README.md</strong> for more details on how to allow
-less secure apps access in some of the most known mail providers.</p>
-<p>If you are using Outlook - Office 365, there’s no need to make any
-external configuration.</p>
-</div>
+<a href="#providers-and-their-imap-urls" class="anchor"></a>Providers and their IMAP urls</h2>
+<table class="table">
+<thead><tr class="header">
+<th><strong>Provider</strong></th>
+<th><strong>IMAP Server</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gmail</td>
+<td><code>imap.gmail.com</code></td>
+</tr>
+<tr class="even">
+<td>Office 365</td>
+<td>
+<code>outlook.office365.com</code>*</td>
+</tr>
+<tr class="odd">
+<td>Outlook.com (Hotmail and Live.com)</td>
+<td><code>imap-mail.outlook.com</code></td>
+</tr>
+<tr class="even">
+<td>Yahoo Mail</td>
+<td><code>imap.mail.yahoo.com</code></td>
+</tr>
+<tr class="odd">
+<td>iCloud Mail</td>
+<td><code>imap.mail.me.com</code></td>
+</tr>
+<tr class="even">
+<td>AOL Mail</td>
+<td><code>imap.aol.com</code></td>
+</tr>
+<tr class="odd">
+<td>Zoho Mail</td>
+<td><code>imap.zoho.com</code></td>
+</tr>
+<tr class="even">
+<td>Yandex Mail</td>
+<td><code>imap.yandex.com</code></td>
+</tr>
+<tr class="odd">
+<td>GMX Mail</td>
+<td><code>imap.gmx.com</code></td>
+</tr>
+<tr class="even">
+<td>Mail.com</td>
+<td><code>imap.mail.com</code></td>
+</tr>
+<tr class="odd">
+<td>FastMail</td>
+<td><code>imap.fastmail.com</code></td>
+</tr>
+</tbody>
+</table>
+<p>* For Office 365 accounts, the <code>username</code> should be set as
+<code>user@yourcompany.com</code> or
+<code>user@youruniversity.edu</code> for example.</p>
 </div>
 <div id="package-structure" class="section level2">
 <h2 class="hasAnchor">
@@ -222,9 +271,8 @@ are described below:</p>
 <div id="how-do-i-start-connection-configuration" class="section level2">
 <h2 class="hasAnchor">
 <a href="#how-do-i-start-connection-configuration" class="anchor"></a>1) How do I start? (Connection configuration)</h2>
-<p>After enabling (if needed) “less secure apps access” in your mail
-provider or obtaining an OAuth2.0 token, you have to configure an IMAP
-connection:</p>
+<p>After setting the authentication method in your mail provider, you
+have to configure an IMAP connection:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span></span>
 <span></span>
