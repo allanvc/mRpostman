@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>An IMAP Client for R • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,95 +12,60 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
-<meta property="og:description" content="An easy-to-use IMAP client that provides tools for message searching,
-    selective fetching of message attributes, mailbox management, attachment extraction, 
-    and several other IMAP features, paving the way for e-mail data analysis in R.">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
+<meta name="description" content="An easy-to-use IMAP client that provides tools for message searching, selective fetching of message attributes, mailbox management, attachment extraction, and several other IMAP features, paving the way for e-mail data analysis in R.">
+<meta property="og:description" content="An easy-to-use IMAP client that provides tools for message searching, selective fetching of message attributes, mailbox management, attachment extraction, and several other IMAP features, paving the way for e-mail data analysis in R.">
 <meta property="og:image" content="/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="reference/index.html">Reference</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="articles/basics.html">mRpostman basics</a>
-    </li>
-    <li>
-      <a href="articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
-    </li>
-    <li>
-      <a href="articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
-    </li>
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
+    <a class="navbar-brand me-2" href="index.html">mRpostman</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
+
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/basics.html">mRpostman basics</a></li>
+    <li><a class="dropdown-item" href="articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a></li>
+    <li><a class="dropdown-item" href="articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a></li>
   </ul>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/allanvc/mRpostman/">
-    <span class="fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/allanvc/mRpostman/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="mrpostman-">mRpostman <a class="anchor" aria-label="anchor" href="#mrpostman-"></a>
+</h1>
 </div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div id="mrpostman-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#mrpostman-" class="anchor"></a>mRpostman
-<img src="reference/figures/logo.png" align="right" width="138">
-</h1></div>
 <!-- # mRpostman <img src="man/figures/logo.png" align="right" /> -->
 <!-- [![Downloads](http://cranlogs.r-pkg.org/badges/mRpostman?color=brightgreen)](http://www.r-pkg.org/pkg/mRpostman) -->
 <!-- one space after links to display badges side by side -->
@@ -108,203 +73,131 @@
 <!-- badges: start -->
 
 <p>An IMAP Client for R</p>
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p><code>mRpostman</code> is an easy-to-use IMAP client that provides
-tools for message searching, selective fetching of message attributes,
-mailbox management, attachment extraction, and several other IMAP
-features. The aim of this package is to pave the way for email data
-analysis in R. To do so, <code>mRpostman</code> makes extensive use of
-the {curl} package and the libcurl C library.</p>
-<p>mRpostman’s official website: <a href="https://allanvc.github.io/mRpostman/" class="uri">https://allanvc.github.io/mRpostman/</a></p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
+<p><code>mRpostman</code> is an easy-to-use IMAP client that provides tools for message searching, selective fetching of message attributes, mailbox management, attachment extraction, and several other IMAP features. The aim of this package is to pave the way for email data analysis in R. To do so, <code>mRpostman</code> makes extensive use of the {curl} package and the libcurl C library.</p>
+<p><code>mRpostman</code>’s official website: <a href="https://allanvc.github.io/mRpostman/" class="external-link uri">https://allanvc.github.io/mRpostman/</a></p>
+<p>Cite <code>mRpostman</code>: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, <a href="https://doi.org/10.5334/jors.480" class="external-link">doi: 10.5334/jors.480</a>. Refer to <code>citation("mRpostman")</code>.</p>
 <p><strong>IMPORTANT</strong>:</p>
-<ol>
-<li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went
-trough substantial changes, including ones that have no backward
-compatibility with versions <code>&lt;= 0.3.1</code>. A detailed
-vignette on how to migrate your mRpostman’s deprecated code to the new
-syntax is available at <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html"><em>“Migrating
-old code to the new mRpostman’s syntax”</em></a>.</p></li>
-<li><p>Old versions of the libcurl C library ({curl}’s main engine) will
-cause the malfunction of this package. If your libcurl’s version is
-above 7.58.0, you should be fine. In case you intend to use OAuth 2.0
-authentication, then you will need libcurl &gt;= 7.65.0. To learn more
-about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using
-IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
+<ol style="list-style-type: decimal">
+<li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went trough substantial changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.1</code>. A detailed vignette on how to migrate your mRpostman’s deprecated code to the new syntax is available at <a href="https://allanvc.github.io/mRpostman/articles/code_migration.html" class="external-link"><em>“Migrating old code to the new mRpostman’s syntax”</em></a>.</p></li>
+<li><p>Old versions of the libcurl C library ({curl}’s main engine) will cause the malfunction of this package. If your libcurl’s version is above 7.58.0, you should be fine. In case you intend to use OAuth 2.0 authentication, then you will need libcurl &gt;= 7.65.0. To learn more about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html" class="external-link"><em>“Using IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
+<li><p>Most mail providers discontinued less secure apps access. If it is still available and you are comfortable with this type of access you can enable this option for your account on your mail provider. Some providers, such as Yahoo Mail, also offer the option to generate password to be used by third-party apps such as mRpostman. The other option, as mentioned above, is to set up OAuth2 (two-factor authentication) in order to access your mailbox. Please also refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html" class="external-link"><em>“Using IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
 </ol>
 </div>
-<div id="authentication" class="section level2">
-<h2 class="hasAnchor">
-<a href="#authentication" class="anchor"></a>Authentication</h2>
-<p>There are two ways of connecting to your IMAP server: using plain or
-OAuth2.0 authentication. Here, we only describe the plain authentication
-process. If you want to use OAuth2.0 authentication, please read the
-aforementioned vignette.</p>
-<div id="allowing-less-secure-apps-access" class="section level3">
-<h3 class="hasAnchor">
-<a href="#allowing-less-secure-apps-access" class="anchor"></a>Allowing less secure apps access</h3>
-<p>When using plain authentication, most of the mail providers will
-require the user to enable <strong>less secure apps</strong> access.
-Once it is done, you will be able to access your mailbox using a “third
-party app” as <code>mRpostman</code>.</p>
+<div class="section level2">
+<h2 id="providers-and-their-imap-urls">Providers and their IMAP urls<a class="anchor" aria-label="anchor" href="#providers-and-their-imap-urls"></a>
+</h2>
+<table class="table">
+<thead><tr class="header">
+<th><strong>Provider</strong></th>
+<th><strong>IMAP Server</strong></th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Gmail</td>
+<td><code>imap.gmail.com</code></td>
+</tr>
+<tr class="even">
+<td>Office 365</td>
+<td>
+<code>outlook.office365.com</code>*</td>
+</tr>
+<tr class="odd">
+<td>Outlook.com (Hotmail and Live.com)</td>
+<td><code>imap-mail.outlook.com</code></td>
+</tr>
+<tr class="even">
+<td>Yahoo Mail</td>
+<td><code>imap.mail.yahoo.com</code></td>
+</tr>
+<tr class="odd">
+<td>iCloud Mail</td>
+<td><code>imap.mail.me.com</code></td>
+</tr>
+<tr class="even">
+<td>AOL Mail</td>
+<td><code>imap.aol.com</code></td>
+</tr>
+<tr class="odd">
+<td>Zoho Mail</td>
+<td><code>imap.zoho.com</code></td>
+</tr>
+<tr class="even">
+<td>Yandex Mail</td>
+<td><code>imap.yandex.com</code></td>
+</tr>
+<tr class="odd">
+<td>GMX Mail</td>
+<td><code>imap.gmx.com</code></td>
+</tr>
+<tr class="even">
+<td>Mail.com</td>
+<td><code>imap.mail.com</code></td>
+</tr>
+<tr class="odd">
+<td>FastMail</td>
+<td><code>imap.fastmail.com</code></td>
+</tr>
+</tbody>
+</table>
+<p>* For Office 365 accounts, the <code>username</code> should be set as <code>user@yourcompany.com</code> or <code>user@youruniversity.edu</code> for example.</p>
 </div>
-<div id="plain-authentication" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plain-authentication" class="anchor"></a>Plain authentication</h3>
-<p>Before using <code>mRpostman</code>, it is essential to configure the
-access to your email account. Various mail providers require that you
-enable <strong>“less secure apps”</strong> access to accept plain
-authentication between the IMAP server and a third-party app.</p>
-<p>Let’s see how to configure simple plain authentication for Gmail,
-Yahoo Mail, AOL Mail, Hotmail, and Office 365.</p>
-<div id="outlook---office-365" class="section level4">
-<h4 class="hasAnchor">
-<a href="#outlook---office-365" class="anchor"></a>Outlook - Office 365</h4>
-<p>There is no need to execute any external configuration. Please, note
-that the <code>url</code> parameter in <code><a href="reference/configure_imap.html">configure_imap()</a></code>
-should be set as <code>url = "imaps://outlook.office365.com"</code>, and
-the <code>username</code> should be set as
-<code>user@yourcompany.com</code>.</p>
-</div>
-<div id="hotmail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#hotmail" class="anchor"></a>Hotmail</h4>
-<p>There is no need to execute any external configuration. Please, note
-that the <code>url</code> parameter in <code><a href="reference/configure_imap.html">configure_imap()</a></code>
-should be set as <code>url = "imaps://imap-mail.outlook.com"</code>, and
-the <code>username</code> should be set as
-<code>user@hotmail.com</code>.</p>
-</div>
-<div id="gmail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#gmail" class="anchor"></a>Gmail</h4>
-<p>1) Go to the Gmail website and log in with your credentials.</p>
-<p>2) Then, go to <a href="https://myaccount.google.com/u/1/lesssecureapps?pageId=none" class="uri">https://myaccount.google.com/u/1/lesssecureapps?pageId=none</a></p>
-<p><img src="reference/figures/gmail1.png"><!-- <img src="man/figures/gmail1.png"> --></p>
-<p>3) Set “Allow less secure apps” to <strong>ON</strong>.</p>
-</div>
-<div id="yahoo-mail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#yahoo-mail" class="anchor"></a>Yahoo Mail</h4>
-<p>1) Go to the Yahoo Mail website and log in with your credentials.</p>
-<p>2) Click on “Account Info”.</p>
-<p><img src="reference/figures/yahoo1.png"><!-- <img src="man/figures/yahoo1.png"> --></p>
-<p>3) Click on “Account Security” on the left menu.</p>
-<p><img src="reference/figures/yahoo2.png"><!-- <img src="man/figures/yahoo2.png"> --></p>
-<p>4) Then, set “Allow apps that use less secure sign in”
-<strong>ON</strong></p>
-<p><img src="reference/figures/yahoo3.png"></p>
-<!-- <img src="man/figures/yahoo3.png"> -->
-</div>
-<div id="aol-mail" class="section level4">
-<h4 class="hasAnchor">
-<a href="#aol-mail" class="anchor"></a>AOL Mail</h4>
-<p>1) Go to the AOL Mail website and log in with your credentials.</p>
-<p>2) Click on “Options” and then on “Account Info”.</p>
-<p><img src="reference/figures/aol1.png"><!-- <img src="man/figures/aol1.png"> --></p>
-<p>3) Click on “Account Security” on the left menu.</p>
-<p><img src="reference/figures/aol2.png"><!-- <img src="man/figures/aol2.png"> --></p>
-<p>4) After, set “Allow apps that use less secure sign in”
-<strong>ON</strong></p>
-<p><img src="reference/figures/aol3.png"><!-- <img src="man/figures/aol3.png"> --></p>
-</div>
-</div>
-</div>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>From version 0.9.0.0 onward, <code>mRpostman</code> is implemented
-under the OO paradigm, based on an R6 class called <code>ImapCon</code>.
-Its derived methods, and a few independent functions enable the R user
-to perform a myriad of IMAP commands.</p>
-<p>The package is divided in 8 groups of operations. Below, we present
-all the available methods and functions:</p>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>From version 0.9.0.0 onward, <code>mRpostman</code> is implemented under the OO paradigm, based on an R6 class called <code>ImapCon</code>. Its derived methods, and a few independent functions enable the R user to perform a myriad of IMAP commands.</p>
+<p>The package is divided in 8 groups of operations. Below, we present all the available methods and functions:</p>
 <ul>
 <li>
-<strong>configuration methods</strong>:
-<code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>,
-<code>reset_username()</code>, <code>reset_password()</code>,
-<code>reset_verbose()</code>, <code>reset_use_ssl()</code>,
-<code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>,
-<code>reset_xoauth2_bearer()</code>;</li>
+<strong>configuration methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server capabilities method</strong>:
-<code>list_server_capabilities()</code>;</li>
+<strong>server capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
 <li>
-<strong>mailbox operations methods</strong>:
-<code>list_mail_folders()</code>, <code>select_folder()</code>,
-<code>examine_folder()</code>, <code>rename_folder()</code>,
-<code>create_folder()</code>, <code>list_flags()</code>;</li>
+<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
 <li>
-<strong>single-search methods</strong>:
-<code>search_before()</code>, <code>search_since()</code>,
-<code>search_period()</code>, <code>search_on()</code>,
-<code>search_sent_before()</code>,<code>search_sent_since()</code>,
-<code>search_sent_period()</code>, <code>search_sent_on()</code>,
-<code>search_string()</code>, <code>search_flag()</code>,
-<code>search_smaller_than()</code>, <code>search_larger_than()</code>,
-<code>search_younger_than()</code>,
-<code>search_older_than()</code>;</li>
+<strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
-<strong>the custom-search method and its helper functions</strong>:
-<code><a href="https://rdrr.io/r/base/search.html">search()</a></code>;
+<strong>the custom-search method and its helper functions</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>;
 <ul>
-<li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>,
-<code><a href="reference/OR.html">OR()</a></code>;</li>
-<li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>,
-<code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>,
-<code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>,
-<code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>,
-<code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>,
-<code><a href="reference/older_than.html">older_than()</a></code>;</li>
+<li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>, <code><a href="reference/OR.html">OR()</a></code>;</li>
+<li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>;</li>
 </ul>
 </li>
 <li>
-<strong>fetch methods</strong>: <code>fetch_body()</code>,
-<code>fetch_header()</code>, <code>fetch_text()</code>,
-<code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>,
-<code>fetch_attachments()</code>;</li>
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>attachments methods</strong>:
-<code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>,
-<code>fetch_attachments_list()</code>,
-<code>fetch_attachments()</code>;</li>
+<strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>complementary methods</strong>: <code>copy_msg()</code>,
-<code>move_msg()</code>, <code>esearch_min_id()</code>,
-<code>esearch_max_id()</code>, <code>esearch_count_msg()</code>,
-<code>delete_msg()</code>, <code>expunge()</code>,
-<code>add_flags()</code>, <code>remove_flags()</code>,
-<code>replace_flags()</code>.</li>
+<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
 </ul>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># CRAN version</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"mRpostman"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"mRpostman"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Dev version</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org">'remotes'</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"allanvc/mRpostman"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org" class="external-link">'remotes'</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"allanvc/mRpostman"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="basic-usage" class="section level2">
-<h2 class="hasAnchor">
-<a href="#basic-usage" class="anchor"></a>Basic Usage</h2>
-<div id="id_1-configure-an-imap-connection-and-list-the-servers-capabilities" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_1-configure-an-imap-connection-and-list-the-servers-capabilities" class="anchor"></a>1) Configure an IMAP connection and list the server’s
-capabilities</h3>
+<div class="section level2">
+<h2 id="basic-usage">Basic Usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h2>
+<div class="section level3">
+<h3 id="id_1-configure-an-imap-connection-and-list-the-servers-capabilities">1) Configure an IMAP connection and list the server’s capabilities<a class="anchor" aria-label="anchor" href="#id_1-configure-an-imap-connection-and-list-the-servers-capabilities"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/" class="external-link">mRpostman</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Outlook - Office 365</span></span>
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://outlook.office365.com"</span>,</span>
 <span>                      username<span class="op">=</span><span class="st">"your_user@company.com"</span>,</span>
-<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html">askForPassword</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>                      password<span class="op">=</span><span class="fu">rstudioapi</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/rstudioapi/reference/askForPassword.html" class="external-link">askForPassword</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># other IMAP providers that were tested: Hotmail ("imaps://imap-mail.outlook.com"),</span></span>
@@ -315,9 +208,9 @@ capabilities</h3>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_server_capabilities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="id_2-list-mail-folders-and-select-inbox" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_2-list-mail-folders-and-select-inbox" class="anchor"></a>2) List mail folders and select “INBOX”</h3>
+<div class="section level3">
+<h3 id="id_2-list-mail-folders-and-select-inbox">2) List mail folders and select “INBOX”<a class="anchor" aria-label="anchor" href="#id_2-list-mail-folders-and-select-inbox"></a>
+</h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Listing</span></span>
@@ -326,18 +219,18 @@ capabilities</h3>
 <span><span class="co"># Selecting</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="id_3-search-messages-by-date" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_3-search-messages-by-date" class="anchor"></a>3) Search messages by date</h3>
+<div class="section level3">
+<h3 id="id_3-search-messages-by-date">3) Search messages by date<a class="anchor" aria-label="anchor" href="#id_3-search-messages-by-date"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res1</span></span></code></pre></div>
 </div>
-<div id="id_4-customizing-a-search-with-multiple-criteria" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_4-customizing-a-search-with-multiple-criteria" class="anchor"></a>4) Customizing a search with multiple criteria</h3>
+<div class="section level3">
+<h3 id="id_4-customizing-a-search-with-multiple-criteria">4) Customizing a search with multiple criteria<a class="anchor" aria-label="anchor" href="#id_4-customizing-a-search-with-multiple-criteria"></a>
+</h3>
 <p>Executing a search by string:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
@@ -349,164 +242,149 @@ capabilities</h3>
 <span></span>
 <span><span class="va">res2</span></span></code></pre></div>
 </div>
-<div id="id_5-fetch-messages-text-using-single-search-results" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_5-fetch-messages-text-using-single-search-results" class="anchor"></a>5) Fetch messages’ text using single-search results</h3>
+<div class="section level3">
+<h3 id="id_5-fetch-messages-text-using-single-search-results">5) Fetch messages’ text using single-search results<a class="anchor" aria-label="anchor" href="#id_5-fetch-messages-text-using-single-search-results"></a>
+</h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"Welcome!"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
+<span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"Welcome!"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># also writes results to disk</span></span>
 <span></span>
 <span><span class="va">res3</span></span></code></pre></div>
 </div>
-<div id="id_6-attachments" class="section level3">
-<h3 class="hasAnchor">
-<a href="#id_6-attachments" class="anchor"></a>6) Attachments</h3>
+<div class="section level3">
+<h3 id="id_6-attachments">6) Attachments<a class="anchor" aria-label="anchor" href="#id_6-attachments"></a>
+</h3>
 <p>You can list the attachments of one or more messages with:</p>
-<p>1) the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</p>
+<ol style="list-style-type: decimal">
+<li>the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</li>
+</ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
 <span>  <span class="fu"><a href="reference/list_attachments.html">list_attachments</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># does not depend on the 'con' object</span></span></code></pre></div>
 <p>… or more directly with:</p>
-<p>2) <code>fetch_attachments_list()</code></p>
+<ol start="2" style="list-style-type: decimal">
+<li><code>fetch_attachments_list()</code></li>
+</ol>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>If you want to download the attachments of one or more messages,
-there are also two ways of doing that.</p>
-<p>1) Using the <code>get_attachments()</code> method:</p>
+<p>If you want to download the attachments of one or more messages, there are also two ways of doing that.</p>
+<ol style="list-style-type: decimal">
+<li>Using the <code>get_attachments()</code> method:</li>
+</ol>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>… and more directly with the</p>
-<p>2) <code>fetch_attachments()</code> method:</p>
+<ol start="2" style="list-style-type: decimal">
+<li>
+<code>fetch_attachments()</code> method:</li>
+</ol>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="future-improvements" class="section level2">
-<h2 class="hasAnchor">
-<a href="#future-improvements" class="anchor"></a>Future Improvements</h2>
+<div class="section level2">
+<h2 id="future-improvements">Future Improvements<a class="anchor" aria-label="anchor" href="#future-improvements"></a>
+</h2>
 <ul>
 <li>add further IMAP features;</li>
 <li>eliminate the {stringr} dependency in REGEX;</li>
 <li>implement a progress bar in fetch operations;</li>
 </ul>
 </div>
-<div id="known-bugs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#known-bugs" class="anchor"></a>Known bugs</h2>
+<div class="section level2">
+<h2 id="known-bugs">Known bugs<a class="anchor" aria-label="anchor" href="#known-bugs"></a>
+</h2>
 <ul>
-<li><p><em>search results truncation</em>: This is a <a href="https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon">libcurl’s
-known bug</a> which causes the search results to be truncated when there
-is a large number of message ids returned. To circumvent this problem,
-you can set a higher <code>buffersize</code> value, increasing the
-buffer capacity, and <code>verbose = TRUE</code> for monitoring the
-server response for truncated results when executing a search. When
-possible, <code>mRpostman</code> tries to issue a warning for possible
-truncated values.</p></li>
-<li><p><em><code>verbose = TRUE</code> malfunction on Windows</em>: This
-seems to be related to the <a href="https://github.com/jeroen/curl/issues/230">{curl} R package</a>.
-When using the <code>verbose = TRUE</code> on Windows, the flow of
-information between the IMAP server and the R session presents an
-intermittent behavior, which causes it to not be shown on the console,
-or with a considerable delay.</p></li>
-<li><p><em>shared mailbox access not working</em>: This seems to be
-another <a href="https://github.com/allanvc/mRpostman/issues/2">libcurl’s bug</a>,
-although more tests need to be done to confirm it. It does not allow the
-user to connect to a shared mailbox. To circumvent this, if the shared
-mailbox has a password associated with it, you can try a direct regular
-connection.</p></li>
-<li><p><em><code>xoauth2_bearer</code> SASL error</em>: This is related
-to <a href="https://curl.se/bug/?i=2487">old libcurl’s versions</a>
-which causes the access token to not be properly passed to the server.
-This bug was fixed in libcurl 7.65.0. The problem is that many Linux
-distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in
-their official distribution (libcurl4-openssl-dev). If you use a newer
-Linux distro such as Ubuntu 20.04, you should be fine as the distributed
-libcurl’s version will be above 7.65.0. Another alternative is to use
-plain authentication instead of OAuth2.0.</p></li>
+<li><p><em>search results truncation</em>: This is a <a href="https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon" class="external-link">libcurl’s known bug</a> which causes the search results to be truncated when there is a large number of message ids returned. To circumvent this problem, you can set a higher <code>buffersize</code> value, increasing the buffer capacity, and <code>verbose = TRUE</code> for monitoring the server response for truncated results when executing a search. When possible, <code>mRpostman</code> tries to issue a warning for possible truncated values.</p></li>
+<li><p><em><code>verbose = TRUE</code> malfunction on Windows</em>: This seems to be related to the <a href="https://github.com/jeroen/curl/issues/230" class="external-link">{curl} R package</a>. When using the <code>verbose = TRUE</code> on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.</p></li>
+<li><p><em>shared mailbox access not working</em>: This seems to be another <a href="https://github.com/allanvc/mRpostman/issues/2" class="external-link">libcurl’s bug</a>, although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumvent this, if the shared mailbox has a password associated with it, you can try a direct regular connection.</p></li>
+<li><p><em><code>xoauth2_bearer</code> SASL error</em>: This is related to <a href="https://curl.se/bug/?i=2487" class="external-link">old libcurl’s versions</a> which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.</p></li>
 </ul>
 </div>
-<div id="license" class="section level2">
-<h2 class="hasAnchor">
-<a href="#license" class="anchor"></a>License</h2>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
 <p>This package is licensed under the terms of the GPL-3 License.</p>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
-<p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION
-4rev1</em>, RFC 3501, March 2003, <a href="https://www.rfc-editor.org/rfc/rfc3501" class="uri">https://www.rfc-editor.org/rfc/rfc3501</a>.</p>
-<p>Heinlein, P. and Hartleben, P. (2008). <em>The Book of IMAP: Building
-a Mail Server with Courier and Cyrus</em>. No Starch Press. ISBN
-978-1-59327-177-0.</p>
-<p>Ooms, J. (2020), <em>curl: A Modern and Flexible Web Client for
-R</em>. R package version 4.3, <a href="https://CRAN.R-project.org/package=curl" class="uri">https://CRAN.R-project.org/package=curl</a></p>
-<p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer
-Library</em>, <a href="https://curl.se/libcurl/" class="uri">https://curl.se/libcurl/</a></p>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Crispin, M. (2003), <em>INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1</em>, RFC 3501, March 2003, <a href="https://www.rfc-editor.org/rfc/rfc3501" class="external-link uri">https://www.rfc-editor.org/rfc/rfc3501</a>.</p>
+<p>Heinlein, P. and Hartleben, P. (2008). <em>The Book of IMAP: Building a Mail Server with Courier and Cyrus</em>. No Starch Press. ISBN 978-1-59327-177-0.</p>
+<p>Ooms, J. (2020), <em>curl: A Modern and Flexible Web Client for R</em>. R package version 4.3, <a href="https://CRAN.R-project.org/package=curl" class="external-link uri">https://CRAN.R-project.org/package=curl</a>.</p>
+<p>Stenberg, D. <em>Libcurl - The Multiprotocol File Transfer Library</em>, <a href="https://curl.se/libcurl/" class="external-link uri">https://curl.se/libcurl/</a>.</p>
+<p>A. V. C. Quadros, <em>mRpostman: An IMAP Client for R</em>, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, <a href="https://doi:10.5334/jors.480" class="external-link uri">https://doi:10.5334/jors.480</a>.</p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
-<h2>Links</h2>
+  </main><aside class="col-md-3"><div class="links">
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=mRpostman">https://​cloud.r-project.org/​package=mRpostman</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/allanvc/mRpostman/">https://​github.com/​allanvc/​mRpostman/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/allanvc/mRpostman/issues/">https://​github.com/​allanvc/​mRpostman/​issues/​</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=mRpostman" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/allanvc/mRpostman/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/allanvc/mRpostman/issues/" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
+<li><a href="https://www.r-project.org/Licenses/GPL-3" class="external-link">GPL-3</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing mRpostman</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Allan Quadros <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3250-5380" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li><a href="authors.html">All authors...</a></li>
+<li>Allan Quadros <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3250-5380" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=mRpostman"><img src="https://www.r-pkg.org/badges/version/mRpostman" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://cran.r-project.org/package=mRpostman"><img src="https://cranlogs.r-pkg.org/badges/mRpostman" alt="Downloads from the RStudio CRAN mirror"></a></li>
-<li><a href="https://opensource.org/licenses/GPL-3.0"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a></li>
-<li><a href="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://www.r-pkg.org/badges/version/mRpostman" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://cran.r-project.org/package=mRpostman" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/mRpostman" alt="Downloads from the RStudio CRAN mirror"></a></li>
+<li><a href="https://opensource.org/license/gpl-3-0" class="external-link"><img src="https://img.shields.io/cran/l/mRpostman" alt="CRAN/METACRAN"></a></li>
+<li><a href="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
-</div>
+
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p>Developed by Allan Quadros.</p>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+<div class="pkgdown-footer-right">
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
-  
+
+
 
 
   </body>

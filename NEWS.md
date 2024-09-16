@@ -1,10 +1,31 @@
+## mRpostman 1.1.4 (2024-09-15 CRAN update)
+
+### Methods & Functions
+
+- `decode_quoted_printable_header()`: changed the conversion engine to `iconv` and added `useBytes = TRUE` to the `gsub()` call; and added support to `ISO-8859-10` and  `Windows-1252` (Nordic/latin6), and `ISO-8859-9` and `Windows-1254` (Turkish) encodings.
+  
+- `decode_quoted_printable_text()`: changed the conversion engine to `iconv` and added `useBytes = TRUE` to the `gsub()` call; and added support to `ISO-8859-10` and  `Windows-1252` (Nordic/latin6), and `ISO-8859-9` and `Windows-1254` (Turkish) encodings.
+
+- `zzz()` - removed message from the transition to `R6` structure and added the citation request instead.
+
+### Documentation
+
+- changed `README.Rmd` and `basics.Rmd` to better reflect the current status of login procedures across most of the IMAP providers and the citation to `mRpostman` paper in JORS.
+
+- added a `CITATION` file to `inst` folder.
+
+## mRpostman 1.1.2 (2023-12-17 CRAN update)
+
+- broken Github fix to `decode_quoted_printable_header()` and `decode_quoted_printable_text()` (needed to rewind to v1.1.2 before moving again to v1.1.4)
+
+
 ## mRpostman 1.1.2 (2023-12-17 CRAN update)
 
 ### Methods & Functions
 
 - `clean_fetch_results()`: added argument `useBytes = TRUE` to all `gsub()` calls. According to Kurt Hornik, "fetching fails using current versions of R for some contents with non-ASCII characters".
 
-- Added bypass argument `as_is` to methods/functions `get_attachments()`, `execute_fetch_attachments()`, `fetch_attachments()`; and `as_is` functionality to `get_attachments()` and `execute_fetch_attachments` as proposed by Pauls Smith to handle non-base64 files.
+- Added bypass argument `as_is` to methods/functions `get_attachments()`, `execute_fetch_attachments()`, `fetch_attachments()`; and `as_is` functionality to `get_attachments()` and `execute_fetch_attachments` as proposed by Paul Smith to handle non-base64 files.
 
 ---
 

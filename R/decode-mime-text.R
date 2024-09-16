@@ -45,7 +45,8 @@ decode_mime_text <- function(string) {
         content
       })
 
-    } else if (grepl(pattern = "[\\x80-\\xff]", x = content)) { # assim reconhece direto sem precisar transformar!!
+    # } else if (grepl(pattern = "[\\x80-\\xff]", x = content)) { # assim reconhece direto sem precisar transformar!!
+    } else if (grepl(pattern = "[\\x80-\\xD1\\x8F]", x = content)) { # assim reconhece direto sem precisar transformar!!
       decoded_string <- decode_quoted_printable_text(qp_encoded = content)
 
     } else {

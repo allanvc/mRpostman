@@ -64,27 +64,84 @@ decode_quoted_printable_header <- function (qp_encoded) {
                 "\xef", "\xf0", "\xf1", "\xf2", "\xf3", "\xf4", "\xf5", "\xf6", "\xf7",
                 "\xf8", "\xf9", "\xfa", "\xfb", "\xfc", "\xfd", "\xfe", "\xff", "")
 
+
+  utf8_codes <- c("=C3=A9", "=C3=A7", "=C3=A3", "=C3=A1", "=C3=AA", "=C3=B3", "=C3=B4", "=C3=BC", "=C3=AD", "=C3=BA")
+
+  latin1_codes <- c("=E9", "=E7", "=E3", "=E1", "=EA", "=F3", "=F4", "=FC", "=ED", "=FA")
+
+  # vector for ISO-8859-10 (Nordic/Latin-6)
+  iso_8859_10_codes <- c("=F0", "=FE", "=E6", "=F8", "=E5")
+  # vector for Windows-1252
+  windows_1252_codes <- c("=80", "=82", "=83", "=84", "=85", "=86", "=87", "=88", "=89")
+
+  # iso_8859_5_codes <- c("=D0=90", "=D0=91", "=D0=92", "=D0=93", "=D0=94")  # ISO-8859-5 for russian
+  # koi8_r_codes <- c("=E1", "=E2", "=E3", "=E4", "=E5")  # KOI8-R for russian
+  iso_8859_9_codes <- c("=E7", "=FC", "=F6", "=FD", "=FE")  # ISO-8859-9 para turco
+  windows_1254_codes <- c("=E7", "=FC", "=F6", "=FD", "=FE")  # Windows-1254 para turco
+
+
+  # check latin1 code in string
+  latin1_present <- any(sapply(latin1_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # check UTF-88 code in string
+  utf8_present <- any(sapply(utf8_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # check ISO-8859-10 (Nordic) code in string
+  iso_8859_10_present <- any(sapply(iso_8859_10_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # check Windows-1252 code in string
+  windows_1252_present <- any(sapply(windows_1252_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # ISO-8859-5 (Cyrillic)
+  # iso_8859_5_present <- any(sapply(iso_8859_5_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # KOI8-R
+  # koi8_r_present <- any(sapply(koi8_r_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # ISO-8859-9 (Turkish)
+  iso_8859_9_present <- any(sapply(iso_8859_9_codes, grepl, qp_encoded, fixed = TRUE))
+
+  # Windows-1254 (Turkish)
+  windows_1254_present <- any(sapply(windows_1254_codes, grepl, qp_encoded, fixed = TRUE))
+
+
+
   # qp_encoded <- tolower(qp_encoded)
   qp_encoded_split <- unlist(strsplit(qp_encoded, " "))
   # using split will be important when trying to decode a sentence with capital letters
 
   decoded_string <- stringi::stri_replace_all_fixed(qp_encoded_split, qp_before, qp_after, vectorize_all=FALSE)
 
-  tryCatch({ # sometimes it works with one backslash, sometimes it doesn't
-    Encoding(decoded_string[grepl(pattern = "[\x80-\xff]", x = decoded_string)]) <- "latin1"
-    # if (grepl(pattern = "[\x80-\xff]", x = decoded_string)) {
-    #   Encoding(decoded_string) <- "latin1"
-    # }
+  tryCatch({
+    # adjustments based on the detection v1.1.4 bugfix
+    if (utf8_present) {
+      decoded_string <- iconv(decoded_string, from = "UTF-8", to = "UTF-8")
+    } else if (latin1_present) {
+      decoded_string <- iconv(decoded_string, from = "latin1", to = "UTF-8")
+    } else if (iso_8859_10_present) {
+      decoded_string <- iconv(decoded_string, from = "ISO-8859-10", to = "UTF-8")
+    } else if (windows_1252_present) {
+      decoded_string <- iconv(decoded_string, from = "windows-1252", to = "UTF-8")
+    # } else if (iso_8859_5_present) {
+      # decoded_string <- iconv(decoded_string, from = "ISO-8859-5", to = "UTF-8")
+      # decoded_string <- iconv(decoded_string, from = "UTF-8", to = "UTF-8", sub="byte")
+    # } else if (koi8_r_present) {
+    #   decoded_string <- iconv(decoded_string, from = "KOI8-R", to = "UTF-8")
+    } else if (iso_8859_9_present) {
+      decoded_string <- iconv(decoded_string, from = "ISO-8859-9", to = "UTF-8")
+    } else if (windows_1254_present) {
+      decoded_string <- iconv(decoded_string, from = "windows-1254", to = "UTF-8")
+    }
+
   }, error = function(e) {
-    Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string)]) <- "latin1"
-    # if (grepl(pattern = "[\\x80-\\xff]", x = decoded_string)) {
-    #   Encoding(decoded_string) <- "latin1"
-    # }
+    # Encoding(decoded_string)  <- "UTF-8"
+    Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string, useBytes = TRUE)]) <- "UTF-8"
+
   })
 
   decoded_string <- paste0(decoded_string, collapse = " ")
 
-  decoded_string <- gsub("_", " ", decoded_string) # recommendation https://tools.ietf.org/html/rfc2047#section-4, item 4.2
+  decoded_string <- gsub("_", " ", decoded_string, useBytes = TRUE) # recommendation https://tools.ietf.org/html/rfc2047#section-4, item 4.2
   # The "Q" encoding is similar to the "Quoted-Printable" content-
   #   transfer-encoding defined in RFC 2045.  It is designed to allow text
   # containing mostly ASCII characters to be decipherable on an ASCII

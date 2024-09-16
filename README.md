@@ -12,7 +12,7 @@
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman)
 [![Downloads from the RStudio CRAN
 mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/licenses/GPL-3.0)
+[![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0)
 [![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml)
 <!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) -->
 <!-- badges: end -->
@@ -28,7 +28,12 @@ aim of this package is to pave the way for email data analysis in R. To
 do so, `mRpostman` makes extensive use of the {curl} package and the
 libcurl C library.
 
-mRpostman’s official website: <https://allanvc.github.io/mRpostman/>
+`mRpostman`’s official website: <https://allanvc.github.io/mRpostman/>
+
+Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”,
+Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, [doi:
+10.5334/jors.480](https://doi.org/10.5334/jors.480). Refer to
+`citation("mRpostman")`.
 
 **IMPORTANT**:
 
@@ -48,88 +53,35 @@ mRpostman’s official website: <https://allanvc.github.io/mRpostman/>
     mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
     vignette.
 
-## Authentication
+3.  Most mail providers discontinued less secure apps access. If it is
+    still available and you are comfortable with this type of access you
+    can enable this option for your account on your mail provider. Some
+    providers, such as Yahoo Mail, also offer the option to generate
+    password to be used by third-party apps such as mRpostman. The other
+    option, as mentioned above, is to set up OAuth2 (two-factor
+    authentication) in order to access your mailbox. Please also refer
+    to the [*“Using IMAP OAuth2.0 authentication in
+    mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
+    vignette.
 
-There are two ways of connecting to your IMAP server: using plain or
-OAuth2.0 authentication. Here, we only describe the plain authentication
-process. If you want to use OAuth2.0 authentication, please read the
-aforementioned vignette.
+## Providers and their IMAP urls
 
-### Allowing less secure apps access
+| **Provider**                       | **IMAP Server**           |
+|------------------------------------|---------------------------|
+| Gmail                              | `imap.gmail.com`          |
+| Office 365                         | `outlook.office365.com`\* |
+| Outlook.com (Hotmail and Live.com) | `imap-mail.outlook.com`   |
+| Yahoo Mail                         | `imap.mail.yahoo.com`     |
+| iCloud Mail                        | `imap.mail.me.com`        |
+| AOL Mail                           | `imap.aol.com`            |
+| Zoho Mail                          | `imap.zoho.com`           |
+| Yandex Mail                        | `imap.yandex.com`         |
+| GMX Mail                           | `imap.gmx.com`            |
+| Mail.com                           | `imap.mail.com`           |
+| FastMail                           | `imap.fastmail.com`       |
 
-When using plain authentication, most of the mail providers will require
-the user to enable **less secure apps** access. Once it is done, you
-will be able to access your mailbox using a “third party app” as
-`mRpostman`.
-
-### Plain authentication
-
-Before using `mRpostman`, it is essential to configure the access to
-your email account. Various mail providers require that you enable
-**“less secure apps”** access to accept plain authentication between the
-IMAP server and a third-party app.
-
-Let’s see how to configure simple plain authentication for Gmail, Yahoo
-Mail, AOL Mail, Hotmail, and Office 365.
-
-#### Outlook - Office 365
-
-There is no need to execute any external configuration. Please, note
-that the `url` parameter in `configure_imap()` should be set as
-`url = "imaps://outlook.office365.com"`, and the `username` should be
-set as `user@yourcompany.com`.
-
-#### Hotmail
-
-There is no need to execute any external configuration. Please, note
-that the `url` parameter in `configure_imap()` should be set as
-`url = "imaps://imap-mail.outlook.com"`, and the `username` should be
-set as `user@hotmail.com`.
-
-#### Gmail
-
-1)  Go to the Gmail website and log in with your credentials.
-
-2)  Then, go to
-    <https://myaccount.google.com/u/1/lesssecureapps?pageId=none>
-
-![](man/figures/gmail1.png) <!-- <img src="man/figures/gmail1.png"> -->
-
-3)  Set “Allow less secure apps” to **ON**.
-
-#### Yahoo Mail
-
-1)  Go to the Yahoo Mail website and log in with your credentials.
-
-2)  Click on “Account Info”.
-
-![](man/figures/yahoo1.png) <!-- <img src="man/figures/yahoo1.png"> -->
-
-3)  Click on “Account Security” on the left menu.
-
-![](man/figures/yahoo2.png) <!-- <img src="man/figures/yahoo2.png"> -->
-
-4)  Then, set “Allow apps that use less secure sign in” **ON**
-
-![](man/figures/yahoo3.png)
-
-<!-- <img src="man/figures/yahoo3.png"> -->
-
-#### AOL Mail
-
-1)  Go to the AOL Mail website and log in with your credentials.
-
-2)  Click on “Options” and then on “Account Info”.
-
-![](man/figures/aol1.png) <!-- <img src="man/figures/aol1.png"> -->
-
-3)  Click on “Account Security” on the left menu.
-
-![](man/figures/aol2.png) <!-- <img src="man/figures/aol2.png"> -->
-
-4)  After, set “Allow apps that use less secure sign in” **ON**
-
-![](man/figures/aol3.png) <!-- <img src="man/figures/aol3.png"> -->
+\* For Office 365 accounts, the `username` should be set as
+`user@yourcompany.com` or `user@youruniversity.edu` for example.
 
 ## Introduction
 
@@ -348,7 +300,12 @@ Mail Server with Courier and Cyrus*. No Starch Press. ISBN
 978-1-59327-177-0.
 
 Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
-package version 4.3, <https://CRAN.R-project.org/package=curl>
+package version 4.3, <https://CRAN.R-project.org/package=curl>.
 
 Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
-<https://curl.se/libcurl/>
+<https://curl.se/libcurl/>.
+
+A. V. C. Quadros, *mRpostman: An IMAP Client for R*, Journal of Open
+Research Software, vol. 12, no. 1, p. 4, 2024,
+<a href="https://doi:10.5334/jors.480"
+class="uri">https://doi:10.5334/jors.480</a>.
