@@ -28,29 +28,38 @@
 #'
 #' # Simple quoted-printable string - Portuguese example
 #' qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
-#' decoded_string <- decode_mime_header(string = qp_encoded)
+#' decode_mime_header(string = qp_encoded)
 #'
 #' # Simple quoted-printable string - French example
 #' qp_encoded <- "sur la route =C3=A0 suivre les voil=C3=A0 bient=C3=B4t qui te d=C3=A9gradent"
-#' decoded_string <- decode_mime_header(string = qp_encoded)
+#' decode_mime_header(string = qp_encoded)
+#'
+#' # Simple quoted-printable string - Norwegian example
+#' qp_encoded <- "p=C3=A5 veien for =C3=A5 f=C3=B8lge, snart vil de forringe deg"
+#' decode_mime_header(string = qp_encoded)
+#'
+#' # Simple quoted-printable string - Turkish example
+#' qp_encoded <- "yak=C4=B1nda seni k=C3=BC=C3=A7=C3=BCk d=C3=BC=C5=9F=C3=BCrecekler"
+#' decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 quoted-printable header - Portuguese example
 #' qp_encoded <- "=?iso-8859-1?Q?DIDEC_Capacita=E7=E3o?="
-#' decoded_string <- decode_mime_header(string = qp_encoded)
+#' decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 quoted-printable - German example
 #' qp_encoded <- "=?UTF-8?Q?stern=2Ede_-_t=C3=A4glich?="
-#' decoded_string <- decode_mime_header(string = qp_encoded)
+#' decode_mime_header(string = qp_encoded)
 #'
 #' # RFC 2047 base64 - Portuguese example
 #' b64_encoded <- "=?utf-8?B?Sk9BTkEgRlVTQ08gTE9CTyBubyBUZWFtcw==?="
-#' decoded_string <- decode_mime_header(string = b64_encoded)
+#' decode_mime_header(string = b64_encoded)
 #' }
 #'
 decode_mime_header <- function(string) {
 
   # check if it is a character vector
   #check
+  # string = qp_encoded
   check_args(string = string)
 
   out <- c()
@@ -117,7 +126,9 @@ decode_mime_header <- function(string) {
           content
         })
 
-      } else if (grepl(pattern = "[\\x80-\\xff]", x = content)) { # assim reconhece direto sem precisar transformar!!
+      # } else if (grepl(pattern = "[\\x80-\\xff]", x = content)) { # assim reconhece direto sem precisar transformar!!
+      } else if (grepl(pattern = "[\\x80-\\xD1\\x8F]", x = content)) { # assim reconhece direto sem precisar transformar!!
+
         decoded_string <- decode_quoted_printable_header(qp_encoded = content)
 
       } else {
