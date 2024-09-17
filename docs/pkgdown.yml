@@ -1,8 +1,9 @@
 pandoc: 2.19.2
-pkgdown: 2.1.0
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   basics: basics.html
   code_migration: code_migration.html
   xoauth2.0: xoauth2.0.html
-last_built: 2024-09-16T23:35Z
+last_built: 2024-09-17T00:04Z
+

@@ -302,10 +302,9 @@ Mail Server with Courier and Cyrus*. No Starch Press. ISBN
 Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
 package version 4.3, <https://CRAN.R-project.org/package=curl>.
 
+Quadros, A. V. C. *mRpostman: An IMAP Client for R*, Journal of Open
+Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480.
+<https://openresearchsoftware.metajnl.com/articles/10.5334/jors.480>.
+
 Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
 <https://curl.se/libcurl/>.
-
-A. V. C. Quadros, *mRpostman: An IMAP Client for R*, Journal of Open
-Research Software, vol. 12, no. 1, p. 4, 2024,
-<a href="https://doi:10.5334/jors.480"
-class="uri">https://doi:10.5334/jors.480</a>.
