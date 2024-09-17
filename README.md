@@ -31,9 +31,10 @@ libcurl C library.
 `mRpostman`’s official website: <https://allanvc.github.io/mRpostman/>
 
 Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”,
-Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, [doi:
-10.5334/jors.480](https://doi.org/10.5334/jors.480). Refer to
-`citation("mRpostman")`.
+Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi:
+10.5334/jors.480.
+[http](https://openresearchsoftware.metajnl.com/articles/10.5334/jors.480).
+Refer to `citation("mRpostman")`.
 
 **IMPORTANT**:
 
@@ -293,18 +294,18 @@ This package is licensed under the terms of the GPL-3 License.
 ## References
 
 Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*,
-RFC 3501, March 2003, <https://www.rfc-editor.org/rfc/rfc3501>.
+RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
 
 Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a
 Mail Server with Courier and Cyrus*. No Starch Press. ISBN
 978-1-59327-177-0.
 
 Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
-package version 4.3, <https://CRAN.R-project.org/package=curl>.
+package version 4.3, [http](https://CRAN.R-project.org/package=curl).
 
 Quadros, A. V. C. *mRpostman: An IMAP Client for R*, Journal of Open
 Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480.
-<https://openresearchsoftware.metajnl.com/articles/10.5334/jors.480>.
+[http](https://openresearchsoftware.metajnl.com/articles/10.5334/jors.480).
 
 Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
-<https://curl.se/libcurl/>.
+[http](https://curl.se/libcurl/).

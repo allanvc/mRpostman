@@ -536,7 +536,7 @@ Since the goal here is to write the fetch results to disk, it is recommended tha
 
 Our local folder will be populated with the `.txt` files of the fetched messages:
 
-![](figures/basics/fetch-body.png){width=80%}
+![](figures/basics/fetchbody.png){width=80%}
 
 ### 6.2) Fetch header
 
