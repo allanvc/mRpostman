@@ -14,7 +14,7 @@
 
 - added a `CITATION` file to `inst` folder.
 
-## mRpostman 1.1.2 (2023-12-17 CRAN update)
+## mRpostman 1.1.3 (2024-08-10 Github patch)
 
 - broken Github fix to `decode_quoted_printable_header()` and `decode_quoted_printable_text()` (needed to rewind to v1.1.2 before moving again to v1.1.4)
 
