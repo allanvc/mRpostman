@@ -1,4 +1,10 @@
-## mRpostman 1.1.5 (2026-07-05 documentation patch)
+## mRpostman 1.1.5 (2026-07-05 documentation and bug-fix patch)
+
+### Bug fixes
+
+- `decode_mime_header()` now honors the character set declared in the RFC 2047 encoded-word (`=?<charset>?<enc>?...?=`) instead of guessing it heuristically. The declared charset is passed to `iconv()` (via a new internal `apply_charset()` helper) for both the quoted-printable (`Q`) and base64 (`B`) encodings, so headers in any `iconv`-supported charset now decode correctly — including ones the previous heuristic could not handle or mislabeled (e.g. Windows-1251 and KOI8-R Cyrillic, ISO-8859-2/Windows-1250 Central European, Big5, Shift_JIS, EUC-KR). The legacy heuristic is kept only as a fallback for "loose" quoted-printable strings that carry no declared charset.
+
+- `examine_folder()` no longer assumes the server returns both `EXISTS` and `RECENT`, in that order. The counts are now parsed and labeled by their actual keyword (new internal `parse_examine_counts()`), so the result stays correct when the order differs and no longer errors when `RECENT` is absent.
 
 ### Documentation
 

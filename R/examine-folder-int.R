@@ -67,13 +67,7 @@ examine_folder_int <- function(self, name, retries) {
 
   if (!is.null(response)) {
 
-    # v0.3.2: from stringr to base R
-    pattern = "([\\d]+)(?= EXISTS| RECENT)" # using look behind operator (?=)
-
-    exam_out <- unlist(regmatches(rawToChar(response$headers),
-                           gregexpr(pattern,
-                                    rawToChar(response$headers),
-                                    perl = TRUE)))
+    exam_out <- parse_examine_counts(rawToChar(response$headers))
 
   } else { # it is not necessary to select again
     count_retries = 0 #the first try doesnt count
@@ -96,21 +90,14 @@ examine_folder_int <- function(self, name, retries) {
     }
 
     if (!is.null(response)) {
-      pattern = "([\\d]+)(?= EXISTS| RECENT)" # using look behind operator (?=)
 
-      exam_out <- unlist(regmatches(rawToChar(response$headers),
-                             gregexpr(pattern,
-                                      rawToChar(response$headers),
-                                      perl = TRUE)))
+      exam_out <- parse_examine_counts(rawToChar(response$headers))
 
     } else {
       stop('Request error: the server returned an error.')
     }
 
   }
-
-  exam_out <- as.numeric(as.character(exam_out))
-  names(exam_out) <- c("EXISTS", "RECENT")
 
   # handle sanitizing
   rm(h)
