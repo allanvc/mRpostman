@@ -1,8 +1,11 @@
 #' Decode quoted-printable text
 #' @param qp_encoded A \code{character} vector containing a quoted-printable string
 #'   to be decoded.
+#' @param charset A \code{character} string with the charset declared in the
+#'   MIME \code{Content-Type}. When supplied, it is used directly (via
+#'   \code{\link{apply_charset}}) instead of the legacy heuristic detection.
 #' @noRd
-decode_quoted_printable_text <- function (qp_encoded) {
+decode_quoted_printable_text <- function (qp_encoded, charset = NULL) {
   # adapted from @hbrmstr original function:
   # https://stackoverflow.com/questions/40976213/decoding-quoted-printable-string-in-r
 
@@ -110,29 +113,33 @@ decode_quoted_printable_text <- function (qp_encoded) {
 
   decoded_string <- stringi::stri_replace_all_fixed(qp_encoded_split, qp_before, qp_after, vectorize_all=FALSE)
 
-  tryCatch({ # sometimes it works with one backslash, sometimes it doesn't
-    if (utf8_present) {
-      decoded_string <- iconv(decoded_string, from = "UTF-8", to = "UTF-8")
-    } else if (latin1_present) {
-      decoded_string <- iconv(decoded_string, from = "latin1", to = "UTF-8")
-    } else if (iso_8859_10_present) {
-      decoded_string <- iconv(decoded_string, from = "ISO-8859-10", to = "UTF-8")
-    } else if (windows_1252_present) {
-      decoded_string <- iconv(decoded_string, from = "windows-1252", to = "UTF-8")
-      # } else if (iso_8859_5_present) {
-      #   decoded_string <- iconv(decoded_string, from = "ISO-8859-5", to = "UTF-8")
-      # } else if (koi8_r_present) {
-      #   decoded_string <- iconv(decoded_string, from = "KOI8-R", to = "UTF-8")
-    } else if (iso_8859_9_present) {
-      decoded_string <- iconv(decoded_string, from = "ISO-8859-9", to = "UTF-8")
-    } else if (windows_1254_present) {
-      decoded_string <- iconv(decoded_string, from = "windows-1254", to = "UTF-8")
-    }
+  if (!is.null(charset)) {
+    # MIME Content-Type declares the charset: trust it (any iconv-supported
+    # charset works, e.g. Windows-1251, ISO-8859-2, Big5, Shift_JIS).
+    decoded_string <- apply_charset(decoded_string, charset)
 
-  }, error = function(e) {
-    Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string, useBytes = TRUE)]) <- "UTF-8"
+  } else {
+    # Legacy heuristic fallback, used when no charset is available.
+    tryCatch({ # sometimes it works with one backslash, sometimes it doesn't
+      if (utf8_present) {
+        decoded_string <- iconv(decoded_string, from = "UTF-8", to = "UTF-8")
+      } else if (latin1_present) {
+        decoded_string <- iconv(decoded_string, from = "latin1", to = "UTF-8")
+      } else if (iso_8859_10_present) {
+        decoded_string <- iconv(decoded_string, from = "ISO-8859-10", to = "UTF-8")
+      } else if (windows_1252_present) {
+        decoded_string <- iconv(decoded_string, from = "windows-1252", to = "UTF-8")
+      } else if (iso_8859_9_present) {
+        decoded_string <- iconv(decoded_string, from = "ISO-8859-9", to = "UTF-8")
+      } else if (windows_1254_present) {
+        decoded_string <- iconv(decoded_string, from = "windows-1254", to = "UTF-8")
+      }
 
-  })
+    }, error = function(e) {
+      Encoding(decoded_string[grepl(pattern = "[\\x80-\\xff]", x = decoded_string, useBytes = TRUE)]) <- "UTF-8"
+
+    })
+  }
 
   decoded_string <- paste0(decoded_string, collapse = " ")
 

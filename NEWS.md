@@ -4,6 +4,10 @@
 
 - `decode_mime_header()` now honors the character set declared in the RFC 2047 encoded-word (`=?<charset>?<enc>?...?=`) instead of guessing it heuristically. The declared charset is passed to `iconv()` (via a new internal `apply_charset()` helper) for both the quoted-printable (`Q`) and base64 (`B`) encodings, so headers in any `iconv`-supported charset now decode correctly — including ones the previous heuristic could not handle or mislabeled (e.g. Windows-1251 and KOI8-R Cyrillic, ISO-8859-2/Windows-1250 Central European, Big5, Shift_JIS, EUC-KR). The legacy heuristic is kept only as a fallback for "loose" quoted-printable strings that carry no declared charset.
 
+- the message-body decoders (`decode_mime_text()`, used by `clean_msg_text()`) now honor the charset declared in the MIME `Content-Type` for quoted-printable and base64 parts, via the same `apply_charset()` helper as the header decoder. The previous heuristic is kept as a fallback when no charset is declared, and the charset is not re-applied to parts already normalized to UTF-8 by the HTML parser (avoiding a double conversion).
+
+- the `esearch = TRUE` search path no longer evaluates server-provided text as R code. The `ALL` sequence-set of the `ESEARCH` response is now expanded by a dedicated parser (`parse_esearch_all()`) instead of `eval(parse(...))`, removing a code-injection/robustness risk while producing identical results for valid responses.
+
 - `examine_folder()` no longer assumes the server returns both `EXISTS` and `RECENT`, in that order. The counts are now parsed and labeled by their actual keyword (new internal `parse_examine_counts()`), so the result stays correct when the order differs and no longer errors when `RECENT` is absent.
 
 ### Documentation
