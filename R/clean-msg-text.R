@@ -31,6 +31,14 @@ clean_msg_text <- function(msg_list) {
 
     msg <- msg_list[[i]]
 
+    # charset declared in the MIME Content-Type of this part (if any)
+    cs_match <- stringr::str_match(msg, "(?i)charset=[\"']?([A-Za-z0-9][A-Za-z0-9_.:-]*)")
+    body_charset <- cs_match[1, 2]
+    if (is.na(body_charset)) body_charset <- NULL
+    # when the part is parsed as HTML below, rvest/xml2 already return UTF-8, so
+    # the charset must NOT be applied a second time
+    applied_html <- FALSE
+
     msg <- gsub('\r\n UID \\d+$|UID \\d+$', '', msg)
 
     # msg <- gsub('\r\n|\t', '', msg)
@@ -84,6 +92,7 @@ clean_msg_text <- function(msg_list) {
         msg <- page %>%
           rvest::html_nodes('body') %>%
           rvest::html_text()
+        applied_html <- TRUE
       }
 
     } else {
@@ -107,6 +116,7 @@ clean_msg_text <- function(msg_list) {
           msg <- page %>%
             rvest::html_nodes('body') %>%
             rvest::html_text()
+          applied_html <- TRUE
         }
 
       }
@@ -115,7 +125,10 @@ clean_msg_text <- function(msg_list) {
 
     msg <- gsub('=\r\n', '', msg) # important!!
 
-    msg <- decode_mime_text(as.character(msg))
+    # honor the declared charset, except when the part was already decoded to
+    # UTF-8 via the HTML parser (avoids a double conversion)
+    msg <- decode_mime_text(as.character(msg),
+                            charset = if (isTRUE(applied_html)) NULL else body_charset)
 
     msg_list_out <- c(msg_list_out, msg)
 
