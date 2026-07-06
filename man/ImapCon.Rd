@@ -282,7 +282,7 @@ con$search(AND(smaller_than(size = "512000"),
 
 \dontrun{
 # search for messages with size larger than 512Kb
-con$search_larger_than(size = 512000))
+con$search_larger_than(size = 512000)
 }
 
 ## ------------------------------------------------
@@ -292,7 +292,7 @@ con$search_larger_than(size = 512000))
 \dontrun{
 con$select_folder(name = "INBOX")
 # search for messages with size smaller than 512Kb
-con$search_smaller_than(size = 512000))
+con$search_smaller_than(size = 512000)
 }
 
 ## ------------------------------------------------
@@ -338,7 +338,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 
 ## ------------------------------------------------
@@ -382,7 +382,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_sent_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 
 ## ------------------------------------------------
@@ -625,7 +625,7 @@ con$search_string(expr = "@gmail", where = "CC") \%>\%
   con$get_attachments()
 
 # example 2
-res <- con$search_string(expr = "@gmail", where = "CC") \%>\%
+res <- con$search_string(expr = "@gmail", where = "CC")
 out <- con$fetch_body(msg = res)
 con$get_attachments(msg_list = out)
 }
@@ -1364,7 +1364,7 @@ A \code{numeric vector} containing the message ids.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 # search for messages with size larger than 512Kb
-con$search_larger_than(size = 512000))
+con$search_larger_than(size = 512000)
 }
 }
 \if{html}{\out{</div>}}
@@ -1432,7 +1432,7 @@ A \code{numeric vector} containing the message ids.
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
 # search for messages with size smaller than 512Kb
-con$search_smaller_than(size = 512000))
+con$search_smaller_than(size = 512000)
 }
 }
 \if{html}{\out{</div>}}
@@ -1719,7 +1719,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 }
 \if{html}{\out{</div>}}
@@ -2004,7 +2004,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_sent_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 }
 \if{html}{\out{</div>}}
@@ -3215,7 +3215,7 @@ con$search_string(expr = "@gmail", where = "CC") \%>\%
   con$get_attachments()
 
 # example 2
-res <- con$search_string(expr = "@gmail", where = "CC") \%>\%
+res <- con$search_string(expr = "@gmail", where = "CC")
 out <- con$fetch_body(msg = res)
 con$get_attachments(msg_list = out)
 }

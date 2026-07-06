@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.5</span>
       </span>
     </div>
 
@@ -190,8 +190,8 @@ CRITERIA". Default is <code>FALSE</code>.</p></td>
     <pre class="examples"><span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
 <span class='r-in'><span><span class='co'># select folder &amp; search</span></span></span>
 <span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
-<span class='r-in'><span><span class='co'># search for messages SINCE "30-Ago-2019" AND SMALLER than 512KB.</span></span></span>
-<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search</span><span class='op'>(</span>request <span class='op'>=</span> <span class='fu'><a href='AND.html'>AND</a></span><span class='op'>(</span><span class='fu'><a href='sent_since.html'>sent_since</a></span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"30-Ago-2019"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span><span class='co'># search for messages SINCE "30-Aug-2019" AND SMALLER than 512KB.</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search</span><span class='op'>(</span>request <span class='op'>=</span> <span class='fu'><a href='AND.html'>AND</a></span><span class='op'>(</span><span class='fu'><a href='sent_since.html'>sent_since</a></span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"30-Aug-2019"</span><span class='op'>)</span>,</span></span>
 <span class='r-in'><span>                                <span class='fu'><a href='smaller_than.html'>smaller_than</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>512000</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 </pre>

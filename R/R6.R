@@ -434,7 +434,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @examples
     #' \dontrun{
     #' # search for messages with size larger than 512Kb
-    #' con$search_larger_than(size = 512000))
+    #' con$search_larger_than(size = 512000)
     #' }
     search_larger_than = function(size, negate = FALSE, use_uid = FALSE,
                                   flag = NULL, esearch = FALSE, retries = 1) {
@@ -475,7 +475,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
     #' # search for messages with size smaller than 512Kb
-    #' con$search_smaller_than(size = 512000))
+    #' con$search_smaller_than(size = 512000)
     #' }
     search_smaller_than = function(size, negate = FALSE, use_uid = FALSE,
                                   flag = NULL, esearch = FALSE, retries = 1) {
@@ -653,7 +653,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
     #' con$search_period(since_date_char = "02-Jan-2020",
     #'                   before_date_char = "22-Mar-2020",
-    #'                   negate = TRUE))
+    #'                   negate = TRUE)
     #' }
     search_period = function(since_date_char, before_date_char, negate = FALSE,
                              use_uid = FALSE, flag = NULL, esearch = FALSE,
@@ -861,7 +861,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
     #' con$search_sent_period(since_date_char = "02-Jan-2020",
     #'                   before_date_char = "22-Mar-2020",
-    #'                   negate = TRUE))
+    #'                   negate = TRUE)
     #' }
     search_sent_period = function(since_date_char, before_date_char, negate = FALSE,
                                   use_uid = FALSE, flag = NULL, esearch = FALSE,
@@ -1725,7 +1725,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   con$get_attachments()
     #'
     #' # example 2
-    #' res <- con$search_string(expr = "@gmail", where = "CC") %>%
+    #' res <- con$search_string(expr = "@gmail", where = "CC")
     #' out <- con$fetch_body(msg = res)
     #' con$get_attachments(msg_list = out)
     #' }

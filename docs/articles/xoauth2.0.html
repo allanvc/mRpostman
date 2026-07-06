@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.5</span>
       </span>
     </div>
 
@@ -92,7 +92,7 @@
 
       
 
-      </header><script src="xoauth2.0_files/header-attrs-2.28/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>IMAP OAuth2.0 authentication in mRpostman</h1>
@@ -120,24 +120,11 @@
 <div id="intro" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intro" class="anchor"></a>Introduction</h2>
-<p>More and more mail providers are adopting the OAuth2.0 authentication
-as for their preferred method. Although there may be some pain involved
-in the process of configuring and obtaining an access token, it is a
-more secure way of authenticating your identity during an IMAP
-session.</p>
-<p>In this vignette, we will describe the process of obtaining, using,
-and refreshing an OAuth2.0 token to establish a connection with the
-Gmail IMAP server. This process will be very likely the same when trying
-to replicate it in other mail providers, such as AOL, Yahoo, Outlook
-Office 365, and many others.</p>
-<p><strong>IMPORTANT</strong>: Currently, the only drawback with this
-approach may be your libcurl’s version. The libcurl functionality
-responsible for transmitting the token was not working properly in old
-libcurl versions. If you have version 7.65.0 (released on May 22, 2019)
-or above installed, you should be fine. Therefore, we recommend checking
-to which libcurl version, the curl R package is linked by executing:</p>
+<p>More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.</p>
+<p>In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
+<p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl’s version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/curl/man/curl_options.html">curl_version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/curl_options.html">curl_version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code>## $version
 ## [1] "7.70.0"
 ## 
@@ -169,8 +156,7 @@ to which libcurl version, the curl R package is linked by executing:</p>
 ## 
 ## $idn
 ## [1] FALSE</code></pre>
-<p>The steps involved in configuring and obtaining an OAuth2.0 access
-token can be summarized as follows:</p>
+<p>The steps involved in configuring and obtaining an OAuth2.0 access token can be summarized as follows:</p>
 <ul>
 <li><ol style="list-style-type: decimal">
 <li>creating a new API project in the Google Account Console</li>
@@ -195,14 +181,11 @@ token can be summarized as follows:</p>
 <div id="step-1---creating-a-new-api-project" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-1---creating-a-new-api-project" class="anchor"></a>Step 1 - Creating a new API project</h2>
-<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="uri">https://console.developers.google.com/apis/</a>. Assuming
-that you don’t have any pre-existent project, you should see this
-page:</p>
+<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="uri">https://console.developers.google.com/apis/</a>. Assuming that you don’t have any pre-existent project, you should see this page:</p>
 <!-- ![](man/figures/aol3.png) -->
 <p><img src="figures/xoauth/step1_1.png" width="700"></p>
 <p>Then, click on “Create New Project”</p>
-<p>On the next screen, type a name for your project. Here, we go with
-“xpto-allan”:</p>
+<p>On the next screen, type a name for your project. Here, we go with “xpto-allan”:</p>
 <p><img src="figures/xoauth/step1_1x.png" style="width:60.0%"></p>
 <p>After a few seconds, the project is created.</p>
 </div>
@@ -215,15 +198,13 @@ page:</p>
 <p><br></p>
 <p>You should see the following screen:</p>
 <p><img src="figures/xoauth/step2_2x.png" width="750"></p>
-<p><br> On the top menu, click on “+ CREATE CREDENTIALS”, then on “OAuth
-client ID”.</p>
+<p><br> On the top menu, click on “+ CREATE CREDENTIALS”, then on “OAuth client ID”.</p>
 <p><img src="figures/xoauth/step2_3.png" width="550"></p>
 <p><br></p>
 <p>You should see the following screen. Select “Web Application”.</p>
 <p><img src="figures/xoauth/step2_x1.png" width="550"></p>
 <p><br></p>
-<p>In the following screen, fill in the name of the OAuth2.0 client. You
-chose “mRpostman”, but you can choose the name of your preference.</p>
+<p>In the following screen, fill in the name of the OAuth2.0 client. We chose “mRpostman”, but you can choose the name of your preference.</p>
 <p><img src="figures/xoauth/step2_x2.png" style="width:60.0%"></p>
 <p>Scroll down the page and click “CREATE”.</p>
 </div>
@@ -237,17 +218,12 @@ chose “mRpostman”, but you can choose the name of your preference.</p>
 <code class="sourceCode R"><span><span class="va">secret</span> <span class="op">=</span> <span class="st">"vsV[...]6m7"</span></span>
 <span></span>
 <span><span class="va">key</span> <span class="op">=</span> <span class="st">"85169[...]9pk.apps.googleusercontent.com"</span></span></code></pre></div>
-<p>In this same script, we use the <code>httr</code> package to
-configure and obtain our token.</p>
+<p>In this same script, we use the <code>httr</code> package to configure and obtain our token.</p>
 </div>
 <div id="step-4---using-the-httr-package-to-retrieve-the-token" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-4---using-the-httr-package-to-retrieve-the-token" class="anchor"></a>Step 4 - Using the <code>httr</code> package to retrieve the
-token</h2>
-<p>Now, we need an endpoint, an app configuration, and a scope, which is
-circumscribed to Gmail. The <code>httr</code> package has some pre-set
-endpoints for Google, Yahoo, and other APIs. So, it is very
-straightforward to define one with <code>httr</code>.</p>
+<a href="#step-4---using-the-httr-package-to-retrieve-the-token" class="anchor"></a>Step 4 - Using the <code>httr</code> package to retrieve the token</h2>
+<p>Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The <code>httr</code> package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with <code>httr</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">endpoint</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span></span>
 <span></span>
@@ -260,32 +236,20 @@ straightforward to define one with <code>httr</code>.</p>
 <span><span class="va">scope</span> <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
 <span></span>
 <span><span class="va">auth_code</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html">oauth2.0_token</a></span><span class="op">(</span><span class="va">endpoint</span>, app <span class="op">=</span> <span class="va">gmail_app</span>, scope <span class="op">=</span> <span class="va">scope</span><span class="op">)</span></span></code></pre></div>
-<p>As it is the first time you are trying to access your account using
-the OAuth2.0 token, you’ll be prompted about caching your credentials on
-a local file.</p>
+<p>As it is the first time you are trying to access your account using the OAuth2.0 token, you’ll be prompted about caching your credentials on a local file.</p>
 <p><img src="figures/xoauth/step2_x4.png" width="550"></p>
-<p>After, you will be redirected to a webpage, where you are going to
-make some confirmations about your identity:</p>
+<p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
 <div class="col2">
 <p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br><br></p>
 <p><img src="figures/xoauth/step2_x6.png" style="width:80.0%"></p>
 </div>
-<p>Finally, you should see a new white tab with the message:
-<em>“Authentication complete. Please close this page and return to
-R”</em>.</p>
+<p>Finally, you should see a new white tab with the message: <em>“Authentication complete. Please close this page and return to R”</em>.</p>
 </div>
 <div id="step-5---testing-the-imap-connection" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-5---testing-the-imap-connection" class="anchor"></a>Step 5 - Testing the IMAP connection</h2>
-<p>Now we can test our IMAP connection with <code>mRpostman</code>,
-using the <code>xoauth2_bearer</code> argument in
-<code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
-<p>First, we put our access token into a different object. This is not
-mandatory. You can pass the <code>auth_code$access_token</code> directly
-to the <code>xoauth2_bearer</code> argument. Your token should be a
-large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute
-the line
-<code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
+<p>Now we can test our IMAP connection with <code>mRpostman</code>, using the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
+<p>First, we put our access token into a different object. This is not mandatory. You can pass the <code>auth_code$access_token</code> directly to the <code>xoauth2_bearer</code> argument. Your token should be a large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute the line <code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>Finally, we configure an IMAP connection and test it:</p>
@@ -306,20 +270,12 @@ the line
 ## [13] "MOVE"                 "CONDSTORE"            "ESEARCH"             
 ## [16] "UTF8=ACCEPT"          "LIST-EXTENDED"        "LIST-STATUS"         
 ## [19] "LITERAL-"             "SPECIAL-USE"          "APPENDLIMIT=35651584"</code></pre>
-<p>If you got some kind of “SASL …” error in the information flow
-between the server and mRpostman, your libcurl version may be older than
-the 7.65 we mentioned in the <a href="#intro">Introduction</a>.
-Therefore, it still has the Oauth2.0 bearer bug. If this is the case you
-should update it. Or, perhaps your libcurl version is updated, but your
-curl R package is pointing to an older version of libcurl in your disk.
-In this case, you’ll have to dig on the internet how to solve it.</p>
+<p>If you got some kind of “SASL …” error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the <a href="#intro">Introduction</a>. Therefore, it still has the OAuth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you’ll have to dig on the internet how to solve it.</p>
 </div>
 <div id="step-6---refreshing-the-token" class="section level2">
 <h2 class="hasAnchor">
 <a href="#step-6---refreshing-the-token" class="anchor"></a>Step 6 - Refreshing the token</h2>
-<p>For future sessions (or after a considerable span of time) you’ll
-need to refresh the previous token. You can use the following function
-below to achieve that:</p>
+<p>For future sessions (or after a considerable span of time) you’ll need to refresh the previous token. You can use the following function below to achieve that:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span></span>
 <span><span class="va">oauth2.0_refresh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">endpoint</span>, <span class="va">app</span>, <span class="va">auth_code</span>, <span class="va">type</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
@@ -340,8 +296,7 @@ below to achieve that:</p>
 <span><span class="va">auth_code_new</span> <span class="op">&lt;-</span> <span class="fu">oauth2.0_refresh</span><span class="op">(</span><span class="va">endpoint</span>, app<span class="op">=</span><span class="va">gmail_app</span>, auth_code<span class="op">=</span><span class="va">auth_code</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code_new</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
-<p>Substitute it into the <code>xoauth2_bearer</code> argument in
-<code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
+<p>Substitute it into the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
 </div>
   </div>
 

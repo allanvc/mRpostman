@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.5</span>
       </span>
     </div>
 
@@ -154,13 +154,13 @@
 
     <p><a href='#method-new'><code>ImapCon$new()</code></a>: The <code><a href='configure_imap.html'>configure_imap</a></code>
   should be preferred instead of <code>ImapCon$new()</code>.</p>
-<p><a href='#method-search'><code>ImapCon$search()</code></a>: IMAP queries follows
+<p><a href='#method-search'><code>ImapCon$search()</code></a>: IMAP queries follow
   Polish notation, i.e. operators such as <code>OR</code> come before arguments,
   e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
   in this package should be used like the following examples:
   <code>OR(before("17-Apr-2015"), string("FROM", "John"))</code>. Even though there
   is no "AND" operator in IMAP, this package adds a helper function
-  <code><a href='AND.html'>AND</a></code> to indicate multiples arguments that must be searched
+  <code><a href='AND.html'>AND</a></code> to indicate multiple arguments that must be searched
   together, e.g. <code>AND(since("01-Jul-2018"), smaller_than(16000))</code>.</p>
 <p><a href='#method-sent_before'><code>ImapCon$sent_before()</code></a>: Search
   operations that use the origination/RFC-2822 Header date
@@ -205,7 +205,7 @@
 <p><a href='#method-search_string'><code>ImapCon$search_string()</code></a>: Using
   <code>where = "TEXT"</code>, may produce unexpected results since it
   will perform the search on raw data, i.e. the searched expression may be
-  truncated by special formating characters such as <code>\r\n</code> for example.
+  truncated by special formatting characters such as <code>\r\n</code> for example.
   It is recommended to perform this type of search using <code>where = "BODY"</code>,
   instead of <code>"TEXT"</code> (<cite>Heinlein, P. and Hartleben, P. (2008)</cite>).</p>
 <p><a href='#method-esearch_count'><code>ImapCon$esearch_count()</code></a>: This
@@ -411,7 +411,7 @@ as a request, not an order.</p></dd>
 re-execution of a command. Default is 0, which means that no timeout limit is
 set.</p></dd>
 
-<dt><code>...</code></dt><dd><p>Further curl parameters (see <code><a href='https://rdrr.io/pkg/curl/man/curl_options.html'>curl::curl_options</a></code>) that
+<dt><code>...</code></dt><dd><p>Further curl parameters (see <code><a href='https://jeroen.r-universe.dev/curl/reference/curl_options.html'>curl::curl_options</a></code>) that
 can be used with the IMAP protocol. Only for advanced users.</p></dd>
 
 </dl><p></div></p>
@@ -568,7 +568,7 @@ Default is <code>1</code>.</p></dd>
   structure.</p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
-con$select_mail_folder(name = "INBOX")
+con$select_folder(name = "INBOX")
 }
 </pre><p></div></p>
 
@@ -638,7 +638,7 @@ con$create_folder(name = "New Folder Name")
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
 <p><div class="arguments"></p><dl>
-<dt><code>name</code></dt><dd><p>A string containing the name of the new mail folder to be
+<dt><code>name</code></dt><dd><p>A string containing the name of the mail folder to be
 renamed. If no name is passed, the command will be executed using the
 previously selected mail folder name.</p></dd>
 
@@ -706,7 +706,7 @@ and <code><a href='AND.html'>AND</a></code>, and criteria helper functions such 
 <code><a href='sent_before.html'>sent_before</a></code>, <code><a href='sent_since.html'>sent_since</a></code>, <code><a href='sent_on.html'>sent_on</a></code>,
 <code><a href='flag.html'>flag</a></code>, <code><a href='string.html'>string</a></code>, <code><a href='smaller_than.html'>smaller_than</a></code>,
 <code><a href='larger_than.html'>larger_than</a></code>, <code><a href='younger_than.html'>younger_than</a></code>, or
-<code><a href='younger_than.html'>younger_than</a></code>.</p></dd>
+<code><a href='older_than.html'>older_than</a></code>.</p></dd>
 
 <dt><code>negate</code></dt><dd><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
 CRITERIA". Default is <code>FALSE</code>.</p></dd>
@@ -802,7 +802,7 @@ Default is <code>1</code>.</p></dd>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
 # search for messages with size larger than 512Kb
-con$search_larger_than(size = 512000))
+con$search_larger_than(size = 512000)
 }
 </pre><p></div></p>
 
@@ -858,7 +858,7 @@ Default is <code>1</code>.</p></dd>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$select_folder(name = "INBOX")
 # search for messages with size smaller than 512Kb
-con$search_smaller_than(size = 512000))
+con$search_smaller_than(size = 512000)
 }
 </pre><p></div></p>
 
@@ -936,9 +936,7 @@ con$search_before(date = "02-Jan-2020", use_uid = TRUE)
 <p><div class="arguments"></p><dl>
 <dt><code>date_char</code></dt><dd><p>A <code>character string</code> with format "DD-Mon-YYYY", e.g.
 "01-Apr-2019". We opt not to use <code>Date</code> or <code>POSIX*</code> like
-objects, since IMAP servers use this uncommon date format.
-<code>POSIX*</code> like objects, since IMAP servers use this uncommon date format.
-<code>POSIX*</code> like, since IMAP servers like this not so common date format.</p></dd>
+objects, since IMAP servers use this uncommon date format.</p></dd>
 
 <dt><code>negate</code></dt><dd><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is <code>FALSE</code>.</p></dd>
@@ -1099,7 +1097,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 </pre><p></div></p>
 
@@ -1336,7 +1334,7 @@ con$select_folder(name = "INBOX")
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_sent_period(since_date_char = "02-Jan-2020",
                   before_date_char = "22-Mar-2020",
-                  negate = TRUE))
+                  negate = TRUE)
 }
 </pre><p></div></p>
 
@@ -1560,7 +1558,7 @@ Default is <code>1</code>.</p></dd>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$select_folder(name = "INBOX")
-# search for all messages received in the last hour (younger than 3600 seconds)
+# search for messages with "@k-state.edu" in the FROM field
 con$search_string(expr = "@k-state.edu", where = "FROM")
 }
 </pre><p></div></p>
@@ -1970,7 +1968,7 @@ con$move(msg = res, to_folder = "Sent")
 <p><hr>
 <a id="method-ImapCon-esearch_count"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>esearch_count()</code></h3>
 <p>Count the number of messages with a specific flag(s) in a
-  folder (depend on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+  folder (depends on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>esearch_count</span><span class='op'>(</span><span class='va'>flag</span>, use_uid <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2067,7 +2065,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 <p><hr>
 <a id="method-ImapCon-esearch_min_id"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>esearch_min_id()</code></h3>
 <p>Search the minimum message id in the selected mail folder
-  (depend on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+  (depends on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>esearch_min_id</span><span class='op'>(</span><span class='va'>flag</span>, use_uid <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2103,7 +2101,7 @@ con$esearch_min_id(flag = "Answered")
 <p><hr>
 <a id="method-ImapCon-esearch_max_id"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>esearch_max_id()</code></h3>
 <p>Search the maximum message id in the selected mail folder
-  (depend on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+  (depends on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>esearch_max_id</span><span class='op'>(</span><span class='va'>flag</span>, use_uid <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2225,7 +2223,7 @@ con$select_folder(name = "INBOX")
 # Replace the current flags of the messages in the search results for the
 #.. flags "\UNSEEN" and "\Flagged"
 con$search_since(date_char = "20-Aug-2020") %&gt;%
-  con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged")
+  con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged"))
 }
 </pre><p></div></p>
 
@@ -2269,7 +2267,7 @@ Default is <code>1</code>.</p></dd>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$select_folder(name = "INBOX")
-# Remove the the "\SEEN" flag from the messages in the search result
+# Remove the "\SEEN" flag from the messages in the search result
 con$search_since(date_char = "20-Aug-2020") %&gt;%
   con$remove_flags(flags_to_unset = "\\UNSEEN")
 }
@@ -2319,7 +2317,7 @@ con$search_string(expr = "@gmail", where = "CC") %&gt;%
   con$get_attachments()
 
 # example 2
-res &lt;- con$search_string(expr = "@gmail", where = "CC") %&gt;%
+res &lt;- con$search_string(expr = "@gmail", where = "CC")
 out &lt;- con$fetch_body(msg = res)
 con$get_attachments(msg_list = out)
 }
@@ -2352,7 +2350,7 @@ is <code>1</code>.</p></dd>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$select_folder(name = "INBOX")
 # do a search and fetch the attachments' list of the messages
-out &lt; con$search_string(expr = "@k-state.edu", where = "FROM") %&gt;%
+out &lt;- con$search_string(expr = "@k-state.edu", where = "FROM") %&gt;%
   con$fetch_attachments_list()
 out
 
@@ -2439,7 +2437,510 @@ con$fetch_attachments(msg = res)
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='co'># w/ Plain authentication</span></span></span>
+<span class='r-in'><span><span class='va'>con</span> <span class='op'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  url<span class='op'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,</span></span>
+<span class='r-in'><span>  username<span class='op'>=</span><span class='st'>"user@agency.gov.br"</span>,</span></span>
+<span class='r-in'><span>  password<span class='op'>=</span><span class='fu'>rstudioapi</span><span class='fu'>::</span><span class='fu'><a href='https://rstudio.github.io/rstudioapi/reference/askForPassword.html'>askForPassword</a></span><span class='op'>(</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># OR</span></span></span>
+<span class='r-in'><span><span class='va'>con</span> <span class='op'>&lt;-</span> <span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  url<span class='op'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,</span></span>
+<span class='r-in'><span>  username<span class='op'>=</span><span class='st'>"user@agency.gov.br"</span>,</span></span>
+<span class='r-in'><span>  password<span class='op'>=</span><span class='fu'>rstudioapi</span><span class='fu'>::</span><span class='fu'><a href='https://rstudio.github.io/rstudioapi/reference/askForPassword.html'>askForPassword</a></span><span class='op'>(</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># w/ OAuth2.0 authentication</span></span></span>
+<span class='r-in'><span><span class='va'>con</span> <span class='op'>&lt;-</span> <span class='fu'><a href='configure_imap.html'>configure_imap</a></span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  url<span class='op'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,</span></span>
+<span class='r-in'><span>  username<span class='op'>=</span><span class='st'>"user@agency.gov.br"</span>,</span></span>
+<span class='r-in'><span>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,</span></span>
+<span class='r-in'><span>  xoauth2_bearer <span class='op'>=</span> <span class='st'>"XX.Ya9..."</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># OR</span></span></span>
+<span class='r-in'><span><span class='va'>con</span> <span class='op'>&lt;-</span> <span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>new</span><span class='op'>(</span></span></span>
+<span class='r-in'><span>  url<span class='op'>=</span><span class='st'>"imaps://outlook.office365.com"</span>,</span></span>
+<span class='r-in'><span>  username<span class='op'>=</span><span class='st'>"user@agency.gov.br"</span>,</span></span>
+<span class='r-in'><span>  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,</span></span>
+<span class='r-in'><span>  xoauth2_bearer <span class='op'>=</span> <span class='st'>"XX.Ya9..."</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$list_server_capabilities`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>cap</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>list_server_capabilities</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>cap</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$list_mail_folders`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>folders</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>list_mail_folders</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>folders</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$select_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$examine_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>examine_folder</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or directly:</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>examine_folder</span><span class='op'>(</span><span class='st'>"Sent"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$create_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>create_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"New Folder Name"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$rename_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Folder A"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>rename_folder</span><span class='op'>(</span>new_name <span class='op'>=</span> <span class='st'>"Folder B"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># or directly:</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>rename_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Folder A"</span>, new_name <span class='op'>=</span> <span class='st'>"Folder B"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$list_flags`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>list_flags</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># ex1</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search</span><span class='op'>(</span><span class='fu'><a href='OR.html'>OR</a></span><span class='op'>(</span><span class='fu'><a href='before.html'>before</a></span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"17-Apr-2015"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>              <span class='fu'><a href='string.html'>string</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"John"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># ex2</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search</span><span class='op'>(</span><span class='fu'><a href='AND.html'>AND</a></span><span class='op'>(</span><span class='fu'><a href='smaller_than.html'>smaller_than</a></span><span class='op'>(</span>size <span class='op'>=</span> <span class='st'>"512000"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>               <span class='fu'><a href='string.html'>string</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"John"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span>,</span></span>
+<span class='r-in'><span>               <span class='fu'><a href='string.html'>string</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@ksu.edu"</span>, where <span class='op'>=</span> <span class='st'>"CC"</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_larger_than`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with size larger than 512Kb</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_larger_than</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>512000</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_smaller_than`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with size smaller than 512Kb</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_smaller_than</span><span class='op'>(</span>size <span class='op'>=</span> <span class='fl'>512000</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_before`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with date before "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'># .. results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_before</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_since`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with date since "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'># .. results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_since</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_on`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages received on date "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'>#... results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_on</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_period`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for all messages in the mail folder, EXCEPT (negate = TRUE) by</span></span></span>
+<span class='r-in'><span><span class='co'>#... those received between the dates "02-Jan-2020" and "22-Mar-2020"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_period</span><span class='op'>(</span>since_date_char <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>,</span></span>
+<span class='r-in'><span>                  before_date_char <span class='op'>=</span> <span class='st'>"22-Mar-2020"</span>,</span></span>
+<span class='r-in'><span>                  negate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_sent_before`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with date before "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'># .. results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_sent_before</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_sent_since`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with date before "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'># .. results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_sent_since</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_sent_on`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages received on date "02-Jan-2020", presenting the</span></span></span>
+<span class='r-in'><span><span class='co'>#... results as unique identifiers (UID)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_sent_on</span><span class='op'>(</span>date <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_sent_period`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for all messages in the mail folder, EXCEPT (negate = TRUE) by</span></span></span>
+<span class='r-in'><span><span class='co'>#... those received between the dates "02-Jan-2020" and "22-Mar-2020"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_sent_period</span><span class='op'>(</span>since_date_char <span class='op'>=</span> <span class='st'>"02-Jan-2020"</span>,</span></span>
+<span class='r-in'><span>                  before_date_char <span class='op'>=</span> <span class='st'>"22-Mar-2020"</span>,</span></span>
+<span class='r-in'><span>                  negate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_flag`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for all messages in the mail folder that are marked as "SEEN" AND</span></span></span>
+<span class='r-in'><span><span class='co'>#.. "ANSWERED"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_flag</span><span class='op'>(</span>name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"SEEN"</span>, <span class='st'>"ANSWERED"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_older_than`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for all messages received in the last hour (not older than 3600 seconds)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_older_than</span><span class='op'>(</span>seconds <span class='op'>=</span> <span class='fl'>3600</span>, negate <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_younger_than`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for all messages received in the last hour (younger than 3600 seconds)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_younger_than</span><span class='op'>(</span>seconds <span class='op'>=</span> <span class='fl'>3600</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$search_string`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># search for messages with "@k-state.edu" in the FROM field</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_body`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and fetch the results (saving to disk) using the pipe</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_body</span><span class='op'>(</span>write_to_disk <span class='op'>=</span> <span class='cn'>TRUE</span>, keep_in_mem <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_body</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span>, write_to_disk <span class='op'>=</span> <span class='cn'>TRUE</span>, keep_in_mem <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_header`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and fetch the results (also saving to disk) using the pipe</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"CC"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_header</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"CC"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_header</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_metadata`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and fetch the results using the pipe</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_metadata</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_metadata</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_text`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and partially fetch the results using the pipe</span></span></span>
+<span class='r-in'><span><span class='co'># first 200 characters, writing to disk, silence results in the console</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_text</span><span class='op'>(</span>partial <span class='op'>=</span> <span class='st'>"0.200"</span>,</span></span>
+<span class='r-in'><span>                 write_to_disk <span class='op'>=</span> <span class='cn'>TRUE</span>,</span></span>
+<span class='r-in'><span>                 keep_in_mem <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_text</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span>,</span></span>
+<span class='r-in'><span>               partial <span class='op'>=</span> <span class='st'>"0.200"</span>,</span></span>
+<span class='r-in'><span>               write_to_disk <span class='op'>=</span> <span class='cn'>TRUE</span>,</span></span>
+<span class='r-in'><span>               keep_in_mem <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$copy_msg`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and copy the results to another folder</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>copy</span><span class='op'>(</span>to_folder <span class='op'>=</span> <span class='st'>"Sent"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>copy</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span>, to_folder <span class='op'>=</span> <span class='st'>"Sent"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$move_msg`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and copy the results to another folder</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>move</span><span class='op'>(</span>to_folder <span class='op'>=</span> <span class='st'>"Sent"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>move</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span>, to_folder <span class='op'>=</span> <span class='st'>"Sent"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$esearch_count`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># count the number of messages marked as "Flagged" and "Answered"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>esearch_count</span><span class='op'>(</span>flag <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Flagged"</span>, <span class='st'>"Answered"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$delete_msg`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># delete</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>delete_msg</span><span class='op'>(</span>flag <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Flagged"</span>, <span class='st'>"Answered"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$expunge`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># count the number of messages marked as "Flagged" and "Answered"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>esearch_count</span><span class='op'>(</span>flag <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Flagged"</span>, <span class='st'>"Answered"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$esearch_min_id`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># Search the minimum id of messages marked as "Answered"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>esearch_min_id</span><span class='op'>(</span>flag <span class='op'>=</span> <span class='st'>"Answered"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$esearch_max_id`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># Search the minimum id of messages marked as "Seen"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>esearch_max_id</span><span class='op'>(</span>flag <span class='op'>=</span> <span class='st'>"Seen"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$add_flags`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># Add the "\Seen" permanent flag to the messages received in the last hour</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_younger_than</span><span class='op'>(</span>seconds <span class='op'>=</span> <span class='fl'>3600</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='co'># depends on the WITHIN extension</span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>add_flags</span><span class='op'>(</span>flags_to_set <span class='op'>=</span> <span class='st'>"\\Seen"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$replace_flags`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># Replace the current flags of the messages in the search results for the</span></span></span>
+<span class='r-in'><span><span class='co'>#.. flags "\UNSEEN" and "\Flagged"</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_since</span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"20-Aug-2020"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>replace_flags</span><span class='op'>(</span>flags_to_set <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"\\UNSEEN"</span>, <span class='st'>"\\Flagged"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$remove_flags`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># Remove the "\SEEN" flag from the messages in the search result</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_since</span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"20-Aug-2020"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>remove_flags</span><span class='op'>(</span>flags_to_unset <span class='op'>=</span> <span class='st'>"\\UNSEEN"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$get_attachments`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='co'># example 1</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@gmail"</span>, where <span class='op'>=</span> <span class='st'>"CC"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_text</span><span class='op'>(</span>write_to_disk <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span> <span class='co'># saving the message's content as txt files</span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>get_attachments</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># example 2</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@gmail"</span>, where <span class='op'>=</span> <span class='st'>"CC"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_body</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>get_attachments</span><span class='op'>(</span>msg_list <span class='op'>=</span> <span class='va'>out</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_attachments_list`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and fetch the attachments' list of the messages</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_attachments_list</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_attachments_list</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>out</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$fetch_attachments`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='co'># do a search and fetch the attachments' list of the messages</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_attachments</span><span class='op'>(</span><span class='op'>)</span> <span class='co'># the attachments will be downloaded to disk</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or using a traditional approach</span></span></span>
+<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_attachments</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
