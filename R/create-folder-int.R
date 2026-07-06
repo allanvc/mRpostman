@@ -24,7 +24,7 @@ create_folder_int <- function(self, name, mute, retries) {
   tryCatch({
     curl::handle_setopt(h, customrequest = paste0('CREATE ', name2))
   }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapConf$new().")
+    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
   })
 
   response <- tryCatch({

@@ -1,4 +1,4 @@
-#' Add sufix to a filename if it already exists in local folder
+#' Add suffix to a filename if it already exists in local folder
 #' @param prefix A character string with a message content.
 #' @noRd
 serialize_filename = function(sufix, complete_path){

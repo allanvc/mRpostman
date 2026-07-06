@@ -21,7 +21,7 @@
 #'   is \code{FALSE}, and it can only be set \code{TRUE} when
 #'   \code{write_to_disk = TRUE}.
 #' @param mute A \code{logical}. It is only effective when \code{write_to_disk = TRUE}
-#'   and \code{keep_in_mem = FALSE}. It Provides a confirmation message if the
+#'   and \code{keep_in_mem = FALSE}. It provides a confirmation message if the
 #'   command is successfully executed. Default is \code{FALSE}.
 #' @param base64_decode If \code{TRUE}, tries to guess and decode the fetched
 #'   text from base64 format to \code{character}. Default is \code{FALSE}.

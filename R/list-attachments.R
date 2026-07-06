@@ -4,7 +4,7 @@
 #' @note Please, note that this is an independent function and not an R6 method
 #'   that depends on the connection object. Therefore, it should be called alone
 #'   without the ImapCon object.
-#' @return A \code{list} of \code{data.frames} containing the filenames and its
+#' @return A \code{list} of \code{data.frames} containing the filenames and their
 #'   \code{Content-Disposition} types for each fetched message.
 #' @family attachments
 #' @examples

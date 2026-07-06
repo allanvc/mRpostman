@@ -253,7 +253,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   structure.
     #' @examples
     #' \dontrun{
-    #' con$select_mail_folder(name = "INBOX")
+    #' con$select_folder(name = "INBOX")
     #' }
     select_folder = function(name, mute = FALSE, retries = 1) {
       self$con_params$folder <- select_folder_int(self, name, mute, retries)
@@ -298,7 +298,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Rename a mail folder.
-    #' @param name A string containing the name of the new mail folder to be
+    #' @param name A string containing the name of the mail folder to be
     #'   renamed. If no name is passed, the command will be executed using the
     #'   previously selected mail folder name.
     #' @param new_name A string containing the new name to be assigned.
@@ -348,7 +348,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{\link{sent_before}}, \code{\link{sent_since}}, \code{\link{sent_on}},
     #'   \code{\link{flag}}, \code{\link{string}}, \code{\link{smaller_than}},
     #'   \code{\link{larger_than}}, \code{\link{younger_than}}, or
-    #'   \code{\link{younger_than}}.
+    #'   \code{\link{older_than}}.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERIA". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -369,13 +369,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \href{#method-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
-    #' @note \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follows
+    #' @note \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follow
     #'   Polish notation, i.e. operators such as \code{OR} come before arguments,
     #'   e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
     #'   in this package should be used like the following examples:
     #'   \code{OR(before("17-Apr-2015"), string("FROM", "John"))}. Even though there
     #'   is no "AND" operator in IMAP, this package adds a helper function
-    #'   \code{\link{AND}} to indicate multiples arguments that must be searched
+    #'   \code{\link{AND}} to indicate multiple arguments that must be searched
     #'   together, e.g. \code{AND(since("01-Jul-2018"), smaller_than(16000))}.
     #' @return A \code{list} containing the flags (\code{character vector}),
     #'   the permanent flags (\code{character vector}), and an indication if custom
@@ -532,8 +532,6 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param date_char A \code{character string} with format "DD-Mon-YYYY", e.g.
     #'   "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
     #'   objects, since IMAP servers use this uncommon date format.
-    #'   \code{POSIX*} like objects, since IMAP servers use this uncommon date format.
-    #'   \code{POSIX*} like, since IMAP servers like this not so common date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
     #' @param use_uid Default is \code{FALSE}. In this case, results will be
@@ -801,7 +799,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   executing this type of search. Despite this fact, both dates tend to be the
     #'   same.
     #' @return A \code{numeric vector} containing the message ids.
-    #' @family search by size
+    #' @family search by date
     #' @examples
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
@@ -1039,18 +1037,18 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @note \href{#method-search_string}{\code{ImapCon$search_string()}}: Using
     #'   \code{where = "TEXT"}, may produce unexpected results since it
     #'   will perform the search on raw data, i.e. the searched expression may be
-    #'   truncated by special formating characters such as \code{\\r\\n} for example.
+    #'   truncated by special formatting characters such as \code{\\r\\n} for example.
     #'   It is recommended to perform this type of search using \code{where = "BODY"},
     #'   instead of \code{"TEXT"} (\cite{Heinlein, P. and Hartleben, P. (2008)}).
     #' @references \href{#method-search_string}{\code{ImapCon$search_string()}}:
     #'   Heinlein, P. and Hartleben, P. (2008). The Book of IMAP: Building a
     #'   Mail Server with Courier and Cyrus. No Starch Press. ISBN 978-1-59327-177-0.
     #' @return A \code{numeric vector} containing the message ids.
-    #' @family search by date
+    #' @family search by string
     #' @examples
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
-    #' # search for all messages received in the last hour (younger than 3600 seconds)
+    #' # search for messages with "@k-state.edu" in the FROM field
     #' con$search_string(expr = "@k-state.edu", where = "FROM")
     #' }
     search_string = function(expr, where, negate = FALSE, use_uid = FALSE,
@@ -1274,7 +1272,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder(name = "INBOX")
     #' # do a search and partially fetch the results using the pipe
     #' # first 200 characters, writing to disk, silence results in the console
-    #'con$search_string(expr = "@k-state.edu", where = "FROM") %>%
+    #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_text(partial = "0.200",
     #'                  write_to_disk = TRUE,
     #'                  keep_in_mem = FALSE)
@@ -1392,7 +1390,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Count the number of messages with a specific flag(s) in a
-    #'   folder (depend on ESEARCH capability)
+    #'   folder (depends on ESEARCH capability)
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
@@ -1476,7 +1474,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Search the minimum message id in the selected mail folder
-    #'   (depend on ESEARCH capability)
+    #'   (depends on ESEARCH capability)
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
@@ -1509,7 +1507,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Search the maximum message id in the selected mail folder
-    #'   (depend on ESEARCH capability)
+    #'   (depends on ESEARCH capability)
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
@@ -1616,7 +1614,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # Replace the current flags of the messages in the search results for the
     #' #.. flags "\\UNSEEN" and "\\Flagged"
     #' con$search_since(date_char = "20-Aug-2020") %>%
-    #'   con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged")
+    #'   con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged"))
     #' }
     replace_flags = function(msg_id, use_uid = FALSE, flags_to_set, mute = FALSE,
                              retries = 1) {
@@ -1655,7 +1653,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @examples
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
-    #' # Remove the the "\\SEEN" flag from the messages in the search result
+    #' # Remove the "\\SEEN" flag from the messages in the search result
     #' con$search_since(date_char = "20-Aug-2020") %>%
     #'   con$remove_flags(flags_to_unset = "\\UNSEEN")
     #' }
@@ -1762,7 +1760,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
     #' # do a search and fetch the attachments' list of the messages
-    #' out < con$search_string(expr = "@k-state.edu", where = "FROM") %>%
+    #' out <- con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_attachments_list()
     #' out
     #'

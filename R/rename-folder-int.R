@@ -1,5 +1,5 @@
 #' Rename a mail folder (INTERNAL HELPER)
-#' @param name A string containing the name of the new mail folder to be
+#' @param name A string containing the name of the mail folder to be
 #'   renamed. If no name is passed, the command will be executed using the
 #'   previously selected mail folder name.
 #' @param new_name A string containing the new name to be assigned.

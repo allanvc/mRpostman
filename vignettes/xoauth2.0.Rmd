@@ -88,7 +88,7 @@ You should see the following screen. Select "Web Application".
 
 <br>
 
-In the following screen, fill in the name of the OAuth2.0 client. You chose "mRpostman", but you can choose the name of your preference.
+In the following screen, fill in the name of the OAuth2.0 client. We chose "mRpostman", but you can choose the name of your preference.
 
 ![](./figures/xoauth/step2_x2.png){width=60%}
 
@@ -181,7 +181,7 @@ con$list_server_capabilities()
 c("IMAP4rev1", "UNSELECT", "IDLE", "NAMESPACE", "QUOTA", "ID", "XLIST", "CHILDREN", "X-GM-EXT-1", "UIDPLUS", "COMPRESS=DEFLATE", "ENABLE", "MOVE", "CONDSTORE", "ESEARCH", "UTF8=ACCEPT", "LIST-EXTENDED", "LIST-STATUS", "LITERAL-", "SPECIAL-USE", "APPENDLIMIT=35651584")
 ```
 
-If you got some kind of "SASL ..." error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the [Introduction](#intro). Therefore, it still has the Oauth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you'll have to dig on the internet how to solve it.
+If you got some kind of "SASL ..." error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the [Introduction](#intro). Therefore, it still has the OAuth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you'll have to dig on the internet how to solve it.
 
 
 ## Step 6 - Refreshing the token

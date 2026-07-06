@@ -24,11 +24,11 @@ vignette: >
 
 ## Introduction
 
-This vignette aims to provide an easy source of code migration examples so old `mRpostman` users can transition between the old version and the new format which implements an OO approach trough the use of R6 class and methods.
+This vignette aims to provide an easy source of code migration examples so old `mRpostman` users can transition between the old version and the new format which implements an OO approach through the use of R6 class and methods.
 
 This is the summary of the main modifications in the package between versions `0.3.1` and `0.9.X`:
 
-* All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapConf`;
+* All main functions, except `list_attachments` and the custom-search helper functions, now are methods of the R6 class `ImapCon`;
     
 * The way the connection token is passed through functions (now methods) has changed. The connection handle is created inside `configure_imap()` (or `ImapCon$new()`) and modified with custom requests from the methods that trigger IMAP commands. As a consequence, the password is now hidden inside the curl handle C pointer, resulting in a more secure token chain. This resulted in changes in every request function. These functions (that are methods now) do not use `config_handle()` anymore, and a call to `curl::set_opt()` is made in every request function so that a custom request is supplied or replaced by a new one in the original handle.
     
@@ -526,7 +526,7 @@ results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
 
 Note that `list_attachment()` is an independent function. It is not a method of the `ImapCon` class that depends on the connection object.
 
-The new version brings an alternative fetch method (`fetch_atachments_list()`) for listing attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+The new version brings an alternative fetch method (`fetch_attachments_list()`) for listing attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
 
 ```{r, message = FALSE, eval=FALSE}
 
@@ -567,7 +567,7 @@ results <- con$search_on(date_char = "23-Sep-2019") %>% #regular pipe
 
 </div>
 
-The new version brings an alternative fetch method (`fetch_atachments()`) for downloading attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
+The new version brings an alternative fetch method (`fetch_attachments()`) for downloading attachments without the need of previously executing a `fetch_body` or `fetch_text` operation:
 
 ```{r, message = FALSE, eval=FALSE}
 

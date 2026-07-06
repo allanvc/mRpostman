@@ -44,7 +44,7 @@ expunge_int <- function(self, msg_uid, mute, retries) {
     if (self$con_params$verbose) {
       Sys.sleep(0.01)
     }
-    cat(paste0("\n::mRpostman: expunge successfuly executed.")) # v0.3.2
+    cat(paste0("\n::mRpostman: expunge successfully executed.")) # v0.3.2
     # using the folder name without any transformation
   }
   # will allow users to pipe more operations after adding flags

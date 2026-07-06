@@ -2,8 +2,8 @@
 #' @inheritParams search_period
 #' @param operation A character indicating which size operation to execute,
 #'   \code{SMALLER} or \code{LARGER} than.
-#' @param size An integer specifying the number of seconds to be used as
-#'   search criterion.
+#' @param size An integer specifying the number of octets (bytes) to be used as
+#'   a search criterion.
 #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 #'   CRITERIA". Default is \code{FALSE}.
 #' @param use_uid Default is \code{FALSE}. In this case, results will be

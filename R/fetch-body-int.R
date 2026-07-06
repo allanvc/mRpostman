@@ -32,7 +32,7 @@ fetch_body_int <- function(self, msg_id, use_uid, mime_level, peek, partial, wri
                            keep_in_mem, mute, retries) {
 
   if (isFALSE(keep_in_mem)) { # only for the fetch_body and fetch_text
-    warning('"keep_in_mem = FALSE" will not alow you to use list_attachments() or get_attachments() after fetching.')
+    warning('"keep_in_mem = FALSE" will not allow you to use list_attachments() or get_attachments() after fetching.')
   }
 
   if (!is.null(mime_level)) { # only for the fetch_body

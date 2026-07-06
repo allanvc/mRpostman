@@ -1,3 +1,19 @@
+## mRpostman 1.1.5 (2026-07-05 documentation patch)
+
+### Documentation
+
+- fixed several English spelling and grammar errors throughout the `roxygen2` documentation of the `ImapCon` R6 methods and the helper functions (e.g. "trough" → "through", "successfuly" → "successfully", "queries follows" → "queries follow", "multiples arguments" → "multiple arguments", "depend on ESEARCH" → "depends on ESEARCH").
+
+- corrected copy-paste mistakes in the method documentation: `search_string()` now belongs to the `search by string` family (was `search by date`), `search_sent_on()` now belongs to `search by date` (was `search by size`), and the `size` parameter of the size-search helpers is described in bytes instead of seconds.
+
+- fixed broken examples in the `ImapCon` documentation: `select_folder()` (was `select_mail_folder()`), a missing closing parenthesis in the `replace_flags()` example, a missing space after `#'` in the `fetch_text()` example, and `<-` in the `fetch_attachments_list()` example (was `<`).
+
+- removed a duplicated `\link{younger_than}` cross-reference in the custom search documentation (now correctly links to `older_than`) and cleaned up duplicated lines in the `search_since()` `date_char` description.
+
+- fixed typos in user-facing messages, including the flag confirmation messages ("successfuly" → "successfully"), the `esearch_*_id()` type-check message ("must of type" → "must be of type"), the buffer size and length checks ("equal or greater than" → "equal to or greater than"), and the dead-connection error ("ImapConf$new()" → "ImapCon$new()").
+
+- fixed English spelling and grammar errors in the `README` and in the `basics`, `code_migration`, and `xoauth2.0` vignettes, including invalid Portuguese month abbreviations in date examples ("30-Ago-2019" → "30-Aug-2019") and misspelled function/class references (e.g. `confiure_imap()`, `list_atachments()`, `fetch_attachents()`, `ImapConf`).
+
 ## mRpostman 1.1.4 (2024-09-15 CRAN update)
 
 ### Methods & Functions

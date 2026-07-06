@@ -6,7 +6,7 @@
 #'   \code{\link{sent_before}}, \code{\link{sent_since}}, \code{\link{sent_on}},
 #'   \code{\link{flag}}, \code{\link{string}}, \code{\link{smaller_than}},
 #'   \code{\link{larger_than}}, \code{\link{younger_than}}, or
-#'   \code{\link{younger_than}}.
+#'   \code{\link{older_than}}.
 #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 #'   CRITERIA". Default is \code{FALSE}.
 #' @param use_uid Default is \code{FALSE}. In this case, results will be

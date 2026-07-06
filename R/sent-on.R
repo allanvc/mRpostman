@@ -4,7 +4,7 @@
 #' \dontrun{
 #' # select folder & search
 #' con$select_folder(name = "INBOX")
-#' # search for messages SINCE "30-Ago-2019" OR LARGER than 512KB.
+#' # search for messages SINCE "30-Aug-2019" OR LARGER than 512KB.
 #' res <- con$search(request = OR(sent_since(date_char = "30-Jun-2020"),
 #'                                larger_than(size = 512000)))
 #' }
