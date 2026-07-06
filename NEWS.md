@@ -10,7 +10,7 @@
 
 - removed a duplicated `\link{younger_than}` cross-reference in the custom search documentation (now correctly links to `older_than`) and cleaned up duplicated lines in the `search_since()` `date_char` description.
 
-- fixed typos in user-facing messages, including the flag confirmation messages ("successfuly" → "successfully"), the `esearch_*_id()` type-check message ("must of type" → "must be of type"), the buffer size and length checks ("equal or greater than" → "equal to or greater than"), and the dead-connection error ("ImapConf$new()" → "ImapCon$new()").
+- fixed typos in user-facing messages, including the flag confirmation messages ("successfuly" → "successfully"), the `esearch_*_id()` type-check message ("must of type" → "must be of type"), the buffer size and length checks ("equal or greater than" → "equal to or greater than"), and the dead-connection error (`ImapConf$new()` → `ImapCon$new()`).
 
 - fixed English spelling and grammar errors in the `README` and in the `basics`, `code_migration`, and `xoauth2.0` vignettes, including invalid Portuguese month abbreviations in date examples ("30-Ago-2019" → "30-Aug-2019") and misspelled function/class references (e.g. `confiure_imap()`, `list_atachments()`, `fetch_attachents()`, `ImapConf`).
 
