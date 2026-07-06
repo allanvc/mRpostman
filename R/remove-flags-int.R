@@ -8,8 +8,8 @@
 #'   command will be performed using the \code{"UID"} or unique identifier,
 #'   and results are presented as such. UIDs are always the same during the
 #'   life cycle of a message.
-#' @param flags_to_unset A \code{character vector} containing one ore more
-#'   flag names that will be unset (removed). If the flag to be removed is an
+#' @param flags_to_unset A \code{character vector} containing one or more
+#'   flag names that will be unset (removed). If the flag to be removed is a
 #'   system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
 #'   preceded by two backslashes \code{\\}.
 #' @param mute A \code{logical}. Provides a confirmation message if the
@@ -65,7 +65,7 @@ remove_flags_int <- function(self, msg_id, use_uid, flags_to_unset, mute, retrie
     if (self$con_params$verbose) {
       Sys.sleep(0.01)
     }
-    cat(paste0("\n::mRpostman: flag(s) successfuly removed.")) # v0.3.2
+    cat(paste0("\n::mRpostman: flag(s) successfully removed.")) # v0.3.2
     # using the folder name without any transformation
   }
 

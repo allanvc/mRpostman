@@ -1,6 +1,6 @@
 #' Extract specific attachments Mime levels and the filenames of a message
 #' @param meta An object of type \code{character} containing the BODYSTRUCTURE
-#'   previously fetched messages via \code{fetch_metadata}.
+#'   of previously fetched messages via \code{fetch_metadata}.
 #' @param use_uid Default is \code{FALSE}. In this case, results will be
 #'   presented as message's sequence numbers. A message sequence number is a
 #'   message's relative position to the oldest message in the mailbox. It may

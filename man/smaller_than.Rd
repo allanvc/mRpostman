@@ -7,7 +7,7 @@
 smaller_than(size, negate = FALSE)
 }
 \arguments{
-\item{size}{An integer specifying the number of seconds to be used as
+\item{size}{An integer specifying the number of bytes to be used as
 search criterion.}
 
 \item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH

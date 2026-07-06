@@ -23,8 +23,8 @@ Relational-operator-function to construct a custom search statement
 \dontrun{
 # select folder & search
 con$select_folder(name = "INBOX")
-# search for messages SINCE "30-Ago-2019" OR SMALLER than 512KB.
-res <- con$search(request = OR(sent_since(date_char = "30-Ago-2019"),
+# search for messages SINCE "30-Aug-2019" OR SMALLER than 512KB.
+res <- con$search(request = OR(sent_since(date_char = "30-Aug-2019"),
                                 smaller_than(size = 512000)))
 }
 }

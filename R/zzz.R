@@ -1,3 +1,3 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Please do not forget to appropriately cite 'mRpostman' when using it in an academic research. See citation(package = 'mRpostman').")
+  packageStartupMessage("Please do not forget to appropriately cite 'mRpostman' when using it in academic research. See citation(package = 'mRpostman').")
 }

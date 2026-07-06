@@ -42,7 +42,7 @@ modify_con_handle <- function(self, ...) {
       is.numeric(argg_list$buffersize),
       argg_list$buffersize >= 16000
     ),
-    msg='Argument "buffersize" must be an integer equal or greater than 16000, the minimum value for the libcurl buffer.')
+    msg='Argument "buffersize" must be an integer equal to or greater than 16000, the minimum value for the libcurl buffer.')
   }
 
   if ("timeout_ms" %in% names(argg_list)) {

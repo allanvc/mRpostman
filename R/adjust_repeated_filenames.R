@@ -1,4 +1,4 @@
-#' Add sufix to filenames of a message if there is repetition
+#' Add suffix to filenames of a message if there is repetition
 #' @param filenames A character string with a message content.
 #' @noRd
 adjust_repeated_filenames = function(filenames){

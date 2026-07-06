@@ -11,7 +11,7 @@ list_attachments(msg_list)
 from the server.}
 }
 \value{
-A \code{list} of \code{data.frames} containing the filenames and its
+A \code{list} of \code{data.frames} containing the filenames and their
   \code{Content-Disposition} types for each fetched message.
 }
 \description{

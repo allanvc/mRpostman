@@ -1,5 +1,5 @@
 #' Criterion constructor function to be combined in a custom search statement
-#' @param size An integer specifying the number of seconds to be used as
+#' @param size An integer specifying the number of bytes to be used as
 #'   search criterion.
 #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 #'   CRITERIA". Default is \code{FALSE}.

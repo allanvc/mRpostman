@@ -8,8 +8,8 @@
 #'   command will be performed using the \code{"UID"} or unique identifier,
 #'   and results are presented as such. UIDs are always the same during the
 #'   life cycle of a message.
-#' @param flags_to_set A \code{character vector} containing one ore more flag
-#'   names that will replace the current ones. If the flag to be set is an
+#' @param flags_to_set A \code{character vector} containing one or more flag
+#'   names that will replace the current ones. If the flag to be set is a
 #'   system flag, such as \code{\\SEEN}, \code{\\ANSWERED}, the name should be
 #'   preceded by two backslashes \code{\\}.
 #' @param mute A \code{logical}. Provides a confirmation message if the
@@ -64,7 +64,7 @@ replace_flags_int <- function(self, msg_id, use_uid, flags_to_set, mute, retries
     if (self$con_params$verbose) {
       Sys.sleep(0.01)
     }
-    cat(paste0("\n::mRpostman: flag(s) successfuly replaced.")) # v0.3.2
+    cat(paste0("\n::mRpostman: flag(s) successfully replaced.")) # v0.3.2
     # using the folder name without any transformation
   }
   # handle sanitizing

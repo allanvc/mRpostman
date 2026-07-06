@@ -16,7 +16,7 @@
 #' @param fetch_request A string containing the fetch request to the server that
 #'   will be added to the curl handle.
 #' @param folder_clean A \code{character} string containing the cleaned folder
-#'   name, which will be uses to create a local folder.
+#'   name, which will be used to create a local folder.
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
 #' @param as_is If \code{TRUE} then write out attachments without base64

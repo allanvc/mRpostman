@@ -11,13 +11,13 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap}}
   should be preferred instead of \code{ImapCon$new()}.
 
-\href{#method-search}{\code{ImapCon$search()}}: IMAP queries follows
+\href{#method-search}{\code{ImapCon$search()}}: IMAP queries follow
   Polish notation, i.e. operators such as \code{OR} come before arguments,
   e.g. "OR argument1 argument2". Therefore, the relational-operator-helper-functions
   in this package should be used like the following examples:
   \code{OR(before("17-Apr-2015"), string("FROM", "John"))}. Even though there
   is no "AND" operator in IMAP, this package adds a helper function
-  \code{\link{AND}} to indicate multiples arguments that must be searched
+  \code{\link{AND}} to indicate multiple arguments that must be searched
   together, e.g. \code{AND(since("01-Jul-2018"), smaller_than(16000))}.
 
 \href{#method-sent_before}{\code{ImapCon$sent_before()}}: Search
@@ -69,7 +69,7 @@ Configure an IMAP connection using the \code{ImapCon} \code{R6}
 \href{#method-search_string}{\code{ImapCon$search_string()}}: Using
   \code{where = "TEXT"}, may produce unexpected results since it
   will perform the search on raw data, i.e. the searched expression may be
-  truncated by special formating characters such as \code{\\r\\n} for example.
+  truncated by special formatting characters such as \code{\\r\\n} for example.
   It is recommended to perform this type of search using \code{where = "BODY"},
   instead of \code{"TEXT"} (\cite{Heinlein, P. and Hartleben, P. (2008)}).
 
@@ -217,7 +217,7 @@ folders
 ## ------------------------------------------------
 
 \dontrun{
-con$select_mail_folder(name = "INBOX")
+con$select_folder(name = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -422,7 +422,7 @@ con$search_younger_than(seconds = 3600)
 
 \dontrun{
 con$select_folder(name = "INBOX")
-# search for all messages received in the last hour (younger than 3600 seconds)
+# search for messages with "@k-state.edu" in the FROM field
 con$search_string(expr = "@k-state.edu", where = "FROM")
 }
 
@@ -599,7 +599,7 @@ con$select_folder(name = "INBOX")
 # Replace the current flags of the messages in the search results for the
 #.. flags "\\UNSEEN" and "\\Flagged"
 con$search_since(date_char = "20-Aug-2020") \%>\%
-  con$replace_flags(flags_to_set = c("\\\\UNSEEN", "\\\\Flagged")
+  con$replace_flags(flags_to_set = c("\\\\UNSEEN", "\\\\Flagged"))
 }
 
 ## ------------------------------------------------
@@ -608,7 +608,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 
 \dontrun{
 con$select_folder(name = "INBOX")
-# Remove the the "\\SEEN" flag from the messages in the search result
+# Remove the "\\SEEN" flag from the messages in the search result
 con$search_since(date_char = "20-Aug-2020") \%>\%
   con$remove_flags(flags_to_unset = "\\\\UNSEEN")
 }
@@ -637,7 +637,7 @@ con$get_attachments(msg_list = out)
 \dontrun{
 con$select_folder(name = "INBOX")
 # do a search and fetch the attachments' list of the messages
-out < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments_list()
 out
 
@@ -708,6 +708,7 @@ Other attachments:
 \concept{search by date}
 \concept{search by flag}
 \concept{search by size}
+\concept{search by string}
 \concept{search within}
 \section{Methods}{
 \subsection{Public methods}{
@@ -1057,7 +1058,7 @@ A \code{list} containing the mail folder names and their inherent
 \subsection{Examples}{
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
-con$select_mail_folder(name = "INBOX")
+con$select_folder(name = "INBOX")
 }
 }
 \if{html}{\out{</div>}}
@@ -1160,7 +1161,7 @@ Rename a mail folder.
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{name}}{A string containing the name of the new mail folder to be
+\item{\code{name}}{A string containing the name of the mail folder to be
 renamed. If no name is passed, the command will be executed using the
 previously selected mail folder name.}
 
@@ -1252,7 +1253,7 @@ and \code{\link{AND}}, and criteria helper functions such as
 \code{\link{sent_before}}, \code{\link{sent_since}}, \code{\link{sent_on}},
 \code{\link{flag}}, \code{\link{string}}, \code{\link{smaller_than}},
 \code{\link{larger_than}}, \code{\link{younger_than}}, or
-\code{\link{younger_than}}.}
+\code{\link{older_than}}.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERIA". Default is \code{FALSE}.}
@@ -1530,9 +1531,7 @@ Search by internal date (SINCE)
 \describe{
 \item{\code{date_char}}{A \code{character string} with format "DD-Mon-YYYY", e.g.
 "01-Apr-2019". We opt not to use \code{Date} or \code{POSIX*} like
-objects, since IMAP servers use this uncommon date format.
-\code{POSIX*} like objects, since IMAP servers use this uncommon date format.
-\code{POSIX*} like, since IMAP servers like this not so common date format.}
+objects, since IMAP servers use this uncommon date format.}
 
 \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
@@ -2277,7 +2276,7 @@ A \code{numeric vector} containing the message ids.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
-# search for all messages received in the last hour (younger than 3600 seconds)
+# search for messages with "@k-state.edu" in the FROM field
 con$search_string(expr = "@k-state.edu", where = "FROM")
 }
 }
@@ -2765,7 +2764,7 @@ con$move(msg = res, to_folder = "Sent")
 \if{latex}{\out{\hypertarget{method-ImapCon-esearch_count}{}}}
 \subsection{Method \code{esearch_count()}}{
 Count the number of messages with a specific flag(s) in a
-  folder (depend on ESEARCH capability)
+  folder (depends on ESEARCH capability)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$esearch_count(flag, use_uid = FALSE, retries = 1)}\if{html}{\out{</div>}}
 }
@@ -2898,7 +2897,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 \if{latex}{\out{\hypertarget{method-ImapCon-esearch_min_id}{}}}
 \subsection{Method \code{esearch_min_id()}}{
 Search the minimum message id in the selected mail folder
-  (depend on ESEARCH capability)
+  (depends on ESEARCH capability)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$esearch_min_id(flag, use_uid = FALSE, retries = 1)}\if{html}{\out{</div>}}
 }
@@ -2946,7 +2945,7 @@ con$esearch_min_id(flag = "Answered")
 \if{latex}{\out{\hypertarget{method-ImapCon-esearch_max_id}{}}}
 \subsection{Method \code{esearch_max_id()}}{
 Search the maximum message id in the selected mail folder
-  (depend on ESEARCH capability)
+  (depends on ESEARCH capability)
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{ImapCon$esearch_max_id(flag, use_uid = FALSE, retries = 1)}\if{html}{\out{</div>}}
 }
@@ -3098,7 +3097,7 @@ con$select_folder(name = "INBOX")
 # Replace the current flags of the messages in the search results for the
 #.. flags "\\UNSEEN" and "\\Flagged"
 con$search_since(date_char = "20-Aug-2020") \%>\%
-  con$replace_flags(flags_to_set = c("\\\\UNSEEN", "\\\\Flagged")
+  con$replace_flags(flags_to_set = c("\\\\UNSEEN", "\\\\Flagged"))
 }
 }
 \if{html}{\out{</div>}}
@@ -3154,7 +3153,7 @@ An invisible \code{numeric vector} containing the message ids.
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
-# Remove the the "\\SEEN" flag from the messages in the search result
+# Remove the "\\SEEN" flag from the messages in the search result
 con$search_since(date_char = "20-Aug-2020") \%>\%
   con$remove_flags(flags_to_unset = "\\\\UNSEEN")
 }
@@ -3261,7 +3260,7 @@ A \code{list} with the fetch contents.
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
 # do a search and fetch the attachments' list of the messages
-out < con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
+out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments_list()
 out
 

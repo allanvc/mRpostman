@@ -1,5 +1,5 @@
 #' Mail folder name checking and adjustment
-#' @param folder An character \code{vector} containing the folder name informed
+#' @param folder A character \code{vector} containing the folder name informed
 #'   by the user inside ImapCon$select_folder().
 #' @noRd
 adjust_folder_name <- function(folder) {

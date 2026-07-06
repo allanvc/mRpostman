@@ -1,5 +1,5 @@
-#' Count the number of messages with an specific flag(s) in a
-#'   folder (depend on ESEARCH capability) (INTERNAL HELPER)
+#' Count the number of messages with a specific flag(s) in a
+#'   folder (depends on ESEARCH capability) (INTERNAL HELPER)
 #' @param flag Mandatory parameter that specifies one or more flags as a
 #'   filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 #'   to list the flags in a selected mail folder.

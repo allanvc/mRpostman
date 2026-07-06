@@ -47,7 +47,7 @@ check_args <- function(...) {
     assertthat::assert_that(
       is.numeric(argg_list$retries),
       isTRUE(argg_list$retries >= 0),
-      msg='"retries" must be an integer equal or greater than 0.')
+      msg='"retries" must be an integer equal to or greater than 0.')
 
     if (argg_list$retries%%1 != 0) {
       warning('only the integer part of "retries" will be used.')
@@ -227,7 +227,7 @@ check_args <- function(...) {
     # }
     assertthat::assert_that(
       is.numeric(argg_list$msg_id),
-      msg='"msg_id" must be a numeric vector of length equal or greater than 1.')
+      msg='"msg_id" must be a numeric vector of length equal to or greater than 1.')
 
     # if (any(is.na(argg_list$msg))) {
     #   stop('"msg" cannot have NAs as ids.')
@@ -379,7 +379,7 @@ check_args <- function(...) {
       any(
         is.null(argg_list$msg_uid),
         is.numeric(argg_list$msg_uid)
-      ), msg='"msg_uid" can be NULL or a numeric vector of size equal or greater than 1.')
+      ), msg='"msg_uid" can be NULL or a numeric vector of size equal to or greater than 1.')
   }
 
   if ("flags_to_set" %in% names(argg_list)) {

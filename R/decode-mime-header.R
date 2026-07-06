@@ -6,7 +6,7 @@
 #'   other than ASCII. According to the manual, non-ASCII content is encoded as
 #'   an ASCII text string as follows: \code{=?<charset>?<encoding>?<encoded-text>?=}.
 #'   The encoding can be of two types: "B" for "BASE64", or "Q" for quoted-
-#'   printable content (Freed and Borentein, 1996). Besides the standard RFC 2047
+#'   printable content (Freed and Borenstein, 1996). Besides the standard RFC 2047
 #'   decoding, this function also enables users to decode content that does not
 #'   strictly follow the \code{=?<charset>?<encoding>?<encoded-text>?=} RFC 2047
 #'   syntax, i.e. cases where only the encoded text part is present, such as the
@@ -24,7 +24,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' # The examples below runs smoothly on any computer. The 'dontrun' flag is just to skip CRAN checks.
+#' # The examples below run smoothly on any computer. The 'dontrun' flag is just to skip CRAN checks.
 #'
 #' # Simple quoted-printable string - Portuguese example
 #' qp_encoded <- "Minist=E9rio_da_Educa=E7=E3o"
