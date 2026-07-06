@@ -104,9 +104,12 @@ decode_mime_header <- function(string) {
       content <- x_split[3]
 
       if (encoding == "Q" | encoding == "q") {
-        decoded_string <- decode_quoted_printable_header(qp_encoded = content)
+        decoded_string <- decode_quoted_printable_header(qp_encoded = content, charset = charset)
       } else if (encoding == "B" | encoding == "b") {
-        decoded_string <- rawToChar(base64enc::base64decode(content))
+        decoded_string <- tryCatch(
+          apply_charset(rawToChar(base64enc::base64decode(content)), charset),
+          error = function(e) rawToChar(base64enc::base64decode(content))
+        )
       } else {
         decoded_string <- content
       }
