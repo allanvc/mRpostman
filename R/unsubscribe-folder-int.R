@@ -1,0 +1,84 @@
+#' @description Unsubscribe from a mail folder (INTERNAL HELPER)
+#' @param name A string containing the name of the mail folder to unsubscribe
+#'   from.
+#' @param mute A \code{logical}. Provides a confirmation message if the
+#'   command is successfully executed. Default is \code{FALSE}.
+#' @param retries Number of attempts to connect and execute the command.
+#'   Default is \code{1}.
+#' @noRd
+unsubscribe_folder_int <- function(self, name, mute, retries) {
+
+  check_args(name = name, mute = mute, retries = retries) # we have to pass
+  #.. the argg as arg = arg, in order to the check_argg capture the names
+
+  # forcing retries as an integer
+  retries <- as.integer(retries)
+
+  name2 <- adjust_folder_name(name)
+
+  url <- self$con_params$url
+
+  # isolating the handle
+  h <- self$con_handle
+
+  tryCatch({
+    curl::handle_setopt(h, customrequest = paste0('UNSUBSCRIBE ', name2))
+  }, error = function(e){
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+  })
+
+  response <- tryCatch({
+    curl::curl_fetch_memory(url, handle = h)
+  }, error = function(e){
+    # print(e$message)
+    response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+  })
+
+  if(is.null(response)){
+
+    count_retries = 0 #the first try doesnt count
+
+    while (is.null(response) && count_retries < retries) {
+      count_retries = count_retries + 1
+
+      response <- tryCatch({
+        curl::curl_fetch_memory(url, handle = h)
+      }, error = function(e){
+        # print(e$message)
+        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+      })
+
+    }
+
+    if (is.null(response)) {
+
+      stop('Request error: the server returned an error.')
+
+    } else {
+      if (!mute) {
+
+        if (self$con_params$verbose) {
+          Sys.sleep(0.01)  # wait for the end of the client-server conversation
+        }
+
+        cat(paste0("\n::mRpostman: folder ", '"', name, '"', " unsubscribed.\n"))
+
+      }
+
+    }
+
+  } else {
+    if (!mute) {
+
+      if (self$con_params$verbose) {
+        Sys.sleep(0.01)  # wait for the end of the client-server conversation
+      }
+
+      cat(paste0("\n::mRpostman: folder ", '"', name, '"', " unsubscribed.\n"))
+
+    }
+  }
+
+  invisible(TRUE)
+
+}
