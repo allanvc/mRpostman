@@ -1,3 +1,11 @@
+## mRpostman 1.1.6 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$delete_folder()` method to delete a mail folder (IMAP `DELETE`), completing the folder-management set alongside `create_folder()` and `rename_folder()`. The target folder must be named explicitly (there is no implicit "delete the selected folder"), and a confirmation message is printed unless `mute = TRUE`.
+
+- new `ImapCon$status()` method to query a mail folder's counters via the IMAP `STATUS` command **without selecting the folder** (unlike `examine_folder()`, which issues `EXAMINE`). It returns a named vector with the requested data items — any subset of `MESSAGES`, `RECENT`, `UIDNEXT`, `UIDVALIDITY`, and `UNSEEN` (all by default), configurable via the new `items` argument. The response is parsed by a dedicated internal `parse_status_counts()` helper, so the result stays correct regardless of the order in which the server returns the items.
+
 ## mRpostman 1.1.5 (2026-07-06 bug-fix and feature update)
 
 ### New features

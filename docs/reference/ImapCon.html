@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.6</span>
       </span>
     </div>
 
@@ -334,8 +334,10 @@
 <li><p><a href='#method-ImapCon-list_mail_folders'><code>ImapCon$list_mail_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-select_folder'><code>ImapCon$select_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-examine_folder'><code>ImapCon$examine_folder()</code></a></p></li>
+<li><p><a href='#method-ImapCon-status'><code>ImapCon$status()</code></a></p></li>
 <li><p><a href='#method-ImapCon-create_folder'><code>ImapCon$create_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-rename_folder'><code>ImapCon$rename_folder()</code></a></p></li>
+<li><p><a href='#method-ImapCon-delete_folder'><code>ImapCon$delete_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_flags'><code>ImapCon$list_flags()</code></a></p></li>
 <li><p><a href='#method-ImapCon-search'><code>ImapCon$search()</code></a></p></li>
 <li><p><a href='#method-ImapCon-search_larger_than'><code>ImapCon$search_larger_than()</code></a></p></li>
@@ -619,6 +621,44 @@ con$examine_folder("Sent")
 </pre><p></div></p>
 
 <p><hr>
+<a id="method-ImapCon-status"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>status()</code></h3>
+<p>Request the status of a mail folder without selecting it.
+  Unlike <code>examine_folder()</code>, this does not change the currently
+  selected folder.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>status</span><span class='op'>(</span></span>
+<span>  name <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  items <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MESSAGES"</span>, <span class='st'>"RECENT"</span>, <span class='st'>"UIDNEXT"</span>, <span class='st'>"UIDVALIDITY"</span>, <span class='st'>"UNSEEN"</span><span class='op'>)</span>,</span>
+<span>  retries <span class='op'>=</span> <span class='fl'>1</span></span>
+<span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>name</code></dt><dd><p>A <code>character</code> string containing the name of an existing
+mail folder on the user's mailbox. If no name is passed, the command
+will be executed using the previously selected mail folder name.</p></dd>
+
+<dt><code>items</code></dt><dd><p>A <code>character</code> vector with the status data items to
+request. Must be a subset of <code>"MESSAGES"</code>, <code>"RECENT"</code>,
+<code>"UIDNEXT"</code>, <code>"UIDVALIDITY"</code>, and <code>"UNSEEN"</code>. Default is
+all of them.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A named <code>numeric</code> vector with the requested status counts.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$status(name = "INBOX")
+
+# or, for the selected folder and specific items only:
+con$select_folder("INBOX")
+con$status(items = c("MESSAGES", "UNSEEN"))
+}
+</pre><p></div></p>
+
+<p><hr>
 <a id="method-ImapCon-create_folder"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>create_folder()</code></h3>
 <p>Create a new mail folder.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>create_folder</span><span class='op'>(</span><span class='va'>name</span>, mute <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
@@ -681,6 +721,31 @@ con$select_folder(name = "Folder A")
 con$rename_folder(new_name = "Folder B")
 # or directly:
 con$rename_folder(name = "Folder A", new_name = "Folder B")
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-delete_folder"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>delete_folder()</code></h3>
+<p>Delete a mail folder.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>delete_folder</span><span class='op'>(</span><span class='va'>name</span>, mute <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>name</code></dt><dd><p>A string containing the name of the mail folder to be
+deleted.</p></dd>
+
+<dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
+when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code> in case the operation is successful.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$delete_folder(name = "Folder to remove")
 }
 </pre><p></div></p>
 
@@ -2547,6 +2612,18 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$status`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>status</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'># or, for the selected folder and specific items only:</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span><span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>status</span><span class='op'>(</span>items <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"MESSAGES"</span>, <span class='st'>"UNSEEN"</span><span class='op'>)</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span><span class='co'>## Method `ImapCon$create_folder`</span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span></span></span>
@@ -2563,6 +2640,14 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>rename_folder</span><span class='op'>(</span>new_name <span class='op'>=</span> <span class='st'>"Folder B"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='co'># or directly:</span></span></span>
 <span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>rename_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Folder A"</span>, new_name <span class='op'>=</span> <span class='st'>"Folder B"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$delete_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>delete_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Folder to remove"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
