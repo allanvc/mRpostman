@@ -10,3 +10,5 @@
 ^\.httr-oauth$
 ^\.github$
 ^codecov\.yml$
+^\.[a-z]+$
+^C[A-Z]+.*\.md$
