@@ -220,6 +220,15 @@ con$namespace()
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$id`
+## ------------------------------------------------
+
+\dontrun{
+con$id()
+con$id(fields = c(name = "mRpostman", version = "1.2.1"))
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$get_quota_root`
 ## ------------------------------------------------
 
@@ -275,6 +284,24 @@ con$list_special_use_folders()
 
 \dontrun{
 con$select_folder(name = "INBOX")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$close_folder`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+con$close_folder()
+}
+
+## ------------------------------------------------
+## Method `ImapCon$unselect_folder`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+con$unselect_folder()
 }
 
 ## ------------------------------------------------
@@ -846,6 +873,7 @@ Other attachments:
 \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
 \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
 \item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
+\item \href{#method-ImapCon-id}{\code{ImapCon$id()}}
 \item \href{#method-ImapCon-get_quota_root}{\code{ImapCon$get_quota_root()}}
 \item \href{#method-ImapCon-get_quota}{\code{ImapCon$get_quota()}}
 \item \href{#method-ImapCon-noop}{\code{ImapCon$noop()}}
@@ -853,6 +881,8 @@ Other attachments:
 \item \href{#method-ImapCon-list_subscribed_folders}{\code{ImapCon$list_subscribed_folders()}}
 \item \href{#method-ImapCon-list_special_use_folders}{\code{ImapCon$list_special_use_folders()}}
 \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
+\item \href{#method-ImapCon-close_folder}{\code{ImapCon$close_folder()}}
+\item \href{#method-ImapCon-unselect_folder}{\code{ImapCon$unselect_folder()}}
 \item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
 \item \href{#method-ImapCon-status}{\code{ImapCon$status()}}
 \item \href{#method-ImapCon-create_folder}{\code{ImapCon$create_folder()}}
@@ -1195,6 +1225,46 @@ con$namespace()
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-id"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-id}{}}}
+\subsection{Method \code{id()}}{
+Exchange client/server identification (IMAP \code{ID}, RFC
+  2971). Optionally sends the client's id fields and returns the server's
+  id. Requires the server \code{ID} capability.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$id(fields = NULL, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{fields}}{A named \code{character} vector with the client id fields to
+send, e.g. \code{c(name = "mRpostman", version = "1.2.1")}. If
+\code{NULL} (default), sends \code{ID NIL} (asks for the server id
+without disclosing the client id).}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named \code{character} vector with the server's id fields
+  (empty when the server returns \code{NIL}).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$id()
+con$id(fields = c(name = "mRpostman", version = "1.2.1"))
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-get_quota_root"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-get_quota_root}{}}}
 \subsection{Method \code{get_quota_root()}}{
@@ -1439,6 +1509,74 @@ A \code{list} containing the mail folder names and their inherent
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-close_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-close_folder}{}}}
+\subsection{Method \code{close_folder()}}{
+Close the currently selected mail folder (IMAP \code{CLOSE}),
+  permanently removing the messages flagged \code{\\Deleted}. After this,
+  no folder is selected.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$close_folder(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$select_folder("INBOX")
+con$close_folder()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-unselect_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-unselect_folder}{}}}
+\subsection{Method \code{unselect_folder()}}{
+Close the currently selected mail folder \strong{without}
+  expunging (IMAP \code{UNSELECT}, RFC 3691). Requires the server
+  \code{UNSELECT} capability. After this, no folder is selected.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$unselect_folder(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$select_folder("INBOX")
+con$unselect_folder()
 }
 }
 \if{html}{\out{</div>}}
