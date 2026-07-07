@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.9</span>
       </span>
     </div>
 
@@ -331,9 +331,11 @@
 <li><p><a href='#method-ImapCon-reset_xoauth2_bearer'><code>ImapCon$reset_xoauth2_bearer()</code></a></p></li>
 <li><p><a href='#method-ImapCon-disconnect'><code>ImapCon$disconnect()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_server_capabilities'><code>ImapCon$list_server_capabilities()</code></a></p></li>
+<li><p><a href='#method-ImapCon-namespace'><code>ImapCon$namespace()</code></a></p></li>
 <li><p><a href='#method-ImapCon-noop'><code>ImapCon$noop()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_mail_folders'><code>ImapCon$list_mail_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_subscribed_folders'><code>ImapCon$list_subscribed_folders()</code></a></p></li>
+<li><p><a href='#method-ImapCon-list_special_use_folders'><code>ImapCon$list_special_use_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-select_folder'><code>ImapCon$select_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-examine_folder'><code>ImapCon$examine_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-status'><code>ImapCon$status()</code></a></p></li>
@@ -552,6 +554,31 @@ cap
 </pre><p></div></p>
 
 <p><hr>
+<a id="method-ImapCon-namespace"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>namespace()</code></h3>
+<p>Request the server's namespaces (IMAP <code>NAMESPACE</code>, RFC
+  2342): the personal, other users', and shared namespace prefixes and
+  their hierarchy delimiters. Requires the server <code>NAMESPACE</code>
+  capability.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>namespace</span><span class='op'>(</span>retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A named <code>list</code> with elements <code>personal</code>,
+  <code>other_users</code> and <code>shared</code>, each a <code>data.frame</code> with
+  <code>prefix</code> and <code>delimiter</code> columns, or <code>NULL</code> when the
+  server returns <code>NIL</code> for that component.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$namespace()
+}
+</pre><p></div></p>
+
+<p><hr>
 <a id="method-ImapCon-noop"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>noop()</code></h3>
 <p>Issue a <code>NOOP</code> command. It does nothing on the server
   other than resetting the inactivity autologout timer, which makes it
@@ -615,6 +642,30 @@ Default is <code>1</code>.</p></dd>
 <p><div class="r example copy"></p><pre>\dontrun{
 subscribed &lt;- con$list_subscribed_folders()
 subscribed
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-list_special_use_folders"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>list_special_use_folders()</code></h3>
+<p>List the special-use mail folders (IMAP
+  <code>LIST (SPECIAL-USE)</code>, RFC 6154), i.e. the folders the server has
+  tagged with a role such as <code>\Sent</code>, <code>\Drafts</code>,
+  <code>\Junk</code>, <code>\Trash</code>, <code>\Archive</code>, <code>\All</code>, or
+  <code>\Flagged</code>. Requires the server <code>SPECIAL-USE</code> capability.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>list_special_use_folders</span><span class='op'>(</span>retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A <code>data.frame</code> with columns <code>folder</code> and
+  <code>special_use</code> (one row per folder/attribute).</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$list_special_use_folders()
 }
 </pre><p></div></p>
 
@@ -2777,6 +2828,14 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$namespace`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>namespace</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span><span class='co'>## Method `ImapCon$noop`</span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span></span></span>
@@ -2800,6 +2859,14 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
 <span class='r-in'><span><span class='va'>subscribed</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>list_subscribed_folders</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>subscribed</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$list_special_use_folders`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>list_special_use_folders</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
