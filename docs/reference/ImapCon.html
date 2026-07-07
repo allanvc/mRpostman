@@ -329,6 +329,7 @@
 <li><p><a href='#method-ImapCon-reset_timeout_ms'><code>ImapCon$reset_timeout_ms()</code></a></p></li>
 <li><p><a href='#method-ImapCon-reset_password'><code>ImapCon$reset_password()</code></a></p></li>
 <li><p><a href='#method-ImapCon-reset_xoauth2_bearer'><code>ImapCon$reset_xoauth2_bearer()</code></a></p></li>
+<li><p><a href='#method-ImapCon-disconnect'><code>ImapCon$disconnect()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_server_capabilities'><code>ImapCon$list_server_capabilities()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_mail_folders'><code>ImapCon$list_mail_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-select_folder'><code>ImapCon$select_folder()</code></a></p></li>
@@ -505,6 +506,23 @@ set.</p></dd>
 <dt><code>x</code></dt><dd><p>A character string containing the oauth2 bearer token.</p></dd>
 
 </dl><p></div></p>
+<p><hr>
+<a id="method-ImapCon-disconnect"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>disconnect()</code></h3>
+<p>Disconnect and release the connection handle. After calling
+  this method the connection object can no longer be used to issue
+  commands; a new one must be created with <code><a href='configure_imap.html'>configure_imap</a></code>.
+  Dropping the handle reference lets 'libcurl' close the underlying
+  connection when the handle is garbage-collected.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>disconnect</span><span class='op'>(</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code>, invisibly.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$disconnect()
+}
+</pre><p></div></p>
+
 <p><hr>
 <a id="method-ImapCon-list_server_capabilities"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>list_server_capabilities()</code></h3>
 <p>List the server's IMAP capabilities.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
@@ -2281,7 +2299,8 @@ con$search_since(date_char = "20-Aug-2020") %&gt;%
 <span>  content_disposition <span class='op'>=</span> <span class='st'>"both"</span>,</span>
 <span>  override <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
 <span>  mute <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
-<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span></span>
+<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  local_dir <span class='op'>=</span> <span class='st'>"."</span></span>
 <span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2303,6 +2322,11 @@ when the command is successfully executed. Default is <code>FALSE</code>.</p></d
 
 <dt><code>as_is</code></dt><dd><p>If <code>TRUE</code> then write out attachments without base64
 decoding. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>local_dir</code></dt><dd><p>A <code>character</code> string with the base directory where the
+attachments will be saved. A subfolder tree
+<code>&lt;local_dir&gt;/&lt;username&gt;/&lt;mail folder&gt;/&lt;msg id&gt;</code> is created inside it.
+Default is <code>"."</code> (the current working directory).</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
@@ -2372,7 +2396,8 @@ out
 <span>  override <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
 <span>  mute <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
 <span>  retries <span class='op'>=</span> <span class='fl'>1</span>,</span>
-<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span></span>
+<span>  as_is <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  local_dir <span class='op'>=</span> <span class='st'>"."</span></span>
 <span><span class='op'>)</span></span></pre><p></div></p>
 
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
@@ -2404,6 +2429,11 @@ is <code>1</code>.</p></dd>
 
 <dt><code>as_is</code></dt><dd><p>If <code>TRUE</code> then write out attachments without base64
 decoding. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>local_dir</code></dt><dd><p>A <code>character</code> string with the base directory where the
+attachments will be saved. A subfolder tree
+<code>&lt;local_dir&gt;/&lt;username&gt;/&lt;mail folder&gt;/&lt;msg id&gt;</code> is created inside it.
+Default is <code>"."</code> (the current working directory).</p></dd>
 
 </dl><p></div></p>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
@@ -2469,6 +2499,14 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$disconnect`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>disconnect</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span><span class='co'>## Method `ImapCon$list_server_capabilities`</span></span></span>
