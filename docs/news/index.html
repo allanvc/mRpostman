@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.6</span>
       </span>
     </div>
 
@@ -140,12 +140,24 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="section level2">
+    <div id="mrpostman-116-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="anchor"></a>mRpostman 1.1.5 (2026-07-06 bug-fix and feature update)</h2>
+<a href="#mrpostman-116-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.1.6 (2026-07-06 feature update)</h2>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h3>
+<ul>
+<li><p>new <code>ImapCon$delete_folder()</code> method to delete a mail folder (IMAP <code>DELETE</code>), completing the folder-management set alongside <code>create_folder()</code> and <code>rename_folder()</code>. The target folder must be named explicitly (there is no implicit “delete the selected folder”), and a confirmation message is printed unless <code>mute = TRUE</code>.</p></li>
+<li><p>new <code>ImapCon$status()</code> method to query a mail folder’s counters via the IMAP <code>STATUS</code> command <strong>without selecting the folder</strong> (unlike <code>examine_folder()</code>, which issues <code>EXAMINE</code>). It returns a named vector with the requested data items — any subset of <code>MESSAGES</code>, <code>RECENT</code>, <code>UIDNEXT</code>, <code>UIDVALIDITY</code>, and <code>UNSEEN</code> (all by default), configurable via the new <code>items</code> argument. The response is parsed by a dedicated internal <code>parse_status_counts()</code> helper, so the result stays correct regardless of the order in which the server returns the items.</p></li>
+</ul>
+</div>
+</div>
+    <div id="mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="anchor"></a>mRpostman 1.1.5 (2026-07-06 bug-fix and feature update)</h2>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h3>
 <ul>
 <li><p><code>search_string()</code> (and the custom <code><a href="https://rdrr.io/r/base/search.html">search()</a></code>) now support <strong>non-ASCII search terms</strong>. When the term contains non-ASCII characters, the command declares <code>CHARSET UTF-8</code> and sends the term as UTF-8 bytes, so servers such as Gmail can match accented/non-Latin text (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/12'>#12</a>). Pure-ASCII searches are unchanged.</p></li>
 <li><p><code>fetch_attachments()</code> and <code>get_attachments()</code> gained a <code>local_dir</code> argument to set the base directory where attachments are saved (default <code>"."</code>, the working directory). The <code>&lt;username&gt;/&lt;mail folder&gt;/&lt;msg id&gt;</code> subfolder tree is created inside it (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/15'>#15</a>).</p></li>
@@ -326,9 +338,9 @@
     <div id="mrpostman-091-4-2020-11-12-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-4-2020-11-12-github-patch" class="anchor"></a>mRpostman 0.9.1-4 (2020-11-12 Github patch)</h2>
-<div id="new-features-1" class="section level3">
+<div id="new-features-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New features</h3>
+<a href="#new-features-2" class="anchor"></a>New features</h3>
 <ul>
 <li>changes the default value of the <code>timeout_ms</code> parameter to <code>0</code>, which is the default value in libcurl, meaning that no timeout is specified.</li>
 </ul>
@@ -338,9 +350,9 @@
     <div id="mrpostman-091-3-2020-11-08-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-3-2020-11-08-github-patch" class="anchor"></a>mRpostman 0.9.1-3 (2020-11-08 Github patch)</h2>
-<div id="new-features-2" class="section level3">
+<div id="new-features-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-2" class="anchor"></a>New features</h3>
+<a href="#new-features-3" class="anchor"></a>New features</h3>
 <ul>
 <li><p>added the <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code> function. It will be particularly useful for cleaning and preparing message text retrieved with <code>fetch_body(..., mime_level = 1)</code>. These texts can be used for sentiment analysis and other text mining tasks;</p></li>
 <li><p>added internal functions <code>decode_mime_text()</code> and <code>decode_quoted_printable_text()</code>. The second is called by the first one;</p></li>
@@ -353,9 +365,9 @@
     <div id="mrpostman-091-2-2020-11-01-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-2-2020-11-01-github-patch" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
-<div id="new-features-3" class="section level3">
+<div id="new-features-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-3" class="anchor"></a>New features</h3>
+<a href="#new-features-4" class="anchor"></a>New features</h3>
 <ul>
 <li>added the <code>mime_level</code> argument to the <code>fetch_body()</code> method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.</li>
 </ul>

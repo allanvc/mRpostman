@@ -241,6 +241,18 @@ con$examine_folder("Sent")
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$status`
+## ------------------------------------------------
+
+\dontrun{
+con$status(name = "INBOX")
+
+# or, for the selected folder and specific items only:
+con$select_folder("INBOX")
+con$status(items = c("MESSAGES", "UNSEEN"))
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$create_folder`
 ## ------------------------------------------------
 
@@ -257,6 +269,14 @@ con$select_folder(name = "Folder A")
 con$rename_folder(new_name = "Folder B")
 # or directly:
 con$rename_folder(name = "Folder A", new_name = "Folder B")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$delete_folder`
+## ------------------------------------------------
+
+\dontrun{
+con$delete_folder(name = "Folder to remove")
 }
 
 ## ------------------------------------------------
@@ -735,8 +755,10 @@ Other attachments:
 \item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
 \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
 \item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
+\item \href{#method-ImapCon-status}{\code{ImapCon$status()}}
 \item \href{#method-ImapCon-create_folder}{\code{ImapCon$create_folder()}}
 \item \href{#method-ImapCon-rename_folder}{\code{ImapCon$rename_folder()}}
+\item \href{#method-ImapCon-delete_folder}{\code{ImapCon$delete_folder()}}
 \item \href{#method-ImapCon-list_flags}{\code{ImapCon$list_flags()}}
 \item \href{#method-ImapCon-search}{\code{ImapCon$search()}}
 \item \href{#method-ImapCon-search_larger_than}{\code{ImapCon$search_larger_than()}}
@@ -1143,6 +1165,56 @@ con$examine_folder("Sent")
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-status"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-status}{}}}
+\subsection{Method \code{status()}}{
+Request the status of a mail folder without selecting it.
+  Unlike \code{examine_folder()}, this does not change the currently
+  selected folder.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$status(
+  name = NULL,
+  items = c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN"),
+  retries = 1
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A \code{character} string containing the name of an existing
+mail folder on the user's mailbox. If no name is passed, the command
+will be executed using the previously selected mail folder name.}
+
+\item{\code{items}}{A \code{character} vector with the status data items to
+request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
+\code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default is
+all of them.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named \code{numeric} vector with the requested status counts.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$status(name = "INBOX")
+
+# or, for the selected folder and specific items only:
+con$select_folder("INBOX")
+con$status(items = c("MESSAGES", "UNSEEN"))
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-create_folder"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-create_folder}{}}}
 \subsection{Method \code{create_folder()}}{
@@ -1225,6 +1297,43 @@ con$select_folder(name = "Folder A")
 con$rename_folder(new_name = "Folder B")
 # or directly:
 con$rename_folder(name = "Folder A", new_name = "Folder B")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-delete_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-delete_folder}{}}}
+\subsection{Method \code{delete_folder()}}{
+Delete a mail folder.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$delete_folder(name, mute = FALSE, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A string containing the name of the mail folder to be
+deleted.}
+
+\item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
+when the command is successfully executed. Default is \code{FALSE}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$delete_folder(name = "Folder to remove")
 }
 }
 \if{html}{\out{</div>}}

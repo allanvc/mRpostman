@@ -297,6 +297,34 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Request the status of a mail folder without selecting it.
+    #'   Unlike \code{examine_folder()}, this does not change the currently
+    #'   selected folder.
+    #' @param name A \code{character} string containing the name of an existing
+    #'   mail folder on the user's mailbox. If no name is passed, the command
+    #'   will be executed using the previously selected mail folder name.
+    #' @param items A \code{character} vector with the status data items to
+    #'   request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
+    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default is
+    #'   all of them.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{numeric} vector with the requested status counts.
+    #' @examples
+    #' \dontrun{
+    #' con$status(name = "INBOX")
+    #'
+    #' # or, for the selected folder and specific items only:
+    #' con$select_folder("INBOX")
+    #' con$status(items = c("MESSAGES", "UNSEEN"))
+    #' }
+    status = function(name = NULL, items = c("MESSAGES", "RECENT", "UIDNEXT",
+                                             "UIDVALIDITY", "UNSEEN"),
+                      retries = 1) {
+      out <- status_int(self, name, items, retries)
+      return(out)
+    },
+
     #' @description Create a new mail folder.
     #' @param name A string containing the name of the new mail folder to be
     #'   created.
@@ -338,6 +366,22 @@ ImapCon <- R6::R6Class("ImapCon",
       self$con_params$folder <- rename_folder_int(self, name, new_name, reselect, mute,
                                        retries)
       invisible(TRUE)
+    },
+
+    #' @description Delete a mail folder.
+    #' @param name A string containing the name of the mail folder to be
+    #'   deleted.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
+    #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$delete_folder(name = "Folder to remove")
+    #' }
+    delete_folder = function(name, mute = FALSE, retries = 1) {
+      invisible(delete_folder_int(self, name, mute, retries))
     },
 
     #' @description List flags in a selected mail folder
