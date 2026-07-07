@@ -322,6 +322,24 @@ con$list_flags()
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$sort`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+con$sort(by = "DATE", reverse = TRUE)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$thread`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+con$thread(algorithm = "REFERENCES")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$search`
 ## ------------------------------------------------
 
@@ -797,6 +815,8 @@ Other attachments:
 \item \href{#method-ImapCon-subscribe_folder}{\code{ImapCon$subscribe_folder()}}
 \item \href{#method-ImapCon-unsubscribe_folder}{\code{ImapCon$unsubscribe_folder()}}
 \item \href{#method-ImapCon-list_flags}{\code{ImapCon$list_flags()}}
+\item \href{#method-ImapCon-sort}{\code{ImapCon$sort()}}
+\item \href{#method-ImapCon-thread}{\code{ImapCon$thread()}}
 \item \href{#method-ImapCon-search}{\code{ImapCon$search()}}
 \item \href{#method-ImapCon-search_larger_than}{\code{ImapCon$search_larger_than()}}
 \item \href{#method-ImapCon-search_smaller_than}{\code{ImapCon$search_smaller_than()}}
@@ -1549,6 +1569,120 @@ Default is \code{1}.}
 \preformatted{\dontrun{
 con$select_folder(name = "INBOX")
 con$list_flags()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-sort"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-sort}{}}}
+\subsection{Method \code{sort()}}{
+Sort messages on the server (IMAP \code{SORT}, RFC 5256).
+  Returns the message ids ordered by the server according to the sort
+  keys. Requires the server to advertise the \code{SORT} capability (check
+  with \code{list_server_capabilities()}).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$sort(
+  by = "DATE",
+  reverse = FALSE,
+  criteria = "ALL",
+  use_uid = FALSE,
+  char_set = "UTF-8",
+  retries = 1
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{by}}{A \code{character} vector of sort keys, a subset of
+\code{"ARRIVAL"}, \code{"CC"}, \code{"DATE"}, \code{"FROM"},
+\code{"SIZE"}, \code{"SUBJECT"}, and \code{"TO"}. Default is
+\code{"DATE"}.}
+
+\item{\code{reverse}}{A \code{logical}. If \code{TRUE}, each sort key is prefixed
+with \code{REVERSE} (descending order). Default is \code{FALSE}.}
+
+\item{\code{criteria}}{A \code{character} string with the search criteria that
+restricts the set to be sorted. Default is \code{"ALL"}.}
+
+\item{\code{use_uid}}{A \code{logical}. If \code{TRUE}, issues \code{UID SORT} and
+returns UIDs instead of sequence numbers. Default is \code{FALSE}.}
+
+\item{\code{char_set}}{A \code{character} string with the charset of the search
+criteria. Default is \code{"UTF-8"}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An \code{integer} vector of message ids in the server-provided
+  (sorted) order.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$select_folder("INBOX")
+con$sort(by = "DATE", reverse = TRUE)
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-thread"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-thread}{}}}
+\subsection{Method \code{thread()}}{
+Thread messages on the server (IMAP \code{THREAD}, RFC 5256).
+  Returns the messages grouped into threads. Requires the server to
+  advertise a \code{THREAD=} capability (check with
+  \code{list_server_capabilities()}).
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$thread(
+  algorithm = "REFERENCES",
+  criteria = "ALL",
+  use_uid = FALSE,
+  char_set = "UTF-8",
+  retries = 1
+)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{algorithm}}{A \code{character} string with the threading algorithm,
+either \code{"REFERENCES"} or \code{"ORDEREDSUBJECT"}. Default is
+\code{"REFERENCES"}.}
+
+\item{\code{criteria}}{A \code{character} string with the search criteria that
+restricts the set to be threaded. Default is \code{"ALL"}.}
+
+\item{\code{use_uid}}{A \code{logical}. If \code{TRUE}, issues \code{UID THREAD}
+and returns UIDs instead of sequence numbers. Default is \code{FALSE}.}
+
+\item{\code{char_set}}{A \code{character} string with the charset of the search
+criteria. Default is \code{"UTF-8"}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{list} of \code{integer} vectors, one per top-level thread.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$select_folder("INBOX")
+con$thread(algorithm = "REFERENCES")
 }
 }
 \if{html}{\out{</div>}}
