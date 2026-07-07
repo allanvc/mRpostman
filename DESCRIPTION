@@ -32,6 +32,7 @@ Depends: R (>= 3.1.0)
 URL: https://allanvc.github.io/mRpostman/
 BugReports: https://github.com/allanvc/mRpostman/issues/
 SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
-Suggests: knitr, rmarkdown
+Suggests: knitr, rmarkdown, testthat (>= 3.0.0)
 VignetteBuilder: knitr
+Config/testthat/edition: 3
 RoxygenNote: 7.3.2
