@@ -1,3 +1,13 @@
+## mRpostman 1.2.0 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$get_quota_root()` and `ImapCon$get_quota()` methods for the IMAP quota extension (`GETQUOTAROOT` / `GETQUOTA`, RFC 2087). They return a `data.frame` with `quota_root`, `resource`, `usage`, and `limit` (one row per resource; `STORAGE` is reported by the server in kibibytes). Requires the server `QUOTA` capability. The responses are parsed by an offline-tested `parse_quota()` helper.
+
+- new `ImapCon$append_msg()` method to append a full RFC 822 message to a mail folder (IMAP `APPEND`) — e.g. saving a message to `Drafts` or `Sent`. Unlike every other operation it is performed by an upload (`CURLOPT_UPLOAD`, via a read callback like `curl::send_mail()`) rather than a `customrequest`; it reuses the connection handle and restores it out of upload mode afterwards. The message is stored with the server's default flags.
+
+- both new areas are documented in the `basics` vignette.
+
 ## mRpostman 1.1.9 (2026-07-06 feature update)
 
 ### New features

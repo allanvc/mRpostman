@@ -261,6 +261,43 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Get the quota root(s) and quota usage/limits of a mail folder
+    #'   (IMAP \code{GETQUOTAROOT}, RFC 2087). Requires the server \code{QUOTA}
+    #'   capability.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with columns \code{quota_root},
+    #'   \code{resource}, \code{usage} and \code{limit} (one row per resource;
+    #'   \code{STORAGE} is reported by the server in kibibytes).
+    #' @examples
+    #' \dontrun{
+    #' con$get_quota_root(name = "INBOX")
+    #' }
+    get_quota_root = function(name = NULL, retries = 1) {
+      out <- get_quota_root_int(self, name, retries)
+      return(out)
+    },
+
+    #' @description Get the quota usage/limits of a quota root (IMAP
+    #'   \code{GETQUOTA}, RFC 2087). Requires the server \code{QUOTA} capability.
+    #' @param quota_root A \code{character} string with the quota root name.
+    #'   Default is \code{""} (the default root). Use \code{get_quota_root()} to
+    #'   discover the root(s) of a folder.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with columns \code{quota_root},
+    #'   \code{resource}, \code{usage} and \code{limit}.
+    #' @examples
+    #' \dontrun{
+    #' con$get_quota(quota_root = "")
+    #' }
+    get_quota = function(quota_root = "", retries = 1) {
+      out <- get_quota_int(self, quota_root, retries)
+      return(out)
+    },
+
     #' @description Issue a \code{NOOP} command. It does nothing on the server
     #'   other than resetting the inactivity autologout timer, which makes it
     #'   useful as a keep-alive during long idle periods and as a way to keep
@@ -1610,6 +1647,30 @@ ImapCon <- R6::R6Class("ImapCon",
 
       invisible(out$msg_id)
 
+    },
+
+    #' @description Append a full RFC 822 message to a mail folder (IMAP
+    #'   \code{APPEND}). Useful to save a message to folders such as
+    #'   \code{Drafts} or \code{Sent}. Unlike the other operations this is
+    #'   performed by an upload to the folder; the message is stored with the
+    #'   server's default flags.
+    #' @param message A \code{character} string or \code{raw} vector with the
+    #'   full RFC 822 message (headers and body).
+    #' @param folder A \code{character} string with the destination folder. If no
+    #'   folder is passed, the previously selected folder is used.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
+    #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' msg <- paste("From: me@example.com", "To: you@example.com",
+    #'              "Subject: Hi", "", "Message body.", sep = "\r\n")
+    #' con$append_msg(message = msg, folder = "Drafts")
+    #' }
+    append_msg = function(message, folder = NULL, mute = FALSE, retries = 1) {
+      invisible(append_int(self, message, folder, mute, retries))
     },
 
     #' @description Count the number of messages with a specific flag(s) in a

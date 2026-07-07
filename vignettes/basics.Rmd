@@ -283,6 +283,17 @@ con$list_special_use_folders()
 con$namespace()
 ```
 
+### 3.14) Folder quota
+
+On servers advertising the "QUOTA" capability (RFC 2087), `get_quota_root()` returns the quota root(s) of a folder and their usage/limits as a `data.frame` (`STORAGE` is reported in kibibytes). If you already know the quota root, `get_quota()` queries it directly.
+
+```{r, message = FALSE, eval=FALSE}
+con$get_quota_root(name = "INBOX")
+
+# or, for a known quota root:
+con$get_quota(quota_root = "")
+```
+
 ## 4) Single-search
 
 All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
@@ -888,6 +899,23 @@ con$search_on(date_char = "07-Sep-2020") %>%
 con$noop()
 ```
 
+### 8.10) Appending a message
+
+`append_msg()` uploads a full RFC 822 message to a folder (IMAP "APPEND"), which is handy to save a message to `Drafts` or `Sent`. The message is stored with the server's default flags.
+
+```{r, message = FALSE, eval = FALSE}
+
+msg <- paste("From: me@example.com",
+             "To: you@example.com",
+             "Subject: Hi",
+             "",
+             "Message body.",
+             sep = "\r\n")
+
+con$append_msg(message = msg, folder = "Drafts")
+
+```
+
 ## References
 
 Babcock, N. (2016), _Introduction to IMAP_, Blog, May 2016, [http](https://nbsoftsolutions.com/blog/introduction-to-imap).
@@ -899,6 +927,8 @@ Crispin, M. and Murchison, K. (2008), _Internet Message Access Protocol - SORT a
 Gahrns, M. and Newman, C. (2003), _IMAP4 Namespace_, RFC 2342, May 2003, [http](https://www.rfc-editor.org/rfc/rfc2342).
 
 Leiba, B. and Melnikov, A. (2011), _IMAP LIST Extension for Special-Use Mailboxes_, RFC 6154, March 2011, [http](https://www.rfc-editor.org/rfc/rfc6154).
+
+Myers, J. (1997), _IMAP4 QUOTA extension_, RFC 2087, January 1997, [http](https://www.rfc-editor.org/rfc/rfc2087).
 
 Freed, N. and Borenstein, N. (1996), _Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types_, RFC 2046, November 1996, [http](https://www.rfc-editor.org/rfc/rfc2046).
 
