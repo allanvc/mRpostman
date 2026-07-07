@@ -1,3 +1,13 @@
+## mRpostman 1.1.8 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$sort()` method for server-side sorting (IMAP `SORT`, RFC 5256). It returns the message ids ordered by the server according to the sort keys (`by`, any subset of `ARRIVAL`, `CC`, `DATE`, `FROM`, `SIZE`, `SUBJECT`, `TO`), with optional `reverse` (descending), a `criteria` restriction (default `ALL`), `use_uid`, and a configurable `char_set`. The server-provided order is preserved (the result is deliberately **not** passed through the ascending-order `fix_search_stripping()` used by `search()`). Requires the server `SORT` capability.
+
+- new `ImapCon$thread()` method for server-side threading (IMAP `THREAD`, RFC 5256), with `algorithm` (`REFERENCES` or `ORDEREDSUBJECT`), a `criteria` restriction, `use_uid`, and a configurable `char_set`. It returns a list of integer vectors, one per top-level thread (nested parent/child ids are flattened into their thread). Requires a server `THREAD=` capability.
+
+- both new methods are parsed by dedicated internal helpers (`parse_sort()`, `parse_thread()`) and share a new `execute_ordered_search()` engine that mirrors the search request/retry logic but keeps the server ordering intact. The parsers are covered by offline tests.
+
 ## mRpostman 1.1.7 (2026-07-06 feature update)
 
 ### New features

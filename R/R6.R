@@ -465,6 +465,65 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    ## SORT and THREAD (RFC 5256)
+    #' @description Sort messages on the server (IMAP \code{SORT}, RFC 5256).
+    #'   Returns the message ids ordered by the server according to the sort
+    #'   keys. Requires the server to advertise the \code{SORT} capability (check
+    #'   with \code{list_server_capabilities()}).
+    #' @param by A \code{character} vector of sort keys, a subset of
+    #'   \code{"ARRIVAL"}, \code{"CC"}, \code{"DATE"}, \code{"FROM"},
+    #'   \code{"SIZE"}, \code{"SUBJECT"}, and \code{"TO"}. Default is
+    #'   \code{"DATE"}.
+    #' @param reverse A \code{logical}. If \code{TRUE}, each sort key is prefixed
+    #'   with \code{REVERSE} (descending order). Default is \code{FALSE}.
+    #' @param criteria A \code{character} string with the search criteria that
+    #'   restricts the set to be sorted. Default is \code{"ALL"}.
+    #' @param use_uid A \code{logical}. If \code{TRUE}, issues \code{UID SORT} and
+    #'   returns UIDs instead of sequence numbers. Default is \code{FALSE}.
+    #' @param char_set A \code{character} string with the charset of the search
+    #'   criteria. Default is \code{"UTF-8"}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return An \code{integer} vector of message ids in the server-provided
+    #'   (sorted) order.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' con$sort(by = "DATE", reverse = TRUE)
+    #' }
+    sort = function(by = "DATE", reverse = FALSE, criteria = "ALL",
+                    use_uid = FALSE, char_set = "UTF-8", retries = 1) {
+      out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries)
+      return(out)
+    },
+
+    #' @description Thread messages on the server (IMAP \code{THREAD}, RFC 5256).
+    #'   Returns the messages grouped into threads. Requires the server to
+    #'   advertise a \code{THREAD=} capability (check with
+    #'   \code{list_server_capabilities()}).
+    #' @param algorithm A \code{character} string with the threading algorithm,
+    #'   either \code{"REFERENCES"} or \code{"ORDEREDSUBJECT"}. Default is
+    #'   \code{"REFERENCES"}.
+    #' @param criteria A \code{character} string with the search criteria that
+    #'   restricts the set to be threaded. Default is \code{"ALL"}.
+    #' @param use_uid A \code{logical}. If \code{TRUE}, issues \code{UID THREAD}
+    #'   and returns UIDs instead of sequence numbers. Default is \code{FALSE}.
+    #' @param char_set A \code{character} string with the charset of the search
+    #'   criteria. Default is \code{"UTF-8"}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} of \code{integer} vectors, one per top-level thread.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' con$thread(algorithm = "REFERENCES")
+    #' }
+    thread = function(algorithm = "REFERENCES", criteria = "ALL",
+                      use_uid = FALSE, char_set = "UTF-8", retries = 1) {
+      out <- thread_int(self, algorithm, criteria, use_uid, char_set, retries)
+      return(out)
+    },
+
     ## SEARCH
     ### custom search
     #' @description Execute a custom search
