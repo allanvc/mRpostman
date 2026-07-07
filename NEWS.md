@@ -1,3 +1,11 @@
+## mRpostman 1.2.1 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$close_folder()` (IMAP `CLOSE`) closes the selected folder and permanently removes its `\Deleted` messages; and `ImapCon$unselect_folder()` (IMAP `UNSELECT`, RFC 3691) closes it **without** expunging (requires the server `UNSELECT` capability). Both leave the connection with no folder selected.
+
+- new `ImapCon$id()` method (IMAP `ID`, RFC 2971) to exchange client/server identification. It optionally sends the client id fields (a named character vector) and returns the server's id as a named character vector; parsed by an offline-tested `parse_id()` helper.
+
 ## mRpostman 1.2.0 (2026-07-06 feature update)
 
 ### New features

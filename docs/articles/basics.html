@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
       </span>
     </div>
 
@@ -385,6 +385,27 @@
 <span><span class="co"># or, for a known quota root:</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">get_quota</span><span class="op">(</span>quota_root <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div id="closing-a-folder" class="section level3">
+<h3 class="hasAnchor">
+<a href="#closing-a-folder" class="anchor"></a>3.15) Closing a folder</h3>
+<p><code>close_folder()</code> closes the selected folder (IMAP “CLOSE”), <strong>permanently removing</strong> the messages flagged <code>\Deleted</code>. <code>unselect_folder()</code> (IMAP “UNSELECT”, RFC 3691) does the same <strong>without</strong> expunging. After either, no folder is selected.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">close_folder</span><span class="op">(</span><span class="op">)</span>      <span class="co"># closes and expunges \Deleted</span></span>
+<span><span class="co"># or:</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">unselect_folder</span><span class="op">(</span><span class="op">)</span>   <span class="co"># closes without expunging</span></span></code></pre></div>
+</div>
+<div id="clientserver-identification" class="section level3">
+<h3 class="hasAnchor">
+<a href="#clientserver-identification" class="anchor"></a>3.16) Client/server identification</h3>
+<p><code>id()</code> issues the IMAP “ID” command (RFC 2971). Called without arguments it asks for the server’s id; you can also disclose the client id by passing a named vector.</p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">id</span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># optionally disclosing the client id:</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">id</span><span class="op">(</span>fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">"mRpostman"</span>, version <span class="op">=</span> <span class="st">"1.2.1"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div id="single-search" class="section level2">
 <h2 class="hasAnchor">
@@ -402,21 +423,21 @@
 <div id="before-a-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#before-a-date" class="anchor"></a>4.1.1.1) Before a date</h4>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <p>You can use the “UID” (unique identifier) instead of the message sequence number <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, and one or more flags as an additional filter to your search. In fact, you can use this in almost every search method of this package.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span>                         use_uid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ANSWERED"</span>, <span class="st">"SEEN"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <p>Remember that, if your IMAP server has the ESEARCH capability, you can use it. Gmail is one of the mail providers that allow it.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span>                         use_uid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ANSWERED"</span>, <span class="st">"SEEN"</span><span class="op">)</span>,</span>
@@ -424,7 +445,7 @@
 <span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <p>You can also <strong>NEGATE</strong> the statement to search for messages <strong>NOT BEFORE a date</strong>, for example:</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span>                         negate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -435,7 +456,7 @@
 <h4 class="hasAnchor">
 <a href="#since-a-date" class="anchor"></a>4.1.1.2) Since a date</h4>
 <p>The previous operation, in which we have used <code>negate = TRUE</code>, is equivalent to search for messages received <strong>SINCE a DATE</strong>:</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span>                        use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span>                         </span>
@@ -444,13 +465,13 @@
 <div id="by-period" class="section level4">
 <h4 class="hasAnchor">
 <a href="#by-period" class="anchor"></a>4.1.1.3) By period</h4>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_period</span><span class="op">(</span>since_date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span>,</span>
 <span>                         before_date_char <span class="op">=</span> <span class="st">"30-Jun-2020"</span><span class="op">)</span></span>
 <span>                         </span>
 <span><span class="va">res</span></span></code></pre></div>
 <p>You can <strong>NEGATE</strong> a period search as well. In this case, the search will exclude messages from the specified period.</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_period</span><span class="op">(</span>since_date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span>,</span>
 <span>                         before_date_char <span class="op">=</span> <span class="st">"30-Jun-2020"</span>,</span>
 <span>                         negate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -460,7 +481,7 @@
 <div id="on-a-specific-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#on-a-specific-date" class="anchor"></a>4.1.1.4) On a specific date</h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="by-origination-date" class="section level4">
@@ -470,10 +491,10 @@
 <div id="sent-before-a-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#sent-before-a-date" class="anchor"></a>4.1.2.1) Sent before a date</h4>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_sent_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span></span></code></pre></div>
 <p>You can modify some of the search parameters as well:</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_sent_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span>,</span>
 <span>                              negate <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                              use_uid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -484,20 +505,20 @@
 <div id="sent-since-a-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#sent-since-a-date" class="anchor"></a>4.1.2.2) Sent since a date</h4>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_sent_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="sent-by-period" class="section level4">
 <h4 class="hasAnchor">
 <a href="#sent-by-period" class="anchor"></a>4.1.2.3) Sent by period</h4>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_sent_period</span><span class="op">(</span>since_date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span>,</span>
 <span>                       before_date_char <span class="op">=</span> <span class="st">"30-Jun-2020"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="sent-on-a-specific-date" class="section level4">
 <h4 class="hasAnchor">
 <a href="#sent-on-a-specific-date" class="anchor"></a>4.1.2.4) Sent On a specific date</h4>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_sent_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"30-Jun-2020"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
@@ -508,26 +529,26 @@
 <p>You can also <strong>NEGATE</strong> the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well.</p>
 <p>For the next examples, we are going to select a different mail folder.</p>
 <p>Searching in the “TO” header field:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"K-State"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"xpto@k-state.com"</span>, where <span class="op">=</span> <span class="st">"TO"</span><span class="op">)</span></span></code></pre></div>
 <p>Searching in the “FROM” header field:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"xpto@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span></span></code></pre></div>
 <p>Searching in the “SUBJECT” header field:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"PhD offer"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span></span></code></pre></div>
 <p>Searching in the “TEXT” section.</p>
 <p><strong>IMPORTANT</strong>: Since the text may contain raw data, it may not be a super-effective search. In this case, searching for an expression in the whole <code>"BODY"</code> may be preferred.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"TEXT"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1">con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"TEXT"</span>)</a></code></pre></div>
 <p>Searching in the “BODY” section.</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" title="1">con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"BODY"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1">con<span class="op">$</span><span class="kw">search_string</span>(<span class="dt">expr =</span> <span class="st">"Dear Allan"</span> <span class="dt">where =</span> <span class="st">"BODY"</span>)</a></code></pre></div>
 </div>
 <div id="search-by-flag" class="section level3">
 <h3 class="hasAnchor">
 <a href="#search-by-flag" class="anchor"></a>4.3) Search by flag</h3>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_flag</span><span class="op">(</span>name <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"ANSWERED"</span>, <span class="st">"Seen"</span><span class="op">)</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Remember that you can check the available flags in a mail folder with <code>list_flags()</code>.</p>
 </div>
@@ -538,13 +559,13 @@
 <div id="smaller-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#smaller-than" class="anchor"></a>4.4.1) Smaller than</h4>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_smaller_than</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">512000</span><span class="op">)</span> <span class="co"># smaller than 512KB</span></span></code></pre></div>
 </div>
 <div id="larger-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#larger-than" class="anchor"></a>4.4.1) Larger than</h4>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_larger_than</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">512000</span><span class="op">)</span> <span class="co"># larger than 512KB</span></span></code></pre></div>
 </div>
 </div>
@@ -555,13 +576,13 @@
 <div id="younger-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#younger-than" class="anchor"></a>4.5.1) Younger than</h4>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_younger_than</span><span class="op">(</span>seconds <span class="op">=</span> <span class="fl">3600</span><span class="op">)</span> <span class="co"># msgs received less than one hour (3600 sec)</span></span></code></pre></div>
 </div>
 <div id="older-than" class="section level4">
 <h4 class="hasAnchor">
 <a href="#older-than" class="anchor"></a>4.5.2) Older than</h4>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_older_than</span><span class="op">(</span>seconds <span class="op">=</span> <span class="fl">3600</span><span class="op">)</span> <span class="co"># msgs received more than one hour ago (3600 sec)</span></span></code></pre></div>
 </div>
 </div>
@@ -569,7 +590,7 @@
 <h3 class="hasAnchor">
 <a href="#server-side-sort-sort" class="anchor"></a>4.6) Server-side sort (SORT)</h3>
 <p>Servers advertising the “SORT” capability (RFC 5256) can order the results on the server side. <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> returns the message ids in the server-provided order (it does <strong>not</strong> re-sort them locally). Check the capability with <code>list_server_capabilities()</code>.</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># most recent first:</span></span>
@@ -582,7 +603,7 @@
 <h3 class="hasAnchor">
 <a href="#server-side-thread-thread" class="anchor"></a>4.7) Server-side thread (THREAD)</h3>
 <p>Servers advertising a “THREAD=” capability (RFC 5256) can group messages into threads. <code>thread()</code> returns a list of integer vectors, one per top-level thread (nested parent/child ids are flattened into their thread).</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">thread</span><span class="op">(</span>algorithm <span class="op">=</span> <span class="st">"REFERENCES"</span><span class="op">)</span></span></code></pre></div>
@@ -599,7 +620,7 @@
 </ol>
 <p><strong>NOTE</strong>: IMAP queries follow Polish notation, i.e. operators such as <code>OR</code> come before arguments, e.g. “OR argument1 argument2”. Therefore, the relational operators functions in this package should be used like the following examples: <code>OR(before(date_char = "17-Apr-2015"), string(expr = "Jimmy", where = "FROM"))</code>. Even though there is no “AND” operator in the IMAP protocol, this package adds a helper function <code><a href="../reference/AND.html">AND()</a></code> to indicate multiple arguments that must be searched together, e.g. <code>AND(since(date_char = "01-Jul-2018"), larger_than(size = 16000))</code>.</p>
 <p><strong>Example 1</strong>: Searching for messages (in “INBOX”) containing the string “Kansas State University” in the “SUBJECT” header field <strong>AND</strong> that were received before “02-Jan-2020”.</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span></span>
@@ -608,7 +629,7 @@
 <span></span>
 <span><span class="va">res</span></span></code></pre></div>
 <p><strong>Example 2</strong>: Searching (using UID) for messages received from “<span class="citation">@k-state.edu</span>” <strong>OR</strong> “<span class="citation">@ksu.edu</span>”.</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/OR.html">OR</a></span><span class="op">(</span><span class="fu"><a href="../reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span>,</span>
 <span>                        <span class="fu"><a href="../reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@ksu.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>           use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
@@ -628,7 +649,7 @@
 <div id="fetch-body" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-body" class="anchor"></a>6.1) Fetch body</h3>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># increasing timeout_ms</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">reset_timeout_ms</span><span class="op">(</span>x <span class="op">=</span> <span class="fl">30000</span><span class="op">)</span> <span class="co"># ... to 30 secs</span></span>
 <span></span>
@@ -652,7 +673,7 @@
 <div id="fetch-header" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-header" class="anchor"></a>6.2) Fetch header</h3>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># tidy approach</span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"15-Aug-2019"</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_header</span><span class="op">(</span>use_uid <span class="op">=</span> <span class="cn">TRUE</span>, fields <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"DATE"</span>, <span class="st">"SUBJECT"</span><span class="op">)</span><span class="op">)</span></span>
@@ -673,14 +694,14 @@
 <h3 class="hasAnchor">
 <a href="#fetch-text" class="anchor"></a>6.3) Fetch text</h3>
 <p><code>fetch_text()</code> is almost as costly as <code>fetch_body()</code>. So, it is a good idea to keep a “high” <code>timeout_ms</code>.</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"15-Aug-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span>, keep_in_mem <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="fetch-metadata" class="section level3">
 <h3 class="hasAnchor">
 <a href="#fetch-metadata" class="anchor"></a>6.4) Fetch metadata</h3>
-<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"15-Aug-2019"</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_metadata</span><span class="op">(</span>use_uid <span class="op">=</span> <span class="cn">TRUE</span>, attribute <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"INTERNALDATE"</span>, <span class="st">"UID"</span>, <span class="st">"ENVELOPE"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>If nothing is specified to the <code>metadata</code> argument, all the metadata fields are fetched by default. To know which are the metadata options of a message, refer to <code><a href="../reference/metadata_options.html">metadata_options()</a></code>.</p>
@@ -701,7 +722,7 @@
 <h4 class="hasAnchor">
 <a href="#listing-attachments" class="anchor"></a>7.1.1) Listing attachments</h4>
 <p>This will list your attachments file names for each fetched message.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># using fetch_body()</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
@@ -719,7 +740,7 @@
 <h4 class="hasAnchor">
 <a href="#extracting-attachments" class="anchor"></a>7.1.2) Extracting Attachments</h4>
 <p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder inside the structure <code>working directory &gt; username &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
-<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># using fetch_body()</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
@@ -743,14 +764,14 @@
 <div id="fetch-attachments-list" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fetch-attachments-list" class="anchor"></a>7.2.1) Fetch attachments list</h4>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="fetch-attachments" class="section level4">
 <h4 class="hasAnchor">
 <a href="#fetch-attachments" class="anchor"></a>7.2.2) Fetch attachments</h4>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -764,7 +785,7 @@
 <h3 class="hasAnchor">
 <a href="#copy-messages" class="anchor"></a>8.1) Copy message(s)</h3>
 <p>Copying search results from “INBOX” to “K-State” folder:</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"10-may-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
@@ -775,41 +796,41 @@
 <h3 class="hasAnchor">
 <a href="#get-minimum-message-id" class="anchor"></a>8.2) Get minimum message id</h3>
 <p>This operation depends on the ESEARCH capability. It will retrieve the <strong>minimum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="get-maximum-message-id" class="section level3">
 <h3 class="hasAnchor">
 <a href="#get-maximum-message-id" class="anchor"></a>8.3) Get maximum message id</h3>
 <p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>maximum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="count-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#count-messages" class="anchor"></a>8.4) Count messages</h3>
 <p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>number</strong> of messages with a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="delete-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#delete-messages" class="anchor"></a>8.5) Delete message(s)</h3>
 <p>This method marks one or more messages with the “\Deleted” system flag. Some servers automatically delete messages marked with this flag, and others require the <code>EXPUNGE</code> command to permanently delete the e-mail.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Trash"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"10-may-2012"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Deleting an specific “msg_id” without a previous search:</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">66128</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="expunge" class="section level3">
 <h3 class="hasAnchor">
 <a href="#expunge" class="anchor"></a>8.6) Expunge</h3>
 <p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Please, note that this requires the unique id, not sequence numbers. Therefore, we set <code>use_uid = TRUE</code></p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># expunge the entire mail folder</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">expunge</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -825,7 +846,7 @@
 <div id="add-flags" class="section level4">
 <h4 class="hasAnchor">
 <a href="#add-flags" class="anchor"></a>8.7.1) Add flags</h4>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Sep-2020"</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
@@ -835,26 +856,26 @@
 <h4 class="hasAnchor">
 <a href="#replace-flags" class="anchor"></a>8.7.2) Replace flags</h4>
 <p>Replaces the existent flags by the one(s) specified in the method.</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb62-2" title="2"><span class="st">  </span>con<span class="op">$</span><span class="kw">replace_flags</span>(<span class="dt">flags_to_set =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1">con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb64-2" title="2"><span class="st">  </span>con<span class="op">$</span><span class="kw">replace_flags</span>(<span class="dt">flags_to_set =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 <div id="remove-flags" class="section level4">
 <h4 class="hasAnchor">
 <a href="#remove-flags" class="anchor"></a>8.7.3) Remove flags</h4>
 <p>Now we have the <code>flags_to_UNset</code> argument.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" title="1">con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb63-2" title="2"><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1">con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb65-2" title="2"><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 </div>
 </div>
 <div id="move-messages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#move-messages" class="anchor"></a>8.8) Move message(s)</h3>
 <p><code>move_msg()</code> uses IMAP “MOVE” EXTENSION. Check if your server supports the “MOVE” capability with <code>list_server_capabilities()</code>.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">move_msg</span><span class="op">(</span>to_folder <span class="op">=</span> <span class="st">"K-State"</span><span class="op">)</span></span></code></pre></div>
 <p>If your server does not provide “MOVE” capability, the same result can be achieved with a combination of <code>copy_msg</code>, <code>add_flags()</code> and <code>expunge()</code>:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">copy_msg</span><span class="op">(</span>to_folder <span class="op">=</span> <span class="st">"K-State"</span>, reselect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">add_flags</span><span class="op">(</span>flags_to_set <span class="op">=</span> <span class="st">"\\Deleted"</span><span class="op">)</span> <span class="op"><a href="../reference/%&gt;%.html">%&gt;%</a></span></span>
@@ -864,14 +885,14 @@
 <h3 class="hasAnchor">
 <a href="#keep-alive-noop" class="anchor"></a>8.9) Keep-alive (NOOP)</h3>
 <p><code>noop()</code> issues the IMAP “NOOP” command. It does nothing on the server other than resetting the inactivity autologout timer, which makes it useful as a keep-alive during long idle periods.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">noop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="appending-a-message" class="section level3">
 <h3 class="hasAnchor">
 <a href="#appending-a-message" class="anchor"></a>8.10) Appending a message</h3>
 <p><code>append_msg()</code> uploads a full RFC 822 message to a folder (IMAP “APPEND”), which is handy to save a message to <code>Drafts</code> or <code>Sent</code>. The message is stored with the server’s default flags.</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"From: me@example.com"</span>,</span>
 <span>             <span class="st">"To: you@example.com"</span>,</span>
 <span>             <span class="st">"Subject: Hi"</span>,</span>
@@ -891,6 +912,8 @@
 <p>Gahrns, M. and Newman, C. (2003), <em>IMAP4 Namespace</em>, RFC 2342, May 2003, <a href="https://www.rfc-editor.org/rfc/rfc2342">http</a>.</p>
 <p>Leiba, B. and Melnikov, A. (2011), <em>IMAP LIST Extension for Special-Use Mailboxes</em>, RFC 6154, March 2011, <a href="https://www.rfc-editor.org/rfc/rfc6154">http</a>.</p>
 <p>Myers, J. (1997), <em>IMAP4 QUOTA extension</em>, RFC 2087, January 1997, <a href="https://www.rfc-editor.org/rfc/rfc2087">http</a>.</p>
+<p>Showalter, T. (2003), <em>IMAP4 ID extension</em>, RFC 2971, October 2000, <a href="https://www.rfc-editor.org/rfc/rfc2971">http</a>.</p>
+<p>Melnikov, A. (2004), <em>Internet Message Access Protocol (IMAP) UNSELECT command</em>, RFC 3691, February 2004, <a href="https://www.rfc-editor.org/rfc/rfc3691">http</a>.</p>
 <p>Freed, N. and Borenstein, N. (1996), <em>Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types</em>, RFC 2046, November 1996, <a href="https://www.rfc-editor.org/rfc/rfc2046">http</a>.</p>
 <p>Gungor, A. (2018), <em>Using IMAP Internal Date for Forensic Email Authentication</em>, Articles, Forensic Focus, <a href="https://www.forensicfocus.com/articles/using-imap-internal-date-for-forensic-email-authentication/">http</a>.</p>
 <p>Heinlein, P. and Hartleben, P. (2008). <em>The Book of IMAP: Building a Mail Server with Courier and Cyrus</em>. No Starch Press. ISBN 978-1-59327-177-0.</p>

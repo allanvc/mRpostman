@@ -261,6 +261,27 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Exchange client/server identification (IMAP \code{ID}, RFC
+    #'   2971). Optionally sends the client's id fields and returns the server's
+    #'   id. Requires the server \code{ID} capability.
+    #' @param fields A named \code{character} vector with the client id fields to
+    #'   send, e.g. \code{c(name = "mRpostman", version = "1.2.1")}. If
+    #'   \code{NULL} (default), sends \code{ID NIL} (asks for the server id
+    #'   without disclosing the client id).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{character} vector with the server's id fields
+    #'   (empty when the server returns \code{NIL}).
+    #' @examples
+    #' \dontrun{
+    #' con$id()
+    #' con$id(fields = c(name = "mRpostman", version = "1.2.1"))
+    #' }
+    id = function(fields = NULL, retries = 1) {
+      out <- id_int(self, fields, retries)
+      return(out)
+    },
+
     #' @description Get the quota root(s) and quota usage/limits of a mail folder
     #'   (IMAP \code{GETQUOTAROOT}, RFC 2087). Requires the server \code{QUOTA}
     #'   capability.
@@ -380,6 +401,40 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     select_folder = function(name, mute = FALSE, retries = 1) {
       self$con_params$folder <- select_folder_int(self, name, mute, retries)
+      invisible(TRUE)
+    },
+
+    #' @description Close the currently selected mail folder (IMAP \code{CLOSE}),
+    #'   permanently removing the messages flagged \code{\\Deleted}. After this,
+    #'   no folder is selected.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' con$close_folder()
+    #' }
+    close_folder = function(retries = 1) {
+      close_folder_int(self, retries)
+      self$con_params$folder <- NA
+      invisible(TRUE)
+    },
+
+    #' @description Close the currently selected mail folder \strong{without}
+    #'   expunging (IMAP \code{UNSELECT}, RFC 3691). Requires the server
+    #'   \code{UNSELECT} capability. After this, no folder is selected.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' con$unselect_folder()
+    #' }
+    unselect_folder = function(retries = 1) {
+      unselect_folder_int(self, retries)
+      self$con_params$folder <- NA
       invisible(TRUE)
     },
 

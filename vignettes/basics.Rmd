@@ -294,6 +294,29 @@ con$get_quota_root(name = "INBOX")
 con$get_quota(quota_root = "")
 ```
 
+### 3.15) Closing a folder
+
+`close_folder()` closes the selected folder (IMAP "CLOSE"), **permanently removing** the messages flagged `\Deleted`. `unselect_folder()` (IMAP "UNSELECT", RFC 3691) does the same **without** expunging. After either, no folder is selected.
+
+```{r, message = FALSE, eval=FALSE}
+con$select_folder("INBOX")
+
+con$close_folder()      # closes and expunges \Deleted
+# or:
+con$unselect_folder()   # closes without expunging
+```
+
+### 3.16) Client/server identification
+
+`id()` issues the IMAP "ID" command (RFC 2971). Called without arguments it asks for the server's id; you can also disclose the client id by passing a named vector.
+
+```{r, message = FALSE, eval=FALSE}
+con$id()
+
+# optionally disclosing the client id:
+con$id(fields = c(name = "mRpostman", version = "1.2.1"))
+```
+
 ## 4) Single-search
 
 All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
@@ -929,6 +952,10 @@ Gahrns, M. and Newman, C. (2003), _IMAP4 Namespace_, RFC 2342, May 2003, [http](
 Leiba, B. and Melnikov, A. (2011), _IMAP LIST Extension for Special-Use Mailboxes_, RFC 6154, March 2011, [http](https://www.rfc-editor.org/rfc/rfc6154).
 
 Myers, J. (1997), _IMAP4 QUOTA extension_, RFC 2087, January 1997, [http](https://www.rfc-editor.org/rfc/rfc2087).
+
+Showalter, T. (2003), _IMAP4 ID extension_, RFC 2971, October 2000, [http](https://www.rfc-editor.org/rfc/rfc2971).
+
+Melnikov, A. (2004), _Internet Message Access Protocol (IMAP) UNSELECT command_, RFC 3691, February 2004, [http](https://www.rfc-editor.org/rfc/rfc3691).
 
 Freed, N. and Borenstein, N. (1996), _Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types_, RFC 2046, November 1996, [http](https://www.rfc-editor.org/rfc/rfc2046).
 
