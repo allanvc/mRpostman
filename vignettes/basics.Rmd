@@ -922,6 +922,8 @@ con$search_on(date_char = "07-Sep-2020") %>%
 con$noop()
 ```
 
+**Note on IDLE:** the IMAP "IDLE" command (RFC 2177) — which lets a client wait for the server to *push* notifications of new messages in real time — is **not supported** by `mRpostman`. IDLE is a long-lived command that holds the connection open until the client sends "DONE", which does not fit the one-shot request/response model of the underlying `libcurl` library. To detect new messages, poll periodically instead: call `noop()` (to refresh the connection) followed by `examine_folder()` or `status()` and compare the counts.
+
 ### 8.10) Appending a message
 
 `append_msg()` uploads a full RFC 822 message to a folder (IMAP "APPEND"), which is handy to save a message to `Drafts` or `Sent`. The message is stored with the server's default flags.

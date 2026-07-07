@@ -887,6 +887,7 @@
 <p><code>noop()</code> issues the IMAP “NOOP” command. It does nothing on the server other than resetting the inactivity autologout timer, which makes it useful as a keep-alive during long idle periods.</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">noop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Note on IDLE:</strong> the IMAP “IDLE” command (RFC 2177) — which lets a client wait for the server to <em>push</em> notifications of new messages in real time — is <strong>not supported</strong> by <code>mRpostman</code>. IDLE is a long-lived command that holds the connection open until the client sends “DONE”, which does not fit the one-shot request/response model of the underlying <code>libcurl</code> library. To detect new messages, poll periodically instead: call <code>noop()</code> (to refresh the connection) followed by <code>examine_folder()</code> or <code>status()</code> and compare the counts.</p>
 </div>
 <div id="appending-a-message" class="section level3">
 <h3 class="hasAnchor">
