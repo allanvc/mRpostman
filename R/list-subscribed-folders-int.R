@@ -1,7 +1,7 @@
-#' @description List mail folders in a mailbox (INTERNAL HELPER)
+#' @description List the subscribed mail folders in a mailbox (INTERNAL HELPER)
 #' @param retries Number of attempts to connect and execute the command.
 #' @noRd
-list_mail_folders_int <- function(self, retries) {
+list_subscribed_folders_int <- function(self, retries) {
 
   check_args(retries = retries) # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
@@ -15,7 +15,7 @@ list_mail_folders_int <- function(self, retries) {
   h <- self$con_handle
 
   tryCatch({
-    curl::handle_setopt(h, customrequest = 'LIST "" *')
+    curl::handle_setopt(h, customrequest = 'LSUB "" *')
   }, error = function(e){
     stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
@@ -29,9 +29,6 @@ list_mail_folders_int <- function(self, retries) {
 
   if (is.null(response)) {
     count_retries = 0 #the first try doesnt count
-
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
     while (is.null(response) && count_retries < retries) {
       count_retries = count_retries + 1
@@ -48,8 +45,8 @@ list_mail_folders_int <- function(self, retries) {
     }
   }
 
-  # v1.1.7 - parsing extracted to the shared parse_folder_list() helper
-  final_output <- parse_folder_list(rawToChar(response$content), command = "LIST")
+  # LSUB shares the LIST response layout, only the command keyword differs
+  final_output <- parse_folder_list(rawToChar(response$content), command = "LSUB")
 
   # sanitizing
   rm(h)

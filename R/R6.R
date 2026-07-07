@@ -242,6 +242,21 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Issue a \code{NOOP} command. It does nothing on the server
+    #'   other than resetting the inactivity autologout timer, which makes it
+    #'   useful as a keep-alive during long idle periods and as a way to keep
+    #'   the connection handle alive between operations.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$noop()
+    #' }
+    noop = function(retries = 1) {
+      invisible(noop_int(self, retries))
+    },
+
     ## mailbox operations
     #' @description List mail folders in a mailbox.
     #' @param retries Number of attempts to connect and execute the command.
@@ -255,6 +270,24 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     list_mail_folders = function(retries = 1) {
       out <- list_mail_folders_int(self, retries)
+      return(out)
+    },
+
+    #' @description List the subscribed mail folders in a mailbox (IMAP
+    #'   \code{LSUB}). Unlike \code{list_mail_folders()} (which issues
+    #'   \code{LIST} and returns every folder), this returns only the folders
+    #'   the user is subscribed to.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} containing the subscribed mail folder names and
+    #'   their inherent structure.
+    #' @examples
+    #' \dontrun{
+    #' subscribed <- con$list_subscribed_folders()
+    #' subscribed
+    #' }
+    list_subscribed_folders = function(retries = 1) {
+      out <- list_subscribed_folders_int(self, retries)
       return(out)
     },
 
@@ -382,6 +415,40 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     delete_folder = function(name, mute = FALSE, retries = 1) {
       invisible(delete_folder_int(self, name, mute, retries))
+    },
+
+    #' @description Subscribe to a mail folder (IMAP \code{SUBSCRIBE}), adding it
+    #'   to the set returned by \code{list_subscribed_folders()}.
+    #' @param name A string containing the name of the mail folder to subscribe
+    #'   to.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
+    #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$subscribe_folder(name = "INBOX")
+    #' }
+    subscribe_folder = function(name, mute = FALSE, retries = 1) {
+      invisible(subscribe_folder_int(self, name, mute, retries))
+    },
+
+    #' @description Unsubscribe from a mail folder (IMAP \code{UNSUBSCRIBE}),
+    #'   removing it from the set returned by \code{list_subscribed_folders()}.
+    #' @param name A string containing the name of the mail folder to
+    #'   unsubscribe from.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
+    #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$unsubscribe_folder(name = "INBOX")
+    #' }
+    unsubscribe_folder = function(name, mute = FALSE, retries = 1) {
+      invisible(unsubscribe_folder_int(self, name, mute, retries))
     },
 
     #' @description List flags in a selected mail folder

@@ -212,12 +212,29 @@ cap
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$noop`
+## ------------------------------------------------
+
+\dontrun{
+con$noop()
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$list_mail_folders`
 ## ------------------------------------------------
 
 \dontrun{
 folders <- con$list_mail_folders()
 folders
+}
+
+## ------------------------------------------------
+## Method `ImapCon$list_subscribed_folders`
+## ------------------------------------------------
+
+\dontrun{
+subscribed <- con$list_subscribed_folders()
+subscribed
 }
 
 ## ------------------------------------------------
@@ -277,6 +294,22 @@ con$rename_folder(name = "Folder A", new_name = "Folder B")
 
 \dontrun{
 con$delete_folder(name = "Folder to remove")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$subscribe_folder`
+## ------------------------------------------------
+
+\dontrun{
+con$subscribe_folder(name = "INBOX")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$unsubscribe_folder`
+## ------------------------------------------------
+
+\dontrun{
+con$unsubscribe_folder(name = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -752,13 +785,17 @@ Other attachments:
 \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
 \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
 \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
+\item \href{#method-ImapCon-noop}{\code{ImapCon$noop()}}
 \item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
+\item \href{#method-ImapCon-list_subscribed_folders}{\code{ImapCon$list_subscribed_folders()}}
 \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
 \item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
 \item \href{#method-ImapCon-status}{\code{ImapCon$status()}}
 \item \href{#method-ImapCon-create_folder}{\code{ImapCon$create_folder()}}
 \item \href{#method-ImapCon-rename_folder}{\code{ImapCon$rename_folder()}}
 \item \href{#method-ImapCon-delete_folder}{\code{ImapCon$delete_folder()}}
+\item \href{#method-ImapCon-subscribe_folder}{\code{ImapCon$subscribe_folder()}}
+\item \href{#method-ImapCon-unsubscribe_folder}{\code{ImapCon$unsubscribe_folder()}}
 \item \href{#method-ImapCon-list_flags}{\code{ImapCon$list_flags()}}
 \item \href{#method-ImapCon-search}{\code{ImapCon$search()}}
 \item \href{#method-ImapCon-search_larger_than}{\code{ImapCon$search_larger_than()}}
@@ -1054,6 +1091,40 @@ cap
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-noop"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-noop}{}}}
+\subsection{Method \code{noop()}}{
+Issue a \code{NOOP} command. It does nothing on the server
+  other than resetting the inactivity autologout timer, which makes it
+  useful as a keep-alive during long idle periods and as a way to keep
+  the connection handle alive between operations.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$noop(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$noop()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-list_mail_folders"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-list_mail_folders}{}}}
 \subsection{Method \code{list_mail_folders()}}{
@@ -1079,6 +1150,42 @@ A \code{list} containing the mail folder names and their inherent
 \preformatted{\dontrun{
 folders <- con$list_mail_folders()
 folders
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-list_subscribed_folders"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-list_subscribed_folders}{}}}
+\subsection{Method \code{list_subscribed_folders()}}{
+List the subscribed mail folders in a mailbox (IMAP
+  \code{LSUB}). Unlike \code{list_mail_folders()} (which issues
+  \code{LIST} and returns every folder), this returns only the folders
+  the user is subscribed to.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$list_subscribed_folders(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{list} containing the subscribed mail folder names and
+  their inherent structure.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+subscribed <- con$list_subscribed_folders()
+subscribed
 }
 }
 \if{html}{\out{</div>}}
@@ -1334,6 +1441,82 @@ Default is \code{1}.}
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 con$delete_folder(name = "Folder to remove")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-subscribe_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-subscribe_folder}{}}}
+\subsection{Method \code{subscribe_folder()}}{
+Subscribe to a mail folder (IMAP \code{SUBSCRIBE}), adding it
+  to the set returned by \code{list_subscribed_folders()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$subscribe_folder(name, mute = FALSE, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A string containing the name of the mail folder to subscribe
+to.}
+
+\item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
+when the command is successfully executed. Default is \code{FALSE}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$subscribe_folder(name = "INBOX")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-unsubscribe_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-unsubscribe_folder}{}}}
+\subsection{Method \code{unsubscribe_folder()}}{
+Unsubscribe from a mail folder (IMAP \code{UNSUBSCRIBE}),
+  removing it from the set returned by \code{list_subscribed_folders()}.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$unsubscribe_folder(name, mute = FALSE, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A string containing the name of the mail folder to
+unsubscribe from.}
+
+\item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
+when the command is successfully executed. Default is \code{FALSE}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$unsubscribe_folder(name = "INBOX")
 }
 }
 \if{html}{\out{</div>}}

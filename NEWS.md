@@ -1,3 +1,17 @@
+## mRpostman 1.1.7 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$list_subscribed_folders()` method to list the subscribed mail folders (IMAP `LSUB`), complementing `list_mail_folders()` (which issues `LIST` and returns every folder).
+
+- new `ImapCon$subscribe_folder()` and `ImapCon$unsubscribe_folder()` methods to subscribe to / unsubscribe from a mail folder (IMAP `SUBSCRIBE` / `UNSUBSCRIBE`), i.e. to add or remove it from the set returned by `list_subscribed_folders()`.
+
+- new `ImapCon$noop()` method issuing the IMAP `NOOP` command. It does nothing on the server other than resetting the inactivity autologout timer, which makes it useful as a keep-alive during long idle periods.
+
+### Internal
+
+- the `LIST` response parsing was extracted from `list_mail_folders_int()` into a shared internal `parse_folder_list()` helper (parameterized by the command keyword), now used by both `list_mail_folders()` and the new `list_subscribed_folders()`. This removes the duplicated parsing that previously lived in the retry branch and adds offline test coverage (`LIST`, `LSUB`, and the Yandex `|` hierarchy separator).
+
 ## mRpostman 1.1.6 (2026-07-06 feature update)
 
 ### New features

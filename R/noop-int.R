@@ -1,7 +1,12 @@
-#' @description List mail folders in a mailbox (INTERNAL HELPER)
+#' @description Issue a NOOP command (INTERNAL HELPER)
+#'
+#' Sends the IMAP \code{NOOP} command. It does nothing on the server other than
+#' resetting the inactivity autologout timer, which makes it useful as a
+#' keep-alive and as a way to solicit pending untagged status updates.
 #' @param retries Number of attempts to connect and execute the command.
+#'   Default is \code{1}.
 #' @noRd
-list_mail_folders_int <- function(self, retries) {
+noop_int <- function(self, retries) {
 
   check_args(retries = retries) # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
@@ -15,7 +20,7 @@ list_mail_folders_int <- function(self, retries) {
   h <- self$con_handle
 
   tryCatch({
-    curl::handle_setopt(h, customrequest = 'LIST "" *')
+    curl::handle_setopt(h, customrequest = 'NOOP')
   }, error = function(e){
     stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
@@ -29,9 +34,6 @@ list_mail_folders_int <- function(self, retries) {
 
   if (is.null(response)) {
     count_retries = 0 #the first try doesnt count
-
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
 
     while (is.null(response) && count_retries < retries) {
       count_retries = count_retries + 1
@@ -48,16 +50,12 @@ list_mail_folders_int <- function(self, retries) {
     }
   }
 
-  # v1.1.7 - parsing extracted to the shared parse_folder_list() helper
-  final_output <- parse_folder_list(rawToChar(response$content), command = "LIST")
-
   # sanitizing
   rm(h)
-  rm(response)
 
   if (self$con_params$verbose) {
     Sys.sleep(0.01)  # wait for the end of the client-server conversation
   }
-  return(final_output)
+  invisible(TRUE)
 
 }

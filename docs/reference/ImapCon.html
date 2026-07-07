@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.7</span>
       </span>
     </div>
 
@@ -331,13 +331,17 @@
 <li><p><a href='#method-ImapCon-reset_xoauth2_bearer'><code>ImapCon$reset_xoauth2_bearer()</code></a></p></li>
 <li><p><a href='#method-ImapCon-disconnect'><code>ImapCon$disconnect()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_server_capabilities'><code>ImapCon$list_server_capabilities()</code></a></p></li>
+<li><p><a href='#method-ImapCon-noop'><code>ImapCon$noop()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_mail_folders'><code>ImapCon$list_mail_folders()</code></a></p></li>
+<li><p><a href='#method-ImapCon-list_subscribed_folders'><code>ImapCon$list_subscribed_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-select_folder'><code>ImapCon$select_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-examine_folder'><code>ImapCon$examine_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-status'><code>ImapCon$status()</code></a></p></li>
 <li><p><a href='#method-ImapCon-create_folder'><code>ImapCon$create_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-rename_folder'><code>ImapCon$rename_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-delete_folder'><code>ImapCon$delete_folder()</code></a></p></li>
+<li><p><a href='#method-ImapCon-subscribe_folder'><code>ImapCon$subscribe_folder()</code></a></p></li>
+<li><p><a href='#method-ImapCon-unsubscribe_folder'><code>ImapCon$unsubscribe_folder()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_flags'><code>ImapCon$list_flags()</code></a></p></li>
 <li><p><a href='#method-ImapCon-search'><code>ImapCon$search()</code></a></p></li>
 <li><p><a href='#method-ImapCon-search_larger_than'><code>ImapCon$search_larger_than()</code></a></p></li>
@@ -546,6 +550,28 @@ cap
 </pre><p></div></p>
 
 <p><hr>
+<a id="method-ImapCon-noop"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>noop()</code></h3>
+<p>Issue a <code>NOOP</code> command. It does nothing on the server
+  other than resetting the inactivity autologout timer, which makes it
+  useful as a keep-alive during long idle periods and as a way to keep
+  the connection handle alive between operations.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>noop</span><span class='op'>(</span>retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code> in case the operation is successful.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$noop()
+}
+</pre><p></div></p>
+
+<p><hr>
 <a id="method-ImapCon-list_mail_folders"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>list_mail_folders()</code></h3>
 <p>List mail folders in a mailbox.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
 <p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>list_mail_folders</span><span class='op'>(</span>retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
@@ -563,6 +589,30 @@ Default is <code>1</code>.</p></dd>
 <p><div class="r example copy"></p><pre>\dontrun{
 folders &lt;- con$list_mail_folders()
 folders
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-list_subscribed_folders"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>list_subscribed_folders()</code></h3>
+<p>List the subscribed mail folders in a mailbox (IMAP
+  <code>LSUB</code>). Unlike <code>list_mail_folders()</code> (which issues
+  <code>LIST</code> and returns every folder), this returns only the folders
+  the user is subscribed to.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>list_subscribed_folders</span><span class='op'>(</span>retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A <code>list</code> containing the subscribed mail folder names and
+  their inherent structure.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+subscribed &lt;- con$list_subscribed_folders()
+subscribed
 }
 </pre><p></div></p>
 
@@ -746,6 +796,58 @@ Default is <code>1</code>.</p></dd>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$delete_folder(name = "Folder to remove")
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-subscribe_folder"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>subscribe_folder()</code></h3>
+<p>Subscribe to a mail folder (IMAP <code>SUBSCRIBE</code>), adding it
+  to the set returned by <code>list_subscribed_folders()</code>.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>subscribe_folder</span><span class='op'>(</span><span class='va'>name</span>, mute <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>name</code></dt><dd><p>A string containing the name of the mail folder to subscribe
+to.</p></dd>
+
+<dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
+when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code> in case the operation is successful.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$subscribe_folder(name = "INBOX")
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-unsubscribe_folder"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>unsubscribe_folder()</code></h3>
+<p>Unsubscribe from a mail folder (IMAP <code>UNSUBSCRIBE</code>),
+  removing it from the set returned by <code>list_subscribed_folders()</code>.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>unsubscribe_folder</span><span class='op'>(</span><span class='va'>name</span>, mute <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>name</code></dt><dd><p>A string containing the name of the mail folder to
+unsubscribe from.</p></dd>
+
+<dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
+when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code> in case the operation is successful.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$unsubscribe_folder(name = "INBOX")
 }
 </pre><p></div></p>
 
@@ -2583,12 +2685,29 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$noop`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>noop</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span><span class='co'>## Method `ImapCon$list_mail_folders`</span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
 <span class='r-in'><span><span class='va'>folders</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>list_mail_folders</span><span class='op'>(</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>folders</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$list_subscribed_folders`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>subscribed</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>list_subscribed_folders</span><span class='op'>(</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>subscribed</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
@@ -2648,6 +2767,22 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
 <span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>delete_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"Folder to remove"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$subscribe_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>subscribe_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$unsubscribe_folder`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>unsubscribe_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
