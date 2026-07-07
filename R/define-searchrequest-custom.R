@@ -57,7 +57,15 @@ define_searchrequest_custom <- function(request, negate, use_uid, esearch,
     negate_string = NULL
   }
 
-  customrequest = paste0(use_uid_string, "SEARCH ", esearch_string, negate_string, "(", request, ")")
+  # issue #12: declare "CHARSET UTF-8" when the built request has non-ASCII text
+  request <- enc2utf8(request)
+  if (any(as.integer(charToRaw(request)) > 127L)) {
+    charset_string = "CHARSET UTF-8 "
+  } else {
+    charset_string = NULL
+  }
+
+  customrequest = paste0(use_uid_string, "SEARCH ", esearch_string, charset_string, negate_string, "(", request, ")")
 
   tryCatch({
     curl::handle_setopt(

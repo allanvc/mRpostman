@@ -61,11 +61,19 @@ define_searchrequest_string <- function(expr, where, negate, use_uid, flag,
   # section_or_field
   section_or_field_string = paste0(where, " ")
 
-  # string
+  # string (issue #12): when the term has non-ASCII characters, declare
+  # "CHARSET UTF-8" and send the term as UTF-8 bytes, so servers such as Gmail
+  # can match accented/non-Latin text. Pure-ASCII terms are left unchanged.
+  expr <- enc2utf8(expr)
+  if (any(as.integer(charToRaw(expr)) > 127L)) {
+    charset_string = "CHARSET UTF-8 "
+  } else {
+    charset_string = NULL
+  }
   expr_string = paste0('"', expr, '"')
 
-  customrequest <- paste0(use_uid_string, "SEARCH ", esearch_string, flag_string,
-                          negate_string, "(", section_or_field_string,
+  customrequest <- paste0(use_uid_string, "SEARCH ", esearch_string, charset_string,
+                          flag_string, negate_string, "(", section_or_field_string,
                           expr_string, ")")
 
   tryCatch({

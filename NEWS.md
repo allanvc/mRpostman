@@ -1,4 +1,12 @@
-## mRpostman 1.1.5 (2026-07-05 documentation and bug-fix patch)
+## mRpostman 1.1.5 (2026-07-05 bug-fix and feature update)
+
+### New features
+
+- `search_string()` (and the custom `search()`) now support **non-ASCII search terms**. When the term contains non-ASCII characters, the command declares `CHARSET UTF-8` and sends the term as UTF-8 bytes, so servers such as Gmail can match accented/non-Latin text (GitHub issue #12). Pure-ASCII searches are unchanged.
+
+- `fetch_attachments()` and `get_attachments()` gained a `local_dir` argument to set the base directory where attachments are saved (default `"."`, the working directory). The `<username>/<mail folder>/<msg id>` subfolder tree is created inside it (GitHub issue #15).
+
+- new `ImapCon$disconnect()` method to release the connection handle when a session is finished (GitHub issue #13).
 
 ### Bug fixes
 

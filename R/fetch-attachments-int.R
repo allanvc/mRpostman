@@ -21,7 +21,7 @@
 #'   decoding. Default is \code{FALSE}.
 #' @noRd
 fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, override,
-                                  mute, retries, as_is) {
+                                  mute, retries, as_is, local_dir = ".") {
 
   #check
   check_args(msg_id = msg_id, use_uid = use_uid, content_disposition = content_disposition,
@@ -106,7 +106,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
       if (nrow(df_meta_to_fetch) > 0) {
         execute_attachment_fetch(self, id, id_folder, df_meta_to_fetch, fetch_request,
                                  folder_clean, content_disposition,
-                                 override, retries, as_is)
+                                 override, retries, as_is, local_dir)
       } # if not, do nothing
 
     } #if not, do nothing
