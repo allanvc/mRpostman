@@ -212,6 +212,14 @@ cap
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$namespace`
+## ------------------------------------------------
+
+\dontrun{
+con$namespace()
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$noop`
 ## ------------------------------------------------
 
@@ -235,6 +243,14 @@ folders
 \dontrun{
 subscribed <- con$list_subscribed_folders()
 subscribed
+}
+
+## ------------------------------------------------
+## Method `ImapCon$list_special_use_folders`
+## ------------------------------------------------
+
+\dontrun{
+con$list_special_use_folders()
 }
 
 ## ------------------------------------------------
@@ -803,9 +819,11 @@ Other attachments:
 \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
 \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
 \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
+\item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
 \item \href{#method-ImapCon-noop}{\code{ImapCon$noop()}}
 \item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
 \item \href{#method-ImapCon-list_subscribed_folders}{\code{ImapCon$list_subscribed_folders()}}
+\item \href{#method-ImapCon-list_special_use_folders}{\code{ImapCon$list_special_use_folders()}}
 \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
 \item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
 \item \href{#method-ImapCon-status}{\code{ImapCon$status()}}
@@ -1111,6 +1129,43 @@ cap
 
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-namespace"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-namespace}{}}}
+\subsection{Method \code{namespace()}}{
+Request the server's namespaces (IMAP \code{NAMESPACE}, RFC
+  2342): the personal, other users', and shared namespace prefixes and
+  their hierarchy delimiters. Requires the server \code{NAMESPACE}
+  capability.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$namespace(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A named \code{list} with elements \code{personal},
+  \code{other_users} and \code{shared}, each a \code{data.frame} with
+  \code{prefix} and \code{delimiter} columns, or \code{NULL} when the
+  server returns \code{NIL} for that component.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$namespace()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-noop"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-noop}{}}}
 \subsection{Method \code{noop()}}{
@@ -1206,6 +1261,42 @@ A \code{list} containing the subscribed mail folder names and
 \preformatted{\dontrun{
 subscribed <- con$list_subscribed_folders()
 subscribed
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-list_special_use_folders"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-list_special_use_folders}{}}}
+\subsection{Method \code{list_special_use_folders()}}{
+List the special-use mail folders (IMAP
+  \code{LIST (SPECIAL-USE)}, RFC 6154), i.e. the folders the server has
+  tagged with a role such as \code{\\Sent}, \code{\\Drafts},
+  \code{\\Junk}, \code{\\Trash}, \code{\\Archive}, \code{\\All}, or
+  \code{\\Flagged}. Requires the server \code{SPECIAL-USE} capability.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$list_special_use_folders(retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{data.frame} with columns \code{folder} and
+  \code{special_use} (one row per folder/attribute).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$list_special_use_folders()
 }
 }
 \if{html}{\out{</div>}}

@@ -1,3 +1,13 @@
+## mRpostman 1.1.9 (2026-07-06 feature update)
+
+### New features
+
+- new `ImapCon$namespace()` method issuing the IMAP `NAMESPACE` command (RFC 2342). It returns a named list (`personal`, `other_users`, `shared`), each a `data.frame` of namespace `prefix`/`delimiter` pairs (or `NULL` when the server returns `NIL`). Requires the server `NAMESPACE` capability.
+
+- new `ImapCon$list_special_use_folders()` method issuing `LIST (SPECIAL-USE)` (RFC 6154). It returns a `data.frame` mapping each special-use folder to its attribute (`\Sent`, `\Drafts`, `\Junk`, `\Trash`, `\Archive`, `\All`, `\Flagged`). Requires the server `SPECIAL-USE` capability.
+
+- both are parsed by dedicated internal helpers (`parse_namespace()`, `parse_special_use()`) covered by offline tests, and documented in the `basics` vignette.
+
 ## mRpostman 1.1.8 (2026-07-06 feature update)
 
 ### New features

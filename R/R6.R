@@ -242,6 +242,25 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Request the server's namespaces (IMAP \code{NAMESPACE}, RFC
+    #'   2342): the personal, other users', and shared namespace prefixes and
+    #'   their hierarchy delimiters. Requires the server \code{NAMESPACE}
+    #'   capability.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{list} with elements \code{personal},
+    #'   \code{other_users} and \code{shared}, each a \code{data.frame} with
+    #'   \code{prefix} and \code{delimiter} columns, or \code{NULL} when the
+    #'   server returns \code{NIL} for that component.
+    #' @examples
+    #' \dontrun{
+    #' con$namespace()
+    #' }
+    namespace = function(retries = 1) {
+      out <- namespace_int(self, retries)
+      return(out)
+    },
+
     #' @description Issue a \code{NOOP} command. It does nothing on the server
     #'   other than resetting the inactivity autologout timer, which makes it
     #'   useful as a keep-alive during long idle periods and as a way to keep
@@ -288,6 +307,24 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     list_subscribed_folders = function(retries = 1) {
       out <- list_subscribed_folders_int(self, retries)
+      return(out)
+    },
+
+    #' @description List the special-use mail folders (IMAP
+    #'   \code{LIST (SPECIAL-USE)}, RFC 6154), i.e. the folders the server has
+    #'   tagged with a role such as \code{\\Sent}, \code{\\Drafts},
+    #'   \code{\\Junk}, \code{\\Trash}, \code{\\Archive}, \code{\\All}, or
+    #'   \code{\\Flagged}. Requires the server \code{SPECIAL-USE} capability.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with columns \code{folder} and
+    #'   \code{special_use} (one row per folder/attribute).
+    #' @examples
+    #' \dontrun{
+    #' con$list_special_use_folders()
+    #' }
+    list_special_use_folders = function(retries = 1) {
+      out <- list_special_use_folders_int(self, retries)
       return(out)
     },
 

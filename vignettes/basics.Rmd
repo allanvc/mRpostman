@@ -267,6 +267,22 @@ con$select_folder("INBOX")
 con$status(items = c("MESSAGES", "UNSEEN"))
 ```
 
+### 3.12) Listing special-use folders
+
+Servers advertising the "SPECIAL-USE" capability (RFC 6154) tag folders with a role such as `\Sent`, `\Drafts`, `\Junk`, `\Trash`, `\Archive`, `\All`, or `\Flagged`. `list_special_use_folders()` returns a `data.frame` mapping each such folder to its attribute.
+
+```{r, message = FALSE, eval=FALSE}
+con$list_special_use_folders()
+```
+
+### 3.13) Server namespaces
+
+`namespace()` issues the IMAP "NAMESPACE" command (RFC 2342), returning the personal, other users', and shared namespace prefixes and their hierarchy delimiters.
+
+```{r, message = FALSE, eval=FALSE}
+con$namespace()
+```
+
 ## 4) Single-search
 
 All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
@@ -879,6 +895,10 @@ Babcock, N. (2016), _Introduction to IMAP_, Blog, May 2016, [http](https://nbsof
 Crispin, M. (2003), _INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1_, RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
 
 Crispin, M. and Murchison, K. (2008), _Internet Message Access Protocol - SORT and THREAD Extensions_, RFC 5256, June 2008, [http](https://www.rfc-editor.org/rfc/rfc5256).
+
+Gahrns, M. and Newman, C. (2003), _IMAP4 Namespace_, RFC 2342, May 2003, [http](https://www.rfc-editor.org/rfc/rfc2342).
+
+Leiba, B. and Melnikov, A. (2011), _IMAP LIST Extension for Special-Use Mailboxes_, RFC 6154, March 2011, [http](https://www.rfc-editor.org/rfc/rfc6154).
 
 Freed, N. and Borenstein, N. (1996), _Multipurpose Internet Mail Extensions (MIME) Part Two: Media Types_, RFC 2046, November 1996, [http](https://www.rfc-editor.org/rfc/rfc2046).
 
