@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -332,6 +332,8 @@
 <li><p><a href='#method-ImapCon-disconnect'><code>ImapCon$disconnect()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_server_capabilities'><code>ImapCon$list_server_capabilities()</code></a></p></li>
 <li><p><a href='#method-ImapCon-namespace'><code>ImapCon$namespace()</code></a></p></li>
+<li><p><a href='#method-ImapCon-get_quota_root'><code>ImapCon$get_quota_root()</code></a></p></li>
+<li><p><a href='#method-ImapCon-get_quota'><code>ImapCon$get_quota()</code></a></p></li>
 <li><p><a href='#method-ImapCon-noop'><code>ImapCon$noop()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_mail_folders'><code>ImapCon$list_mail_folders()</code></a></p></li>
 <li><p><a href='#method-ImapCon-list_subscribed_folders'><code>ImapCon$list_subscribed_folders()</code></a></p></li>
@@ -368,6 +370,7 @@
 <li><p><a href='#method-ImapCon-fetch_text'><code>ImapCon$fetch_text()</code></a></p></li>
 <li><p><a href='#method-ImapCon-copy_msg'><code>ImapCon$copy_msg()</code></a></p></li>
 <li><p><a href='#method-ImapCon-move_msg'><code>ImapCon$move_msg()</code></a></p></li>
+<li><p><a href='#method-ImapCon-append_msg'><code>ImapCon$append_msg()</code></a></p></li>
 <li><p><a href='#method-ImapCon-esearch_count'><code>ImapCon$esearch_count()</code></a></p></li>
 <li><p><a href='#method-ImapCon-delete_msg'><code>ImapCon$delete_msg()</code></a></p></li>
 <li><p><a href='#method-ImapCon-expunge'><code>ImapCon$expunge()</code></a></p></li>
@@ -575,6 +578,57 @@ Default is <code>1</code>.</p></dd>
 <h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
 <p><div class="r example copy"></p><pre>\dontrun{
 con$namespace()
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-get_quota_root"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>get_quota_root()</code></h3>
+<p>Get the quota root(s) and quota usage/limits of a mail folder
+  (IMAP <code>GETQUOTAROOT</code>, RFC 2087). Requires the server <code>QUOTA</code>
+  capability.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>get_quota_root</span><span class='op'>(</span>name <span class='op'>=</span> <span class='cn'>NULL</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>name</code></dt><dd><p>A <code>character</code> string with the mail folder name. If no
+name is passed, the command uses the previously selected folder.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A <code>data.frame</code> with columns <code>quota_root</code>,
+  <code>resource</code>, <code>usage</code> and <code>limit</code> (one row per resource;
+  <code>STORAGE</code> is reported by the server in kibibytes).</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$get_quota_root(name = "INBOX")
+}
+</pre><p></div></p>
+
+<p><hr>
+<a id="method-ImapCon-get_quota"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>get_quota()</code></h3>
+<p>Get the quota usage/limits of a quota root (IMAP
+  <code>GETQUOTA</code>, RFC 2087). Requires the server <code>QUOTA</code> capability.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>get_quota</span><span class='op'>(</span>quota_root <span class='op'>=</span> <span class='st'>""</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>quota_root</code></dt><dd><p>A <code>character</code> string with the quota root name.
+Default is <code>""</code> (the default root). Use <code>get_quota_root()</code> to
+discover the root(s) of a folder.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p>A <code>data.frame</code> with columns <code>quota_root</code>,
+  <code>resource</code>, <code>usage</code> and <code>limit</code>.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+con$get_quota(quota_root = "")
 }
 </pre><p></div></p>
 
@@ -2294,6 +2348,40 @@ con$move(msg = res, to_folder = "Sent")
 </pre><p></div></p>
 
 <p><hr>
+<a id="method-ImapCon-append_msg"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>append_msg()</code></h3>
+<p>Append a full RFC 822 message to a mail folder (IMAP
+  <code>APPEND</code>). Useful to save a message to folders such as
+  <code>Drafts</code> or <code>Sent</code>. Unlike the other operations this is
+  performed by an upload to the folder; the message is stored with the
+  server's default flags.</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
+<p><div class="r"></p><pre><span><span class='va'>ImapCon</span><span class='op'>$</span><span class='fu'>append_msg</span><span class='op'>(</span><span class='va'>message</span>, folder <span class='op'>=</span> <span class='cn'>NULL</span>, mute <span class='op'>=</span> <span class='cn'>FALSE</span>, retries <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span></pre><p></div></p>
+
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Arguments</h4>
+<p><div class="arguments"></p><dl>
+<dt><code>message</code></dt><dd><p>A <code>character</code> string or <code>raw</code> vector with the
+full RFC 822 message (headers and body).</p></dd>
+
+<dt><code>folder</code></dt><dd><p>A <code>character</code> string with the destination folder. If no
+folder is passed, the previously selected folder is used.</p></dd>
+
+<dt><code>mute</code></dt><dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation message
+when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
+
+<dt><code>retries</code></dt><dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+</dl><p></div></p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Returns</h4>
+<p><code>TRUE</code> in case the operation is successful.</p>
+<h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Examples</h4>
+<p><div class="r example copy"></p><pre>\dontrun{
+msg &lt;- paste("From: me@example.com", "To: you@example.com",
+             "Subject: Hi", "", "Message body.", sep = "\r\n")
+con$append_msg(message = msg, folder = "Drafts")
+}
+</pre><p></div></p>
+
+<p><hr>
 <a id="method-ImapCon-esearch_count"></a></p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Method <code>esearch_count()</code></h3>
 <p>Count the number of messages with a specific flag(s) in a
   folder (depends on ESEARCH capability)</p><h4 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Usage</h4>
@@ -2836,6 +2924,22 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$get_quota_root`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>get_quota_root</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$get_quota`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>get_quota</span><span class='op'>(</span>quota_root <span class='op'>=</span> <span class='st'>""</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span><span class='co'>## Method `ImapCon$noop`</span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
 <span class='r-in'><span></span></span>
@@ -3238,6 +3342,16 @@ con$fetch_attachments(msg = res)
 <span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_string</span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"@k-state.edu"</span>, where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>move</span><span class='op'>(</span>msg <span class='op'>=</span> <span class='va'>res</span>, to_folder <span class='op'>=</span> <span class='st'>"Sent"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span><span class='co'>## Method `ImapCon$append_msg`</span></span></span>
+<span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
+<span class='r-in'><span><span class='va'>msg</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='st'>"From: me@example.com"</span>, <span class='st'>"To: you@example.com"</span>,</span></span>
+<span class='r-in'><span>             <span class='st'>"Subject: Hi"</span>, <span class='st'>""</span>, <span class='st'>"Message body."</span>, sep <span class='op'>=</span> <span class='st'>"\r\n"</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>append_msg</span><span class='op'>(</span>message <span class='op'>=</span> <span class='va'>msg</span>, folder <span class='op'>=</span> <span class='st'>"Drafts"</span><span class='op'>)</span></span></span>
 <span class='r-in'><span><span class='op'>}</span></span></span>
 <span class='r-in'><span></span></span>
 <span class='r-in'><span><span class='co'>## ------------------------------------------------</span></span></span>

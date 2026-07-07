@@ -220,6 +220,22 @@ con$namespace()
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$get_quota_root`
+## ------------------------------------------------
+
+\dontrun{
+con$get_quota_root(name = "INBOX")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$get_quota`
+## ------------------------------------------------
+
+\dontrun{
+con$get_quota(quota_root = "")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$noop`
 ## ------------------------------------------------
 
@@ -625,6 +641,16 @@ con$move(msg = res, to_folder = "Sent")
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$append_msg`
+## ------------------------------------------------
+
+\dontrun{
+msg <- paste("From: me@example.com", "To: you@example.com",
+             "Subject: Hi", "", "Message body.", sep = "\r\n")
+con$append_msg(message = msg, folder = "Drafts")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$esearch_count`
 ## ------------------------------------------------
 
@@ -820,6 +846,8 @@ Other attachments:
 \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
 \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
 \item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
+\item \href{#method-ImapCon-get_quota_root}{\code{ImapCon$get_quota_root()}}
+\item \href{#method-ImapCon-get_quota}{\code{ImapCon$get_quota()}}
 \item \href{#method-ImapCon-noop}{\code{ImapCon$noop()}}
 \item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
 \item \href{#method-ImapCon-list_subscribed_folders}{\code{ImapCon$list_subscribed_folders()}}
@@ -856,6 +884,7 @@ Other attachments:
 \item \href{#method-ImapCon-fetch_text}{\code{ImapCon$fetch_text()}}
 \item \href{#method-ImapCon-copy_msg}{\code{ImapCon$copy_msg()}}
 \item \href{#method-ImapCon-move_msg}{\code{ImapCon$move_msg()}}
+\item \href{#method-ImapCon-append_msg}{\code{ImapCon$append_msg()}}
 \item \href{#method-ImapCon-esearch_count}{\code{ImapCon$esearch_count()}}
 \item \href{#method-ImapCon-delete_msg}{\code{ImapCon$delete_msg()}}
 \item \href{#method-ImapCon-expunge}{\code{ImapCon$expunge()}}
@@ -1158,6 +1187,81 @@ A named \code{list} with elements \code{personal},
 \if{html}{\out{<div class="r example copy">}}
 \preformatted{\dontrun{
 con$namespace()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-get_quota_root"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-get_quota_root}{}}}
+\subsection{Method \code{get_quota_root()}}{
+Get the quota root(s) and quota usage/limits of a mail folder
+  (IMAP \code{GETQUOTAROOT}, RFC 2087). Requires the server \code{QUOTA}
+  capability.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$get_quota_root(name = NULL, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{name}}{A \code{character} string with the mail folder name. If no
+name is passed, the command uses the previously selected folder.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{data.frame} with columns \code{quota_root},
+  \code{resource}, \code{usage} and \code{limit} (one row per resource;
+  \code{STORAGE} is reported by the server in kibibytes).
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$get_quota_root(name = "INBOX")
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-get_quota"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-get_quota}{}}}
+\subsection{Method \code{get_quota()}}{
+Get the quota usage/limits of a quota root (IMAP
+  \code{GETQUOTA}, RFC 2087). Requires the server \code{QUOTA} capability.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$get_quota(quota_root = "", retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{quota_root}}{A \code{character} string with the quota root name.
+Default is \code{""} (the default root). Use \code{get_quota_root()} to
+discover the root(s) of a folder.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+A \code{data.frame} with columns \code{quota_root},
+  \code{resource}, \code{usage} and \code{limit}.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$get_quota(quota_root = "")
 }
 }
 \if{html}{\out{</div>}}
@@ -3305,6 +3409,52 @@ con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
 con$move(msg = res, to_folder = "Sent")
 
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-append_msg"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-append_msg}{}}}
+\subsection{Method \code{append_msg()}}{
+Append a full RFC 822 message to a mail folder (IMAP
+  \code{APPEND}). Useful to save a message to folders such as
+  \code{Drafts} or \code{Sent}. Unlike the other operations this is
+  performed by an upload to the folder; the message is stored with the
+  server's default flags.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$append_msg(message, folder = NULL, mute = FALSE, retries = 1)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{message}}{A \code{character} string or \code{raw} vector with the
+full RFC 822 message (headers and body).}
+
+\item{\code{folder}}{A \code{character} string with the destination folder. If no
+folder is passed, the previously selected folder is used.}
+
+\item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
+when the command is successfully executed. Default is \code{FALSE}.}
+
+\item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+\code{TRUE} in case the operation is successful.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+msg <- paste("From: me@example.com", "To: you@example.com",
+             "Subject: Hi", "", "Message body.", sep = "\r\n")
+con$append_msg(message = msg, folder = "Drafts")
 }
 }
 \if{html}{\out{</div>}}
