@@ -201,6 +201,22 @@ ImapCon <- R6::R6Class("ImapCon",
 
     },
 
+    #' @description Disconnect and release the connection handle. After calling
+    #'   this method the connection object can no longer be used to issue
+    #'   commands; a new one must be created with \code{\link{configure_imap}}.
+    #'   Dropping the handle reference lets 'libcurl' close the underlying
+    #'   connection when the handle is garbage-collected.
+    #' @return \code{TRUE}, invisibly.
+    #' @examples
+    #' \dontrun{
+    #' con$disconnect()
+    #' }
+    disconnect = function() {
+      self$con_handle <- NULL
+      self$con_params$folder <- NA
+      invisible(TRUE)
+    },
+
     # List elements
     # access = function() {
     #   list(
@@ -1681,6 +1697,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param as_is If \code{TRUE} then write out attachments without base64
     #'   decoding. Default is \code{FALSE}.
+    #' @param local_dir A \code{character} string with the base directory where the
+    #'   attachments will be saved. A subfolder tree
+    #'   \code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.
+    #'   Default is \code{"."} (the current working directory).
     #' @note \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
     #'   This method is to be used after the body or the
     #'   text part of one or more messages were fetched. This makes sense if the
@@ -1730,9 +1750,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$get_attachments(msg_list = out)
     #' }
     get_attachments = function(msg_list, content_disposition = "both",
-                               override = FALSE, mute = FALSE, as_is = FALSE) {
+                               override = FALSE, mute = FALSE, as_is = FALSE,
+                               local_dir = ".") {
       out <- get_attachments_int(self, msg_list, content_disposition, override,
-                                 mute, as_is)
+                                 mute, as_is, local_dir)
 
       invisible(out)
 
@@ -1799,6 +1820,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   is \code{1}.
     #' @param as_is If \code{TRUE} then write out attachments without base64
     #'   decoding. Default is \code{FALSE}.
+    #' @param local_dir A \code{character} string with the base directory where the
+    #'   attachments will be saved. A subfolder tree
+    #'   \code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.
+    #'   Default is \code{"."} (the current working directory).
     #' @note \href{#method-fetch_attachments}{\code{ImapCon$fetch_attachments()}}: All
     #'   attachments will be stored in a folder labeled with the message id
     #'   inside the \code{working directory > servername > foldername}.
@@ -1839,9 +1864,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     fetch_attachments = function(msg_id, use_uid = FALSE, content_disposition = "both",
                                  override = FALSE, mute = FALSE, retries = 1,
-                                 as_is = FALSE) {
+                                 as_is = FALSE, local_dir = ".") {
       out <- fetch_attachments_int(self, msg_id, use_uid, content_disposition,
-                                   override, mute, retries, as_is)
+                                   override, mute, retries, as_is, local_dir)
 
       invisible(out)
 

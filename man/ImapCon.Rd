@@ -195,6 +195,14 @@ con <- ImapCon$new(
 
 
 ## ------------------------------------------------
+## Method `ImapCon$disconnect`
+## ------------------------------------------------
+
+\dontrun{
+con$disconnect()
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$list_server_capabilities`
 ## ------------------------------------------------
 
@@ -722,6 +730,7 @@ Other attachments:
 \item \href{#method-ImapCon-reset_timeout_ms}{\code{ImapCon$reset_timeout_ms()}}
 \item \href{#method-ImapCon-reset_password}{\code{ImapCon$reset_password()}}
 \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
+\item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
 \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
 \item \href{#method-ImapCon-list_mail_folders}{\code{ImapCon$list_mail_folders()}}
 \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
@@ -962,6 +971,33 @@ Reset the previously informed oauth2 bearer token
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-disconnect"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-disconnect}{}}}
+\subsection{Method \code{disconnect()}}{
+Disconnect and release the connection handle. After calling
+  this method the connection object can no longer be used to issue
+  commands; a new one must be created with \code{\link{configure_imap}}.
+  Dropping the handle reference lets 'libcurl' close the underlying
+  connection when the handle is garbage-collected.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ImapCon$disconnect()}\if{html}{\out{</div>}}
+}
+
+\subsection{Returns}{
+\code{TRUE}, invisibly.
+}
+\subsection{Examples}{
+\if{html}{\out{<div class="r example copy">}}
+\preformatted{\dontrun{
+con$disconnect()
+}
+}
+\if{html}{\out{</div>}}
+
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-list_server_capabilities"></a>}}
@@ -3174,7 +3210,8 @@ Extract attached file(s) from fetched message(s)
   content_disposition = "both",
   override = FALSE,
   mute = FALSE,
-  as_is = FALSE
+  as_is = FALSE,
+  local_dir = "."
 )}\if{html}{\out{</div>}}
 }
 
@@ -3198,6 +3235,11 @@ when the command is successfully executed. Default is \code{FALSE}.}
 
 \item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
 decoding. Default is \code{FALSE}.}
+
+\item{\code{local_dir}}{A \code{character} string with the base directory where the
+attachments will be saved. A subfolder tree
+\code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.
+Default is \code{"."} (the current working directory).}
 }
 \if{html}{\out{</div>}}
 }
@@ -3289,7 +3331,8 @@ Fetch message attachments
   override = FALSE,
   mute = FALSE,
   retries = 1,
-  as_is = FALSE
+  as_is = FALSE,
+  local_dir = "."
 )}\if{html}{\out{</div>}}
 }
 
@@ -3323,6 +3366,11 @@ is \code{1}.}
 
 \item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
 decoding. Default is \code{FALSE}.}
+
+\item{\code{local_dir}}{A \code{character} string with the base directory where the
+attachments will be saved. A subfolder tree
+\code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.
+Default is \code{"."} (the current working directory).}
 }
 \if{html}{\out{</div>}}
 }

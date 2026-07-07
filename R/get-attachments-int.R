@@ -14,7 +14,7 @@
 #'   decoding. Default is \code{FALSE}.
 #' @noRd
 get_attachments_int <- function(self, msg_list, content_disposition, override,
-                                mute, as_is) {
+                                mute, as_is, local_dir = ".") {
 
   # previous folder selection checking
   if (is.na(self$con_params$folder)) {
@@ -164,7 +164,7 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
         user_folder <- self$con_params$username
         user_folder = gsub(forbiden_chars, "", user_folder)
 
-        complete_path <- paste0("./", user_folder, "/", folder_clean, "/", id)
+        complete_path <- paste0(sub("/+$", "", local_dir), "/", user_folder, "/", folder_clean, "/", id)
         # complete_path <- paste0("./", folder_clean, "/", id)
         dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 
