@@ -8,9 +8,19 @@
 
 ### Improvements
 
-- Extension-based methods now verify the server's advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to `list_server_capabilities()`) instead of letting the server reply with a cryptic `BAD Unknown command`. This affects `sort()` (`SORT`), `thread()` (`THREAD=`), `get_quota()` / `get_quota_root()` (`QUOTA`), `namespace()` (`NAMESPACE`), `id()` (`ID`), `unselect_folder()` (`UNSELECT`), `list_special_use_folders()` (`SPECIAL-USE`), `move_msg()` (`MOVE`), and the ESEARCH path (`search(esearch = TRUE)`, `esearch_count_msg()`, `esearch_min_id()`, `esearch_max_id()`). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.
+- Extension-based methods now verify the server's advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to `list_server_capabilities()`) instead of letting the server reply with a cryptic `BAD Unknown command`. This affects `sort()` (`SORT`), `thread()` (`THREAD=`), `get_quota()` / `get_quota_root()` (`QUOTA`), `namespace()` (`NAMESPACE`), `id()` (`ID`), `unselect_folder()` (`UNSELECT`), `list_special_use_folders()` (`SPECIAL-USE`), `move_msg()` (`MOVE`), and the ESEARCH path (`search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()`). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.
 
-- the `README` now maps each IMAP command to its `mRpostman` method(s), split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references).
+### Documentation
+
+- reworded the package description and README overview to state that `mRpostman` is a session-based IMAP client that implements the full functionality of the IMAP4rev1 protocol (RFC 3501) from within R.
+
+- the `README` now maps each IMAP command to its `mRpostman` method(s) — split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references) — and its "available methods and functions" list was brought up to date with every method added since v1.1.6.
+
+- removed the obsolete `code_migration` vignette (migrating pre-0.9.0.0 syntax).
+
+- rewrote the OAuth2.0 vignette (`xoauth2.0`) with exact, image-free steps and R code to authenticate to Gmail via OAuth2.0 — covering both `httr`'s built-in flow and a manual loopback flow — plus a troubleshooting section. `httr` and `jsonlite` were added to `Suggests`.
+
+- fixed the `basics` vignette figures, which were not rendering on the package website.
 
 ## mRpostman 1.2.1 (2026-07-06 feature update)
 
