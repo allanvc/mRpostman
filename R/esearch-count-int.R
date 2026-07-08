@@ -19,6 +19,10 @@ esearch_count_int <- function(self, flag, use_uid = FALSE, retries = 1) {
   # checks
   check_args(flag = flag, use_uid = use_uid, retries = retries)
 
+  # ESEARCH is an optional extension (RFC 4731) -- fail early if unsupported.
+  assert_capability(self, "ESEARCH", command = "esearch_count_msg",
+                    rfc = "RFC 4731", retries = retries)
+
   # flag/name (especial)
   # if (!is.null(flag)) {
   flag_string <- paste(flag, collapse = " ") #v0.9.0 (for more than one flag passed)

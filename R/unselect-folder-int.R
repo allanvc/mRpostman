@@ -13,6 +13,11 @@ unselect_folder_int <- function(self, retries) {
 
   check_args(retries = retries)
 
+  # UNSELECT is an optional extension (RFC 3691) -- fail early with a clear
+  # message if the server does not advertise it.
+  assert_capability(self, "UNSELECT", command = "unselect_folder",
+                    rfc = "RFC 3691", retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 

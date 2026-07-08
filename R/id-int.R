@@ -14,6 +14,11 @@ id_int <- function(self, fields, retries) {
 
   check_args(retries = retries)
 
+  # ID is an optional extension (RFC 2971) -- fail early with a clear message
+  # if the server does not advertise it.
+  assert_capability(self, "ID", command = "id", rfc = "RFC 2971",
+                    retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 

@@ -13,8 +13,12 @@
 #' @noRd
 parse_status_counts <- function(resp_char) {
 
-  # isolate the "(...)" data-item list of the untagged * STATUS response
-  grp <- stringr::str_match(resp_char, "STATUS[^\\(]*\\(([^\\)]*)\\)")[, 2]
+  # isolate the "(...)" data-item list of the untagged "* STATUS" response.
+  # We anchor on the leading "* STATUS" (asterisk + whitespace) so we do not
+  # accidentally match the "STATUS" inside the "LIST-STATUS" capability token,
+  # which is present in the buffer after a reconnection and would otherwise
+  # capture the "(Success)" of the "... authenticated (Success)" line instead.
+  grp <- stringr::str_match(resp_char, "\\*[[:space:]]*STATUS[^\\(]*\\(([^\\)]*)\\)")[, 2]
 
   if (is.na(grp)) {
     return(numeric(0))

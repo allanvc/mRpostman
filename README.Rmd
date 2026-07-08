@@ -90,6 +90,47 @@ The package is divided in 8 groups of operations. Below, we present all the avai
 * **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
 * **complementary methods**: `copy_msg()`, `move_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count_msg()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`.
 
+## Supported IMAP commands and capabilities
+
+The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501), which every compliant server must implement — plus a set of **optional extensions**, each advertised by the server in its `CAPABILITY` response. `mRpostman` covers both. For the extension-based methods, `mRpostman` checks the server's advertised capabilities and, if the required one is missing, raises an informative error instead of letting the server reply with a cryptic `BAD Unknown command`. You can inspect what your server supports with `list_server_capabilities()`.
+
+### Core commands (RFC 3501 — always available)
+
+| IMAP command             | `mRpostman` method(s)                                                              |
+|--------------------------|-----------------------------------------------------------------------------------|
+| `CAPABILITY`             | `list_server_capabilities()`                                                       |
+| `NOOP`                   | `noop()`                                                                           |
+| `LOGIN` / `AUTHENTICATE` | `configure_imap()`                                                                 |
+| `LOGOUT`                 | `disconnect()`                                                                     |
+| `SELECT` / `EXAMINE`     | `select_folder()` / `examine_folder()`                                            |
+| `CREATE` / `DELETE` / `RENAME` | `create_folder()` / `delete_folder()` / `rename_folder()`                   |
+| `SUBSCRIBE` / `UNSUBSCRIBE` | `subscribe_folder()` / `unsubscribe_folder()`                                  |
+| `LIST` / `LSUB`          | `list_mail_folders()` / `list_subscribed_folders()`                               |
+| `STATUS`                 | `status()`                                                                         |
+| `APPEND`                 | `append_msg()`                                                                     |
+| `SEARCH`                 | `search()`, `search_before()`, `search_since()`, `search_string()`, ... (all `search_*`) |
+| `FETCH`                  | `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_attachments()` |
+| `STORE`                  | `add_flags()`, `remove_flags()`, `replace_flags()`                                 |
+| `COPY`                   | `copy_msg()`                                                                       |
+| `CLOSE`                  | `close_folder()`                                                                   |
+| `EXPUNGE`                | `expunge()`, `delete_msg()`                                                        |
+
+### Optional extensions (server-dependent — capability-checked)
+
+| IMAP command            | `mRpostman` method(s)                                          | Capability                              | RFC                                                        | Gmail |
+|-------------------------|---------------------------------------------------------------|-----------------------------------------|------------------------------------------------------------|:-----:|
+| `SORT`                  | `sort()`                                                      | `SORT`                                  | [5256](https://datatracker.ietf.org/doc/html/rfc5256)      |   ✗   |
+| `THREAD`                | `thread()`                                                   | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |   ✗   |
+| `GETQUOTA` / `GETQUOTAROOT` | `get_quota()` / `get_quota_root()`                       | `QUOTA`                                 | [2087](https://datatracker.ietf.org/doc/html/rfc2087)      |   ✓   |
+| `NAMESPACE`             | `namespace()`                                                | `NAMESPACE`                             | [2342](https://datatracker.ietf.org/doc/html/rfc2342)      |   ✓   |
+| `ID`                    | `id()`                                                       | `ID`                                    | [2971](https://datatracker.ietf.org/doc/html/rfc2971)      |   ✓   |
+| `UNSELECT`              | `unselect_folder()`                                         | `UNSELECT`                              | [3691](https://datatracker.ietf.org/doc/html/rfc3691)      |   ✓   |
+| `LIST` (special-use)    | `list_special_use_folders()`                                | `SPECIAL-USE`                           | [6154](https://datatracker.ietf.org/doc/html/rfc6154)      |   ✓   |
+| `MOVE`                  | `move_msg()`                                                | `MOVE`                                  | [6851](https://datatracker.ietf.org/doc/html/rfc6851)      |   ✓   |
+| `SEARCH RETURN` (ESEARCH) | `search(esearch = TRUE)`, `esearch_count_msg()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`         | [4731](https://datatracker.ietf.org/doc/html/rfc4731)      |   ✓   |
+
+The **Gmail** column reflects Gmail's IMAP `CAPABILITY` at the time of writing: it supports every extension above **except `SORT` and `THREAD`**, which it has never implemented. To exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: `CONDSTORE`/`QRESYNC` (out of scope) and `IDLE` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
+
 ## Installation
 
 ```{r, eval = FALSE}

@@ -34,6 +34,13 @@ thread_int <- function(self, algorithm, criteria, use_uid, char_set, retries) {
 
   check_args(use_uid = use_uid, retries = retries)
 
+  # THREAD is an optional extension (RFC 5256) advertised per-algorithm as
+  # THREAD=REFERENCES / THREAD=ORDEREDSUBJECT. Fail early with a clear message
+  # if the server does not support the requested algorithm (e.g. Gmail supports
+  # neither).
+  assert_capability(self, paste0("THREAD=", toupper(algorithm)),
+                    command = "thread", rfc = "RFC 5256", retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 

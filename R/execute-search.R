@@ -17,6 +17,14 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
     !is.na(self$con_params$folder),
     msg='No folder previously selected.')
 
+  # ESEARCH is an optional extension (RFC 4731). Only the esearch = TRUE path
+  # relies on it; gate it here so any search_*() call fails early with a clear
+  # message on a server that does not advertise ESEARCH.
+  if (isTRUE(esearch)) {
+    assert_capability(self, "ESEARCH", command = "search (esearch = TRUE)",
+                      rfc = "RFC 4731", retries = retries)
+  }
+
   # searching
   # REQUEST
   response <- tryCatch({

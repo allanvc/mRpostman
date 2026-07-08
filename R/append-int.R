@@ -56,6 +56,11 @@ append_int <- function(self, message, folder, mute, retries) {
   do_append <- function() {
     con <- rawConnection(message)
     on.exit(close(con))
+    # clear any leftover CURLOPT_CUSTOMREQUEST from a prior operation on the
+    # shared handle (e.g. a previous STATUS/CREATE). With upload = TRUE, a stale
+    # customrequest makes libcurl hang right after the server's APPEND "+ go
+    # ahead" continuation, so we reset it to the default before uploading.
+    curl::handle_setopt(handle = h, customrequest = NULL)
     curl::handle_setopt(
       handle = h,
       upload = TRUE,
