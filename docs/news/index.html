@@ -152,8 +152,18 @@
 <h3 class="hasAnchor">
 <a href="#improvements" class="anchor"></a>Improvements</h3>
 <ul>
-<li><p>Extension-based methods now verify the server’s advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to <code>list_server_capabilities()</code>) instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. This affects <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> (<code>SORT</code>), <code>thread()</code> (<code>THREAD=</code>), <code>get_quota()</code> / <code>get_quota_root()</code> (<code>QUOTA</code>), <code>namespace()</code> (<code>NAMESPACE</code>), <code>id()</code> (<code>ID</code>), <code>unselect_folder()</code> (<code>UNSELECT</code>), <code>list_special_use_folders()</code> (<code>SPECIAL-USE</code>), <code>move_msg()</code> (<code>MOVE</code>), and the ESEARCH path (<code>search(esearch = TRUE)</code>, <code>esearch_count_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.</p></li>
-<li><p>the <code>README</code> now maps each IMAP command to its <code>mRpostman</code> method(s), split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references).</p></li>
+<li>Extension-based methods now verify the server’s advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to <code>list_server_capabilities()</code>) instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. This affects <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> (<code>SORT</code>), <code>thread()</code> (<code>THREAD=</code>), <code>get_quota()</code> / <code>get_quota_root()</code> (<code>QUOTA</code>), <code>namespace()</code> (<code>NAMESPACE</code>), <code>id()</code> (<code>ID</code>), <code>unselect_folder()</code> (<code>UNSELECT</code>), <code>list_special_use_folders()</code> (<code>SPECIAL-USE</code>), <code>move_msg()</code> (<code>MOVE</code>), and the ESEARCH path (<code>search(esearch = TRUE)</code>, <code>esearch_count()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.</li>
+</ul>
+</div>
+<div id="documentation" class="section level3">
+<h3 class="hasAnchor">
+<a href="#documentation" class="anchor"></a>Documentation</h3>
+<ul>
+<li><p>reworded the package description and README overview to state that <code>mRpostman</code> is a session-based IMAP client that implements the full functionality of the IMAP4rev1 protocol (RFC 3501) from within R.</p></li>
+<li><p>the <code>README</code> now maps each IMAP command to its <code>mRpostman</code> method(s) — split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references) — and its “available methods and functions” list was brought up to date with every method added since v1.1.6.</p></li>
+<li><p>removed the obsolete <code>code_migration</code> vignette (migrating pre-0.9.0.0 syntax).</p></li>
+<li><p>rewrote the OAuth2.0 vignette (<code>xoauth2.0</code>) with exact, image-free steps and R code to authenticate to Gmail via OAuth2.0 — covering both <code>httr</code>’s built-in flow and a manual loopback flow — plus a troubleshooting section. <code>httr</code> and <code>jsonlite</code> were added to <code>Suggests</code>.</p></li>
+<li><p>fixed the <code>basics</code> vignette figures, which were not rendering on the package website.</p></li>
 </ul>
 </div>
 </div>
@@ -262,9 +272,9 @@
 <li><p><code>examine_folder()</code> no longer assumes the server returns both <code>EXISTS</code> and <code>RECENT</code>, in that order. The counts are now parsed and labeled by their actual keyword (new internal <code>parse_examine_counts()</code>), so the result stays correct when the order differs and no longer errors when <code>RECENT</code> is absent.</p></li>
 </ul>
 </div>
-<div id="documentation" class="section level3">
+<div id="documentation-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h3>
+<a href="#documentation-1" class="anchor"></a>Documentation</h3>
 <ul>
 <li><p>fixed several English spelling and grammar errors throughout the <code>roxygen2</code> documentation of the <code>ImapCon</code> R6 methods and the helper functions (e.g. “trough” → “through”, “successfuly” → “successfully”, “queries follows” → “queries follow”, “multiples arguments” → “multiple arguments”, “depend on ESEARCH” → “depends on ESEARCH”).</p></li>
 <li><p>corrected copy-paste mistakes in the method documentation: <code>search_string()</code> now belongs to the <code>search by string</code> family (was <code>search by date</code>), <code>search_sent_on()</code> now belongs to <code>search by date</code> (was <code>search by size</code>), and the <code>size</code> parameter of the size-search helpers is described in bytes instead of seconds.</p></li>
@@ -287,9 +297,9 @@
 <li><p><code>zzz()</code> - removed message from the transition to <code>R6</code> structure and added the citation request instead.</p></li>
 </ul>
 </div>
-<div id="documentation-1" class="section level3">
+<div id="documentation-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-1" class="anchor"></a>Documentation</h3>
+<a href="#documentation-2" class="anchor"></a>Documentation</h3>
 <ul>
 <li><p>changed <code>README.Rmd</code> and <code>basics.Rmd</code> to better reflect the current status of login procedures across most of the IMAP providers and the citation to <code>mRpostman</code> paper in JORS.</p></li>
 <li><p>added a <code>CITATION</code> file to <code>inst</code> folder.</p></li>
@@ -319,9 +329,9 @@
     <div id="mrpostman-111-2023-07-27-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-111-2023-07-27-github-patch" class="anchor"></a>mRpostman 1.1.1 (2023-07-27 Github patch)</h2>
-<div id="documentation-2" class="section level3">
+<div id="documentation-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-2" class="anchor"></a>Documentation</h3>
+<a href="#documentation-3" class="anchor"></a>Documentation</h3>
 <ul>
 <li>changed unit test to Github Actions CI/CD</li>
 </ul>
@@ -331,9 +341,9 @@
     <div id="mrpostman-110-2022-10-25-cran-fix-bump" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-110-2022-10-25-cran-fix-bump" class="anchor"></a>mRpostman 1.1.0 (2022-10-25 CRAN fix bump)</h2>
-<div id="documentation-3" class="section level3">
+<div id="documentation-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-3" class="anchor"></a>Documentation</h3>
+<a href="#documentation-4" class="anchor"></a>Documentation</h3>
 <ul>
 <li>removed ‘LazyData’ line to fix CRAN check issue</li>
 <li>added “\dontrun{}” to <code>decode_mime_headers()</code> in order to fix CRAN check issues</li>
@@ -353,9 +363,9 @@
     <div id="mrpostman-102-2021-04-14-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-102-2021-04-14-github-patch" class="anchor"></a>mRpostman 1.0.2 (2021-04-14 Github patch)</h2>
-<div id="documentation-4" class="section level3">
+<div id="documentation-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-4" class="anchor"></a>Documentation</h3>
+<a href="#documentation-5" class="anchor"></a>Documentation</h3>
 <ul>
 <li>typos in <code><a href="../reference/list_attachments.html">list_attachments()</a></code>
 </li>
@@ -376,9 +386,9 @@
     <div id="mrpostman-101-2021-01-13-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-101-2021-01-13-github-patch" class="anchor"></a>mRpostman 1.0.1 (2021-01-13 Github patch)</h2>
-<div id="documentation-5" class="section level3">
+<div id="documentation-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-5" class="anchor"></a>Documentation</h3>
+<a href="#documentation-6" class="anchor"></a>Documentation</h3>
 <ul>
 <li>typos in documentation (“Basics” vignette)</li>
 <li>typos in the methods and functions documentation</li>
@@ -920,9 +930,9 @@
 </li>
 </ul>
 </div>
-<div id="documentation-6" class="section level3">
+<div id="documentation-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-6" class="anchor"></a>Documentation</h3>
+<a href="#documentation-7" class="anchor"></a>Documentation</h3>
 <ul>
 <li>DESCRIPTION FILE:
 <ul>
@@ -1018,9 +1028,9 @@
 <li><p>changed all imaps://imap.gmail.com server examples to a generic one: imaps://your.imap.server.com</p></li>
 </ul>
 </div>
-<div id="documentation-7" class="section level3">
+<div id="documentation-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#documentation-7" class="anchor"></a>Documentation</h3>
+<a href="#documentation-8" class="anchor"></a>Documentation</h3>
 <ul>
 <li>DESCRIPTION FILE:
 <ul>

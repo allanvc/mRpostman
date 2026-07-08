@@ -87,17 +87,22 @@ paradigm, based on an R6 class called `ImapCon`. Its derived methods,
 and a few independent functions enable the R user to perform a myriad of
 IMAP commands.
 
-The package is divided in 8 groups of operations. Below, we present all
-the available methods and functions:
+Below, we present all the available methods and functions, grouped by
+type of operation:
 
-  - **configuration methods**: `configure_imap()`, `reset_url()`,
-    `reset_username()`, `reset_password()`, `reset_verbose()`,
-    `reset_use_ssl()`, `reset_buffersize()`, `reset_timeout_ms()`,
+  - **configuration and connection methods**: `configure_imap()`,
+    `disconnect()`, `noop()`, `reset_url()`, `reset_username()`,
+    `reset_password()`, `reset_verbose()`, `reset_use_ssl()`,
+    `reset_buffersize()`, `reset_timeout_ms()`,
     `reset_xoauth2_bearer()`;
-  - **server capabilities method**: `list_server_capabilities()`;
+  - **server information methods**: `list_server_capabilities()`,
+    `id()`, `namespace()`, `get_quota_root()`, `get_quota()`;
   - **mailbox operations methods**: `list_mail_folders()`,
-    `select_folder()`, `examine_folder()`, `rename_folder()`,
-    `create_folder()`, `list_flags()`;
+    `list_subscribed_folders()`, `list_special_use_folders()`,
+    `select_folder()`, `examine_folder()`, `status()`,
+    `create_folder()`, `rename_folder()`, `delete_folder()`,
+    `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`,
+    `unselect_folder()`, `list_flags()`;
   - **single-search methods**: `search_before()`, `search_since()`,
     `search_period()`, `search_on()`,
     `search_sent_before()`,`search_sent_since()`,
@@ -110,15 +115,18 @@ the available methods and functions:
         `sent_before()`, `sent_since()`, `sent_on()`, `string()`,
         `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`,
         `older_than()`;
+  - **server-side sort and thread methods**: `sort()`, `thread()`;
   - **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-    `fetch_metadata()`, `fetch_attachments_list()`,
-    `fetch_attachments()`;
+    `fetch_metadata()`, `metadata_options()`,
+    `fetch_attachments_list()`, `fetch_attachments()`;
   - **attachments methods**: `list_attachments()`, `get_attachments()`,
     `fetch_attachments_list()`, `fetch_attachments()`;
   - **complementary methods**: `copy_msg()`, `move_msg()`,
-    `esearch_min_id()`, `esearch_max_id()`, `esearch_count_msg()`,
-    `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`,
-    `replace_flags()`.
+    `append_msg()`, `esearch_min_id()`, `esearch_max_id()`,
+    `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`,
+    `remove_flags()`, `replace_flags()`;
+  - **MIME-decoding and message-text helper functions**:
+    `decode_mime_header()`, `clean_msg_text()`.
 
 ## Supported IMAP commands and capabilities
 
@@ -155,17 +163,17 @@ what your server supports with `list_server_capabilities()`.
 
 ### Optional extensions (server-dependent — capability-checked)
 
-| IMAP command                | `mRpostman` method(s)                                                                   | Capability                                    | RFC                                                   |
-| --------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
-| `SORT`                      | `sort()`                                                                                | `SORT`                                        | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `THREAD`                    | `thread()`                                                                              | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `GETQUOTA` / `GETQUOTAROOT` | `get_quota()` / `get_quota_root()`                                                      | `QUOTA`                                       | [2087](https://datatracker.ietf.org/doc/html/rfc2087) |
-| `NAMESPACE`                 | `namespace()`                                                                           | `NAMESPACE`                                   | [2342](https://datatracker.ietf.org/doc/html/rfc2342) |
-| `ID`                        | `id()`                                                                                  | `ID`                                          | [2971](https://datatracker.ietf.org/doc/html/rfc2971) |
-| `UNSELECT`                  | `unselect_folder()`                                                                     | `UNSELECT`                                    | [3691](https://datatracker.ietf.org/doc/html/rfc3691) |
-| `LIST` (special-use)        | `list_special_use_folders()`                                                            | `SPECIAL-USE`                                 | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
-| `MOVE`                      | `move_msg()`                                                                            | `MOVE`                                        | [6851](https://datatracker.ietf.org/doc/html/rfc6851) |
-| `SEARCH RETURN` (ESEARCH)   | `search(esearch = TRUE)`, `esearch_count_msg()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`                                     | [4731](https://datatracker.ietf.org/doc/html/rfc4731) |
+| IMAP command                | `mRpostman` method(s)                                                               | Capability                                    | RFC                                                   |
+| --------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| `SORT`                      | `sort()`                                                                            | `SORT`                                        | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
+| `THREAD`                    | `thread()`                                                                          | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
+| `GETQUOTA` / `GETQUOTAROOT` | `get_quota()` / `get_quota_root()`                                                  | `QUOTA`                                       | [2087](https://datatracker.ietf.org/doc/html/rfc2087) |
+| `NAMESPACE`                 | `namespace()`                                                                       | `NAMESPACE`                                   | [2342](https://datatracker.ietf.org/doc/html/rfc2342) |
+| `ID`                        | `id()`                                                                              | `ID`                                          | [2971](https://datatracker.ietf.org/doc/html/rfc2971) |
+| `UNSELECT`                  | `unselect_folder()`                                                                 | `UNSELECT`                                    | [3691](https://datatracker.ietf.org/doc/html/rfc3691) |
+| `LIST` (special-use)        | `list_special_use_folders()`                                                        | `SPECIAL-USE`                                 | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
+| `MOVE`                      | `move_msg()`                                                                        | `MOVE`                                        | [6851](https://datatracker.ietf.org/doc/html/rfc6851) |
+| `SEARCH RETURN` (ESEARCH)   | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`                                     | [4731](https://datatracker.ietf.org/doc/html/rfc4731) |
 
 Availability varies by provider. Gmail, for instance, supports every
 extension above **except `SORT` and `THREAD`**, which it has never

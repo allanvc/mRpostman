@@ -68,25 +68,26 @@ Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journ
 
 From version 0.9.0.0 onward, `mRpostman` is implemented under the OO paradigm, based on an R6 class called `ImapCon`. Its derived methods, and a few independent functions enable the R user to perform a myriad of IMAP commands.
 
-The package is divided in 8 groups of operations. Below, we present all the available methods and functions:
+Below, we present all the available methods and functions, grouped by type of operation:
 
-* **configuration methods**: `configure_imap()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_use_ssl()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
-* **server capabilities method**: `list_server_capabilities()`; 
-* **mailbox operations methods**: `list_mail_folders()`, `select_folder()`, `examine_folder()`,
-`rename_folder()`, `create_folder()`, `list_flags()`;
-* **single-search methods**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
+* **configuration and connection methods**: `configure_imap()`, `disconnect()`, `noop()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_use_ssl()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
+* **server information methods**: `list_server_capabilities()`, `id()`, `namespace()`, `get_quota_root()`, `get_quota()`;
+* **mailbox operations methods**: `list_mail_folders()`, `list_subscribed_folders()`, `list_special_use_folders()`, `select_folder()`, `examine_folder()`, `status()`, `create_folder()`, `rename_folder()`, `delete_folder()`, `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`, `unselect_folder()`, `list_flags()`;
+* **single-search methods**: `search_before()`, `search_since()`, `search_period()`, `search_on()`,
 `search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
 `search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
 `search_younger_than()`, `search_older_than()`;
 * **the custom-search method and its helper functions**: `search()`;
   + relational operators functions: `AND()`, `OR()`;
   + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
-  `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
+  `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`,
   `larger_than()`, `younger_than()`, `older_than()`;
-* **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`, 
-`fetch_metadata()`, `fetch_attachments_list()`, `fetch_attachments()`;
+* **server-side sort and thread methods**: `sort()`, `thread()`;
+* **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
+`fetch_metadata()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`;
 * **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* **complementary methods**: `copy_msg()`, `move_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count_msg()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`.
+* **complementary methods**: `copy_msg()`, `move_msg()`, `append_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
+* **MIME-decoding and message-text helper functions**: `decode_mime_header()`, `clean_msg_text()`.
 
 ## Supported IMAP commands and capabilities
 
@@ -125,7 +126,7 @@ The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in
 | `UNSELECT`              | `unselect_folder()`                                         | `UNSELECT`                              | [3691](https://datatracker.ietf.org/doc/html/rfc3691)      |
 | `LIST` (special-use)    | `list_special_use_folders()`                                | `SPECIAL-USE`                           | [6154](https://datatracker.ietf.org/doc/html/rfc6154)      |
 | `MOVE`                  | `move_msg()`                                                | `MOVE`                                  | [6851](https://datatracker.ietf.org/doc/html/rfc6851)      |
-| `SEARCH RETURN` (ESEARCH) | `search(esearch = TRUE)`, `esearch_count_msg()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`         | [4731](https://datatracker.ietf.org/doc/html/rfc4731)      |
+| `SEARCH RETURN` (ESEARCH) | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`         | [4731](https://datatracker.ietf.org/doc/html/rfc4731)      |
 
 Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: `CONDSTORE`/`QRESYNC` (out of scope) and `IDLE` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
 

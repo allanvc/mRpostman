@@ -178,14 +178,14 @@
 <h2 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h2>
 <p>From version 0.9.0.0 onward, <code>mRpostman</code> is implemented under the OO paradigm, based on an R6 class called <code>ImapCon</code>. Its derived methods, and a few independent functions enable the R user to perform a myriad of IMAP commands.</p>
-<p>The package is divided in 8 groups of operations. Below, we present all the available methods and functions:</p>
+<p>Below, we present all the available methods and functions, grouped by type of operation:</p>
 <ul>
 <li>
-<strong>configuration methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
+<strong>configuration and connection methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>disconnect()</code>, <code>noop()</code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
+<strong>server information methods</strong>: <code>list_server_capabilities()</code>, <code>id()</code>, <code>namespace()</code>, <code>get_quota_root()</code>, <code>get_quota()</code>;</li>
 <li>
-<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
+<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>list_subscribed_folders()</code>, <code>list_special_use_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>status()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>delete_folder()</code>, <code>subscribe_folder()</code>, <code>unsubscribe_folder()</code>, <code>close_folder()</code>, <code>unselect_folder()</code>, <code>list_flags()</code>;</li>
 <li>
 <strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
@@ -196,11 +196,15 @@
 </ul>
 </li>
 <li>
-<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+<strong>server-side sort and thread methods</strong>: <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code>, <code>thread()</code>;</li>
+<li>
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
 <strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
+<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>append_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
+<li>
+<strong>MIME-decoding and message-text helper functions</strong>: <code><a href="reference/decode_mime_header.html">decode_mime_header()</a></code>, <code><a href="reference/clean_msg_text.html">clean_msg_text()</a></code>.</li>
 </ul>
 </div>
 <div id="supported-imap-commands-and-capabilities" class="section level2">
@@ -319,7 +323,7 @@
 <table class="table">
 <colgroup>
 <col width="12%">
-<col width="41%">
+<col width="39%">
 <col width="21%">
 <col width="25%">
 </colgroup>
@@ -390,7 +394,7 @@
 <td>
 <code>SEARCH RETURN</code> (ESEARCH)</td>
 <td>
-<code>search(esearch = TRUE)</code>, <code>esearch_count_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>
+<code>search(esearch = TRUE)</code>, <code>esearch_count()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>
 </td>
 <td><code>ESEARCH</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc4731">4731</a></td>
