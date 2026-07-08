@@ -18,9 +18,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
-<meta property="og:description" content="An easy-to-use IMAP client that provides tools for message searching,
-    selective fetching of message attributes, mailbox management, attachment extraction, 
-    and several other IMAP features, paving the way for e-mail data analysis in R.">
+<meta property="og:description" content="A session-based IMAP client that implements the full functionality of
+    the IMAP4rev1 protocol (RFC 3501), allowing virtually all e-mail operations to be
+    performed from within R, paving the way for e-mail data analysis.">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -110,7 +110,7 @@
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p><code>mRpostman</code> is an easy-to-use IMAP client that provides tools for message searching, selective fetching of message attributes, mailbox management, attachment extraction, and several other IMAP features. The aim of this package is to pave the way for email data analysis in R. To do so, <code>mRpostman</code> makes extensive use of the {curl} package and the libcurl C library.</p>
+<p><code>mRpostman</code> is a session-based IMAP client that implements the full functionality of the IMAP4rev1 protocol (RFC 3501), allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, <code>mRpostman</code> makes extensive use of the {curl} package and the libcurl C library.</p>
 <p><code>mRpostman</code>’s official website: <a href="https://allanvc.github.io/mRpostman/" class="uri">https://allanvc.github.io/mRpostman/</a></p>
 <p>Cite <code>mRpostman</code>: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. <a href="https://doi.org/10.5334/jors.480">http</a>. Refer to <code>citation("mRpostman")</code>.</p>
 <p><strong>IMPORTANT</strong>:</p>
@@ -323,10 +323,9 @@
 <table class="table">
 <colgroup>
 <col width="12%">
-<col width="40%">
-<col width="20%">
-<col width="24%">
-<col width="2%">
+<col width="41%">
+<col width="21%">
+<col width="25%">
 </colgroup>
 <thead><tr class="header">
 <th>IMAP command</th>
@@ -334,7 +333,6 @@
 <code>mRpostman</code> method(s)</th>
 <th>Capability</th>
 <th>RFC</th>
-<th align="center">Gmail</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -342,7 +340,6 @@
 <td><code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code></td>
 <td><code>SORT</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc5256">5256</a></td>
-<td align="center">✗</td>
 </tr>
 <tr class="even">
 <td><code>THREAD</code></td>
@@ -351,7 +348,6 @@
 <code>THREAD=REFERENCES</code> / <code>THREAD=ORDEREDSUBJECT</code>
 </td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc5256">5256</a></td>
-<td align="center">✗</td>
 </tr>
 <tr class="odd">
 <td>
@@ -362,28 +358,24 @@
 </td>
 <td><code>QUOTA</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc2087">2087</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="even">
 <td><code>NAMESPACE</code></td>
 <td><code>namespace()</code></td>
 <td><code>NAMESPACE</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc2342">2342</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="odd">
 <td><code>ID</code></td>
 <td><code>id()</code></td>
 <td><code>ID</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc2971">2971</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="even">
 <td><code>UNSELECT</code></td>
 <td><code>unselect_folder()</code></td>
 <td><code>UNSELECT</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc3691">3691</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="odd">
 <td>
@@ -391,14 +383,12 @@
 <td><code>list_special_use_folders()</code></td>
 <td><code>SPECIAL-USE</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc6154">6154</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="even">
 <td><code>MOVE</code></td>
 <td><code>move_msg()</code></td>
 <td><code>MOVE</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc6851">6851</a></td>
-<td align="center">✓</td>
 </tr>
 <tr class="odd">
 <td>
@@ -408,11 +398,10 @@
 </td>
 <td><code>ESEARCH</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc4731">4731</a></td>
-<td align="center">✓</td>
 </tr>
 </tbody>
 </table>
-<p>The <strong>Gmail</strong> column reflects Gmail’s IMAP <code>CAPABILITY</code> at the time of writing: it supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented. To exercise <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
 </div>
 </div>
 <div id="installation" class="section level2">
