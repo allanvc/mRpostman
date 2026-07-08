@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -140,6 +140,26 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="mrpostman-122-2026-07-07-bugfix-and-robustness-update" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-122-2026-07-07-bugfix-and-robustness-update" class="anchor"></a>mRpostman 1.2.2 (2026-07-07 bugfix and robustness update)</h2>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<ul>
+<li><p><code>ImapCon$append_msg()</code> no longer hangs after the server’s <code>+ go ahead</code> continuation when it is called after another command on the same connection. The shared connection handle still carried the previous operation’s <code>CURLOPT_CUSTOMREQUEST</code>, which conflicted with the <code>CURLOPT_UPLOAD</code> that <code>APPEND</code> relies on; the custom request is now reset before the upload.</p></li>
+<li><p><code>ImapCon$status()</code> no longer returns an empty result after a mid-session reconnection. When libcurl transparently reconnects (e.g. after a stale connection), the response buffer also carries the <code>CAPABILITY</code> line, whose <code>LIST-STATUS</code> token — together with the <code>... authenticated (Success)</code> line — made the parser lock onto the wrong parentheses. <code>parse_status_counts()</code> now anchors on the untagged <code>* STATUS</code> response.</p></li>
+</ul>
+</div>
+<div id="improvements" class="section level3">
+<h3 class="hasAnchor">
+<a href="#improvements" class="anchor"></a>Improvements</h3>
+<ul>
+<li><p>Extension-based methods now verify the server’s advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to <code>list_server_capabilities()</code>) instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. This affects <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> (<code>SORT</code>), <code>thread()</code> (<code>THREAD=</code>), <code>get_quota()</code> / <code>get_quota_root()</code> (<code>QUOTA</code>), <code>namespace()</code> (<code>NAMESPACE</code>), <code>id()</code> (<code>ID</code>), <code>unselect_folder()</code> (<code>UNSELECT</code>), <code>list_special_use_folders()</code> (<code>SPECIAL-USE</code>), <code>move_msg()</code> (<code>MOVE</code>), and the ESEARCH path (<code>search(esearch = TRUE)</code>, <code>esearch_count_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.</p></li>
+<li><p>the <code>README</code> now maps each IMAP command to its <code>mRpostman</code> method(s), split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references).</p></li>
+</ul>
+</div>
+</div>
     <div id="mrpostman-121-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-121-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.2.1 (2026-07-06 feature update)</h2>
@@ -235,9 +255,9 @@
 <li><p>new <code>ImapCon$disconnect()</code> method to release the connection handle when a session is finished (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/13'>#13</a>).</p></li>
 </ul>
 </div>
-<div id="bug-fixes" class="section level3">
+<div id="bug-fixes-1" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code> now honors the character set declared in the RFC 2047 encoded-word (<code>=?&lt;charset&gt;?&lt;enc&gt;?...?=</code>) instead of guessing it heuristically. The declared charset is passed to <code><a href="https://rdrr.io/r/base/iconv.html">iconv()</a></code> (via a new internal <code>apply_charset()</code> helper) for both the quoted-printable (<code>Q</code>) and base64 (<code>B</code>) encodings, so headers in any <code>iconv</code>-supported charset now decode correctly — including ones the previous heuristic could not handle or mislabeled (e.g. Windows-1251 and KOI8-R Cyrillic, ISO-8859-2/Windows-1250 Central European, Big5, Shift_JIS, EUC-KR). The legacy heuristic is kept only as a fallback for “loose” quoted-printable strings that carry no declared charset.</p></li>
 <li><p>the message-body decoders (<code>decode_mime_text()</code>, used by <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code>) now honor the charset declared in the MIME <code>Content-Type</code> for quoted-printable and base64 parts, via the same <code>apply_charset()</code> helper as the header decoder. The previous heuristic is kept as a fallback when no charset is declared, and the charset is not re-applied to parts already normalized to UTF-8 by the HTML parser (avoiding a double conversion).</p></li>
@@ -397,9 +417,9 @@
     <div id="mrpostman-091-5-2020-11-18-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-5-2020-11-18-github-patch" class="anchor"></a>mRpostman 0.9.1-5 (2020-11-18 Github patch)</h2>
-<div id="bug-fixes-1" class="section level3">
+<div id="bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>fixed the <code>pattern8</code> regex in <code>clean_fetch_results()</code>.</li>
 </ul>
@@ -443,9 +463,9 @@
 <li>added the <code>mime_level</code> argument to the <code>fetch_body()</code> method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.</li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level3">
+<div id="bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;</p></li>
 <li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case;</p></li>
@@ -485,9 +505,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level3">
+<div id="bug-fixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>list_mail_folders()</code>: fixed the regex related to the hierarchy separator to accept the “|” separator. It was causing a misbehavior in Yandex accounts.</p></li>
 <li><p><code>clean_fetch_results()</code> (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have <code>ignore.case = TRUE</code>.</p></li>
@@ -798,9 +818,9 @@
 </ul>
 </div>
 </div>
-<div id="bug-fixes-4" class="section level3">
+<div id="bug-fixes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
 <p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>

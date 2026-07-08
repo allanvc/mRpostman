@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -206,6 +206,214 @@
 <li>
 <strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
 </ul>
+</div>
+<div id="supported-imap-commands-and-capabilities" class="section level2">
+<h2 class="hasAnchor">
+<a href="#supported-imap-commands-and-capabilities" class="anchor"></a>Supported IMAP commands and capabilities</h2>
+<p>The IMAP protocol has a <strong>mandatory core</strong> — the IMAP4rev1 commands defined in <a href="https://datatracker.ietf.org/doc/html/rfc3501">RFC 3501</a>, which every compliant server must implement — plus a set of <strong>optional extensions</strong>, each advertised by the server in its <code>CAPABILITY</code> response. <code>mRpostman</code> covers both. For the extension-based methods, <code>mRpostman</code> checks the server’s advertised capabilities and, if the required one is missing, raises an informative error instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. You can inspect what your server supports with <code>list_server_capabilities()</code>.</p>
+<div id="core-commands-rfc-3501--always-available" class="section level3">
+<h3 class="hasAnchor">
+<a href="#core-commands-rfc-3501--always-available" class="anchor"></a>Core commands (RFC 3501 — always available)</h3>
+<table class="table">
+<colgroup>
+<col width="24%">
+<col width="75%">
+</colgroup>
+<thead><tr class="header">
+<th>IMAP command</th>
+<th>
+<code>mRpostman</code> method(s)</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>CAPABILITY</code></td>
+<td><code>list_server_capabilities()</code></td>
+</tr>
+<tr class="even">
+<td><code>NOOP</code></td>
+<td><code>noop()</code></td>
+</tr>
+<tr class="odd">
+<td>
+<code>LOGIN</code> / <code>AUTHENTICATE</code>
+</td>
+<td><code><a href="reference/configure_imap.html">configure_imap()</a></code></td>
+</tr>
+<tr class="even">
+<td><code>LOGOUT</code></td>
+<td><code>disconnect()</code></td>
+</tr>
+<tr class="odd">
+<td>
+<code>SELECT</code> / <code>EXAMINE</code>
+</td>
+<td>
+<code>select_folder()</code> / <code>examine_folder()</code>
+</td>
+</tr>
+<tr class="even">
+<td>
+<code>CREATE</code> / <code>DELETE</code> / <code>RENAME</code>
+</td>
+<td>
+<code>create_folder()</code> / <code>delete_folder()</code> / <code>rename_folder()</code>
+</td>
+</tr>
+<tr class="odd">
+<td>
+<code>SUBSCRIBE</code> / <code>UNSUBSCRIBE</code>
+</td>
+<td>
+<code>subscribe_folder()</code> / <code>unsubscribe_folder()</code>
+</td>
+</tr>
+<tr class="even">
+<td>
+<code>LIST</code> / <code>LSUB</code>
+</td>
+<td>
+<code>list_mail_folders()</code> / <code>list_subscribed_folders()</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>STATUS</code></td>
+<td><code>status()</code></td>
+</tr>
+<tr class="even">
+<td><code>APPEND</code></td>
+<td><code>append_msg()</code></td>
+</tr>
+<tr class="odd">
+<td><code>SEARCH</code></td>
+<td>
+<code><a href="https://rdrr.io/r/base/search.html">search()</a></code>, <code>search_before()</code>, <code>search_since()</code>, <code>search_string()</code>, … (all <code>search_*</code>)</td>
+</tr>
+<tr class="even">
+<td><code>FETCH</code></td>
+<td>
+<code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments()</code>
+</td>
+</tr>
+<tr class="odd">
+<td><code>STORE</code></td>
+<td>
+<code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>COPY</code></td>
+<td><code>copy_msg()</code></td>
+</tr>
+<tr class="odd">
+<td><code>CLOSE</code></td>
+<td><code>close_folder()</code></td>
+</tr>
+<tr class="even">
+<td><code>EXPUNGE</code></td>
+<td>
+<code>expunge()</code>, <code>delete_msg()</code>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="optional-extensions-server-dependent--capability-checked" class="section level3">
+<h3 class="hasAnchor">
+<a href="#optional-extensions-server-dependent--capability-checked" class="anchor"></a>Optional extensions (server-dependent — capability-checked)</h3>
+<table class="table">
+<colgroup>
+<col width="12%">
+<col width="40%">
+<col width="20%">
+<col width="24%">
+<col width="2%">
+</colgroup>
+<thead><tr class="header">
+<th>IMAP command</th>
+<th>
+<code>mRpostman</code> method(s)</th>
+<th>Capability</th>
+<th>RFC</th>
+<th align="center">Gmail</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>SORT</code></td>
+<td><code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code></td>
+<td><code>SORT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5256">5256</a></td>
+<td align="center">✗</td>
+</tr>
+<tr class="even">
+<td><code>THREAD</code></td>
+<td><code>thread()</code></td>
+<td>
+<code>THREAD=REFERENCES</code> / <code>THREAD=ORDEREDSUBJECT</code>
+</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5256">5256</a></td>
+<td align="center">✗</td>
+</tr>
+<tr class="odd">
+<td>
+<code>GETQUOTA</code> / <code>GETQUOTAROOT</code>
+</td>
+<td>
+<code>get_quota()</code> / <code>get_quota_root()</code>
+</td>
+<td><code>QUOTA</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc2087">2087</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="even">
+<td><code>NAMESPACE</code></td>
+<td><code>namespace()</code></td>
+<td><code>NAMESPACE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc2342">2342</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="odd">
+<td><code>ID</code></td>
+<td><code>id()</code></td>
+<td><code>ID</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc2971">2971</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="even">
+<td><code>UNSELECT</code></td>
+<td><code>unselect_folder()</code></td>
+<td><code>UNSELECT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc3691">3691</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="odd">
+<td>
+<code>LIST</code> (special-use)</td>
+<td><code>list_special_use_folders()</code></td>
+<td><code>SPECIAL-USE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc6154">6154</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="even">
+<td><code>MOVE</code></td>
+<td><code>move_msg()</code></td>
+<td><code>MOVE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc6851">6851</a></td>
+<td align="center">✓</td>
+</tr>
+<tr class="odd">
+<td>
+<code>SEARCH RETURN</code> (ESEARCH)</td>
+<td>
+<code>search(esearch = TRUE)</code>, <code>esearch_count_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>
+</td>
+<td><code>ESEARCH</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc4731">4731</a></td>
+<td align="center">✓</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>Gmail</strong> column reflects Gmail’s IMAP <code>CAPABILITY</code> at the time of writing: it supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented. To exercise <code><a href="https://rdrr.io/r/base/sort.html">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+</div>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
