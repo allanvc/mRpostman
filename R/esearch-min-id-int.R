@@ -25,6 +25,10 @@ esearch_min_id_int <- function(self, flag, use_uid, retries) {
 
   check_args(use_uid = use_uid, retries = retries)
 
+  # ESEARCH is an optional extension (RFC 4731) -- fail early if unsupported.
+  assert_capability(self, "ESEARCH", command = "esearch_min_id",
+                    rfc = "RFC 4731", retries = retries)
+
   flag_string <- paste(flag, collapse = " ") #v0.9.0 (for more than one flag passed)
   flag_string = paste0(flag_string, "") # different here because flag is the main parameter of search
 

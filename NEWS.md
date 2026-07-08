@@ -1,3 +1,17 @@
+## mRpostman 1.2.2 (2026-07-07 bugfix and robustness update)
+
+### Bug fixes
+
+- `ImapCon$append_msg()` no longer hangs after the server's `+ go ahead` continuation when it is called after another command on the same connection. The shared connection handle still carried the previous operation's `CURLOPT_CUSTOMREQUEST`, which conflicted with the `CURLOPT_UPLOAD` that `APPEND` relies on; the custom request is now reset before the upload.
+
+- `ImapCon$status()` no longer returns an empty result after a mid-session reconnection. When libcurl transparently reconnects (e.g. after a stale connection), the response buffer also carries the `CAPABILITY` line, whose `LIST-STATUS` token — together with the `... authenticated (Success)` line — made the parser lock onto the wrong parentheses. `parse_status_counts()` now anchors on the untagged `* STATUS` response.
+
+### Improvements
+
+- Extension-based methods now verify the server's advertised capability before issuing the command and raise an informative error (naming the command and its RFC, and pointing to `list_server_capabilities()`) instead of letting the server reply with a cryptic `BAD Unknown command`. This affects `sort()` (`SORT`), `thread()` (`THREAD=`), `get_quota()` / `get_quota_root()` (`QUOTA`), `namespace()` (`NAMESPACE`), `id()` (`ID`), `unselect_folder()` (`UNSELECT`), `list_special_use_folders()` (`SPECIAL-USE`), `move_msg()` (`MOVE`), and the ESEARCH path (`search(esearch = TRUE)`, `esearch_count_msg()`, `esearch_min_id()`, `esearch_max_id()`). Capabilities are fetched once and cached per connection. Mandatory IMAP4rev1 (RFC 3501) commands are unaffected.
+
+- the `README` now maps each IMAP command to its `mRpostman` method(s), split into the mandatory RFC 3501 core and the optional, capability-checked extensions (with RFC references).
+
 ## mRpostman 1.2.1 (2026-07-06 feature update)
 
 ### New features

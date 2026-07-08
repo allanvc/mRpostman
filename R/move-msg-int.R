@@ -24,6 +24,12 @@ move_msg_int <- function(self, msg_id, use_uid, to_folder, reselect, mute, retri
   check_args(msg_id = msg_id, use_uid = use_uid, to_folder = to_folder,
              reselect = reselect, mute = mute, retries = retries)
 
+  # MOVE is an optional extension (RFC 6851) -- fail early with a clear message
+  # if the server does not advertise it (COPY + delete + expunge is the core
+  # fallback a user can do manually).
+  assert_capability(self, "MOVE", command = "move_msg", rfc = "RFC 6851",
+                    retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 

@@ -39,6 +39,11 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries) {
 
   check_args(use_uid = use_uid, retries = retries)
 
+  # SORT is an optional extension (RFC 5256) -- fail early with a clear message
+  # if the server does not advertise it (e.g. Gmail does not support SORT).
+  assert_capability(self, "SORT", command = "sort", rfc = "RFC 5256",
+                    retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 
