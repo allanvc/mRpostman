@@ -41,14 +41,7 @@ Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi:
 
 **IMPORTANT**:
 
-1.  In version `0.9.0.0`, `mRpostman` went through substantial changes,
-    including ones that have no backward compatibility with versions
-    `<= 0.3.1`. A detailed vignette on how to migrate your mRpostman’s
-    deprecated code to the new syntax is available at [*“Migrating old
-    code to the new mRpostman’s
-    syntax”*](https://allanvc.github.io/mRpostman/articles/code_migration.html).
-
-2.  Old versions of the libcurl C library ({curl}’s main engine) will
+1.  Old versions of the libcurl C library ({curl}’s main engine) will
     cause the malfunction of this package. If your libcurl’s version is
     above 7.58.0, you should be fine. In case you intend to use OAuth
     2.0 authentication, then you will need libcurl \>= 7.65.0. To learn
@@ -57,7 +50,7 @@ Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi:
     mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
     vignette.
 
-3.  Most mail providers discontinued less secure apps access. If it is
+2.  Most mail providers discontinued less secure apps access. If it is
     still available and you are comfortable with this type of access you
     can enable this option for your account on your mail provider. Some
     providers, such as Yahoo Mail, also offer the option to generate a

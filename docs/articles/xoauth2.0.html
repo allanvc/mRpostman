@@ -64,9 +64,6 @@
       <a href="../articles/basics.html">mRpostman basics</a>
     </li>
     <li>
-      <a href="../articles/code_migration.html">Migrating old code to the new mRpostman's syntax</a>
-    </li>
-    <li>
       <a href="../articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
     </li>
   </ul>
@@ -105,198 +102,187 @@
 
     
     
-<style>
-  .col2 {
-    columns: 2 100px;         /* number of columns and width in pixels*/
-    -webkit-columns: 2 100px; /* chrome, safari */
-    -moz-columns: 2 100px;    /* firefox */
-  }
-  <!-- .col3 { -->
-  <!--   columns: 3 100px; -->
-  <!--   -webkit-columns: 3 100px; -->
-  <!--   -moz-columns: 3 100px; -->
-  <!-- } -->
-</style>
 <div id="intro" class="section level2">
 <h2 class="hasAnchor">
 <a href="#intro" class="anchor"></a>Introduction</h2>
-<p>More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.</p>
-<p>In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.</p>
-<p><strong>IMPORTANT</strong>: Currently, the only drawback with this approach may be your libcurl’s version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:</p>
+<p>Most major mail providers have moved to OAuth2.0 as their preferred (and, in many cases, only) authentication method for IMAP. Instead of sending your password, you send a short-lived <strong>access token</strong> that authorizes a specific scope of access to your mailbox.</p>
+<p>This vignette shows the exact steps and R code to obtain, use, and refresh an OAuth2.0 access token for the <strong>Gmail</strong> IMAP server. The same logic applies to other providers (Outlook/Office 365, Yahoo, AOL, …) by swapping the authorization endpoints and scope. The reference for Google’s flow is <a href="https://developers.google.com/identity/protocols/oauth2" class="uri">https://developers.google.com/identity/protocols/oauth2</a>.</p>
+<p>We use the <a href="https://cran.r-project.org/package=httr"><code>httr</code></a> package to run the OAuth2.0 flow and <a href="https://cran.r-project.org/package=jsonlite"><code>jsonlite</code></a> to read the credentials file, so install them first if needed:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/curl_options.html">curl_version</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code>## $version
-## [1] "7.70.0"
-## 
-## $ssl_version
-## [1] "OpenSSL/1.1.1f"
-## 
-## $libz_version
-## [1] "1.2.11"
-## 
-## $libssh_version
-## [1] NA
-## 
-## $libidn_version
-## [1] NA
-## 
-## $host
-## [1] "x86_64-pc-linux-gnu"
-## 
-## $protocols
-##  [1] "dict"   "file"   "ftp"    "ftps"   "gopher" "http"   "https"  "imap"  
-##  [9] "imaps"  "pop3"   "pop3s"  "rtsp"   "smb"    "smbs"   "smtp"   "smtps" 
-## [17] "telnet" "tftp"  
-## 
-## $ipv6
-## [1] TRUE
-## 
-## $http2
-## [1] FALSE
-## 
-## $idn
-## [1] FALSE</code></pre>
-<p>The steps involved in configuring and obtaining an OAuth2.0 access token can be summarized as follows:</p>
-<ul>
-<li><ol style="list-style-type: decimal">
-<li>creating a new API project in the Google Account Console</li>
-</ol></li>
-<li><ol start="2" style="list-style-type: decimal">
-<li>creating new credentials access for the project</li>
-</ol></li>
-<li><ol start="3" style="list-style-type: decimal">
-<li>obtaining and saving the credentials</li>
-</ol></li>
-<li><ol start="4" style="list-style-type: decimal">
-<li>using the <code>httr</code> package to retrieve the token</li>
-</ol></li>
-<li><ol start="5" style="list-style-type: decimal">
-<li>testing the IMAP connection</li>
-</ol></li>
-<li><ol start="6" style="list-style-type: decimal">
-<li>refreshing the token when needed</li>
-</ol></li>
-</ul>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"httr"</span>, <span class="st">"jsonlite"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><strong>IMPORTANT — libcurl version.</strong> The libcurl feature that transmits the bearer token is only reliable on libcurl &gt;= 7.65.0 (released 2019-05-22). Check the version the <code>curl</code> R package is linked against:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/curl_options.html">curl_version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">version</span></span></code></pre></div>
+<pre><code>## [1] "7.70.0"</code></pre>
+<p>If it is older, update libcurl (and reinstall <code>curl</code>) before continuing, otherwise you may get a <code>SASL</code> error during authentication.</p>
+<p>The whole process is:</p>
+<ol style="list-style-type: decimal">
+<li>create a Google Cloud project;</li>
+<li>configure the OAuth consent screen (scope + test user);</li>
+<li>create a <strong>Desktop app</strong> OAuth client and download its JSON credentials;</li>
+<li>obtain an access token in R;</li>
+<li>open the IMAP connection with <code>configure_imap(xoauth2_bearer = ...)</code>;</li>
+<li>refresh the token when it expires.</li>
+</ol>
+<p>Steps 1–3 are done once, in the browser; steps 4–6 are R code.</p>
 </div>
-<div id="step-1---creating-a-new-api-project" class="section level2">
+<div id="step-1---create-a-google-cloud-project" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-1---creating-a-new-api-project" class="anchor"></a>Step 1 - Creating a new API project</h2>
-<p>Using your web browser, log into the page: <a href="https://console.developers.google.com/apis/" class="uri">https://console.developers.google.com/apis/</a>. Assuming that you don’t have any pre-existent project, you should see this page:</p>
-<!-- ![](man/figures/aol3.png) -->
-<p><img src="figures/xoauth/step1_1.png" width="700"></p>
-<p>Then, click on “Create New Project”</p>
-<p>On the next screen, type a name for your project. Here, we go with “xpto-allan”:</p>
-<p><img src="figures/xoauth/step1_1x.png" style="width:60.0%"></p>
-<p>After a few seconds, the project is created.</p>
+<a href="#step-1---create-a-google-cloud-project" class="anchor"></a>Step 1 - Create a Google Cloud project</h2>
+<ol style="list-style-type: decimal">
+<li>Go to <a href="https://console.cloud.google.com/" class="uri">https://console.cloud.google.com/</a> and sign in with the Google account whose mailbox you want to access.</li>
+<li>In the project selector at the top, click <strong>New Project</strong>, give it a name (e.g. <code>mRpostman</code>), and click <strong>Create</strong>.</li>
+<li>Make sure this new project is the one selected in the top bar.</li>
+</ol>
+<p>You do <strong>not</strong> need to enable the Gmail API: IMAP access is granted by the OAuth scope <code>https://mail.google.com/</code>, not by the Gmail API. IMAP is enabled by default on Gmail accounts.</p>
 </div>
-<div id="step-2---creating-new-credentials" class="section level2">
+<div id="step-2---configure-the-oauth-consent-screen" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-2---creating-new-credentials" class="anchor"></a>Step 2 - Creating new credentials</h2>
-<p>Once the project is created, we move to the credentials part.</p>
-<p>Click on “CREDENTIALS” in the menu on the left:</p>
-<p><img src="figures/xoauth/step2_1x.png" width="250"></p>
-<p><br></p>
-<p>You should see the following screen:</p>
-<p><img src="figures/xoauth/step2_2x.png" width="750"></p>
-<p><br> On the top menu, click on “+ CREATE CREDENTIALS”, then on “OAuth client ID”.</p>
-<p><img src="figures/xoauth/step2_3.png" width="550"></p>
-<p><br></p>
-<p>You should see the following screen. Select “Web Application”.</p>
-<p><img src="figures/xoauth/step2_x1.png" width="550"></p>
-<p><br></p>
-<p>In the following screen, fill in the name of the OAuth2.0 client. We chose “mRpostman”, but you can choose the name of your preference.</p>
-<p><img src="figures/xoauth/step2_x2.png" style="width:60.0%"></p>
-<p>Scroll down the page and click “CREATE”.</p>
+<a href="#step-2---configure-the-oauth-consent-screen" class="anchor"></a>Step 2 - Configure the OAuth consent screen</h2>
+<p>Navigate to <strong>APIs &amp; Services &gt; OAuth consent screen</strong> (in the redesigned console this section is called <strong>Google Auth Platform</strong>).</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>User type:</strong> choose <strong>External</strong> and click <strong>Create</strong>.</li>
+<li>Fill in the required fields: <strong>App name</strong>, <strong>User support email</strong>, and, at the bottom, a <strong>Developer contact email</strong>. Save and continue.</li>
+<li>
+<p><strong>Scopes:</strong> click <strong>Add or remove scopes</strong>, then, in the <em>“manually add scopes”</em> box, paste:</p>
+<pre><code>https://mail.google.com/</code></pre>
+Click <strong>Add to table</strong>, then <strong>Update</strong> and <strong>Save and continue</strong>. (This is a <em>restricted</em> scope; while your app stays in <strong>Testing</strong> mode it works for test users without Google verification.)</li>
+<li><p><strong>Test users:</strong> add the e-mail address of the account you will log in with (e.g. <code>your_user@gmail.com</code>) and save.</p></li>
+</ol>
+<p>The account you authenticate with in Step 4 <strong>must</strong> be listed here as a test user, otherwise Google returns an <code>access_denied</code> error.</p>
 </div>
-<div id="step-3---saving-the-credentials" class="section level2">
+<div id="step-3---create-the-oauth-client-credentials" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-3---saving-the-credentials" class="anchor"></a>Step 3 - Saving the credentials</h2>
-<p>On the following page, you have your key and client information.</p>
-<p><img src="figures/xoauth/step2_x3x.png" width="680"></p>
-<p>Copy the information above to an R script:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">secret</span> <span class="op">=</span> <span class="st">"vsV[...]6m7"</span></span>
+<a href="#step-3---create-the-oauth-client-credentials" class="anchor"></a>Step 3 - Create the OAuth client credentials</h2>
+<ol style="list-style-type: decimal">
+<li>Go to <strong>APIs &amp; Services &gt; Credentials</strong>.</li>
+<li>Click <strong>+ Create credentials &gt; OAuth client ID</strong>.</li>
+<li>For <strong>Application type</strong>, select <strong>Desktop app</strong> (this is important — a <em>Web application</em> client will fail with <code>redirect_uri_mismatch</code> in the flow below).</li>
+<li>Give it a name and click <strong>Create</strong>.</li>
+<li>Click <strong>Download JSON</strong> and save the file locally. Keep it private — it contains your client secret.</li>
+</ol>
+<p>The downloaded file looks like this (an <code>"installed"</code> client):</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode json"><code class="sourceCode json"><a class="sourceLine" id="cb5-1" title="1"><span class="fu">{</span><span class="dt">"installed"</span><span class="fu">:{</span><span class="dt">"client_id"</span><span class="fu">:</span><span class="st">"XXXX.apps.googleusercontent.com"</span><span class="fu">,</span></a>
+<a class="sourceLine" id="cb5-2" title="2">  <span class="dt">"project_id"</span><span class="fu">:</span><span class="st">"your-project"</span><span class="fu">,</span><span class="dt">"auth_uri"</span><span class="fu">:</span><span class="st">"https://accounts.google.com/o/oauth2/auth"</span><span class="fu">,</span></a>
+<a class="sourceLine" id="cb5-3" title="3">  <span class="dt">"token_uri"</span><span class="fu">:</span><span class="st">"https://oauth2.googleapis.com/token"</span><span class="fu">,</span></a>
+<a class="sourceLine" id="cb5-4" title="4">  <span class="dt">"client_secret"</span><span class="fu">:</span><span class="st">"GOCSPX-XXXX"</span><span class="fu">,</span><span class="dt">"redirect_uris"</span><span class="fu">:</span><span class="ot">[</span><span class="st">"http://localhost"</span><span class="ot">]</span><span class="fu">}}</span></a></code></pre></div>
+<p>Read the client id and secret from it in R:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cred</span> <span class="op">&lt;-</span> <span class="fu">jsonlite</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/jsonlite/reference/fromJSON.html">fromJSON</a></span><span class="op">(</span><span class="st">"path/to/client_secret_XXXX.json"</span><span class="op">)</span><span class="op">$</span><span class="va">installed</span></span></code></pre></div>
+</div>
+<div id="step-4---obtain-an-access-token" class="section level2">
+<h2 class="hasAnchor">
+<a href="#step-4---obtain-an-access-token" class="anchor"></a>Step 4 - Obtain an access token</h2>
+<p>Below are two ways to get a token. <strong>Option A</strong> is the shortest and works out of the box on most desktops. Use <strong>Option B</strong> if Option A fails to start its local web server (common inside RStudio, or on headless/remote machines).</p>
+<p>Both request <code>access_type = "offline"</code> so that a <strong>refresh token</strong> is also returned (see Step 6).</p>
+<div id="option-a---httrs-built-in-flow-recommended" class="section level3">
+<h3 class="hasAnchor">
+<a href="#option-a---httrs-built-in-flow-recommended" class="anchor"></a>Option A - <code>httr</code>’s built-in flow (recommended)</h3>
+<p><code><a href="https://httr.r-lib.org/reference/oauth2.0_token.html">httr::oauth2.0_token()</a></code> opens your browser, runs a local callback server, and caches the token in a <code>.httr-oauth</code> file.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/">httr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">key</span> <span class="op">=</span> <span class="st">"85169[...]9pk.apps.googleusercontent.com"</span></span></code></pre></div>
-<p>In this same script, we use the <code>httr</code> package to configure and obtain our token.</p>
-</div>
-<div id="step-4---using-the-httr-package-to-retrieve-the-token" class="section level2">
-<h2 class="hasAnchor">
-<a href="#step-4---using-the-httr-package-to-retrieve-the-token" class="anchor"></a>Step 4 - Using the <code>httr</code> package to retrieve the token</h2>
-<p>Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The <code>httr</code> package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with <code>httr</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">endpoint</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span></span>
+<span><span class="va">gmail_app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth_app.html">oauth_app</a></span><span class="op">(</span><span class="st">"mRpostman"</span>,</span>
+<span>                       key    <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>                       secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gmail_app</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth_app.html">oauth_app</a></span><span class="op">(</span></span>
-<span>  <span class="st">"xpto-allan"</span>,</span>
-<span>  key <span class="op">=</span> <span class="va">key</span>,</span>
-<span>  secret <span class="op">=</span> <span class="va">secret</span></span>
+<span><span class="va">token_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html">oauth2.0_token</a></span><span class="op">(</span></span>
+<span>  endpoint <span class="op">=</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span>,</span>
+<span>  app      <span class="op">=</span> <span class="va">gmail_app</span>,</span>
+<span>  scope    <span class="op">=</span> <span class="st">"https://mail.google.com/"</span>,</span>
+<span>  cache    <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">scope</span> <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">token_obj</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<p>When the browser shows <em>“Google hasn’t verified this app”</em>, click <strong>Advanced &gt; Go to &lt;your app&gt; (unsafe)</strong> — this is expected while the app is in Testing mode — then <strong>Allow</strong>.</p>
+</div>
+<div id="option-b---manual-loopback-flow-no-local-server" class="section level3">
+<h3 class="hasAnchor">
+<a href="#option-b---manual-loopback-flow-no-local-server" class="anchor"></a>Option B - Manual loopback flow (no local server)</h3>
+<p>This avoids the local callback server entirely: you open the authorization URL, approve access, and paste back the <code>code</code> shown in the browser’s address bar.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/">httr</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">auth_code</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html">oauth2.0_token</a></span><span class="op">(</span><span class="va">endpoint</span>, app <span class="op">=</span> <span class="va">gmail_app</span>, scope <span class="op">=</span> <span class="va">scope</span><span class="op">)</span></span></code></pre></div>
-<p>As it is the first time you are trying to access your account using the OAuth2.0 token, you’ll be prompted about caching your credentials on a local file.</p>
-<p><img src="figures/xoauth/step2_x4.png" width="550"></p>
-<p>After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:</p>
-<div class="col2">
-<p><img src="figures/xoauth/step2_x5.png" style="width:90.0%"><br><br><br><br><br><br></p>
-<p><img src="figures/xoauth/step2_x6.png" style="width:80.0%"></p>
+<span><span class="va">redirect_uri</span> <span class="op">&lt;-</span> <span class="st">"http://localhost"</span></span>
+<span><span class="va">scope</span>        <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
+<span></span>
+<span><span class="va">auth_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/modify_url.html">modify_url</a></span><span class="op">(</span><span class="st">"https://accounts.google.com/o/oauth2/auth"</span>,</span>
+<span>  query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>               redirect_uri  <span class="op">=</span> <span class="va">redirect_uri</span>,</span>
+<span>               response_type <span class="op">=</span> <span class="st">"code"</span>,</span>
+<span>               scope         <span class="op">=</span> <span class="va">scope</span>,</span>
+<span>               access_type   <span class="op">=</span> <span class="st">"offline"</span>,</span>
+<span>               prompt        <span class="op">=</span> <span class="st">"consent"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html">browseURL</a></span><span class="op">(</span><span class="va">auth_url</span><span class="op">)</span></span></code></pre></div>
+<p>After you approve, the browser is redirected to <code>http://localhost/?code=...&amp;scope=...</code>. The page will fail to load (“unable to connect”) — that is fine. Copy the value between <code>code=</code> and <code>&amp;scope</code> from the <strong>address bar</strong> and paste it below (authorization codes are single-use and expire in minutes, so exchange it right away):</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">code_in</span> <span class="op">&lt;-</span> <span class="st">"PASTE_THE_CODE_HERE"</span></span>
+<span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/POST.html">POST</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span>, encode <span class="op">=</span> <span class="st">"form"</span>,</span>
+<span>  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>code          <span class="op">=</span> <span class="va">code_in</span>,</span>
+<span>              client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>              client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
+<span>              redirect_uri  <span class="op">=</span> <span class="va">redirect_uri</span>,</span>
+<span>              grant_type    <span class="op">=</span> <span class="st">"authorization_code"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">token_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html">content</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
+<span><span class="va">token</span>      <span class="op">&lt;-</span> <span class="va">token_data</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<p>Your <code>token</code> should be a long string starting with <code>"ya29."</code>. If <code>token</code> is <code>NULL</code>, inspect <code>content(resp)</code> — an <code>invalid_grant</code> error means the code was already used or expired, so re-run <code>browseURL(auth_url)</code> to get a fresh one.</p>
 </div>
-<p>Finally, you should see a new white tab with the message: <em>“Authentication complete. Please close this page and return to R”</em>.</p>
 </div>
-<div id="step-5---testing-the-imap-connection" class="section level2">
+<div id="step-5---open-the-imap-connection" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-5---testing-the-imap-connection" class="anchor"></a>Step 5 - Testing the IMAP connection</h2>
-<p>Now we can test our IMAP connection with <code>mRpostman</code>, using the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>:</p>
-<p>First, we put our access token into a different object. This is not mandatory. You can pass the <code>auth_code$access_token</code> directly to the <code>xoauth2_bearer</code> argument. Your token should be a large string, starting with “ya29.&lt;…&gt;”. If it is empty, re-execute the line <code>auth_code &lt;- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
-<p>Finally, we configure an IMAP connection and test it:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<a href="#step-5---open-the-imap-connection" class="anchor"></a>Step 5 - Open the IMAP connection</h2>
+<p>Pass the access token to <code><a href="../reference/configure_imap.html">configure_imap()</a></code> via the <code>xoauth2_bearer</code> argument (no <code>password</code>):</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span></span>
-<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url<span class="op">=</span><span class="st">"imaps://imap.gmail.com"</span>,</span>
-<span>                      username <span class="op">=</span> <span class="st">"user@gmail.com"</span>,</span>
-<span>                      use_ssl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                      xoauth2_bearer <span class="op">=</span> <span class="va">token</span></span>
-<span>                      <span class="op">)</span></span>
+<span></span>
+<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span></span>
+<span>  url            <span class="op">=</span> <span class="st">"imaps://imap.gmail.com"</span>,</span>
+<span>  username       <span class="op">=</span> <span class="st">"your_user@gmail.com"</span>,</span>
+<span>  use_ssl        <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  xoauth2_bearer <span class="op">=</span> <span class="va">token</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_server_capabilities</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code>##  [1] "IMAP4rev1"            "UNSELECT"             "IDLE"                
-##  [4] "NAMESPACE"            "QUOTA"                "ID"                  
-##  [7] "XLIST"                "CHILDREN"             "X-GM-EXT-1"          
-## [10] "UIDPLUS"              "COMPRESS=DEFLATE"     "ENABLE"              
-## [13] "MOVE"                 "CONDSTORE"            "ESEARCH"             
-## [16] "UTF8=ACCEPT"          "LIST-EXTENDED"        "LIST-STATUS"         
-## [19] "LITERAL-"             "SPECIAL-USE"          "APPENDLIMIT=35651584"</code></pre>
-<p>If you got some kind of “SASL …” error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the <a href="#intro">Introduction</a>. Therefore, it still has the OAuth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you’ll have to dig on the internet how to solve it.</p>
+<p>If this returns the server’s capabilities, you are authenticated and can use any <code>mRpostman</code> method (<code>select_folder()</code>, <code>search_*()</code>, <code>fetch_*()</code>, …).</p>
 </div>
-<div id="step-6---refreshing-the-token" class="section level2">
+<div id="step-6---refresh-the-token" class="section level2">
 <h2 class="hasAnchor">
-<a href="#step-6---refreshing-the-token" class="anchor"></a>Step 6 - Refreshing the token</h2>
-<p>For future sessions (or after a considerable span of time) you’ll need to refresh the previous token. You can use the following function below to achieve that:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># thanks to jdeboer code at https://github.com/r-lib/httr/issues/31</span></span>
-<span><span class="va">oauth2.0_refresh</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">endpoint</span>, <span class="va">app</span>, <span class="va">auth_code</span>, <span class="va">type</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">req</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/POST.html">POST</a></span><span class="op">(</span></span>
-<span>    url <span class="op">=</span> <span class="va">endpoint</span><span class="op">$</span><span class="va">access</span>,</span>
-<span>    multipart <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>    body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
-<span>      client_id <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">key</span>,</span>
-<span>      client_secret <span class="op">=</span> <span class="va">app</span><span class="op">$</span><span class="va">secret</span>,</span>
-<span>      grant_type <span class="op">=</span> <span class="st">"refresh_token"</span>,</span>
-<span>      refresh_token <span class="op">=</span> <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">refresh_token</span></span>
-<span>    <span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span>  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu">httr</span><span class="fu">::</span><span class="fu"><a href="https://httr.r-lib.org/reference/content.html">content</a></span><span class="op">(</span><span class="va">req</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span></span>
-<span>  <span class="va">content_out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">content_out</span>, <span class="va">auth_code</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
+<a href="#step-6---refresh-the-token" class="anchor"></a>Step 6 - Refresh the token</h2>
+<p>Access tokens are short-lived (about 1 hour). The <strong>refresh token</strong> returned in Step 4 (thanks to <code>access_type = "offline"</code>) lets you mint a new access token without going through the browser again.</p>
+<p>If you used <strong>Option A</strong>, <code>httr</code> refreshes automatically; you can also force it:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">token_obj</span><span class="op">$</span><span class="fu">refresh</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">token_obj</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<p>If you used <strong>Option B</strong>, exchange the stored refresh token directly:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">refresh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/POST.html">POST</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span>, encode <span class="op">=</span> <span class="st">"form"</span>,</span>
+<span>  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>              client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
+<span>              grant_type    <span class="op">=</span> <span class="st">"refresh_token"</span>,</span>
+<span>              refresh_token <span class="op">=</span> <span class="va">token_data</span><span class="op">$</span><span class="va">refresh_token</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">auth_code_new</span> <span class="op">&lt;-</span> <span class="fu">oauth2.0_refresh</span><span class="op">(</span><span class="va">endpoint</span>, app<span class="op">=</span><span class="va">gmail_app</span>, auth_code<span class="op">=</span><span class="va">auth_code</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">auth_code_new</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
-<p>Substitute it into the <code>xoauth2_bearer</code> argument in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and you are done.</p>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html">content</a></span><span class="op">(</span><span class="va">refresh</span><span class="op">)</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<p>Then reopen (or update) the connection with the new <code>token</code>. To swap the token on an existing connection object, use <code>con$reset_xoauth2_bearer(token)</code>.</p>
+</div>
+<div id="troubleshooting" class="section level2">
+<h2 class="hasAnchor">
+<a href="#troubleshooting" class="anchor"></a>Troubleshooting</h2>
+<ul>
+<li>
+<strong><code>access_denied</code> / “hasn’t been verified by Google”:</strong> the account you logged in with is not in the consent screen’s <strong>Test users</strong> list (Step 2.4), or it is not the account that owns the project. Add it as a test user.</li>
+<li>
+<strong><code>redirect_uri_mismatch</code>:</strong> your OAuth client is a <em>Web application</em>, not a <em>Desktop app</em>. Recreate it as a <strong>Desktop app</strong> (Step 3).</li>
+<li>
+<strong><code>createTcpServer: address already in use</code> (Option A):</strong> the local callback port is busy — often a leftover server from a previous attempt in the same R session. Run <code><a href="https://rdrr.io/pkg/httpuv/man/stopAllServers.html">httpuv::stopAllServers()</a></code> and retry; if that fails, fully quit and reopen RStudio (a mere “Restart R” does not release the port), or switch to <strong>Option B</strong>, which needs no local server.</li>
+<li>
+<strong><code>SASL</code> error during authentication:</strong> your libcurl is likely older than 7.65.0. Update it and reinstall the <code>curl</code> R package (see the <a href="#intro">Introduction</a>).</li>
+<li>
+<strong>Other providers:</strong> replace the authorization/token endpoints and the scope with the provider’s values (for Google, <code>oauth_endpoints("google")</code> already fills them in), and set <code>url</code> accordingly, e.g. <code>imaps://outlook.office365.com</code> for Office 365.</li>
+</ul>
 </div>
   </div>
 
