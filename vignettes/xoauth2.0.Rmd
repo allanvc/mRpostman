@@ -1,6 +1,6 @@
 ---
 title: "IMAP OAuth2.0 authentication in mRpostman"
-output: 
+output:
   rmarkdown::html_vignette:
     toc: yes
 vignette: >
@@ -9,206 +9,257 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-<style>
-  .col2 {
-    columns: 2 100px;         /* number of columns and width in pixels*/
-    -webkit-columns: 2 100px; /* chrome, safari */
-    -moz-columns: 2 100px;    /* firefox */
-  }
-  <!-- .col3 { -->
-  <!--   columns: 3 100px; -->
-  <!--   -webkit-columns: 3 100px; -->
-  <!--   -moz-columns: 3 100px; -->
-  <!-- } -->
-</style>
+## Introduction {#intro}
 
-## Introduction{#intro}
+Most major mail providers have moved to OAuth2.0 as their preferred (and, in
+many cases, only) authentication method for IMAP. Instead of sending your
+password, you send a short-lived **access token** that authorizes a specific
+scope of access to your mailbox.
 
-More and more mail providers are adopting the OAuth2.0 authentication as for their preferred method. Although there may be some pain involved in the process of configuring and obtaining an access token, it is a more secure way of authenticating your identity during an IMAP session.
+This vignette shows the exact steps and R code to obtain, use, and refresh an
+OAuth2.0 access token for the **Gmail** IMAP server. The same logic applies to
+other providers (Outlook/Office 365, Yahoo, AOL, ...) by swapping the
+authorization endpoints and scope. The reference for Google's flow is
+<https://developers.google.com/identity/protocols/oauth2>.
 
-In this vignette, we will describe the process of obtaining, using, and refreshing an OAuth2.0 token to establish a connection with the Gmail IMAP server. This process will be very likely the same when trying to replicate it in other mail providers, such as AOL, Yahoo, Outlook Office 365, and many others.
+We use the [`httr`](https://cran.r-project.org/package=httr) package to run the
+OAuth2.0 flow and [`jsonlite`](https://cran.r-project.org/package=jsonlite) to
+read the credentials file, so install them first if needed:
 
-__IMPORTANT__: Currently, the only drawback with this approach may be your libcurl's version. The libcurl functionality responsible for transmitting the token was not working properly in old libcurl versions. If you have version 7.65.0 (released on May 22, 2019) or above installed, you should be fine. Therefore, we recommend checking to which libcurl version, the curl R package is linked by executing:
+```{r, eval = FALSE}
+install.packages(c("httr", "jsonlite"))
+```
+
+__IMPORTANT — libcurl version.__ The libcurl feature that transmits the bearer
+token is only reliable on libcurl >= 7.65.0 (released 2019-05-22). Check the
+version the `curl` R package is linked against:
 
 ```{r, message = FALSE}
-curl::curl_version()
+curl::curl_version()$version
 ```
 
-The steps involved in configuring and obtaining an OAuth2.0 access token can be summarized as follows:
+If it is older, update libcurl (and reinstall `curl`) before continuing,
+otherwise you may get a `SASL` error during authentication.
 
-* 1) creating a new API project in the Google Account Console
-* 2) creating new credentials access for the project
-* 3) obtaining and saving the credentials
-* 4) using the `httr` package to retrieve the token
-* 5) testing the IMAP connection
-* 6) refreshing the token when needed
+The whole process is:
 
+1. create a Google Cloud project;
+2. configure the OAuth consent screen (scope + test user);
+3. create a **Desktop app** OAuth client and download its JSON credentials;
+4. obtain an access token in R;
+5. open the IMAP connection with `configure_imap(xoauth2_bearer = ...)`;
+6. refresh the token when it expires.
 
-## Step 1 - Creating a new API project
+Steps 1--3 are done once, in the browser; steps 4--6 are R code.
 
-Using your web browser, log into the page: https://console.developers.google.com/apis/. Assuming that you don't have any pre-existent project, you should see this page:
+## Step 1 - Create a Google Cloud project
 
-<!-- ![](man/figures/aol3.png) -->
-![](./figures/xoauth/step1_1.png){width=700px}
+1. Go to <https://console.cloud.google.com/> and sign in with the Google
+   account whose mailbox you want to access.
+2. In the project selector at the top, click **New Project**, give it a name
+   (e.g. `mRpostman`), and click **Create**.
+3. Make sure this new project is the one selected in the top bar.
 
-Then, click on "Create New Project"
+You do **not** need to enable the Gmail API: IMAP access is granted by the
+OAuth scope `https://mail.google.com/`, not by the Gmail API. IMAP is enabled by
+default on Gmail accounts.
 
-On the next screen, type a name for your project. Here, we go with "xpto-allan":
+## Step 2 - Configure the OAuth consent screen
 
-![](./figures/xoauth/step1_1x.png){width=60%}
+Navigate to **APIs & Services > OAuth consent screen** (in the redesigned
+console this section is called **Google Auth Platform**).
 
-After a few seconds, the project is created.
+1. **User type:** choose **External** and click **Create**.
+2. Fill in the required fields: **App name**, **User support email**, and, at
+   the bottom, a **Developer contact email**. Save and continue.
+3. **Scopes:** click **Add or remove scopes**, then, in the *"manually add
+   scopes"* box, paste:
 
+   ```
+   https://mail.google.com/
+   ```
 
-## Step 2 - Creating new credentials
+   Click **Add to table**, then **Update** and **Save and continue**. (This is a
+   *restricted* scope; while your app stays in **Testing** mode it works for
+   test users without Google verification.)
+4. **Test users:** add the e-mail address of the account you will log in with
+   (e.g. `your_user@gmail.com`) and save.
 
-Once the project is created, we move to the credentials part.
+The account you authenticate with in Step 4 **must** be listed here as a test
+user, otherwise Google returns an `access_denied` error.
 
-Click on "CREDENTIALS" in the menu on the left:
+## Step 3 - Create the OAuth client credentials
 
-![](./figures/xoauth/step2_1x.png){width=250px}
+1. Go to **APIs & Services > Credentials**.
+2. Click **+ Create credentials > OAuth client ID**.
+3. For **Application type**, select **Desktop app** (this is important --- a
+   *Web application* client will fail with `redirect_uri_mismatch` in the flow
+   below).
+4. Give it a name and click **Create**.
+5. Click **Download JSON** and save the file locally. Keep it private --- it
+   contains your client secret.
 
-<br>
+The downloaded file looks like this (an `"installed"` client):
 
-You should see the following screen:
-
-![](./figures/xoauth/step2_2x.png){width=750px}
-
-<br>
-On the top menu, click on "+ CREATE CREDENTIALS", then on "OAuth client ID".
-
-![](./figures/xoauth/step2_3.png){width=550px}
-
-<br>
-
-
-You should see the following screen. Select "Web Application".
-
-![](./figures/xoauth/step2_x1.png){width=550px}
-
-<br>
-
-In the following screen, fill in the name of the OAuth2.0 client. We chose "mRpostman", but you can choose the name of your preference.
-
-![](./figures/xoauth/step2_x2.png){width=60%}
-
-Scroll down the page and click "CREATE".
-
-
-## Step 3 - Saving the credentials
-
-On the following page, you have your key and client information.
-
-![](./figures/xoauth/step2_x3x.png){width=680px}
-
-Copy the information above to an R script:
-
-```{r, message = FALSE, eval=FALSE}
-secret = "vsV[...]6m7"
-
-key = "85169[...]9pk.apps.googleusercontent.com"
+```json
+{"installed":{"client_id":"XXXX.apps.googleusercontent.com",
+  "project_id":"your-project","auth_uri":"https://accounts.google.com/o/oauth2/auth",
+  "token_uri":"https://oauth2.googleapis.com/token",
+  "client_secret":"GOCSPX-XXXX","redirect_uris":["http://localhost"]}}
 ```
 
-In this same script, we use the `httr` package to configure and obtain our token.
+Read the client id and secret from it in R:
 
-## Step 4 - Using the `httr` package to retrieve the token
+```{r, eval = FALSE}
+cred <- jsonlite::fromJSON("path/to/client_secret_XXXX.json")$installed
+```
 
-Now, we need an endpoint, an app configuration, and a scope, which is circumscribed to Gmail. The `httr` package has some pre-set endpoints for Google, Yahoo, and other APIs. So, it is very straightforward to define one with `httr`.
+## Step 4 - Obtain an access token
 
-```{r, message = FALSE, eval=FALSE}
-endpoint <- httr::oauth_endpoints("google")
+Below are two ways to get a token. **Option A** is the shortest and works out of
+the box on most desktops. Use **Option B** if Option A fails to start its local
+web server (common inside RStudio, or on headless/remote machines).
 
-gmail_app <- httr::oauth_app(
-  "xpto-allan",
-  key = key,
-  secret = secret
+Both request `access_type = "offline"` so that a **refresh token** is also
+returned (see Step 6).
+
+### Option A - `httr`'s built-in flow (recommended)
+
+`httr::oauth2.0_token()` opens your browser, runs a local callback server, and
+caches the token in a `.httr-oauth` file.
+
+```{r, eval = FALSE}
+library(httr)
+
+gmail_app <- oauth_app("mRpostman",
+                       key    = cred$client_id,
+                       secret = cred$client_secret)
+
+token_obj <- oauth2.0_token(
+  endpoint = oauth_endpoints("google"),
+  app      = gmail_app,
+  scope    = "https://mail.google.com/",
+  cache    = TRUE
 )
 
-scope <- "https://mail.google.com/"
-
-auth_code <- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)
+token <- token_obj$credentials$access_token
 ```
 
-As it is the first time you are trying to access your account using the OAuth2.0 token, you'll be prompted about caching your credentials on a local file.
+When the browser shows *"Google hasn't verified this app"*, click
+**Advanced > Go to \<your app\> (unsafe)** --- this is expected while the app is
+in Testing mode --- then **Allow**.
 
-![](./figures/xoauth/step2_x4.png){width=550px}
+### Option B - Manual loopback flow (no local server)
 
-After, you will be redirected to a webpage, where you are going to make some confirmations about your identity:
+This avoids the local callback server entirely: you open the authorization URL,
+approve access, and paste back the `code` shown in the browser's address bar.
 
-<div class="col2">
+```{r, eval = FALSE}
+library(httr)
 
-![](./figures/xoauth/step2_x5.png){width=90%}
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
+redirect_uri <- "http://localhost"
+scope        <- "https://mail.google.com/"
 
-![](./figures/xoauth/step2_x6.png){width=80%}
-</div>
+auth_url <- modify_url("https://accounts.google.com/o/oauth2/auth",
+  query = list(client_id     = cred$client_id,
+               redirect_uri  = redirect_uri,
+               response_type = "code",
+               scope         = scope,
+               access_type   = "offline",
+               prompt        = "consent"))
 
-
-Finally, you should see a new white tab with the message: _"Authentication complete. Please close this page and return to R"_.
-
-## Step 5 - Testing the IMAP connection
-
-Now we can test our IMAP connection with `mRpostman`, using the `xoauth2_bearer` argument in `configure_imap()`:
-
-First, we put our access token into a different object. This is not mandatory. You can pass the `auth_code$access_token` directly to the `xoauth2_bearer` argument. Your token should be a large string, starting with "ya29.<...>". If it is empty, re-execute the line `auth_code <- httr::oauth2.0_token(endpoint, app = gmail_app, scope = scope)`.
-
-```{r, message = FALSE, eval=FALSE}
-token <- auth_code$credentials$access_token
-
+browseURL(auth_url)
 ```
 
-Finally, we configure an IMAP connection and test it:
+After you approve, the browser is redirected to
+`http://localhost/?code=...&scope=...`. The page will fail to load ("unable to
+connect") --- that is fine. Copy the value between `code=` and `&scope` from the
+**address bar** and paste it below (authorization codes are single-use and
+expire in minutes, so exchange it right away):
 
-```{r, message = FALSE, eval = FALSE}
+```{r, eval = FALSE}
+code_in <- "PASTE_THE_CODE_HERE"
+
+resp <- POST("https://oauth2.googleapis.com/token", encode = "form",
+  body = list(code          = code_in,
+              client_id     = cred$client_id,
+              client_secret = cred$client_secret,
+              redirect_uri  = redirect_uri,
+              grant_type    = "authorization_code"))
+
+token_data <- content(resp)
+token      <- token_data$access_token
+```
+
+Your `token` should be a long string starting with `"ya29."`. If `token` is
+`NULL`, inspect `content(resp)` --- an `invalid_grant` error means the code was
+already used or expired, so re-run `browseURL(auth_url)` to get a fresh one.
+
+## Step 5 - Open the IMAP connection
+
+Pass the access token to `configure_imap()` via the `xoauth2_bearer` argument
+(no `password`):
+
+```{r, eval = FALSE}
 library(mRpostman)
-con <- configure_imap(url="imaps://imap.gmail.com",
-                      username = "user@gmail.com",
-                      use_ssl = TRUE,
-                      verbose = TRUE,
-                      xoauth2_bearer = token
-                      )
+
+con <- configure_imap(
+  url            = "imaps://imap.gmail.com",
+  username       = "your_user@gmail.com",
+  use_ssl        = TRUE,
+  xoauth2_bearer = token
+)
 
 con$list_server_capabilities()
-
 ```
 
-```{r, message = FALSE, echo = FALSE}
-c("IMAP4rev1", "UNSELECT", "IDLE", "NAMESPACE", "QUOTA", "ID", "XLIST", "CHILDREN", "X-GM-EXT-1", "UIDPLUS", "COMPRESS=DEFLATE", "ENABLE", "MOVE", "CONDSTORE", "ESEARCH", "UTF8=ACCEPT", "LIST-EXTENDED", "LIST-STATUS", "LITERAL-", "SPECIAL-USE", "APPENDLIMIT=35651584")
+If this returns the server's capabilities, you are authenticated and can use any
+`mRpostman` method (`select_folder()`, `search_*()`, `fetch_*()`, ...).
+
+## Step 6 - Refresh the token
+
+Access tokens are short-lived (about 1 hour). The **refresh token** returned in
+Step 4 (thanks to `access_type = "offline"`) lets you mint a new access token
+without going through the browser again.
+
+If you used **Option A**, `httr` refreshes automatically; you can also force it:
+
+```{r, eval = FALSE}
+token_obj$refresh()
+token <- token_obj$credentials$access_token
 ```
 
-If you got some kind of "SASL ..." error in the information flow between the server and mRpostman, your libcurl version may be older than the 7.65 we mentioned in the [Introduction](#intro). Therefore, it still has the OAuth2.0 bearer bug. If this is the case you should update it. Or, perhaps your libcurl version is updated, but your curl R package is pointing to an older version of libcurl in your disk. In this case, you'll have to dig on the internet how to solve it.
+If you used **Option B**, exchange the stored refresh token directly:
 
+```{r, eval = FALSE}
+refresh <- POST("https://oauth2.googleapis.com/token", encode = "form",
+  body = list(client_id     = cred$client_id,
+              client_secret = cred$client_secret,
+              grant_type    = "refresh_token",
+              refresh_token = token_data$refresh_token))
 
-## Step 6 - Refreshing the token
-
-For future sessions (or after a considerable span of time) you'll need to refresh the previous token. You can use the following function below to achieve that:
-
-```{r, message = FALSE, eval=FALSE}
-# thanks to jdeboer code at https://github.com/r-lib/httr/issues/31
-oauth2.0_refresh <- function(endpoint, app, auth_code, type = NULL) {
-  req <- httr::POST(
-    url = endpoint$access,
-    multipart = FALSE,
-    body = list(
-      client_id = app$key,
-      client_secret = app$secret,
-      grant_type = "refresh_token",
-      refresh_token = auth_code$credentials$refresh_token
-    )
-  )
-  content_out <- httr::content(req, type = type)
-  content_out <- c(content_out, auth_code$credentials$access_token)
-}
-
-auth_code_new <- oauth2.0_refresh(endpoint, app=gmail_app, auth_code=auth_code)
-
-token <- auth_code_new$access_token
+token <- content(refresh)$access_token
 ```
 
-Substitute it into the `xoauth2_bearer` argument in `configure_imap()` and you are done.
+Then reopen (or update) the connection with the new `token`. To swap the token
+on an existing connection object, use `con$reset_xoauth2_bearer(token)`.
 
+## Troubleshooting
+
+- **`access_denied` / "hasn't been verified by Google":** the account you logged
+  in with is not in the consent screen's **Test users** list (Step 2.4), or it
+  is not the account that owns the project. Add it as a test user.
+- **`redirect_uri_mismatch`:** your OAuth client is a *Web application*, not a
+  *Desktop app*. Recreate it as a **Desktop app** (Step 3).
+- **`createTcpServer: address already in use` (Option A):** the local callback
+  port is busy --- often a leftover server from a previous attempt in the same
+  R session. Run `httpuv::stopAllServers()` and retry; if that fails, fully quit
+  and reopen RStudio (a mere "Restart R" does not release the port), or switch to
+  **Option B**, which needs no local server.
+- **`SASL` error during authentication:** your libcurl is likely older than
+  7.65.0. Update it and reinstall the `curl` R package (see the
+  [Introduction](#intro)).
+- **Other providers:** replace the authorization/token endpoints and the scope
+  with the provider's values (for Google, `oauth_endpoints("google")` already
+  fills them in), and set `url` accordingly, e.g.
+  `imaps://outlook.office365.com` for Office 365.
