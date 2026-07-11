@@ -1,9 +1,8 @@
-**mRpostman - Update to v1.1.4**
+**mRpostman - Update to v1.2.2**
 
 ## Test environments
-* local Ubuntu 20.04, R release
-* local Windows 10, R release
-* win-builder: devel, release & oldrelease
+* local Ubuntu 22.04, R 4.4.1
+* win-builder: devel & release
 * Github Actions, devel & release
 
 ## R CMD check results
