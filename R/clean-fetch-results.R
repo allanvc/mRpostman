@@ -21,6 +21,9 @@ clean_fetch_results <- function(msg_text, metadata_attribute = NULL, attachment_
   # result <- stringr::str_remove(string = result, pattern = pattern3)
   result <- gsub(pattern4, "", result, ignore.case = TRUE, useBytes = TRUE)
 
+  pattern4b = "\\)\r\n[A-Z]\\d+ OK Fetch completed \\(.*secs\\)\\.\r\n" #Dovecot appends timing info
+  result <- gsub(pattern4b, "", result, ignore.case = TRUE, useBytes = TRUE)
+
   pattern5 = "\r\n UID \\d+ FLAGS \\(.*\\)" #MS Exchange # important for attachments fetching
   # result <- stringr::str_remove(string = result, pattern = pattern3)
   result <- gsub(pattern5, "", result, ignore.case = TRUE, useBytes = TRUE)
