@@ -194,11 +194,23 @@ con$expunge()
 
 ## Resetting and tearing down
 
-The mailbox lives inside the container, so resetting the sandbox to a pristine state is just:
+Since the server accepts **any username** — and each one gets its own independent mailbox — the quickest way to start over is to simply connect with a new username, with no need to touch the container:
+
+```{r}
+con2 <- configure_imap(url = "imap://localhost:1430",
+                       username = "testuser2", # any new name = pristine mailbox
+                       password = "sandbox",
+                       use_ssl = FALSE)
+populate_sandbox(con2, n = 200)
+```
+
+This is also handy for keeping several corpora side by side (e.g. one mailbox per experiment or per `seed`).
+
+Alternatively, the mailboxes live inside the container, so recreating it resets everything at once:
 
 ```{sh}
 docker rm -f mrpostman-sandbox
 docker run -d --name mrpostman-sandbox -p 1430:143 mrpostman-sandbox
 ```
 
-followed by a new `populate_sandbox()` call — which recreates the exact same corpus.
+Either way, a new `populate_sandbox()` call recreates the exact same corpus.
