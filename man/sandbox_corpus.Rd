@@ -19,8 +19,10 @@ A \code{list} with two components: \code{messages}, a list of
   \code{info}, a \code{data.frame} with one row per message describing the
   features embedded in it (\code{from}, \code{subject}, \code{date},
   \code{is_utf8_body}, \code{is_large}, \code{has_attachment},
-  \code{is_reply}, and the flags -- \code{seen}, \code{flagged} -- that
-  \code{\link{populate_sandbox}} will set after appending).
+  \code{attachment_type} (\code{"csv"}, \code{"png"}, \code{"pdf"}, or
+  \code{NA}), \code{is_reply}, and the flags -- \code{seen},
+  \code{flagged} -- that \code{\link{populate_sandbox}} will set after
+  appending).
 }
 \description{
 Generates a reproducible corpus of synthetic RFC 822 messages
@@ -36,8 +38,9 @@ Message features are spread so that each capability of the package
   (\code{SENTBEFORE}/\code{SENTSINCE}/\code{SENTON} searches); a subset of
   large bodies (\code{LARGER}/\code{SMALLER} searches); accented subjects in
   MIME encoded-words and quoted-printable bodies (header and body decoding);
-  CSV attachments, some with repeated filenames (attachment listing,
-  fetching, and filename deduplication); and reply chains via
+  CSV, PNG, and one-page PDF attachments -- all generated deterministically
+  in base R -- some with repeated filenames (attachment listing, fetching,
+  binary base64 decoding, and filename deduplication); and reply chains via
   \code{In-Reply-To}/\code{References} (\code{SORT} and \code{THREAD}).
 }
 \examples{

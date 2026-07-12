@@ -90,7 +90,7 @@ The corpus is designed so that each feature of the package has matching messages
 * `Date:` headers spread over the year **2020**, for the `SENT*` date searches;
 * a subset of large bodies, for size searches;
 * accented subjects in MIME encoded-words and quoted-printable bodies, for the decoding helpers;
-* CSV attachments (some with repeated filenames), for the attachment methods;
+* CSV, PNG, and one-page PDF attachments (some with repeated filenames), for the attachment methods, binary base64 decoding, and filename deduplication — see `info$attachment_type`;
 * reply chains (`In-Reply-To`/`References`), for `SORT` and `THREAD`;
 * `\Seen`, `\Flagged`, and `\Answered` flags, adjusted after the upload, for flag searches. (libcurl's `APPEND` stores every message with the `\Seen` flag, so `populate_sandbox()` *removes* it from the messages planned as unread — exercising `STORE` in both directions.)
 

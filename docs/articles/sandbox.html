@@ -170,7 +170,7 @@
 <code>Date:</code> headers spread over the year <strong>2020</strong>, for the <code>SENT*</code> date searches;</li>
 <li>a subset of large bodies, for size searches;</li>
 <li>accented subjects in MIME encoded-words and quoted-printable bodies, for the decoding helpers;</li>
-<li>CSV attachments (some with repeated filenames), for the attachment methods;</li>
+<li>CSV, PNG, and one-page PDF attachments (some with repeated filenames), for the attachment methods, binary base64 decoding, and filename deduplication — see <code>info$attachment_type</code>;</li>
 <li>reply chains (<code>In-Reply-To</code>/<code>References</code>), for <code>SORT</code> and <code>THREAD</code>;</li>
 <li>
 <code>\Seen</code>, <code>\Flagged</code>, and <code>\Answered</code> flags, adjusted after the upload, for flag searches. (libcurl’s <code>APPEND</code> stores every message with the <code>\Seen</code> flag, so <code><a href="../reference/populate_sandbox.html">populate_sandbox()</a></code> <em>removes</em> it from the messages planned as unread — exercising <code>STORE</code> in both directions.)</li>
