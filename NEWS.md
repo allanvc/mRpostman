@@ -1,3 +1,19 @@
+## mRpostman 1.3.0 (2026-07-11 feature update)
+
+### Bug fixes
+
+- fetch results are now properly cleaned on Dovecot servers: `clean_fetch_results()` did not recognize Dovecot's tagged completion line, which carries timing information (e.g. `A240 OK Fetch completed (0.001 + 0.000 secs).`), so `fetch_text()`, `fetch_body()`, and `fetch_metadata()` results kept the trailing server response. Found while testing against the new Docker sandbox; affects any Dovecot-based provider (e.g. FastMail, GMX, many self-hosted servers).
+
+### New features
+
+- new reproducible IMAP sandbox: the package now ships a disposable local IMAP server (Dovecot on Alpine Linux, in `inst/docker/` — reachable via `system.file("docker", package = "mRpostman")`) and two new exported functions to exercise the package against it without a real mail account. `sandbox_corpus()` deterministically generates a corpus of synthetic RFC 822 messages (fixed RNG seed; `Date:` headers spread over 2020, large bodies, MIME encoded-word subjects, quoted-printable bodies, CSV attachments with repeated filenames, reply chains, and planned flags), and `populate_sandbox()` stores it in a mailbox using the package's own IMAP operations (`APPEND`, `CREATE`, `STORE`). A thin `Rscript` wrapper (`inst/docker/populate_mailbox.R`) does the same from the shell.
+
+- new vignette *"A reproducible IMAP sandbox with Docker"* (`sandbox`) with setup instructions and a guided tour of searching, fetching, decoding, attachments, `SORT`/`THREAD`, and flag operations over the synthetic corpus.
+
+### Tests
+
+- the corpus generator is covered by a new offline `testthat` file (`test-sandbox-corpus.R`): determinism, RNG-state preservation, RFC 822 well-formedness, feature/metadata consistency, and round-trip decoding of the generated encoded-word subjects and quoted-printable bodies through the package's own decoders.
+
 ## mRpostman 1.2.2 (2026-07-07 bugfix and robustness update)
 
 ### Bug fixes
