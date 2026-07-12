@@ -180,8 +180,10 @@
   <code>info</code>, a <code>data.frame</code> with one row per message describing the
   features embedded in it (<code>from</code>, <code>subject</code>, <code>date</code>,
   <code>is_utf8_body</code>, <code>is_large</code>, <code>has_attachment</code>,
-  <code>is_reply</code>, and the flags -- <code>seen</code>, <code>flagged</code> -- that
-  <code><a href='populate_sandbox.html'>populate_sandbox</a></code> will set after appending).</p>
+  <code>attachment_type</code> (<code>"csv"</code>, <code>"png"</code>, <code>"pdf"</code>, or
+  <code>NA</code>), <code>is_reply</code>, and the flags -- <code>seen</code>,
+  <code>flagged</code> -- that <code><a href='populate_sandbox.html'>populate_sandbox</a></code> will set after
+  appending).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Message features are spread so that each capability of the package
@@ -189,8 +191,9 @@
   (<code>SENTBEFORE</code>/<code>SENTSINCE</code>/<code>SENTON</code> searches); a subset of
   large bodies (<code>LARGER</code>/<code>SMALLER</code> searches); accented subjects in
   MIME encoded-words and quoted-printable bodies (header and body decoding);
-  CSV attachments, some with repeated filenames (attachment listing,
-  fetching, and filename deduplication); and reply chains via
+  CSV, PNG, and one-page PDF attachments -- all generated deterministically
+  in base R -- some with repeated filenames (attachment listing, fetching,
+  binary base64 decoding, and filename deduplication); and reply chains via
   <code>In-Reply-To</code>/<code>References</code> (<code>SORT</code> and <code>THREAD</code>).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
@@ -222,18 +225,18 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 3  3   carla.mendes@example.com       Re: Travel arrangements</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 4  4 grace.holloway@example.net Re: Server maintenance window</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 5  5 grace.holloway@example.net     Server maintenance window</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>                              date is_utf8_body is_large has_attachment is_reply</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 Sun, 26 Apr 2020 19:34:07 +0000        FALSE    FALSE          FALSE    FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 Thu, 04 Jun 2020 13:17:14 +0000         TRUE    FALSE          FALSE    FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 Sun, 28 Jun 2020 15:31:21 +0000        FALSE    FALSE           TRUE     TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 Wed, 16 Sep 2020 19:57:28 +0000        FALSE     TRUE          FALSE     TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5 Fri, 25 Sep 2020 18:45:35 +0000        FALSE    FALSE           TRUE    FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>    seen flagged</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1  TRUE   FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 2  TRUE   FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 FALSE   FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 4  TRUE    TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 5  TRUE    TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                              date is_utf8_body is_large has_attachment</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 Sun, 26 Apr 2020 19:34:07 +0000        FALSE    FALSE          FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 Thu, 04 Jun 2020 13:17:14 +0000         TRUE    FALSE          FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 Sun, 28 Jun 2020 15:31:21 +0000        FALSE    FALSE           TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 Wed, 16 Sep 2020 19:57:28 +0000        FALSE     TRUE          FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5 Fri, 25 Sep 2020 18:45:35 +0000        FALSE    FALSE           TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   attachment_type is_reply  seen flagged</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1            &lt;NA&gt;    FALSE  TRUE   FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2            &lt;NA&gt;    FALSE  TRUE   FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3             csv     TRUE FALSE   FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4            &lt;NA&gt;     TRUE  TRUE    TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5             pdf    FALSE  TRUE    TRUE</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

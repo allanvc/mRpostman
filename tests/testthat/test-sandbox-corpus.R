@@ -94,6 +94,59 @@ test_that("sandbox corpus encoded headers and bodies decode back correctly", {
   }
 })
 
+test_that("sandbox corpus attachments are valid CSV, PNG, and PDF payloads", {
+  corpus <- sandbox_corpus(n = 90)
+  info <- corpus$info
+
+  att_types <- info$attachment_type[info$has_attachment]
+  expect_true(all(c("csv", "png", "pdf") %in% att_types))
+  expect_true(all(is.na(info$attachment_type[!info$has_attachment])))
+
+  # the base64 payload sits between the last blank line and the closing
+  # boundary
+  extract_payload <- function(msg) {
+    blanks <- which(msg == "")
+    base64enc::base64decode(paste(msg[(max(blanks) + 1):(length(msg) - 1)],
+                                  collapse = ""))
+  }
+
+  for (i in which(info$has_attachment)) {
+    msg <- corpus$messages[[i]]
+    payload <- extract_payload(msg)
+
+    if (info$attachment_type[i] == "csv") {
+      expect_true(any(grepl('name="sales_report_\\d+\\.csv"', msg)))
+      expect_identical(rawToChar(payload[1:17]), "id,product,amount")
+    } else if (info$attachment_type[i] == "png") {
+      expect_true(any(grepl("^Content-Type: image/png", msg)))
+      expect_true(any(grepl('name="chart_\\d+\\.png"', msg)))
+      # PNG signature and IHDR dimensions (16 x 16)
+      expect_identical(payload[1:8],
+                       as.raw(c(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a,
+                                0x0a)))
+      expect_identical(payload[17:24],
+                       as.raw(c(0, 0, 0, 16, 0, 0, 0, 16)))
+    } else {
+      expect_true(any(grepl("^Content-Type: application/pdf", msg)))
+      expect_true(any(grepl('name="report_\\d+\\.pdf"', msg)))
+      txt <- rawToChar(payload)
+      expect_true(startsWith(txt, "%PDF-1.4"))
+      expect_true(grepl("%%EOF", txt))
+      expect_true(grepl("/Type /Catalog", txt, fixed = TRUE))
+    }
+
+    # RFC 5322 hard limit on line length
+    expect_true(all(nchar(msg) <= 998))
+  }
+})
+
+test_that("sandbox PNG chunk CRCs are correct (table-driven CRC32)", {
+  # classic CRC32 check value
+  expect_identical(
+    mRpostman:::sandbox_crc32(charToRaw("123456789")),
+    as.raw(c(0xcb, 0xf4, 0x39, 0x26)))
+})
+
 test_that("sandbox_corpus() validates its arguments", {
   expect_error(sandbox_corpus(n = 0))
   expect_error(sandbox_corpus(n = "a"))
