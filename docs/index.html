@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -427,6 +427,7 @@
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"imap://localhost:1430"</span>, username <span class="op">=</span> <span class="st">"testuser"</span>,</span>
 <span>                      password <span class="op">=</span> <span class="st">"sandbox"</span>, use_ssl <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/populate_sandbox.html">populate_sandbox</a></span><span class="op">(</span><span class="va">con</span>, n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="co"># uploads the corpus with the package's own APPEND</span></span></code></pre></div>
+<p>Real data works too: <code><a href="reference/ingest_maildir.html">ingest_maildir()</a></code> uploads any local maildir-style directory to the server via <code>APPEND</code>, and <code><a href="reference/enron_sandbox.html">enron_sandbox()</a></code> builds on it to download (once, with consent, cached) the public Enron corpus and ingest a subset selected by custodian, folder, and date — turning the sandbox into a full e-mail data-analysis laboratory.</p>
 <p>See the <a href="https://allanvc.github.io/mRpostman/articles/sandbox.html"><em>“A reproducible IMAP sandbox with Docker”</em></a> vignette for the guided tour. The sandbox’s Dovecot server also advertises <code>SORT</code> and <code>THREAD</code>, making it a convenient place to try the extensions your provider may lack.</p>
 </div>
 <div id="basic-usage" class="section level2">

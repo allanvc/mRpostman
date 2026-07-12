@@ -66,6 +66,8 @@ info <- populate_sandbox(con, n = 200)
 }
 \seealso{
 Other sandbox: 
+\code{\link{enron_sandbox}()},
+\code{\link{ingest_maildir}()},
 \code{\link{sandbox_corpus}()}
 }
 \concept{sandbox}

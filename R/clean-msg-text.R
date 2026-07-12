@@ -31,6 +31,12 @@ clean_msg_text <- function(msg_list) {
 
     msg <- msg_list[[i]]
 
+    # real-world messages may carry 8-bit bytes that are invalid in the
+    # session encoding, on which the regex operations below error out; such
+    # strings are made valid up front (and again after every base64 decode,
+    # which can reintroduce raw bytes)
+    msg <- ensure_valid_enc(msg)
+
     # charset declared in the MIME Content-Type of this part (if any)
     cs_match <- stringr::str_match(msg, "(?i)charset=[\"']?([A-Za-z0-9][A-Za-z0-9_.:-]*)")
     body_charset <- cs_match[1, 2]
@@ -56,7 +62,7 @@ clean_msg_text <- function(msg_list) {
                                       regexec(pattern2, msg_text,
                                               perl = TRUE)))
 
-        msg <- rawToChar(base64enc::base64decode(msg_text))
+        msg <- safe_b64_to_char(msg_text, fallback = msg)
 
       } else {
         pattern2 = "\r\n\r\n<(.*?)[^!]--[^>]" # lines that do not contain space # only works for base 64
@@ -98,9 +104,7 @@ clean_msg_text <- function(msg_list) {
     } else {
 
       if (grepl('[^-A-Za-z0-9+/=]|=[^=]|={3,}$', msg)) { # to see if it as base64 encoded string
-        tryCatch({
-          msg <- rawToChar(base64enc::base64decode(msg))
-        })
+        msg <- safe_b64_to_char(msg, fallback = msg)
 
         if (grepl('<(br|basefont|hr|input|source|frame|param|area|meta|!--|col|link|option|base|img|wbr|!DOCTYPE).*?>|<(a|abbr|acronym|address|applet|article|aside|audio|b|bdi|bdo|big|blockquote|body|button|canvas|caption|center|cite|code|colgroup|command|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|em|embed|fieldset|figcaption|figure|font|footer|form|frameset|head|header|hgroup|h1|h2|h3|h4|h5|h6|html|i|iframe|ins|kbd|keygen|label|legend|li|map|mark|menu|meter|nav|noframes|noscript|object|ol|optgroup|output|p|pre|progress|q|rp|rt|ruby|s|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video).*?<\\/\\2>', msg, perl = TRUE)) { # if it is a html message
 
@@ -138,4 +142,26 @@ clean_msg_text <- function(msg_list) {
   names(msg_list_out) = names(msg_list)
 
   return(msg_list_out)
+}
+
+# make a string valid in the session encoding: latin1-to-UTF-8 maps every
+# byte and preserves ASCII, so regex operations cannot error on the result
+#' @noRd
+ensure_valid_enc <- function(x) {
+  bad <- !validEnc(x)
+  if (any(bad)) {
+    x[bad] <- iconv(x[bad], from = "latin1", to = "UTF-8")
+  }
+  x
+}
+
+# decode base64 to character, tolerating binary payloads: embedded NULs (on
+# which rawToChar errors) are dropped and the result is made valid in the
+# session encoding; on any decoding error the fallback is returned unchanged
+#' @noRd
+safe_b64_to_char <- function(x, fallback) {
+  tryCatch({
+    decoded <- base64enc::base64decode(x)
+    ensure_valid_enc(rawToChar(decoded[decoded != as.raw(0L)]))
+  }, error = function(e) fallback)
 }

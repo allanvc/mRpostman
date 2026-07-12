@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
       </span>
     </div>
 
@@ -140,27 +140,54 @@
       <small>Source: <a href='https://github.com/allanvc/mRpostman/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="mrpostman-130-2026-07-11-feature-update" class="section level2">
+    <div id="mrpostman-140-2026-07-12-feature-update" class="section level2">
 <h2 class="hasAnchor">
-<a href="#mrpostman-130-2026-07-11-feature-update" class="anchor"></a>mRpostman 1.3.0 (2026-07-11 feature update)</h2>
+<a href="#mrpostman-140-2026-07-12-feature-update" class="anchor"></a>mRpostman 1.4.0 (2026-07-12 feature update)</h2>
 <div id="bug-fixes" class="section level3">
 <h3 class="hasAnchor">
 <a href="#bug-fixes" class="anchor"></a>Bug fixes</h3>
 <ul>
-<li>fetch results are now properly cleaned on Dovecot servers: <code>clean_fetch_results()</code> did not recognize Dovecot’s tagged completion line, which carries timing information (e.g. <code>A240 OK Fetch completed (0.001 + 0.000 secs).</code>), so <code>fetch_text()</code>, <code>fetch_body()</code>, and <code>fetch_metadata()</code> results kept the trailing server response. Found while testing against the new Docker sandbox; affects any Dovecot-based provider (e.g. FastMail, GMX, many self-hosted servers).</li>
+<li>
+<code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code> no longer errors on messages carrying 8-bit bytes that are invalid in the session encoding (e.g. undeclared legacy charsets or binary fragments in old real-world corpora — <code>Error in gsub("=\r\n", "", msg): input string 1 is invalid</code>). Such strings are now made valid up front (latin1-to-UTF-8, which maps every byte and preserves ASCII) before any regex operation, and again after each base64 decoding, which can reintroduce raw bytes; declared-charset handling is unaffected. Additionally, the base64 decoding heuristic no longer aborts on payloads decoding to binary with embedded NULs (<code><a href="https://rdrr.io/r/base/rawConversion.html">rawToChar()</a></code> errors that a handler-less <code><a href="https://rdrr.io/r/base/conditions.html">tryCatch()</a></code> never actually caught): NUL bytes are dropped, and on any decoding error the text is kept unchanged instead of erroring. Found while decoding the full Enron corpus through the new sandbox ingestion.</li>
 </ul>
 </div>
 <div id="new-features" class="section level3">
 <h3 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>New features</h3>
 <ul>
-<li><p>new reproducible IMAP sandbox: the package now ships a disposable local IMAP server (Dovecot on Alpine Linux, in <code>inst/docker/</code> — reachable via <code>system.file("docker", package = "mRpostman")</code>) and two new exported functions to exercise the package against it without a real mail account. <code><a href="../reference/sandbox_corpus.html">sandbox_corpus()</a></code> deterministically generates a corpus of synthetic RFC 822 messages (fixed RNG seed; <code>Date:</code> headers spread over 2020, large bodies, MIME encoded-word subjects, quoted-printable bodies, CSV, PNG, and one-page PDF attachments — all generated deterministically in base R — with repeated filenames, reply chains, and planned flags), and <code><a href="../reference/populate_sandbox.html">populate_sandbox()</a></code> stores it in a mailbox using the package’s own IMAP operations (<code>APPEND</code>, <code>CREATE</code>, <code>STORE</code>). A thin <code>Rscript</code> wrapper (<code>inst/docker/populate_mailbox.R</code>) does the same from the shell.</p></li>
-<li><p>new vignette <em>“A reproducible IMAP sandbox with Docker”</em> (<code>sandbox</code>) with setup instructions and a guided tour of searching, fetching, decoding, attachments, <code>SORT</code>/<code>THREAD</code>, and flag operations over the synthetic corpus.</p></li>
+<li><p>new <code><a href="../reference/ingest_maildir.html">ingest_maildir()</a></code>: uploads any local maildir-style directory (one RFC 5322 message per file) to a folder on the connected IMAP server via <code>APPEND</code> — mail server backups, exported archives, or public corpora. Files are appended verbatim; failures are skipped with a warning, and an invisible manifest data.frame (<code>path</code>, <code>size</code>, <code>appended</code>) is returned.</p></li>
+<li><p>new <code><a href="../reference/enron_sandbox.html">enron_sandbox()</a></code>: on-demand download of the public Enron e-mail corpus (CMU May 7, 2015 release; ~423 MB, one time, consented via <code>ask</code> and cached under <code>tools::R_user_dir("mRpostman", "cache")</code>), with subset selection by custodian, folder-name pattern, and <code>Date:</code> header window, ingested through <code><a href="../reference/ingest_maildir.html">ingest_maildir()</a></code> — one server folder per custodian. Provides real data for demonstrations and teaching on top of the synthetic corpus of <code><a href="../reference/sandbox_corpus.html">sandbox_corpus()</a></code>. The download is never triggered by examples, tests, or vignettes, and fails gracefully offline with an informative message.</p></li>
 </ul>
 </div>
 <div id="tests" class="section level3">
 <h3 class="hasAnchor">
 <a href="#tests" class="anchor"></a>Tests</h3>
+<ul>
+<li>new offline tests for the internal Enron <code>Date:</code> header parser (both header variants — with and without weekday — and the no-<code>Date:</code>-header case).</li>
+</ul>
+</div>
+</div>
+    <div id="mrpostman-130-2026-07-11-feature-update" class="section level2">
+<h2 class="hasAnchor">
+<a href="#mrpostman-130-2026-07-11-feature-update" class="anchor"></a>mRpostman 1.3.0 (2026-07-11 feature update)</h2>
+<div id="bug-fixes-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<ul>
+<li>fetch results are now properly cleaned on Dovecot servers: <code>clean_fetch_results()</code> did not recognize Dovecot’s tagged completion line, which carries timing information (e.g. <code>A240 OK Fetch completed (0.001 + 0.000 secs).</code>), so <code>fetch_text()</code>, <code>fetch_body()</code>, and <code>fetch_metadata()</code> results kept the trailing server response. Found while testing against the new Docker sandbox; affects any Dovecot-based provider (e.g. FastMail, GMX, many self-hosted servers).</li>
+</ul>
+</div>
+<div id="new-features-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>New features</h3>
+<ul>
+<li><p>new reproducible IMAP sandbox: the package now ships a disposable local IMAP server (Dovecot on Alpine Linux, in <code>inst/docker/</code> — reachable via <code>system.file("docker", package = "mRpostman")</code>) and two new exported functions to exercise the package against it without a real mail account. <code><a href="../reference/sandbox_corpus.html">sandbox_corpus()</a></code> deterministically generates a corpus of synthetic RFC 822 messages (fixed RNG seed; <code>Date:</code> headers spread over 2020, large bodies, MIME encoded-word subjects, quoted-printable bodies, CSV, PNG, and one-page PDF attachments — all generated deterministically in base R — with repeated filenames, reply chains, and planned flags), and <code><a href="../reference/populate_sandbox.html">populate_sandbox()</a></code> stores it in a mailbox using the package’s own IMAP operations (<code>APPEND</code>, <code>CREATE</code>, <code>STORE</code>). A thin <code>Rscript</code> wrapper (<code>inst/docker/populate_mailbox.R</code>) does the same from the shell.</p></li>
+<li><p>new vignette <em>“A reproducible IMAP sandbox with Docker”</em> (<code>sandbox</code>) with setup instructions and a guided tour of searching, fetching, decoding, attachments, <code>SORT</code>/<code>THREAD</code>, and flag operations over the synthetic corpus.</p></li>
+</ul>
+</div>
+<div id="tests-1" class="section level3">
+<h3 class="hasAnchor">
+<a href="#tests-1" class="anchor"></a>Tests</h3>
 <ul>
 <li>the corpus generator is covered by a new offline <code>testthat</code> file (<code>test-sandbox-corpus.R</code>): determinism, RNG-state preservation, RFC 822 well-formedness, feature/metadata consistency, and round-trip decoding of the generated encoded-word subjects and quoted-printable bodies through the package’s own decoders.</li>
 </ul>
@@ -169,9 +196,9 @@
     <div id="mrpostman-122-2026-07-07-bugfix-and-robustness-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-122-2026-07-07-bugfix-and-robustness-update" class="anchor"></a>mRpostman 1.2.2 (2026-07-07 bugfix and robustness update)</h2>
-<div id="bug-fixes-1" class="section level3">
+<div id="bug-fixes-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>ImapCon$append_msg()</code> no longer hangs after the server’s `+ go ahead<code>continuation when it is called after another command on the same connection. The shared connection handle still carried the previous operation's</code>CURLOPT_CUSTOMREQUEST<code>, which conflicted with the</code>CURLOPT_UPLOAD<code>that</code>APPEND` relies on; the custom request is now reset before the upload.</p></li>
 <li><p><code>ImapCon$status()</code> no longer returns an empty result after a mid-session reconnection. When libcurl transparently reconnects (e.g. after a stale connection), the response buffer also carries the <code>CAPABILITY</code> line, whose <code>LIST-STATUS</code> token — together with the <code>... authenticated (Success)</code> line — made the parser lock onto the wrong parentheses. <code>parse_status_counts()</code> now anchors on the untagged `* STATUS` response.</p></li>
@@ -199,9 +226,9 @@
     <div id="mrpostman-121-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-121-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.2.1 (2026-07-06 feature update)</h2>
-<div id="new-features-1" class="section level3">
+<div id="new-features-2" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>New features</h3>
+<a href="#new-features-2" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$close_folder()</code> (IMAP <code>CLOSE</code>) closes the selected folder and permanently removes its <code>\Deleted</code> messages; and <code>ImapCon$unselect_folder()</code> (IMAP <code>UNSELECT</code>, RFC 3691) closes it <strong>without</strong> expunging (requires the server <code>UNSELECT</code> capability). Both leave the connection with no folder selected.</p></li>
 <li><p>new <code>ImapCon$id()</code> method (IMAP <code>ID</code>, RFC 2971) to exchange client/server identification. It optionally sends the client id fields (a named character vector) and returns the server’s id as a named character vector; parsed by an offline-tested <code>parse_id()</code> helper.</p></li>
@@ -211,9 +238,9 @@
     <div id="mrpostman-120-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-120-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.2.0 (2026-07-06 feature update)</h2>
-<div id="new-features-2" class="section level3">
+<div id="new-features-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-2" class="anchor"></a>New features</h3>
+<a href="#new-features-3" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$get_quota_root()</code> and <code>ImapCon$get_quota()</code> methods for the IMAP quota extension (<code>GETQUOTAROOT</code> / <code>GETQUOTA</code>, RFC 2087). They return a <code>data.frame</code> with <code>quota_root</code>, <code>resource</code>, <code>usage</code>, and <code>limit</code> (one row per resource; <code>STORAGE</code> is reported by the server in kibibytes). Requires the server <code>QUOTA</code> capability. The responses are parsed by an offline-tested <code>parse_quota()</code> helper.</p></li>
 <li><p>new <code>ImapCon$append_msg()</code> method to append a full RFC 822 message to a mail folder (IMAP <code>APPEND</code>) — e.g. saving a message to <code>Drafts</code> or <code>Sent</code>. Unlike every other operation it is performed by an upload (<code>CURLOPT_UPLOAD</code>, via a read callback like <code><a href="https://jeroen.r-universe.dev/curl/reference/send_mail.html">curl::send_mail()</a></code>) rather than a <code>customrequest</code>; it reuses the connection handle and restores it out of upload mode afterwards. The message is stored with the server’s default flags.</p></li>
@@ -224,9 +251,9 @@
     <div id="mrpostman-119-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-119-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.1.9 (2026-07-06 feature update)</h2>
-<div id="new-features-3" class="section level3">
+<div id="new-features-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-3" class="anchor"></a>New features</h3>
+<a href="#new-features-4" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$namespace()</code> method issuing the IMAP <code>NAMESPACE</code> command (RFC 2342). It returns a named list (<code>personal</code>, <code>other_users</code>, <code>shared</code>), each a <code>data.frame</code> of namespace <code>prefix</code>/<code>delimiter</code> pairs (or <code>NULL</code> when the server returns <code>NIL</code>). Requires the server <code>NAMESPACE</code> capability.</p></li>
 <li><p>new <code>ImapCon$list_special_use_folders()</code> method issuing <code>LIST (SPECIAL-USE)</code> (RFC 6154). It returns a <code>data.frame</code> mapping each special-use folder to its attribute (<code>\Sent</code>, <code>\Drafts</code>, <code>\Junk</code>, <code>\Trash</code>, <code>\Archive</code>, <code>\All</code>, <code>\Flagged</code>). Requires the server <code>SPECIAL-USE</code> capability.</p></li>
@@ -237,9 +264,9 @@
     <div id="mrpostman-118-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-118-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.1.8 (2026-07-06 feature update)</h2>
-<div id="new-features-4" class="section level3">
+<div id="new-features-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-4" class="anchor"></a>New features</h3>
+<a href="#new-features-5" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$sort()</code> method for server-side sorting (IMAP <code>SORT</code>, RFC 5256). It returns the message ids ordered by the server according to the sort keys (<code>by</code>, any subset of <code>ARRIVAL</code>, <code>CC</code>, <code>DATE</code>, <code>FROM</code>, <code>SIZE</code>, <code>SUBJECT</code>, <code>TO</code>), with optional <code>reverse</code> (descending), a <code>criteria</code> restriction (default <code>ALL</code>), <code>use_uid</code>, and a configurable <code>char_set</code>. The server-provided order is preserved (the result is deliberately <strong>not</strong> passed through the ascending-order <code>fix_search_stripping()</code> used by <code><a href="https://rdrr.io/r/base/search.html">search()</a></code>). Requires the server <code>SORT</code> capability.</p></li>
 <li><p>new <code>ImapCon$thread()</code> method for server-side threading (IMAP <code>THREAD</code>, RFC 5256), with <code>algorithm</code> (<code>REFERENCES</code> or <code>ORDEREDSUBJECT</code>), a <code>criteria</code> restriction, <code>use_uid</code>, and a configurable <code>char_set</code>. It returns a list of integer vectors, one per top-level thread (nested parent/child ids are flattened into their thread). Requires a server <code>THREAD=</code> capability.</p></li>
@@ -250,9 +277,9 @@
     <div id="mrpostman-117-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-117-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.1.7 (2026-07-06 feature update)</h2>
-<div id="new-features-5" class="section level3">
+<div id="new-features-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-5" class="anchor"></a>New features</h3>
+<a href="#new-features-6" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$list_subscribed_folders()</code> method to list the subscribed mail folders (IMAP <code>LSUB</code>), complementing <code>list_mail_folders()</code> (which issues <code>LIST</code> and returns every folder).</p></li>
 <li><p>new <code>ImapCon$subscribe_folder()</code> and <code>ImapCon$unsubscribe_folder()</code> methods to subscribe to / unsubscribe from a mail folder (IMAP <code>SUBSCRIBE</code> / <code>UNSUBSCRIBE</code>), i.e. to add or remove it from the set returned by <code>list_subscribed_folders()</code>.</p></li>
@@ -270,9 +297,9 @@
     <div id="mrpostman-116-2026-07-06-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-116-2026-07-06-feature-update" class="anchor"></a>mRpostman 1.1.6 (2026-07-06 feature update)</h2>
-<div id="new-features-6" class="section level3">
+<div id="new-features-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-6" class="anchor"></a>New features</h3>
+<a href="#new-features-7" class="anchor"></a>New features</h3>
 <ul>
 <li><p>new <code>ImapCon$delete_folder()</code> method to delete a mail folder (IMAP <code>DELETE</code>), completing the folder-management set alongside <code>create_folder()</code> and <code>rename_folder()</code>. The target folder must be named explicitly (there is no implicit “delete the selected folder”), and a confirmation message is printed unless <code>mute = TRUE</code>.</p></li>
 <li><p>new <code>ImapCon$status()</code> method to query a mail folder’s counters via the IMAP <code>STATUS</code> command <strong>without selecting the folder</strong> (unlike <code>examine_folder()</code>, which issues <code>EXAMINE</code>). It returns a named vector with the requested data items — any subset of <code>MESSAGES</code>, <code>RECENT</code>, <code>UIDNEXT</code>, <code>UIDVALIDITY</code>, and <code>UNSEEN</code> (all by default), configurable via the new <code>items</code> argument. The response is parsed by a dedicated internal <code>parse_status_counts()</code> helper, so the result stays correct regardless of the order in which the server returns the items.</p></li>
@@ -282,18 +309,18 @@
     <div id="mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-115-2026-07-06-bug-fix-and-feature-update" class="anchor"></a>mRpostman 1.1.5 (2026-07-06 bug-fix and feature update)</h2>
-<div id="new-features-7" class="section level3">
+<div id="new-features-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-7" class="anchor"></a>New features</h3>
+<a href="#new-features-8" class="anchor"></a>New features</h3>
 <ul>
 <li><p><code>search_string()</code> (and the custom <code><a href="https://rdrr.io/r/base/search.html">search()</a></code>) now support <strong>non-ASCII search terms</strong>. When the term contains non-ASCII characters, the command declares <code>CHARSET UTF-8</code> and sends the term as UTF-8 bytes, so servers such as Gmail can match accented/non-Latin text (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/12'>#12</a>). Pure-ASCII searches are unchanged.</p></li>
 <li><p><code>fetch_attachments()</code> and <code>get_attachments()</code> gained a <code>local_dir</code> argument to set the base directory where attachments are saved (default <code>"."</code>, the working directory). The <code>&lt;username&gt;/&lt;mail folder&gt;/&lt;msg id&gt;</code> subfolder tree is created inside it (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/15'>#15</a>).</p></li>
 <li><p>new <code>ImapCon$disconnect()</code> method to release the connection handle when a session is finished (GitHub issue <a href='https://github.com/allanvc/mRpostman/issues/13'>#13</a>).</p></li>
 </ul>
 </div>
-<div id="bug-fixes-2" class="section level3">
+<div id="bug-fixes-3" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code><a href="../reference/decode_mime_header.html">decode_mime_header()</a></code> now honors the character set declared in the RFC 2047 encoded-word (<code>=?&lt;charset&gt;?&lt;enc&gt;?...?=</code>) instead of guessing it heuristically. The declared charset is passed to <code><a href="https://rdrr.io/r/base/iconv.html">iconv()</a></code> (via a new internal <code>apply_charset()</code> helper) for both the quoted-printable (<code>Q</code>) and base64 (<code>B</code>) encodings, so headers in any <code>iconv</code>-supported charset now decode correctly — including ones the previous heuristic could not handle or mislabeled (e.g. Windows-1251 and KOI8-R Cyrillic, ISO-8859-2/Windows-1250 Central European, Big5, Shift_JIS, EUC-KR). The legacy heuristic is kept only as a fallback for “loose” quoted-printable strings that carry no declared charset.</p></li>
 <li><p>the message-body decoders (<code>decode_mime_text()</code>, used by <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code>) now honor the charset declared in the MIME <code>Content-Type</code> for quoted-printable and base64 parts, via the same <code>apply_charset()</code> helper as the header decoder. The previous heuristic is kept as a fallback when no charset is declared, and the charset is not re-applied to parts already normalized to UTF-8 by the HTML parser (avoiding a double conversion).</p></li>
@@ -453,9 +480,9 @@
     <div id="mrpostman-091-5-2020-11-18-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-5-2020-11-18-github-patch" class="anchor"></a>mRpostman 0.9.1-5 (2020-11-18 Github patch)</h2>
-<div id="bug-fixes-3" class="section level3">
+<div id="bug-fixes-4" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>fixed the <code>pattern8</code> regex in <code>clean_fetch_results()</code>.</li>
 </ul>
@@ -465,9 +492,9 @@
     <div id="mrpostman-091-4-2020-11-12-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-4-2020-11-12-github-patch" class="anchor"></a>mRpostman 0.9.1-4 (2020-11-12 Github patch)</h2>
-<div id="new-features-8" class="section level3">
+<div id="new-features-9" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-8" class="anchor"></a>New features</h3>
+<a href="#new-features-9" class="anchor"></a>New features</h3>
 <ul>
 <li>changes the default value of the <code>timeout_ms</code> parameter to <code>0</code>, which is the default value in libcurl, meaning that no timeout is specified.</li>
 </ul>
@@ -477,9 +504,9 @@
     <div id="mrpostman-091-3-2020-11-08-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-3-2020-11-08-github-patch" class="anchor"></a>mRpostman 0.9.1-3 (2020-11-08 Github patch)</h2>
-<div id="new-features-9" class="section level3">
+<div id="new-features-10" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-9" class="anchor"></a>New features</h3>
+<a href="#new-features-10" class="anchor"></a>New features</h3>
 <ul>
 <li><p>added the <code><a href="../reference/clean_msg_text.html">clean_msg_text()</a></code> function. It will be particularly useful for cleaning and preparing message text retrieved with <code>fetch_body(..., mime_level = 1)</code>. These texts can be used for sentiment analysis and other text mining tasks;</p></li>
 <li><p>added internal functions <code>decode_mime_text()</code> and <code>decode_quoted_printable_text()</code>. The second is called by the first one;</p></li>
@@ -492,16 +519,16 @@
     <div id="mrpostman-091-2-2020-11-01-github-patch" class="section level2">
 <h2 class="hasAnchor">
 <a href="#mrpostman-091-2-2020-11-01-github-patch" class="anchor"></a>mRpostman 0.9.1-2 (2020-11-01 Github patch)</h2>
-<div id="new-features-10" class="section level3">
+<div id="new-features-11" class="section level3">
 <h3 class="hasAnchor">
-<a href="#new-features-10" class="anchor"></a>New features</h3>
+<a href="#new-features-11" class="anchor"></a>New features</h3>
 <ul>
 <li>added the <code>mime_level</code> argument to the <code>fetch_body()</code> method. Now, the user can choose whether the fetch will retrieve the full body content or an specific one. This is particularly helpful for retrieving clean text parts without inline and regular attachments for instance.</li>
 </ul>
 </div>
-<div id="bug-fixes-4" class="section level3">
+<div id="bug-fixes-5" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-4" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p>adapts to the new return pattern of MS Exchange IMAP servers without losing the compatibility with others;</p></li>
 <li><p>fixed the misbehavior for the attachment fetching of message in message attachments. Now, either <code>fetch_attachments()</code> and <code>fetch_text/body()</code> + <code>get_attachments()</code> combo can handle this specific case;</p></li>
@@ -541,9 +568,9 @@
 </li>
 </ul>
 </div>
-<div id="bug-fixes-5" class="section level3">
+<div id="bug-fixes-6" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-5" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-6" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li><p><code>list_mail_folders()</code>: fixed the regex related to the hierarchy separator to accept the “|” separator. It was causing a misbehavior in Yandex accounts.</p></li>
 <li><p><code>clean_fetch_results()</code> (internal): fixed the regex responsible for cleaning the attachment content. It was causing a misbehavior in Yandex accounts. All calls to gsub() in this function now have <code>ignore.case = TRUE</code>.</p></li>
@@ -855,9 +882,9 @@
 </ul>
 </div>
 </div>
-<div id="bug-fixes-6" class="section level3">
+<div id="bug-fixes-7" class="section level3">
 <h3 class="hasAnchor">
-<a href="#bug-fixes-6" class="anchor"></a>Bug fixes</h3>
+<a href="#bug-fixes-7" class="anchor"></a>Bug fixes</h3>
 <ul>
 <li>
 <p>retry bug fixed: it was causing the loss of the search and fetch <code>customrequest</code> when executing a retry + selection operation or when there was a considerable period between two requests given that the second depends on a previous folder selection. When there was a considerable delay between the executions of two commands, the curl handle would establish a new connection to execute the last one, but without the mail folder selection. This was causing an error during the retry or the next IMAP command since the IMAP session would have lost the mail folder selection. This bug was happening mainly when the functions were used under the base R approach</p>
