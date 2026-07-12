@@ -152,6 +152,8 @@ con <- configure_imap(url = "imap://localhost:1430", username = "testuser",
 populate_sandbox(con, n = 200) # uploads the corpus with the package's own APPEND
 ```
 
+Real data works too: `ingest_maildir()` uploads any local maildir-style directory to the server via `APPEND`, and `enron_sandbox()` builds on it to download (once, with consent, cached) the public Enron corpus and ingest a subset selected by custodian, folder, and date — turning the sandbox into a full e-mail data-analysis laboratory.
+
 See the [*"A reproducible IMAP sandbox with Docker"*](https://allanvc.github.io/mRpostman/articles/sandbox.html) vignette for the guided tour. The sandbox's Dovecot server also advertises `SORT` and `THREAD`, making it a convenient place to try the extensions your provider may lack.
 
 ## Basic Usage

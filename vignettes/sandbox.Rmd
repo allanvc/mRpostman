@@ -100,6 +100,31 @@ For use from the shell, the wrapper script `inst/docker/populate_mailbox.R` does
 
 `APPEND` stores messages with the *current* internal date. Searches on the **internal date** (`search_before()`, `search_since()`, `search_on()`, `search_older_than()`, `search_younger_than()`) therefore relate to the moment you populated the mailbox. Searches on the **`Date:` header** (`search_sent_before()`, `search_sent_since()`, `search_sent_on()`, `search_sent_period()`) act on the fixed 2020 dates of the corpus and always return the same results.
 
+## Ingesting real data: maildirs and the Enron corpus
+
+The synthetic corpus is not the only way to fill the sandbox. `ingest_maildir()` uploads any local maildir-style directory (one RFC 5322 message per file) to a server folder via `APPEND` — mail server backups, exported archives, or public corpora:
+
+```{r}
+manifest <- ingest_maildir(con, path = "~/backup/maildir/archive2020",
+                           folder = "archive2020")
+table(manifest$appended)
+```
+
+Built on top of it, `enron_sandbox()` turns the sandbox into a real-data laboratory: it downloads the public Enron e-mail corpus once (~423 MB, with your consent, cached under `tools::R_user_dir("mRpostman", "cache")`), selects a subset by custodian, folder-name pattern, and `Date:` header window, and ingests it — one server folder per custodian:
+
+```{r}
+con2 <- configure_imap(url = "imap://localhost:1430",
+                       username = "enron", password = "sandbox",
+                       use_ssl = FALSE)
+manifest <- enron_sandbox(con2,
+                          custodians  = c("kaminski-v", "lay-k", "skilling-j"),
+                          sent_since  = "2000-01-01",
+                          sent_before = "2002-07-01")
+table(manifest$custodian, manifest$appended)
+```
+
+After the ingestion, everything shown in the guided tour below works on real data too — e.g. `con2$search_string(expr = "SEC", where = "TEXT")` on a custodian's folder. The same internal-date caveat applies: query ingested corpora by date through the `SENT*` searches, which read the `Date:` header.
+
 ## A guided tour
 
 ### Mailbox structure

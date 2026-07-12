@@ -1,3 +1,19 @@
+## mRpostman 1.4.0 (2026-07-12 feature update)
+
+### Bug fixes
+
+- `clean_msg_text()` no longer errors on messages carrying 8-bit bytes that are invalid in the session encoding (e.g. undeclared legacy charsets or binary fragments in old real-world corpora — `Error in gsub("=\r\n", "", msg): input string 1 is invalid`). Such strings are now made valid up front (latin1-to-UTF-8, which maps every byte and preserves ASCII) before any regex operation, and again after each base64 decoding, which can reintroduce raw bytes; declared-charset handling is unaffected. Additionally, the base64 decoding heuristic no longer aborts on payloads decoding to binary with embedded NULs (`rawToChar()` errors that a handler-less `tryCatch()` never actually caught): NUL bytes are dropped, and on any decoding error the text is kept unchanged instead of erroring. Found while decoding the full Enron corpus through the new sandbox ingestion.
+
+### New features
+
+- new `ingest_maildir()`: uploads any local maildir-style directory (one RFC 5322 message per file) to a folder on the connected IMAP server via `APPEND` — mail server backups, exported archives, or public corpora. Files are appended verbatim; failures are skipped with a warning, and an invisible manifest data.frame (`path`, `size`, `appended`) is returned.
+
+- new `enron_sandbox()`: on-demand download of the public Enron e-mail corpus (CMU May 7, 2015 release; ~423 MB, one time, consented via `ask` and cached under `tools::R_user_dir("mRpostman", "cache")`), with subset selection by custodian, folder-name pattern, and `Date:` header window, ingested through `ingest_maildir()` — one server folder per custodian. Provides real data for demonstrations and teaching on top of the synthetic corpus of `sandbox_corpus()`. The download is never triggered by examples, tests, or vignettes, and fails gracefully offline with an informative message.
+
+### Tests
+
+- new offline tests for the internal Enron `Date:` header parser (both header variants — with and without weekday — and the no-`Date:`-header case).
+
 ## mRpostman 1.3.0 (2026-07-11 feature update)
 
 ### Bug fixes

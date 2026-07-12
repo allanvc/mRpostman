@@ -52,6 +52,8 @@ corpus$info
 }
 \seealso{
 Other sandbox: 
+\code{\link{enron_sandbox}()},
+\code{\link{ingest_maildir}()},
 \code{\link{populate_sandbox}()}
 }
 \concept{sandbox}
