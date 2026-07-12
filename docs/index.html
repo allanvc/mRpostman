@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -64,6 +64,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="articles/basics.html">mRpostman basics</a>
+    </li>
+    <li>
+      <a href="articles/sandbox.html">A reproducible IMAP sandbox with Docker</a>
     </li>
     <li>
       <a href="articles/xoauth2.0.html">IMAP OAuth2.0 authentication in mRpostman</a>
@@ -415,13 +418,24 @@
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://remotes.r-lib.org">'remotes'</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">'remotes'</span><span class="op">)</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"allanvc/mRpostman"</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div id="trying-it-without-a-mail-account" class="section level2">
+<h2 class="hasAnchor">
+<a href="#trying-it-without-a-mail-account" class="anchor"></a>Trying it without a mail account</h2>
+<p>The package ships a disposable local IMAP server (Dovecot, in a Docker container) plus a deterministic synthetic corpus generator, so every feature can be exercised offline and reproducibly — no credentials, OAuth2 setup, or provider rate limits involved:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># after starting the container (see the "sandbox" vignette):</span></span>
+<span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"imap://localhost:1430"</span>, username <span class="op">=</span> <span class="st">"testuser"</span>,</span>
+<span>                      password <span class="op">=</span> <span class="st">"sandbox"</span>, use_ssl <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/populate_sandbox.html">populate_sandbox</a></span><span class="op">(</span><span class="va">con</span>, n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span> <span class="co"># uploads the corpus with the package's own APPEND</span></span></code></pre></div>
+<p>See the <a href="https://allanvc.github.io/mRpostman/articles/sandbox.html"><em>“A reproducible IMAP sandbox with Docker”</em></a> vignette for the guided tour. The sandbox’s Dovecot server also advertises <code>SORT</code> and <code>THREAD</code>, making it a convenient place to try the extensions your provider may lack.</p>
+</div>
 <div id="basic-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#basic-usage" class="anchor"></a>Basic Usage</h2>
 <div id="1-configure-an-imap-connection-and-list-the-servers-capabilities" class="section level3">
 <h3 class="hasAnchor">
 <a href="#1-configure-an-imap-connection-and-list-the-servers-capabilities" class="anchor"></a>1) Configure an IMAP connection and list the server’s capabilities</h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://allanvc.github.io/mRpostman/">mRpostman</a></span><span class="op">)</span></span>
 <span></span>
@@ -442,7 +456,7 @@
 <div id="2-list-mail-folders-and-select-inbox" class="section level3">
 <h3 class="hasAnchor">
 <a href="#2-list-mail-folders-and-select-inbox" class="anchor"></a>2) List mail folders and select “INBOX”</h3>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Listing</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_mail_folders</span><span class="op">(</span><span class="op">)</span></span>
@@ -453,7 +467,7 @@
 <div id="3-search-messages-by-date" class="section level3">
 <h3 class="hasAnchor">
 <a href="#3-search-messages-by-date" class="anchor"></a>3) Search messages by date</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span></span>
 <span></span>
@@ -463,7 +477,7 @@
 <h3 class="hasAnchor">
 <a href="#4-customizing-a-search-with-multiple-criteria" class="anchor"></a>4) Customizing a search with multiple criteria</h3>
 <p>Executing a search by string:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field</span></span>
 <span><span class="va">res2</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span><span class="fu"><a href="reference/OR.html">OR</a></span><span class="op">(</span></span>
@@ -476,7 +490,7 @@
 <div id="5-fetch-messages-text-using-single-search-results" class="section level3">
 <h3 class="hasAnchor">
 <a href="#5-fetch-messages-text-using-single-search-results" class="anchor"></a>5) Fetch messages’ text using single-search results</h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">res3</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"Welcome!"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># also writes results to disk</span></span>
@@ -489,7 +503,7 @@
 <p>You can list the attachments of one or more messages with:</p>
 <p>1) the <code><a href="reference/list_attachments.html">list_attachments()</a></code> function:</p>
 <!-- end list -->
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
@@ -497,14 +511,14 @@
 <p>… or more directly with:</p>
 <p>2) <code>fetch_attachments_list()</code></p>
 <!-- end list -->
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>If you want to download the attachments of one or more messages, there are also two ways of doing that.</p>
 <p>1) Using the <code>get_attachments()</code> method:</p>
 <!-- end list -->
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span> <span class="co"># or with fetch_body()</span></span>
@@ -512,7 +526,7 @@
 <p>… and more directly with the</p>
 <p>2) <code>fetch_attachments()</code> method:</p>
 <!-- end list -->
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"02-Jan-2020"</span><span class="op">)</span> <span class="op"><a href="reference/%&gt;%.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>

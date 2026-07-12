@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Criterion constructor function to be combined in a custom search statement — older_than • mRpostman</title>
+<title>Extract text from MIME level — clean_msg_text • mRpostman</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Criterion constructor function to be combined in a custom search statement — older_than" />
-<meta property="og:description" content="Criterion constructor function to be combined in a custom search statement" />
+<meta property="og:title" content="Extract text from MIME level — clean_msg_text" />
+<meta property="og:description" content="Extract text from MIME level" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -137,65 +137,52 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Criterion constructor function to be combined in a custom search statement</h1>
-    <small class="dont-index">Source: <a href='https://github.com/allanvc/mRpostman/blob/master/R/older-than.R'><code>R/older-than.R</code></a></small>
-    <div class="hidden name"><code>older_than.Rd</code></div>
+    <h1>Extract text from MIME level</h1>
+    <small class="dont-index">Source: <a href='https://github.com/allanvc/mRpostman/blob/master/R/clean-msg-text.R'><code>R/clean-msg-text.R</code></a></small>
+    <div class="hidden name"><code>clean_msg_text.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Criterion constructor function to be combined in a custom search statement</p>
+    <p>Extract text from MIME level</p>
     </div>
 
-    <pre class="usage"><span><span class='fu'>older_than</span><span class='op'>(</span><span class='va'>seconds</span>, negate <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span></pre>
+    <pre class="usage"><span><span class='fu'>clean_msg_text</span><span class='op'>(</span><span class='va'>msg_list</span><span class='op'>)</span></span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>seconds</th>
-      <td><p>An integer specifying the number of seconds to be used as
-the search criterion.</p></td>
-    </tr>
-    <tr>
-      <th>negate</th>
-      <td><p>If <code>TRUE</code>, negates the search and seeks for "NOT SEARCH
-CRITERIA". Default is <code>FALSE</code>.</p></td>
+      <th>msg_list</th>
+      <td><p>A <code>list</code> with the MIME level 1 of the body or text content
+of the messages fetched with <a href='#method-fetch_body'><code>ImapCon$fetch_body()</code></a> or
+<a href='#method-fetch_text'><code>ImapCon$fetch_text()</code></a>.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>To be able to use this functionality, the server must support the
-  <code>WITHIN</code> capability.</p>
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+    <p>A <code>list</code> containing the decoded messages if applicable.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    <div class='dont-index'><p>Other custom search: 
-<code><a href='AND.html'>AND</a>()</code>,
-<code><a href='ImapCon.html'>ImapCon</a></code>,
-<code><a href='OR.html'>OR</a>()</code>,
-<code><a href='before.html'>before</a>()</code>,
-<code><a href='flag.html'>flag</a>()</code>,
-<code><a href='larger_than.html'>larger_than</a>()</code>,
-<code><a href='on.html'>on</a>()</code>,
-<code><a href='sent_before.html'>sent_before</a>()</code>,
-<code><a href='sent_on.html'>sent_on</a>()</code>,
-<code><a href='sent_since.html'>sent_since</a>()</code>,
-<code><a href='since.html'>since</a>()</code>,
-<code><a href='smaller_than.html'>smaller_than</a>()</code>,
-<code><a href='string.html'>string</a>()</code>,
-<code><a href='younger_than.html'>younger_than</a>()</code></p></div>
+    <p>Moore, K. (1996), MIME (Multipurpose Internet Mail Extensions) Part
+  Three: Message Header Extensions for Non-ASCII
+  Text, RFC 2047, November 1996, https://tools.ietf.org/html/rfc2047.</p>
+<p>Freed, N., Borenstein, N. (1996), Multipurpose Internet Mail Extensions
+  (MIME) Part One: Format of Internet Message Bodies, RFC 2045, November 1996,
+  https://tools.ietf.org/html/rfc2045.</p>
+<p>Internal parts of this object, regarding the quoted printable type,
+  were borrowed from https://github.com/hrbrmstr/hrbrmisc/blob/master/R/qp.r with
+  slight modifications.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span></span>
-<span class='r-in'><span><span class='co'># select folder &amp; search</span></span></span>
-<span class='r-in'><span><span class='va'>con</span><span class='op'>$</span><span class='fu'>select_folder</span><span class='op'>(</span>name <span class='op'>=</span> <span class='st'>"INBOX"</span><span class='op'>)</span></span></span>
-<span class='r-in'><span><span class='co'># search for messages containing the string "XYZ@k-state.edu" in the</span></span></span>
-<span class='r-in'><span><span class='co'>#   "FROM" field AND those that are OLDER than 3600 seconds (1 hour).</span></span></span>
-<span class='r-in'><span><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search</span><span class='op'>(</span>request <span class='op'>=</span> <span class='fu'><a href='AND.html'>AND</a></span><span class='op'>(</span><span class='fu'><a href='string.html'>string</a></span><span class='op'>(</span>expr <span class='op'>=</span> <span class='st'>"XYZ@k-state.edu"</span>,</span></span>
-<span class='r-in'><span>                                      where <span class='op'>=</span> <span class='st'>"FROM"</span><span class='op'>)</span>,</span></span>
-<span class='r-in'><span>                               <span class='fu'>older_than</span><span class='op'>(</span>seconds <span class='op'>=</span> <span class='fl'>3600</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span></span>
-<span class='r-in'><span><span class='op'>}</span></span></span>
+<span class='r-in'><span><span class='va'>ids</span> <span class='op'>&lt;-</span> <span class='va'>con</span><span class='op'>$</span><span class='fu'>search_since</span><span class='op'>(</span>date_char <span class='op'>=</span> <span class='st'>"01-Apr-2020"</span>, use_uid <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span></span>
 <span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>fetch_res</span> <span class='op'>&lt;-</span> <span class='va'>ids</span> <span class='op'><a href='%>%.html'>%&gt;%</a></span></span></span>
+<span class='r-in'><span>  <span class='va'>con</span><span class='op'>$</span><span class='fu'>fetch_body</span><span class='op'>(</span>use_uid <span class='op'>=</span> <span class='cn'>TRUE</span>, mime_level <span class='op'>=</span> <span class='fl'>1L</span><span class='op'>)</span></span></span>
+<span class='r-in'><span></span></span>
+<span class='r-in'><span><span class='va'>clean_text_list</span> <span class='op'>&lt;-</span> <span class='fu'>clean_msg_text</span><span class='op'>(</span>msg_list <span class='op'>=</span> <span class='va'>fetch_res</span><span class='op'>)</span></span></span>
+<span class='r-in'><span><span class='op'>}</span></span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
