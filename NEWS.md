@@ -1,3 +1,9 @@
+## mRpostman 1.4.0-1 (2026-08-03 documentation update)
+
+### Documentation
+
+- the README now also displays the grand-total CRAN downloads badge, alongside the existing monthly downloads badge.
+
 ## mRpostman 1.4.0 (2026-07-12 feature update)
 
 ### Bug fixes
