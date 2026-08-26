@@ -68,31 +68,49 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
     })
 
     # REQUEST
+    too_large <- FALSE
     response <- tryCatch({
       curl::curl_fetch_memory(url, handle = h)
     }, error = function(e){
       # print(e$message)
-      response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+      if (grepl("grew larger than allowed", e$message[1], fixed = TRUE)) {
+        # libcurl >= 8.x (CURLE_TOO_LARGE): the literal exceeds libcurl's
+        # internal buffer; re-fetch the part in partial slices below
+        too_large <<- TRUE
+        NULL
+      } else {
+        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+      }
       # id = msg_id[1] # return to the beginning
       # idx = 0
     })
 
+    chunked_text <- NULL
+    if (is.null(response) && isTRUE(too_large)) {
+      chunked_text <- fetch_in_chunks(self, adjusted_fetch_request,
+                                      metadata_attribute)
+      if (!is.null(chunked_text)) {
+        response <- list(chunked = TRUE) # non-NULL: proceed as a normal fetch
+      }
+    }
+
     # print(exists("response")); print(exists("response")); print(exists("response"))
 
     if (!is.null(response)) {
-      if (isTRUE(base64_decode)) {
-        msg_list[[idx]] <- decode_base64_text_if_needed(
-          clean_fetch_results(
-            rawToChar(response$headers),
-            metadata_attribute #v0.9.2
-          )
-        )
-
+      if (!is.null(chunked_text)) {
+        msg_text <- chunked_text
       } else {
-        msg_list[[idx]] <- clean_fetch_results(
+        msg_text <- clean_fetch_results(
           rawToChar(response$headers),
           metadata_attribute # v0.9.2
         )
+      }
+
+      if (isTRUE(base64_decode)) {
+        msg_list[[idx]] <- decode_base64_text_if_needed(msg_text)
+
+      } else {
+        msg_list[[idx]] <- msg_text
 
       }
 
@@ -201,6 +219,9 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
 
           }
         } else {
+          if (isTRUE(too_large)) {
+            stop('Fetch error: the server response is larger than libcurl allows in a single FETCH, and fetching it in partial slices also failed.')
+          }
           stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
 
         }

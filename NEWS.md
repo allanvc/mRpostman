@@ -1,3 +1,13 @@
+## mRpostman 1.4.1 (2026-08-26 bugfix update)
+
+### Bug fixes
+
+- `fetch_body()`, `fetch_header()`, `fetch_text()`, and `fetch_attachments()` no longer fail on messages whose fetched part exceeds roughly 90 kB when the `curl` package is built against libcurl >= 8.x (e.g. `curl` 7.1.0, which bundles libcurl 8.14.1). libcurl aborts such a `FETCH` with `CURLE_TOO_LARGE` ("A value or data field grew larger than allowed") and drops the connection, which surfaced as `Fetch error: the server returned an error. Try to increase "timeout_ms"`. `execute_fetch_loop()` now detects this condition, re-selects the folder on the reconnected session, and re-issues the request in IMAP partial slices (`<start.count>`, 64 kB each) through the new internal `fetch_in_chunks()` helper, concatenating the cleaned slices; the result is byte-identical to a single fetch. Unaffected fetches follow the previous code path. Found on a 93 kB header of the Enron corpus (a `To:` line with several hundred recipients) while regenerating the R Journal replication run after a `curl` package upgrade.
+
+### Tests
+
+- new offline tests for the literal-size parser and the slice concatenation used by the chunked-fetch fallback (`test-fetch-in-chunks.R`).
+
 ## mRpostman 1.4.0-1 (2026-08-03 documentation update)
 
 ### Documentation

@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: An IMAP Client for R
-Version: 1.4.0-1
-Date: 2026-08-03
+Version: 1.4.1
+Date: 2026-08-26
 Authors@R: c(
     person(given="Allan", family="Quadros",
     role = c("aut", "cre"),
