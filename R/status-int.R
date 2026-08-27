@@ -28,14 +28,25 @@ status_int <- function(self, name, items, retries) {
 
   items <- toupper(items)
 
-  valid_items <- c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN")
+  valid_items <- c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN",
+                   "SIZE", "HIGHESTMODSEQ")
 
   assertthat::assert_that(
     all(items %in% valid_items),
     msg=paste0('"items" must be a subset of: ',
                paste(valid_items, collapse = ", "), '.'))
 
-  check_args(retries = retries) # we have to pass
+  check_args(retries = retries)
+
+  # extension items are gated on the capability that defines them
+  if ("SIZE" %in% items) {
+    assert_capability(self, "STATUS=SIZE", command = 'status(items = "SIZE")',
+                      rfc = "RFC 8438", retries = retries)
+  }
+  if ("HIGHESTMODSEQ" %in% items) {
+    assert_capability(self, "CONDSTORE", command = 'status(items = "HIGHESTMODSEQ")',
+                      rfc = "RFC 7162", retries = retries)
+  } # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
 
   # forcing retries as an integer

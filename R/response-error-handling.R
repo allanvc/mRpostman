@@ -12,6 +12,10 @@ response_error_handling <- function(error_message) {
 
   error_check_login <- grepl(pattern = pattern_login, x = error_message)
 
+  # a tagged NO/BAD reply recorded by the debug callback: the server rejected
+  # the command, so retrying is pointless and the reason is worth reporting
+  server_error <- last_server_error()
+
   if (error_check_resolving) {
 
     stop("Resolving timeout: check your internet connection status or try to increase
@@ -20,6 +24,18 @@ response_error_handling <- function(error_message) {
   } else if (error_check_login) {
 
     stop("Login denied: the server returned an authentication error.")
+
+  } else if (!is.na(server_error) &&
+             grepl("No mailbox selected|not allowed now|not allowed in this state",
+                   server_error, ignore.case = TRUE)) {
+
+    # the folder selection was lost (e.g. after a failed SELECT or a server
+    # reconnection): let the caller re-select the folder and retry
+    return(NULL)
+
+  } else if (!is.na(server_error)) {
+
+    stop(paste0("The server rejected the command: ", server_error), call. = FALSE)
 
   } else {
 

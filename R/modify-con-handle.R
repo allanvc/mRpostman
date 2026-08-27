@@ -83,7 +83,19 @@ modify_con_handle <- function(self, ...) {
   # }
 
   # print(argg_list)
-  do.call(curl::handle_setopt, c(self$con_handle, argg_list)) # actually, argg_list will contain only one parameter
+  # "verbose" is not a libcurl option of the handle any more (it is always on,
+  # see config_con_handle_and_params()); it only toggles the printing done by
+  # the debug callback
+  if ("verbose" %in% names(argg_list)) {
+    if (!is.null(self$con_debug)) {
+      self$con_debug$verbose <- isTRUE(argg_list$verbose)
+    }
+    argg_list$verbose <- NULL
+  }
+
+  if (length(argg_list) > 0) {
+    do.call(curl::handle_setopt, c(self$con_handle, argg_list)) # actually, argg_list will contain only one parameter
+  }
 
   invisible(TRUE)
 }

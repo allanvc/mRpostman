@@ -39,11 +39,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
       pre_response <- parse_esearch_all(rawToChar(response$content))
 
     } else {
-      pre_response <- as.numeric(
-        as.character(
-          stringr::str_extract_all(rawToChar(response$content), '\\d+')[[1]]
-        )
-      )
+      pre_response <- parse_search_ids(rawToChar(response$content))
 
     }
     # ESEARCH condenses the response (e.g. "ALL 1:5,8"); parse_esearch_all()
@@ -102,11 +98,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
         pre_response <- parse_esearch_all(rawToChar(response$content))
 
       } else {
-        pre_response <- as.numeric(
-          as.character(
-            stringr::str_extract_all(rawToChar(response$content), '\\d+')[[1]]
-          )
-        )
+        pre_response <- parse_search_ids(rawToChar(response$content))
 
       }
       # ESEARCH condenses the response (e.g. "ALL 1:5,8"); parse_esearch_all()

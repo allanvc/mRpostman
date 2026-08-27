@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -63,6 +63,29 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.2" id="mrpostman-152-2026-08-27-feature-update">mRpostman 1.5.2 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-152-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-1-5-2">New features<a class="anchor" aria-label="anchor" href="#new-features-1-5-2"></a></h3>
+<ul><li><p>new <code>ImapCon$fetch_preview()</code> method (<code>FETCH ... (PREVIEW)</code>, RFC 8970): the short text snippet the server generates for each message, without transferring its body. Returns a named character vector; accepts the <code>"$"</code> reference of a saved search.</p></li>
+<li><p><code>ImapCon$fetch_metadata()</code> accepts the extension attributes <code>"PREVIEW"</code> (RFC 8970), <code>"SAVEDATE"</code> (RFC 8514), and <code>"MODSEQ"</code> (CONDSTORE, RFC 7162), each verified against the corresponding server capability. They are never requested by default.</p></li>
+<li><p><code>ImapCon$status()</code> and <code>ImapCon$list_folders_status()</code> accept the extension items <code>"SIZE"</code> (STATUS=SIZE, RFC 8438; the folder size in bytes) and <code>"HIGHESTMODSEQ"</code> (CONDSTORE, RFC 7162), capability-checked.</p></li>
+<li><p>new search criterion constructors <code><a href="../reference/saved_before.html">saved_before()</a></code>, <code><a href="../reference/saved_before.html">saved_since()</a></code>, and <code><a href="../reference/saved_before.html">saved_on()</a></code> (SAVEDATE, RFC 8514), which compare the date a message was saved into the folder, and <code><a href="../reference/modseq.html">modseq()</a></code> (CONDSTORE, RFC 7162), which matches the messages added or changed since a given modification sequence. Together with <code>status(items = "HIGHESTMODSEQ")</code>, <code><a href="../reference/modseq.html">modseq()</a></code> supports “what changed since the last run” workflows without transferring anything else.</p></li>
+<li><p><code>ImapCon$list_mail_folders()</code> gained a <code>detailed</code> argument: with <code>detailed = TRUE</code> it issues <code>LIST "" "*" RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)</code> (LIST-EXTENDED, RFC 5258) and returns a <code>data.frame</code> with one row per folder and its attributes (<code>delimiter</code>, <code>selectable</code>, <code>has_children</code>, <code>subscribed</code>, <code>special_use</code>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-1-5-2">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-5-2"></a></h3>
+<ul><li>commands that the server rejects with a tagged <code>NO</code> or <code>BAD</code> reply now fail immediately with the server’s own reason (e.g. <code>The server rejected the command: NO [CANNOT] ...</code>) instead of the generic <code>Request error: the server returned an error.</code> after useless retries. The connection handle records the server’s response lines through a libcurl debug callback; the <code>verbose</code> setting keeps its meaning and only controls whether that conversation is printed.</li></ul></div>
+<div class="section level3">
+<h3 id="documentation-1-5-2">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-5-2"></a></h3>
+<ul><li>the <em>basics</em> vignette gained a section on the extensions added since 1.5.0, and the <em>sandbox</em> vignette and <code>inst/docker/README.md</code> document the extensions the sandbox supports, including the newly enabled <code>acl</code> and <code>quota</code> plugins.</li></ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-5-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-2"></a></h3>
+<ul><li>plain <code>SEARCH</code> responses are now parsed by a dedicated helper (<code>parse_search_ids()</code>) that discards the <code>(MODSEQ n)</code> item appended by servers when a <code>MODSEQ</code> criterion is used; previously that number would have been returned as if it were a message id.</li></ul></div>
+<div class="section level3">
+<h3 id="tests-1-5-2">Tests<a class="anchor" aria-label="anchor" href="#tests-1-5-2"></a></h3>
+<ul><li>new offline tests for the SAVEDATE and CONDSTORE criteria, the <code>SEARCH</code> id extraction, the <code>PREVIEW</code> item parser, and the LIST-EXTENDED parser (<code>test-round3-parsers.R</code>); all features verified live against the Dovecot sandbox.</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.1" id="mrpostman-151-2026-08-27-feature-update">mRpostman 1.5.1 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-151-2026-08-27-feature-update"></a></h2>
 <div class="section level3">

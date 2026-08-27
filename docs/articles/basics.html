@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -895,6 +895,64 @@
 <span>             sep <span class="op">=</span> <span class="st">"\r\n"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">append_msg</span><span class="op">(</span>message <span class="op">=</span> <span class="va">msg</span>, folder <span class="op">=</span> <span class="st">"Drafts"</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="protocol-extensions-since-1-5-0">9) Protocol extensions (since 1.5.0)<a class="anchor" aria-label="anchor" href="#protocol-extensions-since-1-5-0"></a>
+</h2>
+<p>Versions 1.5.0 to 1.5.2 completed the IMAP4rev1 command set (<code>CHECK</code>) and added a set of optional extensions. Each one is checked against the server’s <code>CAPABILITY</code> response before the command is issued, so an unsupported extension fails with a message naming the command, its RFC, and <code>list_server_capabilities()</code>. The Docker sandbox (see the <em>sandbox</em> vignette) supports all of them.</p>
+<div class="section level3">
+<h3 id="uidplus-uids-of-appended-and-copied-messages">9.1) UIDPLUS: UIDs of appended and copied messages<a class="anchor" aria-label="anchor" href="#uidplus-uids-of-appended-and-copied-messages"></a>
+</h3>
+<p>With <code>UIDPLUS</code> (RFC 4315), <code>append_msg()</code> returns the UID the server assigned to the message, and <code>copy_msg()</code>/<code>move_msg()</code> attach the source-to-destination UID mapping as the <code>"copyuid"</code> attribute of their result. <code>append_msg()</code> also gained a <code>flags</code> argument.</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">uid</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">append_msg</span><span class="op">(</span>message <span class="op">=</span> <span class="va">msg</span>, folder <span class="op">=</span> <span class="st">"Drafts"</span>, flags <span class="op">=</span> <span class="st">"Draft"</span><span class="op">)</span></span>
+<span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">copy_msg</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">15</span><span class="op">)</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span>, to_folder <span class="op">=</span> <span class="st">"Archive"</span>,</span>
+<span>                    reselect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">ids</span>, <span class="st">"copyuid"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="folder-listings-in-one-round-trip">9.2) Folder listings in one round trip<a class="anchor" aria-label="anchor" href="#folder-listings-in-one-round-trip"></a>
+</h3>
+<p><code>list_folders_status()</code> (<code>LIST-STATUS</code>, RFC 5819) returns every selectable folder with its counters, and <code>list_mail_folders(detailed = TRUE)</code> (<code>LIST-EXTENDED</code>, RFC 5258) returns the folder attributes. <code>status()</code> accepts the <code>SIZE</code> (<code>STATUS=SIZE</code>, RFC 8438) and <code>HIGHESTMODSEQ</code> (<code>CONDSTORE</code>, RFC 7162) items.</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">list_folders_status</span><span class="op">(</span>items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MESSAGES"</span>, <span class="st">"UNSEEN"</span>, <span class="st">"SIZE"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">list_mail_folders</span><span class="op">(</span>detailed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="saved-search-results-searchres">9.3) Saved search results (SEARCHRES)<a class="anchor" aria-label="anchor" href="#saved-search-results-searchres"></a>
+</h3>
+<p>With <code>search(save = TRUE)</code> (RFC 5182) the result stays on the server and the method returns the <code>"$"</code> reference, which the fetch, flag, copy, move, and delete methods accept as <code>msg_id</code>. No message id crosses the wire.</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/AND.html">AND</a></span><span class="op">(</span><span class="fu"><a href="../reference/flag.html">flag</a></span><span class="op">(</span><span class="st">"UNSEEN"</span><span class="op">)</span>, <span class="fu"><a href="../reference/sent_since.html">sent_since</a></span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Jan-2026"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>           save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">previews</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_preview</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="st">"$"</span><span class="op">)</span>   <span class="co"># PREVIEW, RFC 8970</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">add_flags</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="st">"$"</span>, flags_to_set <span class="op">=</span> <span class="st">"\\Seen"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="server-side-previews-saved-dates-and-change-tracking">9.4) Server-side previews, saved dates, and change tracking<a class="anchor" aria-label="anchor" href="#server-side-previews-saved-dates-and-change-tracking"></a>
+</h3>
+<p><code>fetch_preview()</code> returns the short snippet the server generates for each message (<code>PREVIEW</code>, RFC 8970), without transferring the body. <code>fetch_metadata()</code> accepts the <code>PREVIEW</code>, <code>SAVEDATE</code> (RFC 8514), and <code>MODSEQ</code> (RFC 7162) attributes, and the criteria <code><a href="../reference/saved_before.html">saved_before()</a></code>, <code><a href="../reference/saved_before.html">saved_since()</a></code>, <code><a href="../reference/saved_before.html">saved_on()</a></code>, and <code><a href="../reference/modseq.html">modseq()</a></code> extend the custom search. The last one, together with <code>status(items = "HIGHESTMODSEQ")</code>, answers “what changed since the last run”:</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">last</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span>items <span class="op">=</span> <span class="st">"HIGHESTMODSEQ"</span><span class="op">)</span><span class="op">[[</span><span class="st">"HIGHESTMODSEQ"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co"># ... in a later session:</span></span>
+<span><span class="va">changed</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/modseq.html">modseq</a></span><span class="op">(</span><span class="va">last</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="sorting-with-server-side-aggregates-esort">9.5) Sorting with server-side aggregates (ESORT)<a class="anchor" aria-label="anchor" href="#sorting-with-server-side-aggregates-esort"></a>
+</h3>
+<p><code>sort(return = ...)</code> (RFC 5267) asks the server for the <code>COUNT</code>, <code>MIN</code>, <code>MAX</code>, or <code>ALL</code> items of the sorted set instead of the full id vector:</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">sort</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"SIZE"</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COUNT"</span>, <span class="st">"MAX"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="access-control-lists-and-quota-limits">9.6) Access control lists and quota limits<a class="anchor" aria-label="anchor" href="#access-control-lists-and-quota-limits"></a>
+</h3>
+<p><code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, and <code>my_rights()</code> implement the <code>ACL</code> extension (RFC 4314); <code>set_quota()</code> implements <code>SETQUOTA</code> (RFC 2087), which most servers restrict to administrators. <code>enable()</code> (RFC 5161) enables extensions that require it.</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">my_rights</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">set_acl</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Shared"</span>, identifier <span class="op">=</span> <span class="st">"user=bob"</span>, rights <span class="op">=</span> <span class="st">"lrs"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">get_acl</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Shared"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">

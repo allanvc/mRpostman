@@ -689,6 +689,15 @@ out <- con$fetch_metadata(msg = res)
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$fetch_preview()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+con$search_flag("UNSEEN") \%>\% con$fetch_preview()
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$fetch_text()`
 ## ------------------------------------------------
 
@@ -911,8 +920,10 @@ Other custom search:
 \code{\link[=before]{before()}},
 \code{\link[=flag]{flag()}},
 \code{\link[=larger_than]{larger_than()}},
+\code{\link[=modseq]{modseq()}},
 \code{\link[=older_than]{older_than()}},
 \code{\link[=on]{on()}},
+\code{\link[=saved_before]{saved_before()}},
 \code{\link[=sent_before]{sent_before()}},
 \code{\link[=sent_on]{sent_on()}},
 \code{\link[=sent_since]{sent_since()}},
@@ -995,6 +1006,7 @@ Other attachments:
     \item \href{#method-ImapCon-fetch_body}{\code{ImapCon$fetch_body()}}
     \item \href{#method-ImapCon-fetch_header}{\code{ImapCon$fetch_header()}}
     \item \href{#method-ImapCon-fetch_metadata}{\code{ImapCon$fetch_metadata()}}
+    \item \href{#method-ImapCon-fetch_preview}{\code{ImapCon$fetch_preview()}}
     \item \href{#method-ImapCon-fetch_text}{\code{ImapCon$fetch_text()}}
     \item \href{#method-ImapCon-copy_msg}{\code{ImapCon$copy_msg()}}
     \item \href{#method-ImapCon-move_msg}{\code{ImapCon$move_msg()}}
@@ -1744,7 +1756,7 @@ con$check()
   List mail folders in a mailbox.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_mail_folders(retries = 1)}
+    \preformatted{ImapCon$list_mail_folders(retries = 1, detailed = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -1752,12 +1764,20 @@ con$check()
     \describe{
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{detailed}}{A \code{logical}. If \code{TRUE}, issues
+\code{LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)} (LIST-EXTENDED,
+RFC 5258) and returns a \code{data.frame} with one row per folder and
+its attributes instead of the root/children list. Requires the server
+\code{LIST-EXTENDED} capability. Default is \code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
     A \code{list} containing the mail folder names and their inherent
-  structure.
+  structure or, with \code{detailed = TRUE}, a \code{data.frame} with
+  columns \code{folder}, \code{delimiter}, \code{attributes},
+  \code{selectable}, \code{has_children}, \code{subscribed}, and
+  \code{special_use}.
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
@@ -1821,7 +1841,9 @@ subscribed
     \describe{
       \item{\code{items}}{A \code{character} vector with the status data items to
 request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
-\code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default
+\code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}, plus the extension items
+\code{"SIZE"} (STATUS=SIZE, RFC 8438) and \code{"HIGHESTMODSEQ"}
+(CONDSTORE, RFC 7162), which require the corresponding capability. Default
 is \code{c("MESSAGES", "UNSEEN")}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -2035,7 +2057,9 @@ mail folder on the user's mailbox. If no name is passed, the command
 will be executed using the previously selected mail folder name.}
       \item{\code{items}}{A \code{character} vector with the status data items to
 request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
-\code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default is
+\code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}, plus the extension items
+\code{"SIZE"} (STATUS=SIZE, RFC 8438) and \code{"HIGHESTMODSEQ"}
+(CONDSTORE, RFC 7162), which require the corresponding capability. Default is
 all of them.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -3513,7 +3537,11 @@ sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
       \item{\code{attribute}}{An optional \code{character vector} specifying one or more
-attributes of the metadata of a message to fetch. See \link{metadata_options}.}
+attributes of the metadata of a message to fetch. See \link{metadata_options}.
+The extension attributes \code{"PREVIEW"} (RFC 8970),
+\code{"SAVEDATE"} (RFC 8514), and \code{"MODSEQ"} (CONDSTORE, RFC 7162)
+may also be requested when the server advertises the corresponding
+capability.}
       \item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
@@ -3548,6 +3576,44 @@ out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
 # or using a traditional approach
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
 out <- con$fetch_metadata(msg = res)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_preview"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_preview}{}}}
+\subsection{\code{ImapCon$fetch_preview()}}{
+  Fetch the server-generated preview of messages (IMAP
+  \code{FETCH ... (PREVIEW)}, RFC 8970): a short text snippet of each
+  message, produced by the server without transferring the message
+  body. Requires the server \code{PREVIEW} capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_preview(msg_id, use_uid = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids, or the \code{"$"} reference of a saved search.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs and the result is named by UID.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named \code{character} vector with one preview per message
+  (\code{NA} when the server has none).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+con$search_flag("UNSEEN") \%>\% con$fetch_preview()
 }
     \if{html}{\out{</div>}}
   }

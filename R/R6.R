@@ -87,6 +87,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
       self$con_params <- out$con_params
       self$con_handle <- out$con_handle
+      self$con_debug <- out$con_debug
 
       self$con_params$folder <- NA
 
@@ -496,15 +497,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description List mail folders in a mailbox.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
+    #' @param detailed A \code{logical}. If \code{TRUE}, issues
+    #'   \code{LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)} (LIST-EXTENDED,
+    #'   RFC 5258) and returns a \code{data.frame} with one row per folder and
+    #'   its attributes instead of the root/children list. Requires the server
+    #'   \code{LIST-EXTENDED} capability. Default is \code{FALSE}.
     #' @return A \code{list} containing the mail folder names and their inherent
-    #'   structure.
+    #'   structure or, with \code{detailed = TRUE}, a \code{data.frame} with
+    #'   columns \code{folder}, \code{delimiter}, \code{attributes},
+    #'   \code{selectable}, \code{has_children}, \code{subscribed}, and
+    #'   \code{special_use}.
     #' @examples
     #' \dontrun{
     #' folders <- con$list_mail_folders()
     #' folders
     #' }
-    list_mail_folders = function(retries = 1) {
-      out <- list_mail_folders_int(self, retries)
+    list_mail_folders = function(retries = 1, detailed = FALSE) {
+      out <- list_mail_folders_int(self, retries, detailed = detailed)
       return(out)
     },
 
@@ -533,7 +542,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   the server \code{LIST-STATUS} capability.
     #' @param items A \code{character} vector with the status data items to
     #'   request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
-    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default
+    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}, plus the extension items
+    #'   \code{"SIZE"} (STATUS=SIZE, RFC 8438) and \code{"HIGHESTMODSEQ"}
+    #'   (CONDSTORE, RFC 7162), which require the corresponding capability. Default
     #'   is \code{c("MESSAGES", "UNSEEN")}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -649,7 +660,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   will be executed using the previously selected mail folder name.
     #' @param items A \code{character} vector with the status data items to
     #'   request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
-    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default is
+    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}, plus the extension items
+    #'   \code{"SIZE"} (STATUS=SIZE, RFC 8438) and \code{"HIGHESTMODSEQ"}
+    #'   (CONDSTORE, RFC 7162), which require the corresponding capability. Default is
     #'   all of them.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -1705,6 +1718,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
     #' @param attribute An optional \code{character vector} specifying one or more
     #'   attributes of the metadata of a message to fetch. See \link{metadata_options}.
+    #'   The extension attributes \code{"PREVIEW"} (RFC 8970),
+    #'   \code{"SAVEDATE"} (RFC 8514), and \code{"MODSEQ"} (CONDSTORE, RFC 7162)
+    #'   may also be requested when the server advertises the corresponding
+    #'   capability.
     #' @param peek If \code{TRUE}, it does not mark messages as "read" after
     #'   fetching. Default is \code{TRUE}.
     #' @param partial \code{NULL} or a character string with format
@@ -1749,6 +1766,28 @@ ImapCon <- R6::R6Class("ImapCon",
         return(out)
       }
 
+    },
+
+    #' @description Fetch the server-generated preview of messages (IMAP
+    #'   \code{FETCH ... (PREVIEW)}, RFC 8970): a short text snippet of each
+    #'   message, produced by the server without transferring the message
+    #'   body. Requires the server \code{PREVIEW} capability.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids, or the \code{"$"} reference of a saved search.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs and the result is named by UID.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{character} vector with one preview per message
+    #'   (\code{NA} when the server has none).
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' con$search_flag("UNSEEN") %>% con$fetch_preview()
+    #' }
+    fetch_preview = function(msg_id, use_uid = FALSE, retries = 1) {
+      out <- fetch_preview_int(self, msg_id, use_uid, retries)
+      return(out)
     },
 
     #' @description Fetch message text

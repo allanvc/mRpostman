@@ -1,3 +1,33 @@
+## mRpostman 1.5.2 (2026-08-27 feature update)
+
+### New features
+
+- new `ImapCon$fetch_preview()` method (`FETCH ... (PREVIEW)`, RFC 8970): the short text snippet the server generates for each message, without transferring its body. Returns a named character vector; accepts the `"$"` reference of a saved search.
+
+- `ImapCon$fetch_metadata()` accepts the extension attributes `"PREVIEW"` (RFC 8970), `"SAVEDATE"` (RFC 8514), and `"MODSEQ"` (CONDSTORE, RFC 7162), each verified against the corresponding server capability. They are never requested by default.
+
+- `ImapCon$status()` and `ImapCon$list_folders_status()` accept the extension items `"SIZE"` (STATUS=SIZE, RFC 8438; the folder size in bytes) and `"HIGHESTMODSEQ"` (CONDSTORE, RFC 7162), capability-checked.
+
+- new search criterion constructors `saved_before()`, `saved_since()`, and `saved_on()` (SAVEDATE, RFC 8514), which compare the date a message was saved into the folder, and `modseq()` (CONDSTORE, RFC 7162), which matches the messages added or changed since a given modification sequence. Together with `status(items = "HIGHESTMODSEQ")`, `modseq()` supports "what changed since the last run" workflows without transferring anything else.
+
+- `ImapCon$list_mail_folders()` gained a `detailed` argument: with `detailed = TRUE` it issues `LIST "" "*" RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)` (LIST-EXTENDED, RFC 5258) and returns a `data.frame` with one row per folder and its attributes (`delimiter`, `selectable`, `has_children`, `subscribed`, `special_use`).
+
+### Improvements
+
+- commands that the server rejects with a tagged `NO` or `BAD` reply now fail immediately with the server's own reason (e.g. `The server rejected the command: NO [CANNOT] ...`) instead of the generic `Request error: the server returned an error.` after useless retries. The connection handle records the server's response lines through a libcurl debug callback; the `verbose` setting keeps its meaning and only controls whether that conversation is printed.
+
+### Documentation
+
+- the *basics* vignette gained a section on the extensions added since 1.5.0, and the *sandbox* vignette and `inst/docker/README.md` document the extensions the sandbox supports, including the newly enabled `acl` and `quota` plugins.
+
+### Bug fixes
+
+- plain `SEARCH` responses are now parsed by a dedicated helper (`parse_search_ids()`) that discards the `(MODSEQ n)` item appended by servers when a `MODSEQ` criterion is used; previously that number would have been returned as if it were a message id.
+
+### Tests
+
+- new offline tests for the SAVEDATE and CONDSTORE criteria, the `SEARCH` id extraction, the `PREVIEW` item parser, and the LIST-EXTENDED parser (`test-round3-parsers.R`); all features verified live against the Dovecot sandbox.
+
 ## mRpostman 1.5.1 (2026-08-27 feature update)
 
 ### New features

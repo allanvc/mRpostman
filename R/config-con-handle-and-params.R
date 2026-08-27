@@ -159,6 +159,15 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
 
   do.call(curl::handle_setopt, c(h, handle_params))
 
+  # the handle is always verbose at the libcurl level: a debug callback records
+  # the server's response lines (so that NO/BAD replies can be reported with
+  # their reason) and prints them only when the user asked for verbose output
+  con_debug <- new.env(parent = emptyenv())
+  con_debug$verbose <- isTRUE(verbose)
+  con_debug$lines <- character(0)
+  curl::handle_setopt(h, verbose = TRUE,
+                      debugfunction = make_debug_function(con_debug))
+
   # cleaning default_params to assign to self
 
   # print(default_params)
@@ -192,5 +201,6 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   # assign to self
   # print(con_params)
 
-  return(list("con_params" = con_params, "con_handle" = h))
+  return(list("con_params" = con_params, "con_handle" = h,
+              "con_debug" = con_debug))
 }

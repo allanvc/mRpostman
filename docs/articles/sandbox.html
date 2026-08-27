@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -276,12 +276,24 @@
 <span><span class="va">con</span><span class="op">$</span><span class="fu">add_flags</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">ids_flagged</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, flags_to_set <span class="op">=</span> <span class="st">"\\Deleted"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">expunge</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
+<div class="section level3">
+<h3 id="protocol-extensions">Protocol extensions<a class="anchor" aria-label="anchor" href="#protocol-extensions"></a>
+</h3>
+<p>Dovecot advertises most of the optional extensions the package implements (<code>UIDPLUS</code>, <code>LIST-STATUS</code>, <code>LIST-EXTENDED</code>, <code>SEARCHRES</code>, <code>ESORT</code>, <code>PREVIEW</code>, <code>SAVEDATE</code>, <code>CONDSTORE</code>, <code>STATUS=SIZE</code>), and the sandbox configuration also enables the <code>acl</code> and <code>quota</code> plugins, so the <code>ACL</code> and <code>QUOTA</code> methods can be exercised locally:</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">list_folders_status</span><span class="op">(</span>items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MESSAGES"</span>, <span class="st">"UNSEEN"</span>, <span class="st">"SIZE"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/flag.html">flag</a></span><span class="op">(</span><span class="st">"FLAGGED"</span><span class="op">)</span>, save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">fetch_preview</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="st">"$"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">sort</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"SIZE"</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COUNT"</span>, <span class="st">"MAX"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">my_rights</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">get_quota_root</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
 <h2 id="resetting-and-tearing-down">Resetting and tearing down<a class="anchor" aria-label="anchor" href="#resetting-and-tearing-down"></a>
 </h2>
 <p>Since the server accepts <strong>any username</strong> — and each one gets its own independent mailbox — the quickest way to start over is to simply connect with a new username, with no need to touch the container:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/configure_imap.html">configure_imap</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"imap://localhost:1430"</span>,</span>
 <span>                       username <span class="op">=</span> <span class="st">"testuser2"</span>, <span class="co"># any new name = pristine mailbox</span></span>
 <span>                       password <span class="op">=</span> <span class="st">"sandbox"</span>,</span>
@@ -289,8 +301,8 @@
 <span><span class="fu"><a href="../reference/populate_sandbox.html">populate_sandbox</a></span><span class="op">(</span><span class="va">con2</span>, n <span class="op">=</span> <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
 <p>This is also handy for keeping several corpora side by side (e.g. one mailbox per experiment or per <code>seed</code>).</p>
 <p>Alternatively, the mailboxes live inside the container, so recreating it resets everything at once:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a><span class="ex">docker</span> rm -f mrpostman-sandbox</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a><span class="ex">docker</span> run -d --name mrpostman-sandbox -p 1430:143 mrpostman-sandbox</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true"></a><span class="ex">docker</span> rm -f mrpostman-sandbox</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true"></a><span class="ex">docker</span> run -d --name mrpostman-sandbox -p 1430:143 mrpostman-sandbox</span></code></pre></div>
 <p>Either way, a new <code><a href="../reference/populate_sandbox.html">populate_sandbox()</a></code> call recreates the exact same corpus.</p>
 </div>
   </div>

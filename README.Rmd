@@ -82,10 +82,10 @@ Below, we present all the available methods and functions, grouped by type of op
   + relational operators functions: `AND()`, `OR()`;
   + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
   `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`,
-  `larger_than()`, `younger_than()`, `older_than()`;
+  `larger_than()`, `younger_than()`, `older_than()`, `saved_before()`, `saved_since()`, `saved_on()`, `modseq()`;
 * **server-side sort and thread methods**: `sort()`, `thread()`;
 * **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-`fetch_metadata()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`;
+`fetch_metadata()`, `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`;
 * **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
 * **complementary methods**: `copy_msg()`, `move_msg()`, `append_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
 * **MIME-decoding and message-text helper functions**: `decode_mime_header()`, `clean_msg_text()`.
@@ -136,8 +136,13 @@ The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in
 | `ENABLE`                | `enable()`                                                  | `ENABLE`                                | [5161](https://datatracker.ietf.org/doc/html/rfc5161)      |
 | `SEARCH RETURN (SAVE)`  | `search(save = TRUE)`, then `msg_id = "$"` in fetch/flag/copy/move/delete methods | `SEARCHRES` | [5182](https://datatracker.ietf.org/doc/html/rfc5182) |
 | `SORT RETURN (...)`     | `sort(return = ...)`                                        | `ESORT`                                 | [5267](https://datatracker.ietf.org/doc/html/rfc5267)      |
+| `LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)` | `list_mail_folders(detailed = TRUE)`           | `LIST-EXTENDED`                         | [5258](https://datatracker.ietf.org/doc/html/rfc5258)      |
+| `STATUS (SIZE)`         | `status(items = "SIZE")`, `list_folders_status(items = "SIZE")` | `STATUS=SIZE`                       | [8438](https://datatracker.ietf.org/doc/html/rfc8438)      |
+| `FETCH (PREVIEW)`       | `fetch_preview()`, `fetch_metadata(attribute = "PREVIEW")`  | `PREVIEW`                               | [8970](https://datatracker.ietf.org/doc/html/rfc8970)      |
+| `FETCH (SAVEDATE)`, `SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE` | `fetch_metadata(attribute = "SAVEDATE")`, `saved_before()` / `saved_on()` / `saved_since()` | `SAVEDATE` | [8514](https://datatracker.ietf.org/doc/html/rfc8514) |
+| `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `SEARCH MODSEQ` | `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ")`, `modseq()` | `CONDSTORE` | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
 
-Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: `CONDSTORE`/`QRESYNC` (out of scope, although `enable("CONDSTORE")` is available) and `IDLE` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
+Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: `QRESYNC` and the conditional `STORE`/`FETCH` forms of `CONDSTORE` (mailbox-synchronization machinery for offline readers; the `HIGHESTMODSEQ`/`MODSEQ` subset above is what an analytical client needs) and `IDLE` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
 
 ## Installation
 

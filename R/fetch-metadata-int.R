@@ -40,6 +40,15 @@ fetch_metadata_int <- function(self, msg_id, use_uid, attribute, write_to_disk,
     attribute <- metadata_options()
   }
 
+  # extension attributes are gated on the server capability that defines them
+  ext_caps <- c(PREVIEW = "PREVIEW", SAVEDATE = "SAVEDATE", MODSEQ = "CONDSTORE")
+  ext_rfcs <- c(PREVIEW = "RFC 8970", SAVEDATE = "RFC 8514", MODSEQ = "RFC 7162")
+  for (a in intersect(toupper(attribute), names(ext_caps))) {
+    assert_capability(self, ext_caps[[a]],
+                      command = paste0('fetch_metadata(attribute = "', a, '")'),
+                      rfc = ext_rfcs[[a]], retries = retries)
+  }
+
   attribute <- paste0(attribute, collapse = " ")
 
   # use_uid

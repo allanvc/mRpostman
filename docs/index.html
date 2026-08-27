@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
       </span>
     </div>
 
@@ -181,13 +181,13 @@
 <li>
 <strong>the custom-search method and its helper functions</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>;<ul>
 <li>relational operators functions: <code><a href="reference/AND.html">AND()</a></code>, <code><a href="reference/OR.html">OR()</a></code>;</li>
-<li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>;</li>
+<li>criteria definition functions: <code><a href="reference/before.html">before()</a></code>, <code><a href="reference/since.html">since()</a></code>, <code><a href="reference/on.html">on()</a></code>, <code><a href="reference/sent_before.html">sent_before()</a></code>, <code><a href="reference/sent_since.html">sent_since()</a></code>, <code><a href="reference/sent_on.html">sent_on()</a></code>, <code><a href="reference/string.html">string()</a></code>, <code><a href="reference/flag.html">flag()</a></code>, <code><a href="reference/smaller_than.html">smaller_than()</a></code>, <code><a href="reference/larger_than.html">larger_than()</a></code>, <code><a href="reference/younger_than.html">younger_than()</a></code>, <code><a href="reference/older_than.html">older_than()</a></code>, <code><a href="reference/saved_before.html">saved_before()</a></code>, <code><a href="reference/saved_before.html">saved_since()</a></code>, <code><a href="reference/saved_before.html">saved_on()</a></code>, <code><a href="reference/modseq.html">modseq()</a></code>;</li>
 </ul>
 </li>
 <li>
 <strong>server-side sort and thread methods</strong>: <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code>, <code>thread()</code>;</li>
 <li>
-<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_preview()</code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
 <strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
@@ -442,9 +442,51 @@
 <td><code>ESORT</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc5267" class="external-link">5267</a></td>
 </tr>
+<tr class="odd">
+<td><code>LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)</code></td>
+<td><code>list_mail_folders(detailed = TRUE)</code></td>
+<td><code>LIST-EXTENDED</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5258" class="external-link">5258</a></td>
+</tr>
+<tr class="even">
+<td><code>STATUS (SIZE)</code></td>
+<td>
+<code>status(items = "SIZE")</code>, <code>list_folders_status(items = "SIZE")</code>
+</td>
+<td><code>STATUS=SIZE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8438" class="external-link">8438</a></td>
+</tr>
+<tr class="odd">
+<td><code>FETCH (PREVIEW)</code></td>
+<td>
+<code>fetch_preview()</code>, <code>fetch_metadata(attribute = "PREVIEW")</code>
+</td>
+<td><code>PREVIEW</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8970" class="external-link">8970</a></td>
+</tr>
+<tr class="even">
+<td>
+<code>FETCH (SAVEDATE)</code>, <code>SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE</code>
+</td>
+<td>
+<code>fetch_metadata(attribute = "SAVEDATE")</code>, <code><a href="reference/saved_before.html">saved_before()</a></code> / <code><a href="reference/saved_before.html">saved_on()</a></code> / <code><a href="reference/saved_before.html">saved_since()</a></code>
+</td>
+<td><code>SAVEDATE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8514" class="external-link">8514</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>STATUS (HIGHESTMODSEQ)</code>, <code>FETCH (MODSEQ)</code>, <code>SEARCH MODSEQ</code>
+</td>
+<td>
+<code>status(items = "HIGHESTMODSEQ")</code>, <code>fetch_metadata(attribute = "MODSEQ")</code>, <code><a href="reference/modseq.html">modseq()</a></code>
+</td>
+<td><code>CONDSTORE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7162" class="external-link">7162</a></td>
+</tr>
 </tbody>
 </table>
-<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope, although <code>enable("CONDSTORE")</code> is available) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: <code>QRESYNC</code> and the conditional <code>STORE</code>/<code>FETCH</code> forms of <code>CONDSTORE</code> (mailbox-synchronization machinery for offline readers; the <code>HIGHESTMODSEQ</code>/<code>MODSEQ</code> subset above is what an analytical client needs) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
 </div>
 </div>
 <div class="section level2">

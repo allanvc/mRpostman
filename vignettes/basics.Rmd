@@ -941,6 +941,69 @@ con$append_msg(message = msg, folder = "Drafts")
 
 ```
 
+## 9) Protocol extensions (since 1.5.0)
+
+Versions 1.5.0 to 1.5.2 completed the IMAP4rev1 command set (`CHECK`) and added a set of optional extensions. Each one is checked against the server's `CAPABILITY` response before the command is issued, so an unsupported extension fails with a message naming the command, its RFC, and `list_server_capabilities()`. The Docker sandbox (see the *sandbox* vignette) supports all of them.
+
+### 9.1) UIDPLUS: UIDs of appended and copied messages
+
+With `UIDPLUS` (RFC 4315), `append_msg()` returns the UID the server assigned to the message, and `copy_msg()`/`move_msg()` attach the source-to-destination UID mapping as the `"copyuid"` attribute of their result. `append_msg()` also gained a `flags` argument.
+
+```{r, eval = FALSE}
+uid <- con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
+ids <- con$copy_msg(msg_id = c(12, 15), use_uid = TRUE, to_folder = "Archive",
+                    reselect = FALSE)
+attr(ids, "copyuid")
+```
+
+### 9.2) Folder listings in one round trip
+
+`list_folders_status()` (`LIST-STATUS`, RFC 5819) returns every selectable folder with its counters, and `list_mail_folders(detailed = TRUE)` (`LIST-EXTENDED`, RFC 5258) returns the folder attributes. `status()` accepts the `SIZE` (`STATUS=SIZE`, RFC 8438) and `HIGHESTMODSEQ` (`CONDSTORE`, RFC 7162) items.
+
+```{r, eval = FALSE}
+con$list_folders_status(items = c("MESSAGES", "UNSEEN", "SIZE"))
+con$list_mail_folders(detailed = TRUE)
+```
+
+### 9.3) Saved search results (SEARCHRES)
+
+With `search(save = TRUE)` (RFC 5182) the result stays on the server and the method returns the `"$"` reference, which the fetch, flag, copy, move, and delete methods accept as `msg_id`. No message id crosses the wire.
+
+```{r, eval = FALSE}
+con$search(request = AND(flag("UNSEEN"), sent_since(date_char = "01-Jan-2026")),
+           save = TRUE)
+previews <- con$fetch_preview(msg_id = "$")   # PREVIEW, RFC 8970
+con$add_flags(msg_id = "$", flags_to_set = "\\Seen")
+```
+
+### 9.4) Server-side previews, saved dates, and change tracking
+
+`fetch_preview()` returns the short snippet the server generates for each message (`PREVIEW`, RFC 8970), without transferring the body. `fetch_metadata()` accepts the `PREVIEW`, `SAVEDATE` (RFC 8514), and `MODSEQ` (RFC 7162) attributes, and the criteria `saved_before()`, `saved_since()`, `saved_on()`, and `modseq()` extend the custom search. The last one, together with `status(items = "HIGHESTMODSEQ")`, answers "what changed since the last run":
+
+```{r, eval = FALSE}
+last <- con$status(items = "HIGHESTMODSEQ")[["HIGHESTMODSEQ"]]
+# ... in a later session:
+changed <- con$search(request = modseq(last + 1))
+```
+
+### 9.5) Sorting with server-side aggregates (ESORT)
+
+`sort(return = ...)` (RFC 5267) asks the server for the `COUNT`, `MIN`, `MAX`, or `ALL` items of the sorted set instead of the full id vector:
+
+```{r, eval = FALSE}
+con$sort(by = "SIZE", reverse = TRUE, return = c("COUNT", "MAX"))
+```
+
+### 9.6) Access control lists and quota limits
+
+`get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, and `my_rights()` implement the `ACL` extension (RFC 4314); `set_quota()` implements `SETQUOTA` (RFC 2087), which most servers restrict to administrators. `enable()` (RFC 5161) enables extensions that require it.
+
+```{r, eval = FALSE}
+con$my_rights(name = "INBOX")
+con$set_acl(name = "Shared", identifier = "user=bob", rights = "lrs")
+con$get_acl(name = "Shared")
+```
+
 ## References
 
 Babcock, N. (2016), _Introduction to IMAP_, Blog, May 2016, [http](https://nbsoftsolutions.com/blog/introduction-to-imap).

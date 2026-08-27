@@ -217,6 +217,19 @@ con$add_flags(msg_id = ids_flagged[1], flags_to_set = "\\Deleted")
 con$expunge()
 ```
 
+### Protocol extensions
+
+Dovecot advertises most of the optional extensions the package implements (`UIDPLUS`, `LIST-STATUS`, `LIST-EXTENDED`, `SEARCHRES`, `ESORT`, `PREVIEW`, `SAVEDATE`, `CONDSTORE`, `STATUS=SIZE`), and the sandbox configuration also enables the `acl` and `quota` plugins, so the `ACL` and `QUOTA` methods can be exercised locally:
+
+```{r}
+con$list_folders_status(items = c("MESSAGES", "UNSEEN", "SIZE"))
+con$search(request = flag("FLAGGED"), save = TRUE)
+con$fetch_preview(msg_id = "$")
+con$sort(by = "SIZE", reverse = TRUE, return = c("COUNT", "MAX"))
+con$my_rights("INBOX")
+con$get_quota_root("INBOX")
+```
+
 ## Resetting and tearing down
 
 Since the server accepts **any username** — and each one gets its own independent mailbox — the quickest way to start over is to simply connect with a new username, with no need to touch the container:

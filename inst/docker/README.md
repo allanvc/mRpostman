@@ -50,6 +50,17 @@ con$search_string(expr = "sales", where = "SUBJECT")
 
 See the *"A reproducible IMAP sandbox with Docker"* vignette for a guided tour.
 
+## Enabled extensions
+
+Besides the extensions Dovecot advertises by default (`SORT`, `THREAD`,
+`UIDPLUS`, `LIST-STATUS`, `LIST-EXTENDED`, `ESEARCH`, `ESORT`, `SEARCHRES`,
+`CONDSTORE`, `PREVIEW`, `SAVEDATE`, `STATUS=SIZE`, `MOVE`, `NAMESPACE`,
+`UNSELECT`, `ENABLE`, `ID`, `WITHIN`), `dovecot.conf` enables the `acl` and
+`quota` plugins (`acl = vfile`, `acl_anyone = allow`, a 1 GB storage quota) so
+that the package's `ACL` and `QUOTA` methods can be tested. `SETQUOTA` is
+refused by Dovecot unless a `quota_set` dictionary is configured, which the
+sandbox deliberately does not do.
+
 ## Tear down
 
 ```sh

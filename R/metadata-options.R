@@ -26,6 +26,9 @@ metadata_options <- function() {
 
   metadata_opts <- c("INTERNALDATE", "UID", "ENVELOPE", "FLAGS", "RFC822.SIZE",
                   "BODYSTRUCTURE")
+  # extension attributes, only requested explicitly (never by default):
+  # "PREVIEW" (RFC 8970), "SAVEDATE" (RFC 8514), and "MODSEQ" (CONDSTORE,
+  # RFC 7162); fetch_metadata() checks the corresponding capability
 
   return(metadata_opts)
 }

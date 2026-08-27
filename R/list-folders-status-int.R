@@ -16,7 +16,8 @@ list_folders_status_int <- function(self, items, retries) {
 
   items <- toupper(items)
 
-  valid_items <- c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN")
+  valid_items <- c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN",
+                   "SIZE", "HIGHESTMODSEQ")
 
   assertthat::assert_that(
     all(items %in% valid_items),
@@ -24,6 +25,16 @@ list_folders_status_int <- function(self, items, retries) {
                paste(valid_items, collapse = ", "), '.'))
 
   check_args(retries = retries)
+
+  # extension items are gated on the capability that defines them
+  if ("SIZE" %in% items) {
+    assert_capability(self, "STATUS=SIZE", command = 'list_folders_status(items = "SIZE")',
+                      rfc = "RFC 8438", retries = retries)
+  }
+  if ("HIGHESTMODSEQ" %in% items) {
+    assert_capability(self, "CONDSTORE", command = 'list_folders_status(items = "HIGHESTMODSEQ")',
+                      rfc = "RFC 7162", retries = retries)
+  }
 
   assert_capability(self, "LIST-STATUS", command = "list_folders_status",
                     rfc = "RFC 5819", retries = retries)
