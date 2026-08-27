@@ -1,0 +1,3 @@
+# Rtools ships a static libcurl (as used by the 'curl' package); link it with
+# the libraries it depends on
+PKG_LIBS = -lcurl -lnormaliz -lssh2 -lgcrypt -lgpg-error -lidn2 -lunistring -liconv -lssl -lcrypto -lgdi32 -lwldap32 -lz -lws2_32 -lwsock32 -lcrypt32 -lbcrypt -lzstd -lbrotlidec -lbrotlicommon

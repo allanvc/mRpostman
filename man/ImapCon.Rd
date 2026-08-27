@@ -203,6 +203,26 @@ con$disconnect()
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$idle()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+# block until something arrives (or 10 minutes pass), then fetch it
+ev <- con$idle(timeout = 600, callback = function(ev) !any(ev$type == "EXISTS"))
+if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"]))
+}
+
+## ------------------------------------------------
+## Method `ImapCon$append_msgs()`
+## ------------------------------------------------
+
+\dontrun{
+msgs <- vapply(1:3, function(i) paste0("Subject: m", i, "\r\n\r\nbody\r\n"), "")
+con$append_msgs(msgs, folder = "Archive", flags = "Seen")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$list_server_capabilities()`
 ## ------------------------------------------------
 
@@ -1027,6 +1047,8 @@ Other attachments:
     \item \href{#method-ImapCon-reset_password}{\code{ImapCon$reset_password()}}
     \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
     \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
+    \item \href{#method-ImapCon-idle}{\code{ImapCon$idle()}}
+    \item \href{#method-ImapCon-append_msgs}{\code{ImapCon$append_msgs()}}
     \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
     \item \href{#method-ImapCon-enable}{\code{ImapCon$enable()}}
     \item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
@@ -1336,6 +1358,107 @@ set.}
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$disconnect()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-idle"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-idle}{}}}
+\subsection{\code{ImapCon$idle()}}{
+  Wait for new messages and other mailbox events (IMAP
+  \code{IDLE}, RFC 2177). A second, dedicated connection is opened on
+  a raw TLS socket (the main connection stays free), the folder is
+  selected there, and the server's unsolicited notifications
+  (\code{EXISTS}, \code{EXPUNGE}, \code{FETCH} flag changes,
+  \code{RECENT}) are collected until \code{timeout} seconds elapse or
+  \code{callback} returns \code{FALSE}. Requires the server
+  \code{IDLE} capability and, for TLS, an \code{imaps://} URL.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$idle(timeout = 300, callback = NULL, folder = NULL, renew = 25 * 60)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{timeout}}{Maximum number of seconds to wait. Default is
+\code{300}.}
+      \item{\code{callback}}{\code{NULL} (default) or a function called with a
+\code{data.frame} of events each time the server sends some; return
+\code{FALSE} from it to stop waiting.}
+      \item{\code{folder}}{The folder to watch. If \code{NULL} (default), the
+currently selected folder.}
+      \item{\code{renew}}{Seconds after which the \code{IDLE} command is renewed
+(servers may close connections idling for too long). Default is 25
+minutes.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per event: \code{type}
+  (\code{"EXISTS"}, \code{"EXPUNGE"}, \code{"FETCH"},
+  \code{"RECENT"}), \code{id} (the message count or sequence number
+  reported), and \code{detail}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder("INBOX")
+# block until something arrives (or 10 minutes pass), then fetch it
+ev <- con$idle(timeout = 600, callback = function(ev) !any(ev$type == "EXISTS"))
+if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"]))
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-append_msgs"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-append_msgs}{}}}
+\subsection{\code{ImapCon$append_msgs()}}{
+  Append several messages to a mail folder in a single
+  command (IMAP \code{MULTIAPPEND}, RFC 3502), sent over the raw socket
+  layer as one literal per message. On servers without
+  \code{MULTIAPPEND}, one \code{append_msg()} per message is issued
+  instead.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$append_msgs(
+  messages,
+  folder = NULL,
+  flags = NULL,
+  mute = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{messages}}{A \code{character} vector, or a \code{list} of
+\code{character} strings or \code{raw} vectors, each a full RFC 822
+message.}
+      \item{\code{folder}}{A \code{character} string with the destination folder.
+If \code{NULL}, the previously selected folder is used.}
+      \item{\code{flags}}{\code{NULL} (default) or a \code{character} vector of
+flags stored with every message (e.g. \code{"Seen"}).}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message. Default is \code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly, an \code{integer} vector with the UIDs assigned to
+  the messages (\code{APPENDUID}, UIDPLUS), or \code{NA}s when the
+  server does not report them.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{msgs <- vapply(1:3, function(i) paste0("Subject: m", i, "\r\n\r\nbody\r\n"), "")
+con$append_msgs(msgs, folder = "Archive", flags = "Seen")
 }
     \if{html}{\out{</div>}}
   }

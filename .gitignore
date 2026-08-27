@@ -4,3 +4,7 @@
 .Ruserdata
 docs
 .httr-oauth
+src/Makevars
+src/*.o
+src/*.so
+src/*.dll

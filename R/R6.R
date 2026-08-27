@@ -39,10 +39,11 @@
 ImapCon <- R6::R6Class("ImapCon",
   portable = FALSE,
   lock_objects = FALSE,
-  # private = list(
-  #   # password = character(0)#,
-  #   # xoauth2_bearer = character(0),
-  # ),
+  # credentials for the second (event) connection of idle()/append_msgs():
+  # never printed, not part of con_params, cleared by disconnect()
+  private = list(
+    auth = NULL
+  ),
   public = list(
 
     #' @description Configure and create a new IMAP connection.
@@ -94,6 +95,8 @@ ImapCon <- R6::R6Class("ImapCon",
       self$con_params <- out$con_params
       self$con_handle <- out$con_handle
       self$con_debug <- out$con_debug
+      private$auth <- list(password = password, xoauth2_bearer = xoauth2_bearer,
+                           oauth_mechanism = toupper(oauth_mechanism)[1])
 
       self$con_params$folder <- NA
 
@@ -195,6 +198,8 @@ ImapCon <- R6::R6Class("ImapCon",
       password = x
 
       modify_con_handle(self, password = password)
+      private$auth <- list(password = password, xoauth2_bearer = NULL,
+                           oauth_mechanism = private$auth$oauth_mechanism)
 
     },
 
@@ -205,6 +210,8 @@ ImapCon <- R6::R6Class("ImapCon",
       xoauth2_bearer = x
 
       modify_con_handle(self, xoauth2_bearer = xoauth2_bearer)
+      private$auth <- list(password = NULL, xoauth2_bearer = xoauth2_bearer,
+                           oauth_mechanism = private$auth$oauth_mechanism)
 
     },
 
@@ -221,7 +228,72 @@ ImapCon <- R6::R6Class("ImapCon",
     disconnect = function() {
       self$con_handle <- NULL
       self$con_params$folder <- NA
+      private$auth <- NULL
       invisible(TRUE)
+    },
+
+    #' @description Wait for new messages and other mailbox events (IMAP
+    #'   \code{IDLE}, RFC 2177). A second, dedicated connection is opened on
+    #'   a raw TLS socket (the main connection stays free), the folder is
+    #'   selected there, and the server's unsolicited notifications
+    #'   (\code{EXISTS}, \code{EXPUNGE}, \code{FETCH} flag changes,
+    #'   \code{RECENT}) are collected until \code{timeout} seconds elapse or
+    #'   \code{callback} returns \code{FALSE}. Requires the server
+    #'   \code{IDLE} capability and, for TLS, an \code{imaps://} URL.
+    #' @param timeout Maximum number of seconds to wait. Default is
+    #'   \code{300}.
+    #' @param callback \code{NULL} (default) or a function called with a
+    #'   \code{data.frame} of events each time the server sends some; return
+    #'   \code{FALSE} from it to stop waiting.
+    #' @param folder The folder to watch. If \code{NULL} (default), the
+    #'   currently selected folder.
+    #' @param renew Seconds after which the \code{IDLE} command is renewed
+    #'   (servers may close connections idling for too long). Default is 25
+    #'   minutes.
+    #' @return A \code{data.frame} with one row per event: \code{type}
+    #'   (\code{"EXISTS"}, \code{"EXPUNGE"}, \code{"FETCH"},
+    #'   \code{"RECENT"}), \code{id} (the message count or sequence number
+    #'   reported), and \code{detail}.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' # block until something arrives (or 10 minutes pass), then fetch it
+    #' ev <- con$idle(timeout = 600, callback = function(ev) !any(ev$type == "EXISTS"))
+    #' if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"]))
+    #' }
+    idle = function(timeout = 300, callback = NULL, folder = NULL, renew = 25 * 60) {
+      out <- idle_int(self, private$auth, timeout, callback, folder, renew)
+      return(out)
+    },
+
+    #' @description Append several messages to a mail folder in a single
+    #'   command (IMAP \code{MULTIAPPEND}, RFC 3502), sent over the raw socket
+    #'   layer as one literal per message. On servers without
+    #'   \code{MULTIAPPEND}, one \code{append_msg()} per message is issued
+    #'   instead.
+    #' @param messages A \code{character} vector, or a \code{list} of
+    #'   \code{character} strings or \code{raw} vectors, each a full RFC 822
+    #'   message.
+    #' @param folder A \code{character} string with the destination folder.
+    #'   If \code{NULL}, the previously selected folder is used.
+    #' @param flags \code{NULL} (default) or a \code{character} vector of
+    #'   flags stored with every message (e.g. \code{"Seen"}).
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return Invisibly, an \code{integer} vector with the UIDs assigned to
+    #'   the messages (\code{APPENDUID}, UIDPLUS), or \code{NA}s when the
+    #'   server does not report them.
+    #' @examples
+    #' \dontrun{
+    #' msgs <- vapply(1:3, function(i) paste0("Subject: m", i, "\r\n\r\nbody\r\n"), "")
+    #' con$append_msgs(msgs, folder = "Archive", flags = "Seen")
+    #' }
+    append_msgs = function(messages, folder = NULL, flags = NULL, mute = FALSE,
+                           retries = 1) {
+      out <- append_msgs_int(self, private$auth, messages, folder, flags, mute, retries)
+      invisible(out)
     },
 
     # List elements

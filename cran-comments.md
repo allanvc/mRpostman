@@ -1,6 +1,9 @@
-**mRpostman - Update to v1.5.5**
+**mRpostman - Update to v2.0.0**
 
-This is a feature release: it completes the IMAP4rev1 client command set
+This is a major release. The package now has a small compiled component
+(`src/imap_socket.c`, linking libcurl, already a system requirement) that
+provides a raw TLS socket via libcurl's `CONNECT_ONLY` mode, used for `IDLE`
+(RFC 2177) and `MULTIAPPEND` (RFC 3502). It also completes the IMAP4rev1 client command set
 (`CHECK`) and adds the `UIDPLUS`, `LIST-STATUS`, `LIST-EXTENDED`, `ACL`,
 `SETQUOTA`, `ENABLE`, `SEARCHRES`, `ESORT`, `PREVIEW`, `SAVEDATE`,
 `STATUS=SIZE`, `CONDSTORE`, `QRESYNC`, and `METADATA`, all capability-checked; parses

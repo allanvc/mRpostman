@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -191,7 +191,7 @@
 <li>
 <strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
-<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>append_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
+<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>append_msg()</code>, <code>append_msgs()</code>, <code>idle()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
 <li>
 <strong>MIME-decoding and message-text helper functions</strong>: <code><a href="reference/decode_mime_header.html">decode_mime_header()</a></code>, <code><a href="reference/clean_msg_text.html">clean_msg_text()</a></code>, <code><a href="reference/parse_envelope.html">parse_envelope()</a></code>, <code><a href="reference/parse_bodystructure.html">parse_bodystructure()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_encode()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_decode()</a></code>.</li>
 </ul>
@@ -505,6 +505,20 @@
 <td><a href="https://datatracker.ietf.org/doc/html/rfc5464" class="external-link">5464</a></td>
 </tr>
 <tr class="even">
+<td><code>IDLE</code></td>
+<td>
+<code>idle()</code> (on a dedicated second connection)</td>
+<td><code>IDLE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc2177" class="external-link">2177</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>APPEND</code> (multiple literals)</td>
+<td><code>append_msgs()</code></td>
+<td><code>MULTIAPPEND</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc3502" class="external-link">3502</a></td>
+</tr>
+<tr class="even">
 <td><code>LIST ... RETURN (MYRIGHTS)</code></td>
 <td>
 <code>list_mail_folders(detailed = TRUE)</code> (<code>my_rights</code> column)</td>
@@ -525,7 +539,7 @@
 </tr>
 </tbody>
 </table>
-<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: <code>IDLE</code> and <code>NOTIFY</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Not implemented: <code>NOTIFY</code> (RFC 5465), <code>CATENATE</code>, <code>BINARY</code>, and <code>COMPRESS=DEFLATE</code>.</p>
 </div>
 </div>
 <div class="section level2">

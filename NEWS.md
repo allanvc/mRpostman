@@ -1,3 +1,19 @@
+## mRpostman 2.0.0 (2026-08-27 major update)
+
+### New features
+
+- **A raw socket layer, and with it `IDLE`.** The package gains a small compiled component (`src/imap_socket.c`) that asks libcurl for a connection in `CONNECT_ONLY` mode, so that libcurl still performs the TCP connection and the TLS handshake (certificate verification, SNI, system CA bundle) but hands the established socket over, and a minimal IMAP session written in R on top of it (`R/raw-session.R`: tagged commands, `+` continuations, literals, `AUTHENTICATE PLAIN`/`XOAUTH2`/`OAUTHBEARER`). This is used only where libcurl's one-shot request model cannot go; everything else keeps using libcurl as before.
+
+- new `ImapCon$idle()` method (`IDLE`, RFC 2177): opens a second, dedicated connection, selects the folder there, and collects the server's unsolicited notifications (`EXISTS`, `EXPUNGE`, `FETCH`, `RECENT`) until a timeout elapses or a callback returns `FALSE`; the `IDLE` command is renewed periodically (servers close long idles). The main connection stays free to fetch what the events announce. Requires an `imaps://` URL for TLS (STARTTLS is not available on the raw socket) or `use_ssl = FALSE` for a plain server such as the Docker sandbox.
+
+- new `ImapCon$append_msgs()` method (`MULTIAPPEND`, RFC 3502): several messages appended in one command, one literal per message, returning the assigned UIDs; falls back to one `append_msg()` per message on servers without the capability.
+
+- the credentials are now kept in a private field of the connection object (never printed, not part of `con_params`, cleared by `disconnect()`), so that the second connection can authenticate; `reset_password()`/`reset_xoauth2_bearer()` update it.
+
+### Notes
+
+- The compiled component links against the system libcurl (`pkg-config --libs libcurl`; Rtools' bundled libcurl on Windows). The same functionality has been proposed to the `curl` package as `curl_send()`/`curl_recv()`; once available there, `src/` will be removed.
+
 ## mRpostman 1.5.5 (2026-08-27 feature update)
 
 ### New features

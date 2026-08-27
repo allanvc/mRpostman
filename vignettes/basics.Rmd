@@ -1004,6 +1004,29 @@ con$set_acl(name = "Shared", identifier = "user=bob", rights = "lrs")
 con$get_acl(name = "Shared")
 ```
 
+## 10) A second connection for IDLE and MULTIAPPEND (since 2.0.0)
+
+Two operations cannot be expressed as one libcurl request: `IDLE` (RFC 2177), which parks the connection while the server pushes notifications, and commands that carry several literals, such as `MULTIAPPEND` (RFC 3502). For them, `mRpostman` opens a second, dedicated connection through libcurl's `CONNECT_ONLY` mode (libcurl still performs the TLS handshake and certificate verification) and speaks IMAP directly on that socket. The main connection stays free.
+
+`idle()` waits until something happens in the folder, or until `timeout` seconds elapse, and returns the events the server announced. A callback can stop the wait early, and the main connection can then fetch what arrived:
+
+```{r, eval = FALSE}
+con$select_folder("INBOX")
+ev <- con$idle(timeout = 600, callback = function(ev) !any(ev$type == "EXISTS"))
+if (any(ev$type == "EXISTS")) {
+  con$fetch_envelope(msg_id = max(ev$id[ev$type == "EXISTS"]))
+}
+```
+
+`append_msgs()` uploads several messages in one command when the server advertises `MULTIAPPEND`, and one `append_msg()` at a time otherwise:
+
+```{r, eval = FALSE}
+msgs <- vapply(1:3, function(i) paste0("Subject: m", i, "\r\n\r\nbody ", i, "\r\n"), "")
+uids <- con$append_msgs(msgs, folder = "Archive", flags = "Seen")
+```
+
+The second connection needs the credentials again: they are kept in a private field of the connection object (never printed, not part of `con_params`) and cleared by `disconnect()`. For TLS, the URL must be `imaps://` (STARTTLS is not available on the raw socket).
+
 ## References
 
 Babcock, N. (2016), _Introduction to IMAP_, Blog, May 2016, [http](https://nbsoftsolutions.com/blog/introduction-to-imap).

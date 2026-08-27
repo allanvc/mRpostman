@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
       </span>
     </div>
 
@@ -63,6 +63,19 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.0.0" id="mrpostman-200-2026-08-27-major-update">mRpostman 2.0.0 (2026-08-27 major update)<a class="anchor" aria-label="anchor" href="#mrpostman-200-2026-08-27-major-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-2-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-0-0"></a></h3>
+<ul><li><p><strong>A raw socket layer, and with it <code>IDLE</code>.</strong> The package gains a small compiled component (<code>src/imap_socket.c</code>) that asks libcurl for a connection in <code>CONNECT_ONLY</code> mode, so that libcurl still performs the TCP connection and the TLS handshake (certificate verification, SNI, system CA bundle) but hands the established socket over, and a minimal IMAP session written in R on top of it (<code>R/raw-session.R</code>: tagged commands, <code>+</code> continuations, literals, <code>AUTHENTICATE PLAIN</code>/<code>XOAUTH2</code>/<code>OAUTHBEARER</code>). This is used only where libcurl’s one-shot request model cannot go; everything else keeps using libcurl as before.</p></li>
+<li><p>new <code>ImapCon$idle()</code> method (<code>IDLE</code>, RFC 2177): opens a second, dedicated connection, selects the folder there, and collects the server’s unsolicited notifications (<code>EXISTS</code>, <code>EXPUNGE</code>, <code>FETCH</code>, <code>RECENT</code>) until a timeout elapses or a callback returns <code>FALSE</code>; the <code>IDLE</code> command is renewed periodically (servers close long idles). The main connection stays free to fetch what the events announce. Requires an <code>imaps://</code> URL for TLS (STARTTLS is not available on the raw socket) or <code>use_ssl = FALSE</code> for a plain server such as the Docker sandbox.</p></li>
+<li><p>new <code>ImapCon$append_msgs()</code> method (<code>MULTIAPPEND</code>, RFC 3502): several messages appended in one command, one literal per message, returning the assigned UIDs; falls back to one <code>append_msg()</code> per message on servers without the capability.</p></li>
+<li><p>the credentials are now kept in a private field of the connection object (never printed, not part of <code>con_params</code>, cleared by <code>disconnect()</code>), so that the second connection can authenticate; <code>reset_password()</code>/<code>reset_xoauth2_bearer()</code> update it.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="notes-2-0-0">Notes<a class="anchor" aria-label="anchor" href="#notes-2-0-0"></a></h3>
+<ul><li>The compiled component links against the system libcurl (<code>pkg-config --libs libcurl</code>; Rtools’ bundled libcurl on Windows). The same functionality has been proposed to the <code>curl</code> package as <code>curl_send()</code>/<code>curl_recv()</code>; once available there, <code>src/</code> will be removed.</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.5" id="mrpostman-155-2026-08-27-feature-update">mRpostman 1.5.5 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-155-2026-08-27-feature-update"></a></h2>
 <div class="section level3">

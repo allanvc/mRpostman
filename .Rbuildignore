@@ -12,3 +12,4 @@
 ^codecov\.yml$
 ^\.[a-z]+$
 ^C[A-Z]+.*\.md$
+^src/Makevars$

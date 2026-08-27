@@ -1,0 +1,46 @@
+#!/bin/sh
+# Locate libcurl (headers and library) for src/imap_socket.c and write
+# src/Makevars from src/Makevars.in. Anticonf-style, as in the 'curl' package.
+PKG_CONFIG_NAME="libcurl"
+PKG_DEB_NAME="libcurl4-openssl-dev"
+PKG_RPM_NAME="libcurl-devel"
+PKG_TEST_HEADER="<curl/curl.h>"
+PKG_LIBS="-lcurl"
+
+if [ "$CURL_CFLAGS" ] || [ "$CURL_LIBS" ]; then
+  echo "Using CURL_CFLAGS/CURL_LIBS from the environment"
+  PKG_CFLAGS="$CURL_CFLAGS"
+  PKG_LIBS="$CURL_LIBS"
+elif pkg-config --exists "$PKG_CONFIG_NAME" 2>/dev/null; then
+  PKG_CFLAGS=`pkg-config --cflags "$PKG_CONFIG_NAME"`
+  PKG_LIBS=`pkg-config --libs "$PKG_CONFIG_NAME"`
+  echo "Using pkg-config: $PKG_CFLAGS $PKG_LIBS"
+elif command -v curl-config >/dev/null 2>&1; then
+  PKG_CFLAGS=`curl-config --cflags`
+  PKG_LIBS=`curl-config --libs`
+  echo "Using curl-config: $PKG_CFLAGS $PKG_LIBS"
+else
+  PKG_CFLAGS=""
+  echo "Neither pkg-config nor curl-config found; assuming -lcurl"
+fi
+
+# test that the header compiles
+CC=`${R_HOME}/bin/R CMD config CC`
+CFLAGS=`${R_HOME}/bin/R CMD config CFLAGS`
+CPPFLAGS=`${R_HOME}/bin/R CMD config CPPFLAGS`
+echo "#include $PKG_TEST_HEADER" | ${CC} ${CPPFLAGS} ${PKG_CFLAGS} ${CFLAGS} -E -xc - >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+  echo "------------------------- ANTICONF ERROR ---------------------------"
+  echo "Configuration failed because $PKG_CONFIG_NAME was not found. Try installing:"
+  echo " * deb: $PKG_DEB_NAME (Debian, Ubuntu, etc)"
+  echo " * rpm: $PKG_RPM_NAME (Fedora, CentOS, RHEL)"
+  echo " * brew: curl (macOS)"
+  echo "If $PKG_CONFIG_NAME is already installed, check that 'pkg-config' is in your"
+  echo "PATH and PKG_CONFIG_PATH contains a $PKG_CONFIG_NAME.pc file, or set"
+  echo "CURL_CFLAGS and CURL_LIBS."
+  echo "--------------------------------------------------------------------"
+  exit 1
+fi
+
+sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
+exit 0
