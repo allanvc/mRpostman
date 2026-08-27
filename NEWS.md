@@ -1,3 +1,17 @@
+## mRpostman 1.5.4 (2026-08-27 feature update)
+
+### New features
+
+- new `ImapCon$fetch_attachment_parts()` method: attachments fetched by MIME part, guided by the server's `BODYSTRUCTURE` (`fetch_bodystructure()`), each part retrieved with `BODY.PEEK[<part>]`, decoded from base64 or quoted-printable, and written to the same `<username>/<folder>/<msg id>` tree as `fetch_attachments()` (or returned as raw vectors with `local_dir = NULL`). Only the attachments are transferred, and no MIME boundary parsing of the fetched body is involved. Returns a manifest with the part, filename, type, size, and path of every file.
+
+### Improvements
+
+- searches whose term the server cannot handle in the declared character set (`NO [BADCHARSET ...]`) are retried automatically in the charsets the server lists in its reply, or in `ISO-8859-1` and `US-ASCII`, whenever the term is representable in them; otherwise the error reports the server's reply and the reason.
+
+### Tests
+
+- new offline tests for the `BADCHARSET` request rewriting and the quoted-printable/base64 part decoders (`test-round5.R`); both features verified live against the Dovecot sandbox (the PNG and PDF attachments of the synthetic corpus are valid after extraction by part, and a search forged with an unknown charset is recovered in `ISO-8859-1`).
+
 ## mRpostman 1.5.3 (2026-08-27 feature update)
 
 ### New features

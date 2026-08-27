@@ -900,6 +900,16 @@ out
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$fetch_attachment_parts()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+con$search_string(expr = "report", where = "SUBJECT") \%>\%
+  con$fetch_attachment_parts(local_dir = "~/attachments")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$fetch_attachments()`
 ## ------------------------------------------------
 
@@ -1042,6 +1052,7 @@ Other attachments:
     \item \href{#method-ImapCon-remove_flags}{\code{ImapCon$remove_flags()}}
     \item \href{#method-ImapCon-get_attachments}{\code{ImapCon$get_attachments()}}
     \item \href{#method-ImapCon-fetch_attachments_list}{\code{ImapCon$fetch_attachments_list()}}
+    \item \href{#method-ImapCon-fetch_attachment_parts}{\code{ImapCon$fetch_attachment_parts()}}
     \item \href{#method-ImapCon-fetch_attachments}{\code{ImapCon$fetch_attachments()}}
     \item \href{#method-ImapCon-clone}{\code{ImapCon$clone()}}
   }
@@ -4453,6 +4464,71 @@ out
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
 out <- con$fetch_attachments_list(msg = res)
 out
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_attachment_parts"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_attachment_parts}{}}}
+\subsection{\code{ImapCon$fetch_attachment_parts()}}{
+  Fetch attachments by MIME part, guided by the message's
+  \code{BODYSTRUCTURE}. The structure of each message is retrieved
+  first (see \code{fetch_bodystructure()}), the attachment parts are
+  selected, each is fetched with \code{BODY.PEEK[<part>]}, decoded from
+  its transfer encoding, and written to disk, or returned as raw
+  vectors. Unlike \code{fetch_attachments()}, which parses MIME
+  boundaries from the fetched body, this method relies on the parts as
+  declared by the server and transfers nothing but the attachments.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_attachment_parts(
+  msg_id,
+  use_uid = FALSE,
+  parts = NULL,
+  local_dir = ".",
+  override = FALSE,
+  mute = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids, or the \code{"$"} reference of a saved search.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs.}
+      \item{\code{parts}}{\code{NULL} (default: every part flagged as an attachment)
+or a \code{character} vector of section numbers to fetch, e.g.
+\code{c("2", "3.1")}.}
+      \item{\code{local_dir}}{The base directory where the files are written, in a
+\code{<username>/<folder>/<msg id>} tree, as in
+\code{fetch_attachments()}. Default is \code{"."}. If \code{NULL},
+nothing is written and the payloads are returned in a \code{content}
+list column.}
+      \item{\code{override}}{A \code{logical}. If \code{TRUE}, overwrites existing
+files; otherwise repeated filenames are numbered. Default is
+\code{FALSE}.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message. Default is \code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per fetched part: \code{id}
+  (or \code{uid}), \code{part}, \code{filename}, \code{type},
+  \code{size} (bytes), and \code{path} (or \code{content}).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+con$search_string(expr = "report", where = "SUBJECT") \%>\%
+  con$fetch_attachment_parts(local_dir = "~/attachments")
 }
     \if{html}{\out{</div>}}
   }

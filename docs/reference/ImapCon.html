@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
       </span>
     </div>
 
@@ -321,6 +321,7 @@
 <li><p><a href="#method-ImapCon-remove_flags"><code>ImapCon$remove_flags()</code></a></p></li>
 <li><p><a href="#method-ImapCon-get_attachments"><code>ImapCon$get_attachments()</code></a></p></li>
 <li><p><a href="#method-ImapCon-fetch_attachments_list"><code>ImapCon$fetch_attachments_list()</code></a></p></li>
+<li><p><a href="#method-ImapCon-fetch_attachment_parts"><code>ImapCon$fetch_attachment_parts()</code></a></p></li>
 <li><p><a href="#method-ImapCon-fetch_attachments"><code>ImapCon$fetch_attachments()</code></a></p></li>
 <li><p><a href="#method-ImapCon-clone"><code>ImapCon$clone()</code></a></p></li>
 </ul></div><p></p><hr><a id="method-ImapCon-initialize"></a><div class="section">
@@ -3736,10 +3737,81 @@ is <code>1</code>.</p></dd>
 
 </div>
 
+<p></p><hr><a id="method-ImapCon-fetch_attachment_parts"></a><div class="section">
+<h3 id="imapcon-fetch-attachment-parts-"><code>ImapCon$fetch_attachment_parts()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-attachment-parts-"></a></h3>
+<p>Fetch attachments by MIME part, guided by the message's
+  <code>BODYSTRUCTURE</code>. The structure of each message is retrieved
+  first (see <code>fetch_bodystructure()</code>), the attachment parts are
+  selected, each is fetched with <code>BODY.PEEK[&lt;part&gt;]</code>, decoded from
+  its transfer encoding, and written to disk, or returned as raw
+  vectors. Unlike <code>fetch_attachments()</code>, which parses MIME
+  boundaries from the fetched body, this method relies on the parts as
+  declared by the server and transfers nothing but the attachments.</p><div class="section">
+<h4 id="usage-76">Usage<a class="anchor" aria-label="anchor" href="#usage-76"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_attachment_parts</span><span class="op">(</span></span>
+<span>  <span class="va">msg_id</span>,</span>
+<span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  parts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  local_dir <span class="op">=</span> <span class="st">"."</span>,</span>
+<span>  override <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  mute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  retries <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-75">Arguments<a class="anchor" aria-label="anchor" href="#arguments-75"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
+<dd><p>A <code>numeric vector</code> containing one or more message
+ids, or the <code>"$"</code> reference of a saved search.</p></dd>
+
+      <dt><code>use_uid</code></dt>
+<dd><p>Default is <code>FALSE</code>. If <code>TRUE</code>, the command is
+performed with UIDs.</p></dd>
+
+      <dt><code>parts</code></dt>
+<dd><p><code>NULL</code> (default: every part flagged as an attachment)
+or a <code>character</code> vector of section numbers to fetch, e.g.
+<code>c("2", "3.1")</code>.</p></dd>
+
+      <dt><code>local_dir</code></dt>
+<dd><p>The base directory where the files are written, in a
+<code>&lt;username&gt;/&lt;folder&gt;/&lt;msg id&gt;</code> tree, as in
+<code>fetch_attachments()</code>. Default is <code>"."</code>. If <code>NULL</code>,
+nothing is written and the payloads are returned in a <code>content</code>
+list column.</p></dd>
+
+      <dt><code>override</code></dt>
+<dd><p>A <code>logical</code>. If <code>TRUE</code>, overwrites existing
+files; otherwise repeated filenames are numbered. Default is
+<code>FALSE</code>.</p></dd>
+
+      <dt><code>mute</code></dt>
+<dd><p>A <code>logical</code>. If <code>TRUE</code>, mutes the confirmation
+message. Default is <code>FALSE</code>.</p></dd>
+
+      <dt><code>retries</code></dt>
+<dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-68">Returns<a class="anchor" aria-label="anchor" href="#returns-68"></a></h4>
+<p>A <code>data.frame</code> with one row per fetched part: <code>id</code>
+  (or <code>uid</code>), <code>part</code>, <code>filename</code>, <code>type</code>,
+  <code>size</code> (bytes), and <code>path</code> (or <code>content</code>).</p>
+</div><p></p><div class="section">
+<h4 id="examples-67">Examples<a class="anchor" aria-label="anchor" href="#examples-67"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"report"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachment_parts</span><span class="op">(</span>local_dir <span class="op">=</span> <span class="st">"~/attachments"</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-ImapCon-fetch_attachments"></a><div class="section">
 <h3 id="imapcon-fetch-attachments-"><code>ImapCon$fetch_attachments()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-attachments-"></a></h3>
 <p>Fetch message attachments</p><div class="section">
-<h4 id="usage-76">Usage<a class="anchor" aria-label="anchor" href="#usage-76"></a></h4>
+<h4 id="usage-77">Usage<a class="anchor" aria-label="anchor" href="#usage-77"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3751,7 +3823,7 @@ is <code>1</code>.</p></dd>
 <span>  local_dir <span class="op">=</span> <span class="st">"."</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-75">Arguments<a class="anchor" aria-label="anchor" href="#arguments-75"></a></h4>
+<h4 id="arguments-76">Arguments<a class="anchor" aria-label="anchor" href="#arguments-76"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3796,10 +3868,10 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-68">Returns<a class="anchor" aria-label="anchor" href="#returns-68"></a></h4>
+<h4 id="returns-69">Returns<a class="anchor" aria-label="anchor" href="#returns-69"></a></h4>
 <p>A <code>list</code> with the fetch contents.</p>
 </div><p></p><div class="section">
-<h4 id="examples-67">Examples<a class="anchor" aria-label="anchor" href="#examples-67"></a></h4>
+<h4 id="examples-68">Examples<a class="anchor" aria-label="anchor" href="#examples-68"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and fetch the attachments' list of the messages</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3816,10 +3888,10 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 <p></p><hr><a id="method-ImapCon-clone"></a><div class="section">
 <h3 id="imapcon-clone-"><code>ImapCon$clone()</code><a class="anchor" aria-label="anchor" href="#imapcon-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-77">Usage<a class="anchor" aria-label="anchor" href="#usage-77"></a></h4>
+<h4 id="usage-78">Usage<a class="anchor" aria-label="anchor" href="#usage-78"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-76">Arguments<a class="anchor" aria-label="anchor" href="#arguments-76"></a></h4>
+<h4 id="arguments-77">Arguments<a class="anchor" aria-label="anchor" href="#arguments-77"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -4570,6 +4642,16 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span>msg <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">out</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `ImapCon$fetch_attachment_parts()`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"report"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span></span></span>
+<span class="r-in"><span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachment_parts</span><span class="op">(</span>local_dir <span class="op">=</span> <span class="st">"~/attachments"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>

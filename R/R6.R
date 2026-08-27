@@ -2443,6 +2443,50 @@ ImapCon <- R6::R6Class("ImapCon",
 
     },
 
+    #' @description Fetch attachments by MIME part, guided by the message's
+    #'   \code{BODYSTRUCTURE}. The structure of each message is retrieved
+    #'   first (see \code{fetch_bodystructure()}), the attachment parts are
+    #'   selected, each is fetched with \code{BODY.PEEK[<part>]}, decoded from
+    #'   its transfer encoding, and written to disk, or returned as raw
+    #'   vectors. Unlike \code{fetch_attachments()}, which parses MIME
+    #'   boundaries from the fetched body, this method relies on the parts as
+    #'   declared by the server and transfers nothing but the attachments.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids, or the \code{"$"} reference of a saved search.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs.
+    #' @param parts \code{NULL} (default: every part flagged as an attachment)
+    #'   or a \code{character} vector of section numbers to fetch, e.g.
+    #'   \code{c("2", "3.1")}.
+    #' @param local_dir The base directory where the files are written, in a
+    #'   \code{<username>/<folder>/<msg id>} tree, as in
+    #'   \code{fetch_attachments()}. Default is \code{"."}. If \code{NULL},
+    #'   nothing is written and the payloads are returned in a \code{content}
+    #'   list column.
+    #' @param override A \code{logical}. If \code{TRUE}, overwrites existing
+    #'   files; otherwise repeated filenames are numbered. Default is
+    #'   \code{FALSE}.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per fetched part: \code{id}
+    #'   (or \code{uid}), \code{part}, \code{filename}, \code{type},
+    #'   \code{size} (bytes), and \code{path} (or \code{content}).
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' con$search_string(expr = "report", where = "SUBJECT") %>%
+    #'   con$fetch_attachment_parts(local_dir = "~/attachments")
+    #' }
+    fetch_attachment_parts = function(msg_id, use_uid = FALSE, parts = NULL,
+                                      local_dir = ".", override = FALSE,
+                                      mute = FALSE, retries = 1) {
+      out <- fetch_attachment_parts_int(self, msg_id, use_uid, parts, local_dir,
+                                        override, mute, retries)
+      invisible(out)
+    },
+
     #' @description Fetch message attachments
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
     #' @param use_uid Default is \code{FALSE}. In this case, the operation will

@@ -125,7 +125,7 @@ type of operation:
   - **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
     `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`,
     `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`,
-    `fetch_attachments()`;
+    `fetch_attachments()`, `fetch_attachment_parts()`;
   - **attachments methods**: `list_attachments()`, `get_attachments()`,
     `fetch_attachments_list()`, `fetch_attachments()`;
   - **complementary methods**: `copy_msg()`, `move_msg()`,

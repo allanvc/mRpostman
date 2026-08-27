@@ -85,7 +85,7 @@ Below, we present all the available methods and functions, grouped by type of op
   `larger_than()`, `younger_than()`, `older_than()`, `saved_before()`, `saved_since()`, `saved_on()`, `modseq()`;
 * **server-side sort and thread methods**: `sort()`, `thread()`;
 * **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-`fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`;
+`fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`, `fetch_attachment_parts()`;
 * **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
 * **complementary methods**: `copy_msg()`, `move_msg()`, `append_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
 * **MIME-decoding and message-text helper functions**: `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`, `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`.

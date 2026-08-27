@@ -29,10 +29,36 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
   # REQUEST
   response <- tryCatch({
     curl::curl_fetch_memory(url, handle = handle)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1])
-  })
+  }, error = function(e) e)
+
+  if (inherits(response, "error")) {
+    server_reply <- last_server_error()
+    if (!is.na(server_reply) && grepl("BADCHARSET", server_reply, fixed = TRUE)) {
+      # the server does not accept the charset of the search term: retry with
+      # the charsets it lists (or ISO-8859-1 / US-ASCII) in which the term is
+      # representable. The rejection dropped the connection, so the folder is
+      # re-selected before each attempt.
+      alternatives <- charset_fallback_requests(customrequest, server_reply)
+      response <- NULL
+      for (alt in alternatives) {
+        select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0)
+        curl::handle_setopt(handle = handle, customrequest = alt)
+        response <- tryCatch(curl::curl_fetch_memory(url, handle = handle),
+                             error = function(e) NULL)
+        if (!is.null(response)) {
+          customrequest <- alt
+          break
+        }
+      }
+      if (is.null(response)) {
+        stop(paste0("The server rejected the search charset (", server_reply,
+                    ") and the search term cannot be represented in any ",
+                    "character set it accepts."), call. = FALSE)
+      }
+    } else {
+      response <- response_error_handling(conditionMessage(response))
+    }
+  }
 
   if (!is.null(response)) {
     if (isTRUE(esearch)) {
