@@ -25,6 +25,6 @@ sent_on <- function(date_char, negate = FALSE) {
 
   }
 
-  return(out)
+  return(as_imap_search(out))
 
 }

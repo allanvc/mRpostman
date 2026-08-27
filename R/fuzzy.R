@@ -25,9 +25,9 @@ fuzzy <- function(criterion) {
     msg='"criterion" must be a single search criterion string, e.g. built with string().')
 
   if (startsWith(criterion, "(")) {
-    sub("^\\(", "(FUZZY ", criterion)
+    as_imap_search(sub("^\\(", "(FUZZY ", criterion))
   } else {
-    paste0("FUZZY ", criterion)
+    as_imap_search(paste0("FUZZY ", criterion))
   }
 
 }

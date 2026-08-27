@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.3.0</span>
       </span>
     </div>
 
@@ -192,6 +192,8 @@
 <strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
 <strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>append_msg()</code>, <code>append_msgs()</code>, <code>append_catenate()</code>, <code>idle()</code>, <code>notify()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
+<li>
+<strong>the query language (2.3.0)</strong>: <code>query()</code> searches with plain R expressions, e.g. <code>con$query((subject == "budget" | "budget 3") &amp;     flag != "SEEN")</code>, translated to RFC 3501 search strings by the pure function <code><a href="reference/imap_query.html">imap_query()</a></code>; criterion constructors also combine with the native <code>&amp;</code>, <code>|</code>, and <code>!</code>;</li>
 <li>
 <strong>MIME-decoding and message-text helper functions</strong>: <code><a href="reference/decode_mime_header.html">decode_mime_header()</a></code>, <code><a href="reference/clean_msg_text.html">clean_msg_text()</a></code>, <code><a href="reference/parse_envelope.html">parse_envelope()</a></code>, <code><a href="reference/parse_bodystructure.html">parse_bodystructure()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_encode()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_decode()</a></code>, <code><a href="reference/imap_url.html">imap_url()</a></code>.</li>
 </ul>

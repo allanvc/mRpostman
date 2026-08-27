@@ -41,6 +41,6 @@ string <- function(expr, where, negate = FALSE) {
 
   }
 
-  return(out)
+  return(as_imap_search(out))
 
 }

@@ -69,10 +69,10 @@ test_that("split_fetch_responses() accepts UIDONLY's UIDFETCH blocks", {
 })
 
 test_that("fuzzy() and filter_stored() build RFC 6203/5466 criteria", {
-  expect_identical(fuzzy(string(expr = "jump", where = "SUBJECT")),
+  expect_identical(unclass(fuzzy(string(expr = "jump", where = "SUBJECT"))),
                    '(FUZZY SUBJECT "jump")')
-  expect_identical(fuzzy("TEXT \"bar\""), "FUZZY TEXT \"bar\"")
-  expect_identical(filter_stored("on-the-road"), "(FILTER on-the-road)")
+  expect_identical(unclass(fuzzy("TEXT \"bar\"")), "FUZZY TEXT \"bar\"")
+  expect_identical(unclass(filter_stored("on-the-road")), "(FILTER on-the-road)")
 })
 
 test_that("assert_within_appendlimit() enforces the advertised limit", {

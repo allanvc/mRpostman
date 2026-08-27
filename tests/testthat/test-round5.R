@@ -27,8 +27,8 @@ test_that("qp_decode_raw() and decode_part_raw() decode transfer encodings", {
 })
 
 test_that("size and time criteria never use scientific notation", {
-  expect_identical(larger_than(5e6), "(LARGER 5000000)")
-  expect_identical(smaller_than(1e5, negate = TRUE), "(NOT (SMALLER 100000))")
-  expect_identical(younger_than(1e6), "(YOUNGER 1000000)")
-  expect_identical(older_than(2e7), "(OLDER 20000000)")
+  expect_identical(unclass(larger_than(5e6)), "(LARGER 5000000)")
+  expect_identical(unclass(smaller_than(1e5, negate = TRUE)), "(NOT (SMALLER 100000))")
+  expect_identical(unclass(younger_than(1e6)), "(YOUNGER 1000000)")
+  expect_identical(unclass(older_than(2e7)), "(OLDER 20000000)")
 })

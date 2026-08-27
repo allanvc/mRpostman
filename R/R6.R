@@ -815,6 +815,48 @@ ImapCon <- R6::R6Class("ImapCon",
       invisible(out)
     },
 
+    #' @description Search with an ordinary R expression (the query
+    #'   language). The expression is captured unevaluated, translated
+    #'   into an RFC 3501 search string by the pure function
+    #'   \code{\link{imap_query}}, and executed exactly like
+    #'   \code{search()}. Fields: \code{subject}, \code{from}, \code{to},
+    #'   \code{cc}, \code{bcc}, \code{body}, \code{text} (with \code{==}
+    #'   meaning contains), \code{flag}, \code{size} (bytes), \code{age}
+    #'   (seconds), the date fields \code{sent}, \code{date}, and
+    #'   \code{saved}, and \code{header("Name")}. Comparisons combine
+    #'   with \code{&}, \code{|}, \code{!}, \code{\%in\%}, and
+    #'   parentheses; other calls and variables are evaluated in the
+    #'   caller's environment.
+    #' @param expr An unquoted expression, e.g.
+    #'   \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.
+    #' @param negate If \code{TRUE}, negates the whole search. Default is
+    #'   \code{FALSE}.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, results are
+    #'   presented as UIDs.
+    #' @param esearch A logical. If \code{TRUE} and the server advertises
+    #'   \code{ESEARCH}, condenses the result transmission. Default is
+    #'   \code{FALSE}.
+    #' @param save A logical. If \code{TRUE} and the server advertises
+    #'   \code{SEARCHRES}, keeps the result on the server for use as
+    #'   \code{msg_id = "$"}. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the
+    #'   command. Default is \code{1}.
+    #' @return A \code{numeric vector} with the matching message ids, as
+    #'   in \code{search()}.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX")
+    #' con$query((subject == "budget" | "budget 3") & flag != "SEEN")
+    #' con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
+    #' }
+    query = function(expr, negate = FALSE, use_uid = FALSE, esearch = FALSE,
+                     save = FALSE, retries = 1) {
+      request <- translate_query(substitute(expr), parent.frame())
+      out <- search_int(self, request, negate, use_uid, esearch, retries,
+                        save = save)
+      return(out)
+    },
+
     # List elements
     # access = function() {
     #   list(

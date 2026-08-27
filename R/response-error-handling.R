@@ -37,6 +37,17 @@ response_error_handling <- function(error_message) {
 
     stop(paste0("The server rejected the command: ", server_error), call. = FALSE)
 
+  } else if (grepl("grew larger than allowed", error_message)) {
+
+    # libcurl >= 8.7 (CURLE_TOO_LARGE): one response line exceeded what
+    # libcurl accepts, typically the id list of a SEARCH matching many
+    # thousands of messages; retrying cannot help, but ESEARCH can
+    stop(paste0("The response is larger than libcurl accepts in one line ",
+                "(typically a SEARCH matching many thousands of messages). ",
+                "Use esearch = TRUE, which condenses the id list, or an ",
+                "esearch_*() aggregation, or restrict the search criteria."),
+         call. = FALSE)
+
   } else {
 
     return(NULL) # for operation timeout: try reconnection

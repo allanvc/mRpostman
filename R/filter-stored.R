@@ -25,6 +25,6 @@ filter_stored <- function(name) {
     is.character(name), length(name) == 1,
     msg='"name" must be a single character string with the stored filter name.')
 
-  paste0("(FILTER ", name, ")")
+  as_imap_search(paste0("(FILTER ", name, ")"))
 
 }

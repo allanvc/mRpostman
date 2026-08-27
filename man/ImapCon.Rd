@@ -373,6 +373,16 @@ con$store_annotation(msg_id = 1, entry = "/comment",
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$query()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX")
+con$query((subject == "budget" | "budget 3") & flag != "SEEN")
+con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$list_server_capabilities()`
 ## ------------------------------------------------
 
@@ -1218,6 +1228,7 @@ Other attachments:
     \item \href{#method-ImapCon-fetch_convert}{\code{ImapCon$fetch_convert()}}
     \item \href{#method-ImapCon-fetch_annotation}{\code{ImapCon$fetch_annotation()}}
     \item \href{#method-ImapCon-store_annotation}{\code{ImapCon$store_annotation()}}
+    \item \href{#method-ImapCon-query}{\code{ImapCon$query()}}
     \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
     \item \href{#method-ImapCon-enable}{\code{ImapCon$enable()}}
     \item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
@@ -2471,6 +2482,68 @@ Default is \code{1}.}
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$store_annotation(msg_id = 1, entry = "/comment",
                      values = c("value.priv" = "check this one"))
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-query"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-query}{}}}
+\subsection{\code{ImapCon$query()}}{
+  Search with an ordinary R expression (the query
+  language). The expression is captured unevaluated, translated
+  into an RFC 3501 search string by the pure function
+  \code{\link{imap_query}}, and executed exactly like
+  \code{search()}. Fields: \code{subject}, \code{from}, \code{to},
+  \code{cc}, \code{bcc}, \code{body}, \code{text} (with \code{==}
+  meaning contains), \code{flag}, \code{size} (bytes), \code{age}
+  (seconds), the date fields \code{sent}, \code{date}, and
+  \code{saved}, and \code{header("Name")}. Comparisons combine
+  with \code{&}, \code{|}, \code{!}, \code{\%in\%}, and
+  parentheses; other calls and variables are evaluated in the
+  caller's environment.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$query(
+  expr,
+  negate = FALSE,
+  use_uid = FALSE,
+  esearch = FALSE,
+  save = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{expr}}{An unquoted expression, e.g.
+\code{(subject == "budget" | "budget 3") & flag != "SEEN"}.}
+      \item{\code{negate}}{If \code{TRUE}, negates the whole search. Default is
+\code{FALSE}.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, results are
+presented as UIDs.}
+      \item{\code{esearch}}{A logical. If \code{TRUE} and the server advertises
+\code{ESEARCH}, condenses the result transmission. Default is
+\code{FALSE}.}
+      \item{\code{save}}{A logical. If \code{TRUE} and the server advertises
+\code{SEARCHRES}, keeps the result on the server for use as
+\code{msg_id = "$"}. Default is \code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the
+command. Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{numeric vector} with the matching message ids, as
+  in \code{search()}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder("INBOX")
+con$query((subject == "budget" | "budget 3") & flag != "SEEN")
+con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
 }
     \if{html}{\out{</div>}}
   }
