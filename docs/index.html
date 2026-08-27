@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -173,9 +173,9 @@
 <li>
 <strong>configuration and connection methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>disconnect()</code>, <code>noop()</code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server information methods</strong>: <code>list_server_capabilities()</code>, <code>id()</code>, <code>namespace()</code>, <code>get_quota_root()</code>, <code>get_quota()</code>;</li>
+<strong>server information methods</strong>: <code>list_server_capabilities()</code>, <code>enable()</code>, <code>id()</code>, <code>namespace()</code>, <code>get_quota_root()</code>, <code>get_quota()</code>, <code>set_quota()</code>;</li>
 <li>
-<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>list_subscribed_folders()</code>, <code>list_special_use_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>status()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>delete_folder()</code>, <code>subscribe_folder()</code>, <code>unsubscribe_folder()</code>, <code>close_folder()</code>, <code>unselect_folder()</code>, <code>list_flags()</code>;</li>
+<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>list_subscribed_folders()</code>, <code>list_folders_status()</code>, <code>list_special_use_folders()</code>, <code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, <code>my_rights()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>status()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>delete_folder()</code>, <code>subscribe_folder()</code>, <code>unsubscribe_folder()</code>, <code>close_folder()</code>, <code>unselect_folder()</code>, <code>check()</code>, <code>list_flags()</code>;</li>
 <li>
 <strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
@@ -223,16 +223,20 @@
 <td><code>noop()</code></td>
 </tr>
 <tr class="odd">
+<td><code>CHECK</code></td>
+<td><code>check()</code></td>
+</tr>
+<tr class="even">
 <td>
 <code>LOGIN</code> / <code>AUTHENTICATE</code>
 </td>
 <td><code><a href="reference/configure_imap.html">configure_imap()</a></code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>LOGOUT</code></td>
 <td><code>disconnect()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>SELECT</code> / <code>EXAMINE</code>
 </td>
@@ -240,7 +244,7 @@
 <code>select_folder()</code> / <code>examine_folder()</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>CREATE</code> / <code>DELETE</code> / <code>RENAME</code>
 </td>
@@ -248,7 +252,7 @@
 <code>create_folder()</code> / <code>delete_folder()</code> / <code>rename_folder()</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>
 <code>SUBSCRIBE</code> / <code>UNSUBSCRIBE</code>
 </td>
@@ -256,7 +260,7 @@
 <code>subscribe_folder()</code> / <code>unsubscribe_folder()</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>
 <code>LIST</code> / <code>LSUB</code>
 </td>
@@ -264,40 +268,40 @@
 <code>list_mail_folders()</code> / <code>list_subscribed_folders()</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>STATUS</code></td>
 <td><code>status()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>APPEND</code></td>
 <td><code>append_msg()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>SEARCH</code></td>
 <td>
 <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>, <code>search_before()</code>, <code>search_since()</code>, <code>search_string()</code>, … (all <code>search_*</code>)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>FETCH</code></td>
 <td>
 <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments()</code>
 </td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>STORE</code></td>
 <td>
 <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>
 </td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>COPY</code></td>
 <td><code>copy_msg()</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>CLOSE</code></td>
 <td><code>close_folder()</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>EXPUNGE</code></td>
 <td>
 <code>expunge()</code>, <code>delete_msg()</code>
@@ -311,10 +315,10 @@
 </h3>
 <table class="table">
 <colgroup>
-<col width="12%">
-<col width="39%">
-<col width="21%">
-<col width="25%">
+<col width="22%">
+<col width="41%">
+<col width="16%">
+<col width="19%">
 </colgroup>
 <thead><tr class="header">
 <th>IMAP command</th>
@@ -388,9 +392,59 @@
 <td><code>ESEARCH</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc4731" class="external-link">4731</a></td>
 </tr>
+<tr class="even">
+<td>
+<code>UID EXPUNGE</code>, <code>APPENDUID</code> / <code>COPYUID</code>
+</td>
+<td>
+<code>expunge(msg_uid = ...)</code>, <code>append_msg()</code> (returns the UID), <code>copy_msg()</code> / <code>move_msg()</code> (<code>"copyuid"</code> attribute)</td>
+<td><code>UIDPLUS</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc4315" class="external-link">4315</a></td>
+</tr>
+<tr class="odd">
+<td><code>LIST ... RETURN (STATUS ...)</code></td>
+<td><code>list_folders_status()</code></td>
+<td><code>LIST-STATUS</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5819" class="external-link">5819</a></td>
+</tr>
+<tr class="even">
+<td><code>SETQUOTA</code></td>
+<td><code>set_quota()</code></td>
+<td><code>QUOTA</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc2087" class="external-link">2087</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>GETACL</code> / <code>SETACL</code> / <code>DELETEACL</code> / <code>LISTRIGHTS</code> / <code>MYRIGHTS</code>
+</td>
+<td>
+<code>get_acl()</code> / <code>set_acl()</code> / <code>delete_acl()</code> / <code>list_rights()</code> / <code>my_rights()</code>
+</td>
+<td><code>ACL</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc4314" class="external-link">4314</a></td>
+</tr>
+<tr class="even">
+<td><code>ENABLE</code></td>
+<td><code>enable()</code></td>
+<td><code>ENABLE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5161" class="external-link">5161</a></td>
+</tr>
+<tr class="odd">
+<td><code>SEARCH RETURN (SAVE)</code></td>
+<td>
+<code>search(save = TRUE)</code>, then <code>msg_id = "$"</code> in fetch/flag/copy/move/delete methods</td>
+<td><code>SEARCHRES</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5182" class="external-link">5182</a></td>
+</tr>
+<tr class="even">
+<td><code>SORT RETURN (...)</code></td>
+<td><code>sort(return = ...)</code></td>
+<td><code>ESORT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5267" class="external-link">5267</a></td>
+</tr>
 </tbody>
 </table>
-<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Two extensions remain intentionally unimplemented: <code>CONDSTORE</code>/<code>QRESYNC</code> (out of scope, although <code>enable("CONDSTORE")</code> is available) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
 </div>
 </div>
 <div class="section level2">

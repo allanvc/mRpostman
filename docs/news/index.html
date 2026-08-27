@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -63,6 +63,53 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.1" id="mrpostman-151-2026-08-27-feature-update">mRpostman 1.5.1 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-151-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-1-5-1">New features<a class="anchor" aria-label="anchor" href="#new-features-1-5-1"></a></h3>
+<ul><li><p><strong>ACL</strong> extension (RFC 4314), capability-checked: new <code>ImapCon$get_acl()</code> (<code>GETACL</code>, a <code>data.frame</code> of identifiers and rights), <code>ImapCon$set_acl()</code> (<code>SETACL</code>, replacing or, with a <code>+</code>/<code>-</code> prefix, adding/removing rights), <code>ImapCon$delete_acl()</code> (<code>DELETEACL</code>), <code>ImapCon$list_rights()</code> (<code>LISTRIGHTS</code>), and <code>ImapCon$my_rights()</code> (<code>MYRIGHTS</code>).</p></li>
+<li><p>new <code>ImapCon$set_quota()</code> method (<code>SETQUOTA</code>, RFC 2087) to set the <code>STORAGE</code> and/or <code>MESSAGE</code> limits of a quota root. Most servers restrict the command to administrators (Dovecot, for instance, refuses it unless a <code>quota_set</code> dictionary is configured).</p></li>
+<li><p>new <code>ImapCon$enable()</code> method (<code>ENABLE</code>, RFC 5161) to enable server extensions for the session, returning the ones the server confirmed.</p></li>
+<li><p><strong>SEARCHRES</strong> extension (RFC 5182): <code>ImapCon$search()</code> gained a <code>save</code> argument. With <code>save = TRUE</code> the result is kept on the server (<code>SEARCH RETURN (SAVE)</code>) and the method returns the <code>"$"</code> reference, which <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>add_flags()</code>/<code>remove_flags()</code>/<code>replace_flags()</code>, <code>copy_msg()</code>, <code>move_msg()</code>, and <code>delete_msg()</code> now accept as <code>msg_id</code>, so that a search-then-act workflow no longer transfers the message ids. A fetch on <code>"$"</code> returns one element per matching message, named by sequence number or UID.</p></li>
+<li><p><strong>ESORT</strong> extension (RFC 5267): <code>ImapCon$sort()</code> gained a <code>return</code> argument (<code>"COUNT"</code>, <code>"MIN"</code>, <code>"MAX"</code>, <code>"ALL"</code>); when given, <code>SORT RETURN (...)</code> is issued and only the requested items, computed by the server in sort order, are returned as a named list.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-5-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-1"></a></h3>
+<ul><li>
+<code>get_quota()</code> / <code>get_quota_root()</code> no longer return duplicated rows when libcurl delivers the untagged <code>QUOTA</code> line through both its header and body callbacks (as libcurl 8.x does).</li></ul></div>
+<div class="section level3">
+<h3 id="tests-1-5-1">Tests<a class="anchor" aria-label="anchor" href="#tests-1-5-1"></a></h3>
+<ul><li><p>the Docker sandbox (<code>inst/docker/dovecot.conf</code>) now enables Dovecot’s <code>acl</code> and <code>quota</code> plugins (with <code>acl_anyone = allow</code> and a 1 GB storage quota), so that the <code>ACL</code> and <code>QUOTA</code> methods can be exercised locally. The new <code>ACL</code>, <code>ENABLE</code>, <code>SEARCHRES</code>, and <code>ESORT</code> features were verified against it.</p></li>
+<li><p>new offline tests for the ACL, ESORT, and ENABLE response parsers, the <code>SEARCH RETURN (SAVE)</code> request builder, the multi-message <code>FETCH</code> splitter, and the <code>QUOTA</code> de-duplication (<code>test-parse-acl-esort-enable.R</code>).</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.0" id="mrpostman-150-2026-08-27-feature-update">mRpostman 1.5.0 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-150-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-1-5-0">New features<a class="anchor" aria-label="anchor" href="#new-features-1-5-0"></a></h3>
+<ul><li><p>new <code>ImapCon$check()</code> method issuing the IMAP <code>CHECK</code> command (RFC 3501, section 6.4.1), which requests a checkpoint of the selected folder. It has no client-observable effect (use <code>noop()</code> as a keep-alive) and is provided for completeness of the IMAP4rev1 client command set.</p></li>
+<li>
+<p><strong>UIDPLUS</strong> extension (RFC 4315), capability-checked:</p>
+<ul><li>
+<code>ImapCon$append_msg()</code> now returns (invisibly) the UID that the server assigned to the appended message, read from the <code>[APPENDUID &lt;uidvalidity&gt; &lt;uid&gt;]</code> response code, or <code>NA</code> when the server does not advertise <code>UIDPLUS</code>. Previously it returned <code>TRUE</code>.</li>
+<li>
+<code>ImapCon$copy_msg()</code> and <code>ImapCon$move_msg()</code> now attach the <code>[COPYUID ...]</code> mapping to their (unchanged) return value as a <code>"copyuid"</code> attribute: a <code>data.frame</code> with <code>source_uid</code> and <code>dest_uid</code>, and the destination <code>uidvalidity</code> as an attribute. The message ids are still returned, so pipes are unaffected.</li>
+<li>
+<code>ImapCon$expunge(msg_uid = ...)</code> (<code>UID EXPUNGE</code>) now verifies the <code>UIDPLUS</code> capability before issuing the command; a plain <code>expunge()</code> is unaffected.</li>
+<li>
+<code><a href="../reference/ingest_maildir.html">ingest_maildir()</a></code> (and therefore <code><a href="../reference/enron_sandbox.html">enron_sandbox()</a></code>) records the assigned UID of every uploaded message in a new <code>uid</code> column of the returned manifest.</li>
+</ul></li>
+<li><p><strong>LIST-STATUS</strong> extension (RFC 5819): new <code>ImapCon$list_folders_status()</code> method issuing <code>LIST "" "*" RETURN (STATUS (...))</code>, which returns the folder list together with the requested <code>STATUS</code> items (<code>MESSAGES</code>, <code>RECENT</code>, <code>UIDNEXT</code>, <code>UIDVALIDITY</code>, <code>UNSEEN</code>) in a single round trip, as a <code>data.frame</code> with one row per selectable folder. Requires the server <code>LIST-STATUS</code> capability.</p></li>
+<li><p><code>ImapCon$append_msg()</code> gained a <code>flags</code> argument (<code>"Seen"</code>, <code>"Flagged"</code>, <code>"Answered"</code>, <code>"Draft"</code>, <code>"Deleted"</code>) sent through libcurl’s <code>CURLOPT_UPLOAD_FLAGS</code>. By default the message is now stored <strong>without</strong> flags. Note that this depends on the libcurl version: libcurl &gt;= 8.13 honors the option, while earlier versions ignore it and always store the message with <code>\Seen</code>, as they always did.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-5-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-0"></a></h3>
+<ul><li>
+<code><a href="../reference/populate_sandbox.html">populate_sandbox()</a></code> now sets the planned <code>\Seen</code> state in both directions (adding it to the read messages and removing it from the unread ones) instead of only removing it. It relied on libcurl marking every appended message as read, which libcurl &gt;= 8.13 no longer does, so the sandbox’s read/unread schedule was no longer reproduced on current libcurl builds.</li></ul></div>
+<div class="section level3">
+<h3 id="tests-1-5-0">Tests<a class="anchor" aria-label="anchor" href="#tests-1-5-0"></a></h3>
+<ul><li>new offline tests for the UIDPLUS response-code parsers (<code>parse_appenduid()</code>, <code>parse_copyuid()</code>, sequence-set expansion) and for the <code>LIST-STATUS</code> response parser (<code>parse_list_status()</code>). All three features were also verified live against the Dovecot sandbox (<code>inst/docker/</code>).</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.4.1" id="mrpostman-141-2026-08-26-bugfix-update">mRpostman 1.4.1 (2026-08-26 bugfix update)<a class="anchor" aria-label="anchor" href="#mrpostman-141-2026-08-26-bugfix-update"></a></h2>
 <div class="section level3">

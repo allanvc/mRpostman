@@ -1,8 +1,9 @@
-**mRpostman - Update to v1.4.1**
+**mRpostman - Update to v1.5.1**
 
-This is a bugfix release: the fetch methods no longer fail on message parts
-larger than roughly 90 kB when the `curl` package is built against
-libcurl >= 8.x (see NEWS.md).
+This is a feature release: it completes the IMAP4rev1 client command set
+(`CHECK`) and adds the `UIDPLUS`, `LIST-STATUS`, `ACL`, `SETQUOTA`, `ENABLE`,
+`SEARCHRES`, and `ESORT` extensions, all capability-checked (see NEWS.md).
+No new dependencies.
 
 ## Test environments
 * local Ubuntu 22.04, R 4.4.1

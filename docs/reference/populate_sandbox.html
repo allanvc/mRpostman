@@ -25,7 +25,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.4.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.1</span>
       </span>
     </div>
 
@@ -131,14 +131,12 @@ summary. Default is <code>FALSE</code>.</p></dd>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p><code>APPEND</code> via libcurl stores messages with the <code>\Seen</code>
-  flag (hardcoded in libcurl's IMAP module) and the current internal date,
-  so flags are adjusted afterwards with <code>ImapCon$add_flags()</code> and
-  <code>ImapCon$remove_flags()</code>. Internal-date searches
-  (<code>BEFORE</code>/<code>SINCE</code>/<code>ON</code>, <code>WITHIN</code>) therefore only make
-  sense relative to the population time; searches on fixed dates should use
-  the <code>SENT*</code> variants, which read the <code>Date:</code> header — spread
-  over the year 2020 in this corpus.</p>
+    <p><code>ImapCon$append_msg()</code> stores the messages without flags on
+  libcurl &gt;= 8.13, but earlier libcurl versions hardcode <code>\Seen</code> in
+  <code>APPEND</code>, so <code>populate_sandbox()</code> sets the planned
+  <code>\Seen</code> state explicitly in both directions after the upload. <code>APPEND</code> also stores the current time as the internal date
+  of every message, which is why the date searches below use the
+  header-based <code>SENT*</code> variants.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
