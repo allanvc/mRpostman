@@ -214,6 +214,37 @@ if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"])
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$notify()`
+## ------------------------------------------------
+
+\dontrun{
+# wait up to 10 minutes for mail in any folder of the account
+ev <- con$notify(mailboxes = "personal", timeout = 600,
+                 callback = function(ev) !any(ev$type == "STATUS"))
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_binary()`
+## ------------------------------------------------
+
+\dontrun{
+parts <- con$fetch_bodystructure(msg_id = 3)
+pdf <- con$fetch_binary(msg_id = 3, part = parts$part[parts$is_attachment][1])
+writeBin(pdf[[1]], "attachment.pdf")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$append_catenate()`
+## ------------------------------------------------
+
+\dontrun{
+# a new message whose body is the text of message UID 12, with a new header
+con$append_catenate(parts = list(
+  "From: me@example.com\r\nSubject: Fwd: report\r\n\r\n",
+  imap_url("INBOX", uid = 12, section = "TEXT")), folder = "Archive")
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$append_msgs()`
 ## ------------------------------------------------
 
@@ -1048,6 +1079,9 @@ Other attachments:
     \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
     \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
     \item \href{#method-ImapCon-idle}{\code{ImapCon$idle()}}
+    \item \href{#method-ImapCon-notify}{\code{ImapCon$notify()}}
+    \item \href{#method-ImapCon-fetch_binary}{\code{ImapCon$fetch_binary()}}
+    \item \href{#method-ImapCon-append_catenate}{\code{ImapCon$append_catenate()}}
     \item \href{#method-ImapCon-append_msgs}{\code{ImapCon$append_msgs()}}
     \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
     \item \href{#method-ImapCon-enable}{\code{ImapCon$enable()}}
@@ -1377,7 +1411,13 @@ set.}
   \code{IDLE} capability and, for TLS, an \code{imaps://} URL.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$idle(timeout = 300, callback = NULL, folder = NULL, renew = 25 * 60)}
+    \preformatted{ImapCon$idle(
+  timeout = 300,
+  callback = NULL,
+  folder = NULL,
+  renew = 25 * 60,
+  compress = FALSE
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -1393,6 +1433,9 @@ currently selected folder.}
       \item{\code{renew}}{Seconds after which the \code{IDLE} command is renewed
 (servers may close connections idling for too long). Default is 25
 minutes.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978; requires that
+server capability). Default is \code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -1414,6 +1457,179 @@ if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"])
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-notify"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-notify}{}}}
+\subsection{\code{ImapCon$notify()}}{
+  Receive the server's notifications about one or several
+  mailboxes without idling on each (IMAP \code{NOTIFY}, RFC 5465).
+  On a dedicated second connection, \code{NOTIFY SET} registers the
+  events of interest; the server then reports new and expunged
+  messages and flag changes of the selected folder (\code{EXISTS},
+  \code{EXPUNGE}, \code{FETCH}), the same for other mailboxes through
+  \code{STATUS} lines, and mailbox creations, renames, and deletions
+  through \code{LIST} lines. Requires the server \code{NOTIFY}
+  capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$notify(
+  mailboxes = "personal",
+  events = c("MessageNew", "MessageExpunge"),
+  timeout = 300,
+  callback = NULL,
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{mailboxes}}{A \code{character} vector: \code{"selected"} (the
+currently selected folder), \code{"personal"} (every folder of the
+account), \code{"subscribed"}, \code{"inboxes"}, and/or folder
+names. Default is \code{"personal"}.}
+      \item{\code{events}}{A \code{character} vector with any of
+\code{"MessageNew"}, \code{"MessageExpunge"}, \code{"FlagChange"},
+\code{"AnnotationChange"}, \code{"MailboxName"},
+\code{"SubscriptionChange"}. Default is the first two.}
+      \item{\code{timeout}}{Maximum number of seconds to wait. Default is
+\code{300}.}
+      \item{\code{callback}}{\code{NULL} (default) or a function called with a
+\code{data.frame} of events each time some arrive; return
+\code{FALSE} from it to stop waiting.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per event: \code{type}
+  (\code{"EXISTS"}, \code{"EXPUNGE"}, \code{"FETCH"}, \code{"RECENT"},
+  \code{"STATUS"}, \code{"LIST"}), \code{id} (a message count or
+  sequence number, \code{NA} for \code{STATUS}/\code{LIST}), and
+  \code{detail} (the rest of the server line). The initial
+  \code{STATUS} of each watched mailbox is included.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# wait up to 10 minutes for mail in any folder of the account
+ev <- con$notify(mailboxes = "personal", timeout = 600,
+                 callback = function(ev) !any(ev$type == "STATUS"))
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_binary"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_binary}{}}}
+\subsection{\code{ImapCon$fetch_binary()}}{
+  Fetch a message part with the transfer encoding reversed
+  by the server (IMAP \code{FETCH ... (BINARY.PEEK[<part>])}, RFC 3516),
+  over the raw socket layer, since the reply is a binary literal.
+  The bytes of a base64 or quoted-printable attachment thus arrive
+  already decoded. Requires the server \code{BINARY} capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_binary(
+  msg_id,
+  part,
+  use_uid = FALSE,
+  folder = NULL,
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids.}
+      \item{\code{part}}{A \code{character} string with the section number, as
+reported by \code{fetch_bodystructure()} (e.g. \code{"2"}).}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{folder}}{The folder to read from. If \code{NULL} (default), the
+currently selected folder.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named \code{list} of \code{raw} vectors, one per message.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{parts <- con$fetch_bodystructure(msg_id = 3)
+pdf <- con$fetch_binary(msg_id = 3, part = parts$part[parts$is_attachment][1])
+writeBin(pdf[[1]], "attachment.pdf")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-append_catenate"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-append_catenate}{}}}
+\subsection{\code{ImapCon$append_catenate()}}{
+  Append a message assembled by the server from parts of
+  messages it already stores and from text supplied by the client
+  (IMAP \code{APPEND ... CATENATE}, RFC 4469), over the raw socket
+  layer. Typical use: forwarding or archiving a message with a new
+  header without downloading it. Requires the server \code{CATENATE}
+  capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$append_catenate(
+  parts,
+  folder = NULL,
+  flags = NULL,
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{parts}}{A \code{list} whose elements are \code{\link{imap_url}()}
+objects (parts copied on the server), \code{character} strings, or
+\code{raw} vectors (sent as literals), concatenated in order.}
+      \item{\code{folder}}{A \code{character} string with the destination folder.
+If \code{NULL}, the previously selected folder is used.}
+      \item{\code{flags}}{\code{NULL} (default) or a \code{character} vector of
+flags stored with the message.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly, the UID assigned to the new message (\code{NA}
+  when the server does not report it).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# a new message whose body is the text of message UID 12, with a new header
+con$append_catenate(parts = list(
+  "From: me@example.com\r\nSubject: Fwd: report\r\n\r\n",
+  imap_url("INBOX", uid = 12, section = "TEXT")), folder = "Archive")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-append_msgs"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-append_msgs}{}}}
 \subsection{\code{ImapCon$append_msgs()}}{
@@ -1429,7 +1645,8 @@ if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"])
   folder = NULL,
   flags = NULL,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  compress = FALSE
 )}
     \if{html}{\out{</div>}}
   }
@@ -1447,6 +1664,9 @@ flags stored with every message (e.g. \code{"Seen"}).}
 message. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }

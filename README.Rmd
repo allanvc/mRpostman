@@ -85,10 +85,10 @@ Below, we present all the available methods and functions, grouped by type of op
   `larger_than()`, `younger_than()`, `older_than()`, `saved_before()`, `saved_since()`, `saved_on()`, `modseq()`;
 * **server-side sort and thread methods**: `sort()`, `thread()`;
 * **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-`fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`, `fetch_attachment_parts()`;
+`fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, `fetch_preview()`, `fetch_binary()`, `metadata_options()`, `fetch_attachments_list()`, `fetch_attachments()`, `fetch_attachment_parts()`;
 * **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* **complementary methods**: `copy_msg()`, `move_msg()`, `append_msg()`, `append_msgs()`, `idle()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
-* **MIME-decoding and message-text helper functions**: `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`, `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`.
+* **complementary methods**: `copy_msg()`, `move_msg()`, `append_msg()`, `append_msgs()`, `append_catenate()`, `idle()`, `notify()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`;
+* **MIME-decoding and message-text helper functions**: `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`, `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`, `imap_url()`.
 
 ## Supported IMAP commands and capabilities
 
@@ -145,11 +145,15 @@ The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in
 | `GETMETADATA` / `SETMETADATA` | `get_metadata()` / `set_metadata()`                    | `METADATA`                              | [5464](https://datatracker.ietf.org/doc/html/rfc5464)      |
 | `IDLE`                  | `idle()` (on a dedicated second connection)                 | `IDLE`                                  | [2177](https://datatracker.ietf.org/doc/html/rfc2177)      |
 | `APPEND` (multiple literals) | `append_msgs()`                                        | `MULTIAPPEND`                           | [3502](https://datatracker.ietf.org/doc/html/rfc3502)      |
+| `NOTIFY SET` / `NOTIFY NONE` | `notify()`                                             | `NOTIFY`                                | [5465](https://datatracker.ietf.org/doc/html/rfc5465)      |
+| `FETCH (BINARY.PEEK[...])` | `fetch_binary()`                                         | `BINARY`                                | [3516](https://datatracker.ietf.org/doc/html/rfc3516)      |
+| `APPEND ... CATENATE`   | `append_catenate()`, `imap_url()`                           | `CATENATE`                              | [4469](https://datatracker.ietf.org/doc/html/rfc4469)      |
+| `COMPRESS DEFLATE`      | `compress = TRUE` in the raw-socket methods                 | `COMPRESS=DEFLATE`                      | [4978](https://datatracker.ietf.org/doc/html/rfc4978)      |
 | `LIST ... RETURN (MYRIGHTS)` | `list_mail_folders(detailed = TRUE)` (`my_rights` column) | `LIST-MYRIGHTS`                    | [8440](https://datatracker.ietf.org/doc/html/rfc8440)      |
 | `CREATE ... (USE (...))` | `create_folder(special_use = ...)`                          | `CREATE-SPECIAL-USE`                    | [6154](https://datatracker.ietf.org/doc/html/rfc6154)      |
 | `AUTHENTICATE OAUTHBEARER` | `configure_imap(oauth_mechanism = "OAUTHBEARER")`         | `AUTH=OAUTHBEARER`                      | [7628](https://datatracker.ietf.org/doc/html/rfc7628)      |
 
-Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Not implemented: `NOTIFY` (RFC 5465), `CATENATE`, `BINARY`, and `COMPRESS=DEFLATE`.
+Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Every registered IMAP4rev1 extension in common use is now implemented; the raw-socket methods (`idle()`, `notify()`, `append_msgs()`, `append_catenate()`, `fetch_binary()`) need an `imaps://` URL for TLS, since STARTTLS is not available on that connection.
 
 ## Installation
 

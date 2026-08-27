@@ -42,5 +42,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+# zlib for COMPRESS=DEFLATE (RFC 4978); R itself links zlib on every platform
+if pkg-config --exists zlib 2>/dev/null; then
+  PKG_CFLAGS="$PKG_CFLAGS `pkg-config --cflags zlib`"
+  PKG_LIBS="$PKG_LIBS `pkg-config --libs zlib`"
+else
+  PKG_LIBS="$PKG_LIBS -lz"
+fi
+
 sed -e "s|@cflags@|$PKG_CFLAGS|" -e "s|@libs@|$PKG_LIBS|" src/Makevars.in > src/Makevars
 exit 0

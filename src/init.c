@@ -7,6 +7,9 @@ SEXP C_imap_socket_send(SEXP, SEXP, SEXP);
 SEXP C_imap_socket_recv(SEXP, SEXP, SEXP);
 SEXP C_imap_socket_close(SEXP);
 SEXP C_imap_socket_is_open(SEXP);
+SEXP C_zstream_new(SEXP, SEXP);
+SEXP C_zstream_deflate(SEXP, SEXP);
+SEXP C_zstream_inflate(SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
   {"C_imap_socket_open",    (DL_FUNC) &C_imap_socket_open,    3},
@@ -14,6 +17,9 @@ static const R_CallMethodDef CallEntries[] = {
   {"C_imap_socket_recv",    (DL_FUNC) &C_imap_socket_recv,    3},
   {"C_imap_socket_close",   (DL_FUNC) &C_imap_socket_close,   1},
   {"C_imap_socket_is_open", (DL_FUNC) &C_imap_socket_is_open, 1},
+  {"C_zstream_new",         (DL_FUNC) &C_zstream_new,         2},
+  {"C_zstream_deflate",     (DL_FUNC) &C_zstream_deflate,     2},
+  {"C_zstream_inflate",     (DL_FUNC) &C_zstream_inflate,     2},
   {NULL, NULL, 0}
 };
 

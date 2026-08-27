@@ -31,6 +31,63 @@ raw_session_open <- function(self, timeout_ms = 30000) {
   sess
 }
 
+# every byte leaving or entering the session passes here, so that
+# COMPRESS=DEFLATE (RFC 4978) can be switched on transparently
+raw_send <- function(sess, data) {
+  if (is.character(data)) data <- charToRaw(data)
+  if (!is.null(sess$deflate)) data <- .Call(C_zstream_deflate, sess$deflate, data)
+  imap_socket_send(sess$sock, data, sess$timeout_ms)
+}
+
+raw_recv <- function(sess, timeout_ms) {
+  chunk <- imap_socket_recv(sess$sock, timeout_ms = as.integer(timeout_ms))
+  if (isTRUE(attr(chunk, "closed"))) stop("the server closed the connection", call. = FALSE)
+  if (length(chunk) > 0 && !is.null(sess$inflate)) chunk <- .Call(C_zstream_inflate, sess$inflate, chunk)
+  chunk
+}
+
+# exactly n bytes (a literal), or an error on timeout
+raw_read_bytes <- function(sess, n, timeout_ms = sess$timeout_ms) {
+  deadline <- Sys.time() + timeout_ms / 1000
+  while (length(sess$buffer) < n) {
+    remaining <- as.numeric(difftime(deadline, Sys.time(), units = "secs")) * 1000
+    if (remaining <= 0) stop("timeout while reading a literal of ", n, " bytes", call. = FALSE)
+    chunk <- raw_recv(sess, min(remaining, 30000))
+    if (length(chunk) > 0) sess$buffer <- c(sess$buffer, chunk)
+  }
+  out <- sess$buffer[seq_len(n)]
+  sess$buffer <- sess$buffer[-seq_len(n)]
+  out
+}
+
+# open + authenticate (+ compress) in one go
+raw_session_start <- function(self, auth, compress = FALSE, timeout_ms = 30000) {
+  if (is.null(auth)) {
+    stop("The credentials are no longer available on this connection object (after disconnect()); create a new one with configure_imap().", call. = FALSE)
+  }
+  sess <- raw_session_open(self, timeout_ms = timeout_ms)
+  ok <- FALSE
+  on.exit(if (!ok) raw_session_close(sess), add = TRUE)
+  raw_login(sess, self, auth)
+  if (isTRUE(compress)) raw_compress(sess)
+  ok <- TRUE
+  sess
+}
+
+# COMPRESS DEFLATE (RFC 4978): from the OK reply on, both directions are raw
+# deflate streams
+raw_compress <- function(sess) {
+  if (!("COMPRESS=DEFLATE" %in% sess$caps)) {
+    stop('The IMAP server does not advertise the "COMPRESS=DEFLATE" capability (RFC 4978).', call. = FALSE)
+  }
+  r <- raw_command(sess, "COMPRESS DEFLATE")
+  raw_ok_or_stop(r, "COMPRESS DEFLATE")
+  sess$deflate <- .Call(C_zstream_new, FALSE, 6L)
+  sess$inflate <- .Call(C_zstream_new, TRUE, 6L)
+  sess$compressed <- TRUE
+  invisible(TRUE)
+}
+
 raw_capability_tokens <- function(x) {
   m <- stringr::str_match(x, "CAPABILITY\\s+([^\\]\r\n]*)")[1, 2]
   if (is.na(m)) return(character(0))
@@ -43,16 +100,17 @@ raw_readline <- function(sess, timeout_ms = sess$timeout_ms) {
   repeat {
     nl <- which(sess$buffer == as.raw(0x0a))
     if (length(nl) > 0) {
-      line <- sess$buffer[seq_len(nl[1])]
+      line <- if (nl[1] > 1L) sess$buffer[seq_len(nl[1] - 1L)] else raw(0)
       sess$buffer <- sess$buffer[-seq_len(nl[1])]
+      # a text line ends in CRLF; drop the CR (the LF is already excluded) and
+      # any stray NUL, so the returned string is exactly the line's content
       out <- sub("\r$", "", rawToChar(line[line != as.raw(0)]))
       if (isTRUE(getOption("mRpostman.raw_debug"))) cat("< ", out, "\n", sep = "", file = stderr())
       return(out)
     }
     remaining <- as.numeric(difftime(deadline, Sys.time(), units = "secs")) * 1000
     if (remaining <= 0) return(NULL)
-    chunk <- imap_socket_recv(sess$sock, timeout_ms = as.integer(min(remaining, 30000)))
-    if (isTRUE(attr(chunk, "closed"))) stop("the server closed the connection", call. = FALSE)
+    chunk <- raw_recv(sess, min(remaining, 30000))
     if (length(chunk) > 0) sess$buffer <- c(sess$buffer, chunk)
   }
 }
@@ -78,8 +136,9 @@ raw_command <- function(sess, command, literals = list(), timeout_ms = sess$time
     pieces <- substring(command, c(1L, ends + 1L), c(ends, nchar(command)))
     pieces <- pieces[c(rep(TRUE, length(ends)), nzchar(pieces[length(pieces)]))]
   }
-  imap_socket_send(sess$sock, paste0(tag, " ", pieces[1], "\r\n"), sess$timeout_ms)
+  raw_send(sess, paste0(tag, " ", pieces[1], "\r\n"))
   lines <- character(0)
+  received <- list()   # literals the server sent, keyed by the index of their line
   lit_i <- 0L
   repeat {
     ln <- raw_readline(sess, timeout_ms)
@@ -87,14 +146,26 @@ raw_command <- function(sess, command, literals = list(), timeout_ms = sess$time
     if (startsWith(ln, "+")) {
       lit_i <- lit_i + 1L
       if (lit_i > length(literals)) stop("unexpected continuation request: ", ln, call. = FALSE)
-      imap_socket_send(sess$sock, literals[[lit_i]], sess$timeout_ms)
+      raw_send(sess, literals[[lit_i]])
       tail_text <- if (lit_i + 1L <= length(pieces)) pieces[lit_i + 1L] else ""
-      imap_socket_send(sess$sock, paste0(tail_text, "\r\n"), sess$timeout_ms)
+      raw_send(sess, paste0(tail_text, "\r\n"))
+      next
+    }
+    # a server literal ("{n}" or, for BINARY, "~{n}") ends the line: read the
+    # bytes, then the rest of the response line
+    lm <- regmatches(ln, regexpr("~?\\{[0-9]+\\}$", ln))
+    if (length(lm) == 1) {
+      n <- as.integer(gsub("[^0-9]", "", lm))
+      bytes <- raw_read_bytes(sess, n, timeout_ms)
+      rest <- raw_readline(sess, timeout_ms)
+      if (is.null(rest)) stop("timeout after a literal of ", n, " bytes", call. = FALSE)
+      lines <- c(lines, paste0(ln, " <", n, " bytes>", rest))
+      received[[as.character(length(lines))]] <- bytes
       next
     }
     if (startsWith(ln, paste0(tag, " "))) {
       status <- sub(paste0("^", tag, " (\\S+).*$"), "\\1", ln)
-      return(list(status = status, tagged = ln, lines = lines))
+      return(list(status = status, tagged = ln, lines = lines, literals = received))
     }
     lines <- c(lines, ln)
   }
@@ -145,14 +216,22 @@ raw_select <- function(sess, folder) {
 
 # Parse the unsolicited responses received while idling into events
 raw_idle_events <- function(lines) {
-  if (length(lines) == 0) {
-    return(data.frame(type = character(0), id = integer(0), detail = character(0),
-                      stringsAsFactors = FALSE))
-  }
+  empty <- data.frame(type = character(0), id = integer(0), detail = character(0),
+                      stringsAsFactors = FALSE)
+  if (length(lines) == 0) return(empty)
   m <- stringr::str_match(lines, "^\\*\\s+(\\d+)\\s+(EXISTS|RECENT|EXPUNGE|FETCH)\\b\\s*(.*)$")
   ok <- !is.na(m[, 1])
-  data.frame(type = m[ok, 3], id = as.integer(m[ok, 2]), detail = m[ok, 4],
-             stringsAsFactors = FALSE)
+  out <- data.frame(type = m[ok, 3], id = as.integer(m[ok, 2]), detail = m[ok, 4],
+                    stringsAsFactors = FALSE)
+  # NOTIFY (RFC 5465) also reports other mailboxes through STATUS, and
+  # mailbox creations/renames/deletions through LIST
+  sm <- stringr::str_match(lines, "^\\*\\s+(STATUS|LIST)\\s+(.*)$")
+  oks <- !is.na(sm[, 1])
+  if (any(oks)) {
+    out <- rbind(out, data.frame(type = sm[oks, 2], id = NA_integer_, detail = sm[oks, 3],
+                                 stringsAsFactors = FALSE))
+  }
+  out
 }
 
 # IDLE loop: returns the events received until `timeout` seconds elapse or
@@ -167,7 +246,7 @@ raw_idle <- function(sess, timeout = 300, callback = NULL, renew = 25 * 60) {
   keep_going <- TRUE
   while (keep_going && Sys.time() < deadline) {
     tag <- raw_next_tag(sess)
-    imap_socket_send(sess$sock, paste0(tag, " IDLE\r\n"), sess$timeout_ms)
+    raw_send(sess, paste0(tag, " IDLE\r\n"))
     cont <- raw_readline(sess)
     if (is.null(cont) || !startsWith(cont, "+")) {
       stop("the server did not accept IDLE: ", if (is.null(cont)) "(timeout)" else cont, call. = FALSE)
@@ -186,7 +265,7 @@ raw_idle <- function(sess, timeout = 300, callback = NULL, renew = 25 * 60) {
         }
       }
     }
-    imap_socket_send(sess$sock, "DONE\r\n", sess$timeout_ms)
+    raw_send(sess, "DONE\r\n")
     repeat {
       ln <- raw_readline(sess)
       if (is.null(ln)) stop("timeout waiting for the end of IDLE", call. = FALSE)
@@ -197,6 +276,18 @@ raw_idle <- function(sess, timeout = 300, callback = NULL, renew = 25 * 60) {
   }
   rownames(events) <- NULL
   events
+}
+
+# after a write on the raw (event) connection, the main libcurl connection may
+# hold unsolicited untagged responses (EXISTS/RECENT) about the messages just
+# added to the selected folder; a NOOP flushes them so the next command's
+# response is clean
+raw_sync_main <- function(self, folder, retries = 1) {
+  if (!is.null(self$con_handle) && !is.na(self$con_params$folder) &&
+      identical(self$con_params$folder, folder)) {
+    tryCatch(noop_int(self, retries = 0), error = function(e) NULL)
+  }
+  invisible(TRUE)
 }
 
 raw_session_close <- function(sess) {

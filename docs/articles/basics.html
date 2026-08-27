@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -970,6 +970,12 @@
 <div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Subject: m"</span>, <span class="va">i</span>, <span class="st">"\r\n\r\nbody "</span>, <span class="va">i</span>, <span class="st">"\r\n"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span>
 <span><span class="va">uids</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">append_msgs</span><span class="op">(</span><span class="va">msgs</span>, folder <span class="op">=</span> <span class="st">"Archive"</span>, flags <span class="op">=</span> <span class="st">"Seen"</span><span class="op">)</span></span></code></pre></div>
+<p>Since 2.1.0 the same layer serves <code>notify()</code> (RFC 5465: events for several folders at once), <code>fetch_binary()</code> (RFC 3516: attachments decoded by the server), <code>append_catenate()</code> (RFC 4469: a message assembled on the server from <code><a href="../reference/imap_url.html">imap_url()</a></code> parts and new text), and, on every one of them, <code>compress = TRUE</code> (RFC 4978):</p>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">notify</span><span class="op">(</span>mailboxes <span class="op">=</span> <span class="st">"personal"</span>, timeout <span class="op">=</span> <span class="fl">600</span><span class="op">)</span>      <span class="co"># STATUS lines for any folder that changes</span></span>
+<span><span class="va">pdf</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_binary</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">3</span>, part <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>              <span class="co"># bytes, already decoded by the server</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">append_catenate</span><span class="op">(</span>parts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Subject: Fwd\r\n\r\n"</span>, <span class="fu"><a href="../reference/imap_url.html">imap_url</a></span><span class="op">(</span><span class="st">"INBOX"</span>, uid <span class="op">=</span> <span class="fl">12</span>, section <span class="op">=</span> <span class="st">"TEXT"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>                    folder <span class="op">=</span> <span class="st">"Archive"</span><span class="op">)</span></span></code></pre></div>
 <p>The second connection needs the credentials again: they are kept in a private field of the connection object (never printed, not part of <code>con_params</code>) and cleared by <code>disconnect()</code>. For TLS, the URL must be <code>imaps://</code> (STARTTLS is not available on the raw socket).</p>
 </div>
 <div class="section level2">

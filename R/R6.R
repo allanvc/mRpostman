@@ -250,6 +250,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param renew Seconds after which the \code{IDLE} command is renewed
     #'   (servers may close connections idling for too long). Default is 25
     #'   minutes.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978; requires that
+    #'   server capability). Default is \code{FALSE}.
     #' @return A \code{data.frame} with one row per event: \code{type}
     #'   (\code{"EXISTS"}, \code{"EXPUNGE"}, \code{"FETCH"},
     #'   \code{"RECENT"}), \code{id} (the message count or sequence number
@@ -261,9 +264,121 @@ ImapCon <- R6::R6Class("ImapCon",
     #' ev <- con$idle(timeout = 600, callback = function(ev) !any(ev$type == "EXISTS"))
     #' if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"]))
     #' }
-    idle = function(timeout = 300, callback = NULL, folder = NULL, renew = 25 * 60) {
-      out <- idle_int(self, private$auth, timeout, callback, folder, renew)
+    idle = function(timeout = 300, callback = NULL, folder = NULL, renew = 25 * 60,
+                    compress = FALSE) {
+      out <- idle_int(self, private$auth, timeout, callback, folder, renew,
+                      compress = compress)
       return(out)
+    },
+
+    #' @description Receive the server's notifications about one or several
+    #'   mailboxes without idling on each (IMAP \code{NOTIFY}, RFC 5465).
+    #'   On a dedicated second connection, \code{NOTIFY SET} registers the
+    #'   events of interest; the server then reports new and expunged
+    #'   messages and flag changes of the selected folder (\code{EXISTS},
+    #'   \code{EXPUNGE}, \code{FETCH}), the same for other mailboxes through
+    #'   \code{STATUS} lines, and mailbox creations, renames, and deletions
+    #'   through \code{LIST} lines. Requires the server \code{NOTIFY}
+    #'   capability.
+    #' @param mailboxes A \code{character} vector: \code{"selected"} (the
+    #'   currently selected folder), \code{"personal"} (every folder of the
+    #'   account), \code{"subscribed"}, \code{"inboxes"}, and/or folder
+    #'   names. Default is \code{"personal"}.
+    #' @param events A \code{character} vector with any of
+    #'   \code{"MessageNew"}, \code{"MessageExpunge"}, \code{"FlagChange"},
+    #'   \code{"AnnotationChange"}, \code{"MailboxName"},
+    #'   \code{"SubscriptionChange"}. Default is the first two.
+    #' @param timeout Maximum number of seconds to wait. Default is
+    #'   \code{300}.
+    #' @param callback \code{NULL} (default) or a function called with a
+    #'   \code{data.frame} of events each time some arrive; return
+    #'   \code{FALSE} from it to stop waiting.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per event: \code{type}
+    #'   (\code{"EXISTS"}, \code{"EXPUNGE"}, \code{"FETCH"}, \code{"RECENT"},
+    #'   \code{"STATUS"}, \code{"LIST"}), \code{id} (a message count or
+    #'   sequence number, \code{NA} for \code{STATUS}/\code{LIST}), and
+    #'   \code{detail} (the rest of the server line). The initial
+    #'   \code{STATUS} of each watched mailbox is included.
+    #' @examples
+    #' \dontrun{
+    #' # wait up to 10 minutes for mail in any folder of the account
+    #' ev <- con$notify(mailboxes = "personal", timeout = 600,
+    #'                  callback = function(ev) !any(ev$type == "STATUS"))
+    #' }
+    notify = function(mailboxes = "personal", events = c("MessageNew", "MessageExpunge"),
+                      timeout = 300, callback = NULL, compress = FALSE, retries = 1) {
+      out <- notify_int(self, private$auth, mailboxes, events, timeout, callback,
+                        compress, retries)
+      return(out)
+    },
+
+    #' @description Fetch a message part with the transfer encoding reversed
+    #'   by the server (IMAP \code{FETCH ... (BINARY.PEEK[<part>])}, RFC 3516),
+    #'   over the raw socket layer, since the reply is a binary literal.
+    #'   The bytes of a base64 or quoted-printable attachment thus arrive
+    #'   already decoded. Requires the server \code{BINARY} capability.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids.
+    #' @param part A \code{character} string with the section number, as
+    #'   reported by \code{fetch_bodystructure()} (e.g. \code{"2"}).
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param folder The folder to read from. If \code{NULL} (default), the
+    #'   currently selected folder.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{list} of \code{raw} vectors, one per message.
+    #' @examples
+    #' \dontrun{
+    #' parts <- con$fetch_bodystructure(msg_id = 3)
+    #' pdf <- con$fetch_binary(msg_id = 3, part = parts$part[parts$is_attachment][1])
+    #' writeBin(pdf[[1]], "attachment.pdf")
+    #' }
+    fetch_binary = function(msg_id, part, use_uid = FALSE, folder = NULL,
+                            compress = FALSE, retries = 1) {
+      out <- fetch_binary_int(self, private$auth, msg_id, part, use_uid, folder,
+                              compress, retries)
+      return(out)
+    },
+
+    #' @description Append a message assembled by the server from parts of
+    #'   messages it already stores and from text supplied by the client
+    #'   (IMAP \code{APPEND ... CATENATE}, RFC 4469), over the raw socket
+    #'   layer. Typical use: forwarding or archiving a message with a new
+    #'   header without downloading it. Requires the server \code{CATENATE}
+    #'   capability.
+    #' @param parts A \code{list} whose elements are \code{\link{imap_url}()}
+    #'   objects (parts copied on the server), \code{character} strings, or
+    #'   \code{raw} vectors (sent as literals), concatenated in order.
+    #' @param folder A \code{character} string with the destination folder.
+    #'   If \code{NULL}, the previously selected folder is used.
+    #' @param flags \code{NULL} (default) or a \code{character} vector of
+    #'   flags stored with the message.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return Invisibly, the UID assigned to the new message (\code{NA}
+    #'   when the server does not report it).
+    #' @examples
+    #' \dontrun{
+    #' # a new message whose body is the text of message UID 12, with a new header
+    #' con$append_catenate(parts = list(
+    #'   "From: me@example.com\r\nSubject: Fwd: report\r\n\r\n",
+    #'   imap_url("INBOX", uid = 12, section = "TEXT")), folder = "Archive")
+    #' }
+    append_catenate = function(parts, folder = NULL, flags = NULL, compress = FALSE,
+                               retries = 1) {
+      out <- append_catenate_int(self, private$auth, folder, parts, flags, compress, retries)
+      invisible(out)
     },
 
     #' @description Append several messages to a mail folder in a single
@@ -282,6 +397,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   message. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
     #' @return Invisibly, an \code{integer} vector with the UIDs assigned to
     #'   the messages (\code{APPENDUID}, UIDPLUS), or \code{NA}s when the
     #'   server does not report them.
@@ -291,8 +409,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$append_msgs(msgs, folder = "Archive", flags = "Seen")
     #' }
     append_msgs = function(messages, folder = NULL, flags = NULL, mute = FALSE,
-                           retries = 1) {
-      out <- append_msgs_int(self, private$auth, messages, folder, flags, mute, retries)
+                           retries = 1, compress = FALSE) {
+      out <- append_msgs_int(self, private$auth, messages, folder, flags, mute, retries,
+                             compress = compress)
       invisible(out)
     },
 

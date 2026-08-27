@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -63,6 +63,21 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.1.0" id="mrpostman-210-2026-08-27-feature-update">mRpostman 2.1.0 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-210-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-2-1-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-1-0"></a></h3>
+<p>All four remaining protocol extensions now run on the raw socket layer introduced in 2.0.0, each on a dedicated second connection and capability-checked:</p>
+<ul><li><p><strong>NOTIFY</strong> (RFC 5465): new <code>ImapCon$notify()</code> registers interest in events (<code>MessageNew</code>, <code>MessageExpunge</code>, <code>FlagChange</code>, <code>MailboxName</code>, …) for the selected folder, every personal folder, the subscribed ones, or named folders, and collects what the server reports (<code>EXISTS</code>/<code>EXPUNGE</code>/<code>FETCH</code> for the selected folder, <code>STATUS</code> lines for the others, <code>LIST</code> lines for mailbox changes) until a timeout or a callback stops it; then <code>NOTIFY NONE</code>.</p></li>
+<li><p><strong>BINARY</strong> (RFC 3516): new <code>ImapCon$fetch_binary()</code> fetches a message part with <code>BINARY.PEEK[&lt;part&gt;]</code>, so that the server reverses the base64/quoted-printable encoding and returns the bytes as a binary literal.</p></li>
+<li><p><strong>CATENATE</strong> (RFC 4469): new <code>ImapCon$append_catenate()</code> appends a message assembled by the server from parts of stored messages (<code><a href="../reference/imap_url.html">imap_url()</a></code> objects, a new exported helper building RFC 5092 URLs) and client-supplied text, without downloading anything.</p></li>
+<li><p><strong>COMPRESS=DEFLATE</strong> (RFC 4978): every raw-socket method (<code>idle()</code>, <code>notify()</code>, <code>append_msgs()</code>, <code>append_catenate()</code>, <code>fetch_binary()</code>) gained a <code>compress</code> argument; with <code>compress = TRUE</code> the second connection is switched to deflate in both directions (streaming zlib in <code>src/deflate_stream.c</code>).</p></li>
+<li><p>the raw session now reads server literals (<code>{n}</code> and <code>~{n}</code>), which <code>fetch_binary()</code> relies on.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-2-1-0">Tests<a class="anchor" aria-label="anchor" href="#tests-2-1-0"></a></h3>
+<ul><li>the Docker sandbox enables Dovecot’s <code>imap_zlib</code> plugin, so <code>COMPRESS=DEFLATE</code> is testable locally alongside <code>NOTIFY</code>, <code>BINARY</code>, and <code>CATENATE</code>; new offline tests cover the zlib streams and the <code>NOTIFY</code> event parsing (<code>test-raw-session.R</code>).</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.0.0" id="mrpostman-200-2026-08-27-major-update">mRpostman 2.0.0 (2026-08-27 major update)<a class="anchor" aria-label="anchor" href="#mrpostman-200-2026-08-27-major-update"></a></h2>
 <div class="section level3">

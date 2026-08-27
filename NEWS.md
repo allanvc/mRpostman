@@ -1,3 +1,23 @@
+## mRpostman 2.1.0 (2026-08-27 feature update)
+
+### New features
+
+All four remaining protocol extensions now run on the raw socket layer introduced in 2.0.0, each on a dedicated second connection and capability-checked:
+
+- **NOTIFY** (RFC 5465): new `ImapCon$notify()` registers interest in events (`MessageNew`, `MessageExpunge`, `FlagChange`, `MailboxName`, ...) for the selected folder, every personal folder, the subscribed ones, or named folders, and collects what the server reports (`EXISTS`/`EXPUNGE`/`FETCH` for the selected folder, `STATUS` lines for the others, `LIST` lines for mailbox changes) until a timeout or a callback stops it; then `NOTIFY NONE`.
+
+- **BINARY** (RFC 3516): new `ImapCon$fetch_binary()` fetches a message part with `BINARY.PEEK[<part>]`, so that the server reverses the base64/quoted-printable encoding and returns the bytes as a binary literal.
+
+- **CATENATE** (RFC 4469): new `ImapCon$append_catenate()` appends a message assembled by the server from parts of stored messages (`imap_url()` objects, a new exported helper building RFC 5092 URLs) and client-supplied text, without downloading anything.
+
+- **COMPRESS=DEFLATE** (RFC 4978): every raw-socket method (`idle()`, `notify()`, `append_msgs()`, `append_catenate()`, `fetch_binary()`) gained a `compress` argument; with `compress = TRUE` the second connection is switched to deflate in both directions (streaming zlib in `src/deflate_stream.c`).
+
+- the raw session now reads server literals (`{n}` and `~{n}`), which `fetch_binary()` relies on.
+
+### Tests
+
+- the Docker sandbox enables Dovecot's `imap_zlib` plugin, so `COMPRESS=DEFLATE` is testable locally alongside `NOTIFY`, `BINARY`, and `CATENATE`; new offline tests cover the zlib streams and the `NOTIFY` event parsing (`test-raw-session.R`).
+
 ## mRpostman 2.0.0 (2026-08-27 major update)
 
 ### New features

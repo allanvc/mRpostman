@@ -5,7 +5,7 @@
 #' and issues \code{IDLE} (RFC 2177). The main libcurl connection is left
 #' free, so the caller can fetch what the events announce.
 #' @noRd
-idle_int <- function(self, auth, timeout, callback, folder, renew) {
+idle_int <- function(self, auth, timeout, callback, folder, renew, compress = FALSE) {
   assertthat::assert_that(is.numeric(timeout), length(timeout) == 1, timeout > 0,
                           msg='"timeout" must be a positive number of seconds.')
   assertthat::assert_that(is.null(callback) || is.function(callback),
@@ -17,14 +17,11 @@ idle_int <- function(self, auth, timeout, callback, folder, renew) {
   }
   assertthat::assert_that(is.character(folder), length(folder) == 1,
                           msg='"folder" must be a single character string.')
-  if (is.null(auth)) {
-    stop("The credentials are no longer available on this connection object (after disconnect()); create a new one with configure_imap().", call. = FALSE)
-  }
   assert_capability(self, "IDLE", command = "idle", rfc = "RFC 2177")
 
-  sess <- raw_session_open(self, timeout_ms = max(30000, self$con_params$timeout_ms))
+  sess <- raw_session_start(self, auth, compress = compress,
+                            timeout_ms = max(30000, self$con_params$timeout_ms))
   on.exit(raw_session_close(sess), add = TRUE)
-  raw_login(sess, self, auth)
   raw_select(sess, folder)
   events <- raw_idle(sess, timeout = timeout, callback = callback, renew = renew)
   # the main connection learns about new messages only with its next command:
@@ -41,7 +38,8 @@ idle_int <- function(self, auth, timeout, callback, folder, renew) {
 #' message. Servers without \code{MULTIAPPEND} are served by one
 #' \code{append_msg()} per message instead.
 #' @noRd
-append_msgs_int <- function(self, auth, messages, folder, flags, mute, retries) {
+append_msgs_int <- function(self, auth, messages, folder, flags, mute, retries,
+                            compress = FALSE) {
   assertthat::assert_that(is.list(messages) || is.character(messages),
                           length(messages) >= 1,
                           msg='"messages" must be a character vector or a list of messages (character or raw).')
@@ -70,14 +68,15 @@ append_msgs_int <- function(self, auth, messages, folder, flags, mute, retries) 
   }
 
   payloads <- lapply(messages, as_bytes)
-  sess <- raw_session_open(self, timeout_ms = max(30000, self$con_params$timeout_ms))
+  sess <- raw_session_start(self, auth, compress = compress,
+                            timeout_ms = max(30000, self$con_params$timeout_ms))
   on.exit(raw_session_close(sess), add = TRUE)
-  raw_login(sess, self, auth)
   cmd <- paste0("APPEND ", adjust_folder_name(folder), " ",
                 paste0(flags_str, "{", vapply(payloads, length, integer(1)), "}", collapse = " "))
   r <- raw_command(sess, cmd, literals = payloads,
                    timeout_ms = max(60000, self$con_params$timeout_ms))
   raw_ok_or_stop(r, "MULTIAPPEND")
+  raw_sync_main(self, folder, retries)
   m <- stringr::str_match(r$tagged, "\\[APPENDUID\\s+(\\d+)\\s+([0-9,:]+)\\]")
   uids <- if (is.na(m[1, 3])) rep(NA_integer_, length(payloads)) else expand_sequence_set(m[1, 3])
   if (!mute) cat(paste0("\n::mRpostman: ", length(payloads), " message(s) appended to \"", folder, "\" in one MULTIAPPEND.\n"))
