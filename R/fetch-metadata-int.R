@@ -29,7 +29,7 @@
 #'   is \code{1}.
 #' @noRd
 fetch_metadata_int <- function(self, msg_id, use_uid, attribute, write_to_disk,
-                               keep_in_mem, mute, retries) {
+                               keep_in_mem, mute, retries, changed_since = NULL) {
 
   #check
   check_args(msg_id = msg_id, use_uid = use_uid, attribute = attribute,
@@ -58,7 +58,20 @@ fetch_metadata_int <- function(self, msg_id, use_uid, attribute, write_to_disk,
     use_uid_string = NULL
   }
 
-  fetch_request <- paste0(use_uid_string, "FETCH ", "#", " (", attribute, ")") # "#" serves as a place holder for the msg's ids
+  # CONDSTORE (RFC 7162): "(CHANGEDSINCE n)" restricts the reply to the
+  # messages changed after modification sequence n (MODSEQ is then returned too)
+  if (!is.null(changed_since)) {
+    assertthat::assert_that(is.numeric(changed_since), length(changed_since) == 1,
+                            changed_since >= 0,
+                            msg='"changed_since" must be NULL or a single non-negative number.')
+    assert_capability(self, "CONDSTORE", command = "fetch_metadata(changed_since = ...)",
+                      rfc = "RFC 7162", retries = retries)
+    mod_string <- paste0(" (CHANGEDSINCE ", format(changed_since, scientific = FALSE), ")")
+  } else {
+    mod_string <- ""
+  }
+
+  fetch_request <- paste0(use_uid_string, "FETCH ", "#", " (", attribute, ")", mod_string) # "#" serves as a place holder for the msg's ids
 
   # loop exec
   fetch_type = "metadata"
@@ -67,6 +80,13 @@ fetch_metadata_int <- function(self, msg_id, use_uid, attribute, write_to_disk,
                                  keep_in_mem = keep_in_mem, retries = retries,
                                  fetch_type = fetch_type, metadata_attribute = attribute)
 
+
+  if (!is.null(changed_since) && is.list(msg_list)) {
+    # messages not changed since the given modseq produce no FETCH block
+    unchanged <- vapply(msg_list, function(x) !nzchar(x) || grepl("^[A-Za-z]+[0-9]+ OK", x),
+                        logical(1))
+    msg_list <- msg_list[!unchanged]
+  }
 
   if (isFALSE(keep_in_mem)) {
 

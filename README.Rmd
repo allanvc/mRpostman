@@ -72,8 +72,8 @@ From version 0.9.0.0 onward, `mRpostman` is implemented under the OO paradigm, b
 Below, we present all the available methods and functions, grouped by type of operation:
 
 * **configuration and connection methods**: `configure_imap()`, `disconnect()`, `noop()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_use_ssl()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
-* **server information methods**: `list_server_capabilities()`, `enable()`, `id()`, `namespace()`, `get_quota_root()`, `get_quota()`, `set_quota()`;
-* **mailbox operations methods**: `list_mail_folders()`, `list_subscribed_folders()`, `list_folders_status()`, `list_special_use_folders()`, `get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, `my_rights()`, `select_folder()`, `examine_folder()`, `status()`, `create_folder()`, `rename_folder()`, `delete_folder()`, `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`, `unselect_folder()`, `check()`, `list_flags()`;
+* **server information methods**: `list_server_capabilities()`, `enable()`, `id()`, `namespace()`, `get_quota_root()`, `get_quota()`, `set_quota()`, `get_metadata()`, `set_metadata()`;
+* **mailbox operations methods**: `list_mail_folders()`, `list_subscribed_folders()`, `list_folders_status()`, `list_special_use_folders()`, `get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, `my_rights()`, `select_folder()`, `resync_folder()`, `fetch_changes()`, `examine_folder()`, `status()`, `create_folder()`, `rename_folder()`, `delete_folder()`, `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`, `unselect_folder()`, `check()`, `list_flags()`;
 * **single-search methods**: `search_before()`, `search_since()`, `search_period()`, `search_on()`,
 `search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
 `search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
@@ -140,12 +140,14 @@ The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in
 | `STATUS (SIZE)`         | `status(items = "SIZE")`, `list_folders_status(items = "SIZE")` | `STATUS=SIZE`                       | [8438](https://datatracker.ietf.org/doc/html/rfc8438)      |
 | `FETCH (PREVIEW)`       | `fetch_preview()`, `fetch_metadata(attribute = "PREVIEW")`  | `PREVIEW`                               | [8970](https://datatracker.ietf.org/doc/html/rfc8970)      |
 | `FETCH (SAVEDATE)`, `SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE` | `fetch_metadata(attribute = "SAVEDATE")`, `saved_before()` / `saved_on()` / `saved_since()` | `SAVEDATE` | [8514](https://datatracker.ietf.org/doc/html/rfc8514) |
-| `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `SEARCH MODSEQ` | `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ")`, `modseq()` | `CONDSTORE` | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
+| `SELECT (CONDSTORE)`, `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `FETCH ... (CHANGEDSINCE)`, `STORE ... (UNCHANGEDSINCE)`, `SEARCH MODSEQ` | `select_folder(condstore = TRUE)`, `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ", changed_since = )`, `add_flags()`/`replace_flags()`/`remove_flags()` `(unchanged_since = )`, `modseq()` | `CONDSTORE` | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
+| `SELECT (QRESYNC ...)`, `UID FETCH ... (CHANGEDSINCE VANISHED)` | `resync_folder()`, `fetch_changes()`                        | `QRESYNC`                               | [7162](https://datatracker.ietf.org/doc/html/rfc7162)      |
+| `GETMETADATA` / `SETMETADATA` | `get_metadata()` / `set_metadata()`                    | `METADATA`                              | [5464](https://datatracker.ietf.org/doc/html/rfc5464)      |
 | `LIST ... RETURN (MYRIGHTS)` | `list_mail_folders(detailed = TRUE)` (`my_rights` column) | `LIST-MYRIGHTS`                    | [8440](https://datatracker.ietf.org/doc/html/rfc8440)      |
 | `CREATE ... (USE (...))` | `create_folder(special_use = ...)`                          | `CREATE-SPECIAL-USE`                    | [6154](https://datatracker.ietf.org/doc/html/rfc6154)      |
 | `AUTHENTICATE OAUTHBEARER` | `configure_imap(oauth_mechanism = "OAUTHBEARER")`         | `AUTH=OAUTHBEARER`                      | [7628](https://datatracker.ietf.org/doc/html/rfc7628)      |
 
-Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: `QRESYNC` and the conditional `STORE`/`FETCH` forms of `CONDSTORE` (mailbox-synchronization machinery for offline readers; the `HIGHESTMODSEQ`/`MODSEQ` subset above is what an analytical client needs) and `IDLE` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
+Availability varies by provider. Gmail, for instance, supports every extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: `IDLE` and `NOTIFY` (not feasible with libcurl's one-shot request model — see the *Basics* vignette).
 
 ## Installation
 

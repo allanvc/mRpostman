@@ -1,3 +1,21 @@
+## mRpostman 1.5.5 (2026-08-27 feature update)
+
+### New features
+
+- **CONDSTORE** (RFC 7162), completing the subset added in 1.5.2: `select_folder(condstore = TRUE)` issues `SELECT ... (CONDSTORE)`, and the folder's `HIGHESTMODSEQ` is now kept in `con$con_params$highestmodseq` after every selection that reports it; `fetch_metadata(changed_since = n)` returns only the messages modified after modification sequence `n` (`CHANGEDSINCE`); `add_flags()`, `replace_flags()`, and `remove_flags()` gained `unchanged_since = n` for conditional stores (`UNCHANGEDSINCE`), returning the ids the server refused in the `"modified"` attribute.
+
+- **QRESYNC** (RFC 7162): new `ImapCon$resync_folder(name, uidvalidity, modseq)` selects a folder with `QRESYNC` and returns the UIDs expunged since the given state (`VANISHED (EARLIER)`) and the current flags of the messages changed since then; new `ImapCon$fetch_changes(modseq, vanished = TRUE)` reports the same for the selected folder (`UID FETCH 1:* (FLAGS MODSEQ) (CHANGEDSINCE n VANISHED)`). Both enable the extension once per connection, releasing the selected folder with `UNSELECT` when needed.
+
+- **METADATA** (RFC 5464): new `ImapCon$get_metadata()` and `ImapCon$set_metadata()` read and write mailbox or server annotations (`GETMETADATA`/`SETMETADATA`), returning a data frame of entries and values; `NA` removes an entry.
+
+### Improvements
+
+- the per-connection handling of `ENABLE`d extensions introduced in 1.5.4 for `UTF8=ACCEPT` is now generic (`ensure_enabled()`) and used for `QRESYNC` as well.
+
+### Tests
+
+- the Docker sandbox enables Dovecot's `METADATA` support (`mail_attribute_dict`, `imap_metadata = yes`); new offline tests cover the `MODIFIED`, `HIGHESTMODSEQ`, `VANISHED`/changed-flags, and `METADATA` parsers (`test-round6.R`). Verified live against Dovecot (all) and Gmail (CONDSTORE).
+
 ## mRpostman 1.5.4 (2026-08-27 feature update)
 
 ### New features

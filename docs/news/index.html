@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -63,6 +63,21 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.5" id="mrpostman-155-2026-08-27-feature-update">mRpostman 1.5.5 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-155-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-1-5-5">New features<a class="anchor" aria-label="anchor" href="#new-features-1-5-5"></a></h3>
+<ul><li><p><strong>CONDSTORE</strong> (RFC 7162), completing the subset added in 1.5.2: <code>select_folder(condstore = TRUE)</code> issues <code>SELECT ... (CONDSTORE)</code>, and the folder’s <code>HIGHESTMODSEQ</code> is now kept in <code>con$con_params$highestmodseq</code> after every selection that reports it; <code>fetch_metadata(changed_since = n)</code> returns only the messages modified after modification sequence <code>n</code> (<code>CHANGEDSINCE</code>); <code>add_flags()</code>, <code>replace_flags()</code>, and <code>remove_flags()</code> gained <code>unchanged_since = n</code> for conditional stores (<code>UNCHANGEDSINCE</code>), returning the ids the server refused in the <code>"modified"</code> attribute.</p></li>
+<li><p><strong>QRESYNC</strong> (RFC 7162): new <code>ImapCon$resync_folder(name, uidvalidity, modseq)</code> selects a folder with <code>QRESYNC</code> and returns the UIDs expunged since the given state (<code>VANISHED (EARLIER)</code>) and the current flags of the messages changed since then; new <code>ImapCon$fetch_changes(modseq, vanished = TRUE)</code> reports the same for the selected folder (<code>UID FETCH 1:* (FLAGS MODSEQ) (CHANGEDSINCE n VANISHED)</code>). Both enable the extension once per connection, releasing the selected folder with <code>UNSELECT</code> when needed.</p></li>
+<li><p><strong>METADATA</strong> (RFC 5464): new <code>ImapCon$get_metadata()</code> and <code>ImapCon$set_metadata()</code> read and write mailbox or server annotations (<code>GETMETADATA</code>/<code>SETMETADATA</code>), returning a data frame of entries and values; <code>NA</code> removes an entry.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-1-5-5">Improvements<a class="anchor" aria-label="anchor" href="#improvements-1-5-5"></a></h3>
+<ul><li>the per-connection handling of <code>ENABLE</code>d extensions introduced in 1.5.4 for <code>UTF8=ACCEPT</code> is now generic (<code>ensure_enabled()</code>) and used for <code>QRESYNC</code> as well.</li></ul></div>
+<div class="section level3">
+<h3 id="tests-1-5-5">Tests<a class="anchor" aria-label="anchor" href="#tests-1-5-5"></a></h3>
+<ul><li>the Docker sandbox enables Dovecot’s <code>METADATA</code> support (<code>mail_attribute_dict</code>, <code>imap_metadata = yes</code>); new offline tests cover the <code>MODIFIED</code>, <code>HIGHESTMODSEQ</code>, <code>VANISHED</code>/changed-flags, and <code>METADATA</code> parsers (<code>test-round6.R</code>). Verified live against Dovecot (all) and Gmail (CONDSTORE).</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.4" id="mrpostman-154-2026-08-27-feature-update">mRpostman 1.5.4 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-154-2026-08-27-feature-update"></a></h2>
 <div class="section level3">

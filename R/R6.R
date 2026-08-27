@@ -372,6 +372,53 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    ## METADATA (RFC 5464)
+    #' @description Get metadata entries (annotations) of a mail folder or of
+    #'   the server (IMAP \code{GETMETADATA}, RFC 5464). Requires the server
+    #'   \code{METADATA} (or \code{METADATA-SERVER}) capability.
+    #' @param name A \code{character} string with the mail folder name, or
+    #'   \code{NULL} for server-level entries.
+    #' @param entries A \code{character} vector of entry names, e.g.
+    #'   \code{"/private/comment"} or \code{"/shared/vendor/..."}.
+    #' @param depth \code{NULL} (default), \code{"0"}, \code{"1"}, or
+    #'   \code{"infinity"}: how many levels below each entry to return.
+    #' @param max_size \code{NULL} (default) or the maximum size, in bytes, of
+    #'   a value to return.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with columns \code{mailbox}, \code{entry},
+    #'   and \code{value} (\code{NA} when the entry has no value).
+    #' @examples
+    #' \dontrun{
+    #' con$get_metadata(name = "INBOX", entries = "/private/comment")
+    #' con$get_metadata(name = NULL, entries = "/shared/comment")
+    #' }
+    get_metadata = function(name = NULL, entries, depth = NULL, max_size = NULL,
+                            retries = 1) {
+      out <- get_metadata_int(self, name, entries, depth, max_size, retries)
+      return(out)
+    },
+
+    #' @description Set (or remove) metadata entries of a mail folder or of the
+    #'   server (IMAP \code{SETMETADATA}, RFC 5464). Requires the server
+    #'   \code{METADATA} (or \code{METADATA-SERVER}) capability.
+    #' @param name A \code{character} string with the mail folder name, or
+    #'   \code{NULL} for server-level entries.
+    #' @param entries A named \code{character} vector: the names are the
+    #'   entries, the values the new values; \code{NA} removes an entry.
+    #'   Values cannot contain line breaks.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
+    #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+    #' }
+    set_metadata = function(name = NULL, entries, retries = 1) {
+      invisible(set_metadata_int(self, name, entries, retries))
+    },
+
     ## ACL (RFC 4314)
     #' @description Get the access control list of a mail folder (IMAP
     #'   \code{GETACL}, RFC 4314). Requires the server \code{ACL} capability.
@@ -593,6 +640,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   user's mailbox.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param condstore A \code{logical}. If \code{TRUE}, issues
+    #'   \code{SELECT ... (CONDSTORE)} (RFC 7162), so that the server reports
+    #'   modification sequences in this session. The folder's
+    #'   \code{HIGHESTMODSEQ}, when reported, is kept in
+    #'   \code{con$con_params$highestmodseq}. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{list} containing the mail folder names and their inherent
@@ -601,9 +653,67 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
     #' }
-    select_folder = function(name, mute = FALSE, retries = 1) {
-      self$con_params$folder <- select_folder_int(self, name, mute, retries)
+    select_folder = function(name, mute = FALSE, retries = 1, condstore = FALSE) {
+      self$con_params$folder <- select_folder_int(self, name, mute, retries,
+                                                  condstore = condstore)
       invisible(TRUE)
+    },
+
+    #' @description Select a mail folder with \code{QRESYNC} (RFC 7162) and
+    #'   report what changed since a known state: the UIDs expunged since the
+    #'   given modification sequence and the current flags of the messages
+    #'   modified since then. Requires the server \code{QRESYNC} capability
+    #'   (and \code{UNSELECT} if a folder is currently selected, since the
+    #'   extension must be enabled with no folder selected).
+    #' @param name A \code{character} string with the mail folder name.
+    #' @param uidvalidity The folder's \code{UIDVALIDITY} at the time of the
+    #'   known state (from \code{status()} or a previous \code{resync_folder()}).
+    #' @param modseq The modification sequence of the known state (e.g. the
+    #'   \code{HIGHESTMODSEQ} recorded then).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} with \code{vanished} (an integer vector of
+    #'   expunged UIDs), \code{changed} (a \code{data.frame} with \code{seq},
+    #'   \code{uid}, \code{flags}, \code{modseq}), \code{highestmodseq},
+    #'   \code{uidvalidity}, \code{uidnext}, and \code{exists}. The folder
+    #'   is left selected.
+    #' @examples
+    #' \dontrun{
+    #' st <- con$status("INBOX", items = c("UIDVALIDITY", "HIGHESTMODSEQ"))
+    #' # ... later:
+    #' delta <- con$resync_folder("INBOX", uidvalidity = st[["UIDVALIDITY"]],
+    #'                            modseq = st[["HIGHESTMODSEQ"]])
+    #' delta$vanished; delta$changed
+    #' }
+    resync_folder = function(name, uidvalidity, modseq, retries = 1) {
+      out <- resync_folder_int(self, name, uidvalidity, modseq, retries)
+      return(out)
+    },
+
+    #' @description Fetch the flag changes (and, with \code{QRESYNC}, the
+    #'   expunges) in the selected folder since a modification sequence
+    #'   (\code{UID FETCH 1:* (FLAGS MODSEQ) (CHANGEDSINCE ... VANISHED)},
+    #'   RFC 7162). Requires the server \code{CONDSTORE} capability, and
+    #'   \code{QRESYNC} for \code{vanished = TRUE}.
+    #' @param modseq The modification sequence to compare with.
+    #' @param vanished A \code{logical}. If \code{TRUE} (default), the UIDs
+    #'   expunged since \code{modseq} are reported as well.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} with \code{vanished} (an integer vector of UIDs,
+    #'   empty unless \code{vanished = TRUE}) and \code{changed} (a
+    #'   \code{data.frame} with \code{seq}, \code{uid}, \code{flags},
+    #'   \code{modseq}).
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder("INBOX", condstore = TRUE)
+    #' last <- con$con_params$highestmodseq
+    #' # ... later in the session:
+    #' con$fetch_changes(modseq = last)
+    #' }
+    fetch_changes = function(modseq, vanished = TRUE, retries = 1) {
+      out <- fetch_changes_int(self, modseq, vanished, retries)
+      return(out)
     },
 
     #' @description Close the currently selected mail folder (IMAP \code{CLOSE}),
@@ -1750,6 +1860,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param mute A \code{logical}. It provides a confirmation message if the
     #'   command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
     #'   and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.
+    #' @param changed_since \code{NULL} (default) or a modification sequence:
+    #'   with it only the messages modified after that sequence are returned
+    #'   (\code{CHANGEDSINCE}, CONDSTORE, RFC 7162), each with its
+    #'   \code{MODSEQ}.
     #' @param retries Number of attempts to connect and execute the command. Default
     #'   is \code{1}.
     #' @return A \code{list} with the fetch contents or a logical if
@@ -1769,9 +1883,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     fetch_metadata = function(msg_id, use_uid = FALSE, attribute = NULL,
                               write_to_disk = FALSE, keep_in_mem = TRUE,
-                              mute = FALSE, retries = 1) {
+                              mute = FALSE, retries = 1, changed_since = NULL) {
       out <- fetch_metadata_int(self, msg_id, use_uid, attribute, write_to_disk,
-                                keep_in_mem, mute, retries)
+                                keep_in_mem, mute, retries,
+                                changed_since = changed_since)
 
       if (isTRUE(write_to_disk)) {
         invisible(out)
@@ -2221,6 +2336,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param unchanged_since \code{NULL} (default) or a modification sequence:
+    #'   with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+    #'   CONDSTORE, RFC 7162) and only the messages not modified after that
+    #'   sequence are updated; the ids the server refused are returned in the
+    #'   \code{"modified"} attribute of the result.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @note \href{#method-add_flags}{\code{ImapCon$add_flags()}}: Unlike the
@@ -2240,8 +2360,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   con$add_flags(flags_to_set = "\\Seen")
     #' }
     add_flags = function(msg_id, use_uid = FALSE, flags_to_set, mute = FALSE,
-                         retries = 1) {
-      out <- add_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries)
+                         retries = 1, unchanged_since = NULL) {
+      out <- add_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
+                      unchanged_since = unchanged_since)
 
       invisible(out)
 
@@ -2262,6 +2383,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param unchanged_since \code{NULL} (default) or a modification sequence:
+    #'   with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+    #'   CONDSTORE, RFC 7162) and only the messages not modified after that
+    #'   sequence are updated; the ids the server refused are returned in the
+    #'   \code{"modified"} attribute of the result.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @note \href{#method-replace_flags}{\code{ImapCon$replace_flags()}}: Unlike the
@@ -2282,8 +2408,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged"))
     #' }
     replace_flags = function(msg_id, use_uid = FALSE, flags_to_set, mute = FALSE,
-                             retries = 1) {
-      out <- replace_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries)
+                             retries = 1, unchanged_since = NULL) {
+      out <- replace_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
+                      unchanged_since = unchanged_since)
 
       invisible(out)
 
@@ -2304,6 +2431,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   preceded by two backslashes \code{\\}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
+    #' @param unchanged_since \code{NULL} (default) or a modification sequence:
+    #'   with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+    #'   CONDSTORE, RFC 7162) and only the messages not modified after that
+    #'   sequence are updated; the ids the server refused are returned in the
+    #'   \code{"modified"} attribute of the result.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @note \href{#method-remove_flags}{\code{ImapCon$remove_flags()}}: Unlike the
@@ -2323,8 +2455,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   con$remove_flags(flags_to_unset = "\\UNSEEN")
     #' }
     remove_flags = function(msg_id, use_uid = FALSE, flags_to_unset, mute = FALSE,
-                            retries = 1) {
-      out <- remove_flags_int(self, msg_id, use_uid, flags_to_unset, mute, retries)
+                            retries = 1, unchanged_since = NULL) {
+      out <- remove_flags_int(self, msg_id, use_uid, flags_to_unset, mute, retries,
+                      unchanged_since = unchanged_since)
 
       invisible(out)
 

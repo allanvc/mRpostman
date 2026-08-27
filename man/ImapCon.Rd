@@ -261,6 +261,24 @@ con$set_quota(quota_root = "User quota", storage = 2 * 1024^2)
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$get_metadata()`
+## ------------------------------------------------
+
+\dontrun{
+con$get_metadata(name = "INBOX", entries = "/private/comment")
+con$get_metadata(name = NULL, entries = "/shared/comment")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$set_metadata()`
+## ------------------------------------------------
+
+\dontrun{
+con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
+con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$get_acl()`
 ## ------------------------------------------------
 
@@ -359,6 +377,29 @@ con$list_special_use_folders()
 
 \dontrun{
 con$select_folder(name = "INBOX")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$resync_folder()`
+## ------------------------------------------------
+
+\dontrun{
+st <- con$status("INBOX", items = c("UIDVALIDITY", "HIGHESTMODSEQ"))
+# ... later:
+delta <- con$resync_folder("INBOX", uidvalidity = st[["UIDVALIDITY"]],
+                           modseq = st[["HIGHESTMODSEQ"]])
+delta$vanished; delta$changed
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_changes()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder("INBOX", condstore = TRUE)
+last <- con$con_params$highestmodseq
+# ... later in the session:
+con$fetch_changes(modseq = last)
 }
 
 ## ------------------------------------------------
@@ -993,6 +1034,8 @@ Other attachments:
     \item \href{#method-ImapCon-get_quota_root}{\code{ImapCon$get_quota_root()}}
     \item \href{#method-ImapCon-get_quota}{\code{ImapCon$get_quota()}}
     \item \href{#method-ImapCon-set_quota}{\code{ImapCon$set_quota()}}
+    \item \href{#method-ImapCon-get_metadata}{\code{ImapCon$get_metadata()}}
+    \item \href{#method-ImapCon-set_metadata}{\code{ImapCon$set_metadata()}}
     \item \href{#method-ImapCon-get_acl}{\code{ImapCon$get_acl()}}
     \item \href{#method-ImapCon-set_acl}{\code{ImapCon$set_acl()}}
     \item \href{#method-ImapCon-delete_acl}{\code{ImapCon$delete_acl()}}
@@ -1005,6 +1048,8 @@ Other attachments:
     \item \href{#method-ImapCon-list_folders_status}{\code{ImapCon$list_folders_status()}}
     \item \href{#method-ImapCon-list_special_use_folders}{\code{ImapCon$list_special_use_folders()}}
     \item \href{#method-ImapCon-select_folder}{\code{ImapCon$select_folder()}}
+    \item \href{#method-ImapCon-resync_folder}{\code{ImapCon$resync_folder()}}
+    \item \href{#method-ImapCon-fetch_changes}{\code{ImapCon$fetch_changes()}}
     \item \href{#method-ImapCon-close_folder}{\code{ImapCon$close_folder()}}
     \item \href{#method-ImapCon-unselect_folder}{\code{ImapCon$unselect_folder()}}
     \item \href{#method-ImapCon-examine_folder}{\code{ImapCon$examine_folder()}}
@@ -1545,6 +1590,90 @@ Default is \code{1}.}
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-get_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-get_metadata}{}}}
+\subsection{\code{ImapCon$get_metadata()}}{
+  Get metadata entries (annotations) of a mail folder or of
+  the server (IMAP \code{GETMETADATA}, RFC 5464). Requires the server
+  \code{METADATA} (or \code{METADATA-SERVER}) capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$get_metadata(
+  name = NULL,
+  entries,
+  depth = NULL,
+  max_size = NULL,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{A \code{character} string with the mail folder name, or
+\code{NULL} for server-level entries.}
+      \item{\code{entries}}{A \code{character} vector of entry names, e.g.
+\code{"/private/comment"} or \code{"/shared/vendor/..."}.}
+      \item{\code{depth}}{\code{NULL} (default), \code{"0"}, \code{"1"}, or
+\code{"infinity"}: how many levels below each entry to return.}
+      \item{\code{max_size}}{\code{NULL} (default) or the maximum size, in bytes, of
+a value to return.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with columns \code{mailbox}, \code{entry},
+  and \code{value} (\code{NA} when the entry has no value).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$get_metadata(name = "INBOX", entries = "/private/comment")
+con$get_metadata(name = NULL, entries = "/shared/comment")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-set_metadata"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-set_metadata}{}}}
+\subsection{\code{ImapCon$set_metadata()}}{
+  Set (or remove) metadata entries of a mail folder or of the
+  server (IMAP \code{SETMETADATA}, RFC 5464). Requires the server
+  \code{METADATA} (or \code{METADATA-SERVER}) capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$set_metadata(name = NULL, entries, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{A \code{character} string with the mail folder name, or
+\code{NULL} for server-level entries.}
+      \item{\code{entries}}{A named \code{character} vector: the names are the
+entries, the values the new values; \code{NA} removes an entry.
+Values cannot contain line breaks.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    \code{TRUE} in case the operation is successful.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
+con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-get_acl"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-get_acl}{}}}
 \subsection{\code{ImapCon$get_acl()}}{
@@ -1945,7 +2074,7 @@ Default is \code{1}.}
   Select a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$select_folder(name, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$select_folder(name, mute = FALSE, retries = 1, condstore = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -1957,6 +2086,11 @@ user's mailbox.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{condstore}}{A \code{logical}. If \code{TRUE}, issues
+\code{SELECT ... (CONDSTORE)} (RFC 7162), so that the server reports
+modification sequences in this session. The folder's
+\code{HIGHESTMODSEQ}, when reported, is kept in
+\code{con$con_params$highestmodseq}. Default is \code{FALSE}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -1967,6 +2101,95 @@ Default is \code{1}.}
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$select_folder(name = "INBOX")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-resync_folder"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-resync_folder}{}}}
+\subsection{\code{ImapCon$resync_folder()}}{
+  Select a mail folder with \code{QRESYNC} (RFC 7162) and
+  report what changed since a known state: the UIDs expunged since the
+  given modification sequence and the current flags of the messages
+  modified since then. Requires the server \code{QRESYNC} capability
+  (and \code{UNSELECT} if a folder is currently selected, since the
+  extension must be enabled with no folder selected).
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$resync_folder(name, uidvalidity, modseq, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{name}}{A \code{character} string with the mail folder name.}
+      \item{\code{uidvalidity}}{The folder's \code{UIDVALIDITY} at the time of the
+known state (from \code{status()} or a previous \code{resync_folder()}).}
+      \item{\code{modseq}}{The modification sequence of the known state (e.g. the
+\code{HIGHESTMODSEQ} recorded then).}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{list} with \code{vanished} (an integer vector of
+  expunged UIDs), \code{changed} (a \code{data.frame} with \code{seq},
+  \code{uid}, \code{flags}, \code{modseq}), \code{highestmodseq},
+  \code{uidvalidity}, \code{uidnext}, and \code{exists}. The folder
+  is left selected.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{st <- con$status("INBOX", items = c("UIDVALIDITY", "HIGHESTMODSEQ"))
+# ... later:
+delta <- con$resync_folder("INBOX", uidvalidity = st[["UIDVALIDITY"]],
+                           modseq = st[["HIGHESTMODSEQ"]])
+delta$vanished; delta$changed
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_changes"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_changes}{}}}
+\subsection{\code{ImapCon$fetch_changes()}}{
+  Fetch the flag changes (and, with \code{QRESYNC}, the
+  expunges) in the selected folder since a modification sequence
+  (\code{UID FETCH 1:* (FLAGS MODSEQ) (CHANGEDSINCE ... VANISHED)},
+  RFC 7162). Requires the server \code{CONDSTORE} capability, and
+  \code{QRESYNC} for \code{vanished = TRUE}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_changes(modseq, vanished = TRUE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{modseq}}{The modification sequence to compare with.}
+      \item{\code{vanished}}{A \code{logical}. If \code{TRUE} (default), the UIDs
+expunged since \code{modseq} are reported as well.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{list} with \code{vanished} (an integer vector of UIDs,
+  empty unless \code{vanished = TRUE}) and \code{changed} (a
+  \code{data.frame} with \code{seq}, \code{uid}, \code{flags},
+  \code{modseq}).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder("INBOX", condstore = TRUE)
+last <- con$con_params$highestmodseq
+# ... later in the session:
+con$fetch_changes(modseq = last)
 }
     \if{html}{\out{</div>}}
   }
@@ -3565,7 +3788,8 @@ out <- con$fetch_header()
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  changed_since = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -3598,6 +3822,10 @@ command is successfully executed. It is only effective when \code{write_to_disk 
 and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
+      \item{\code{changed_since}}{\code{NULL} (default) or a modification sequence:
+with it only the messages modified after that sequence are returned
+(\code{CHANGEDSINCE}, CONDSTORE, RFC 7162), each with its
+\code{MODSEQ}.}
       \item{\code{peek}}{If \code{TRUE}, it does not mark messages as "read" after
 fetching. Default is \code{TRUE}.}
       \item{\code{partial}}{\code{NULL} or a character string with format
@@ -4221,7 +4449,8 @@ con$esearch_max_id(flag = "Seen")
   use_uid = FALSE,
   flags_to_set,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4244,6 +4473,11 @@ preceded by two backslashes \code{\\}.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{unchanged_since}}{\code{NULL} (default) or a modification sequence:
+with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+CONDSTORE, RFC 7162) and only the messages not modified after that
+sequence are updated; the ids the server refused are returned in the
+\code{"modified"} attribute of the result.}
     }
     \if{html}{\out{</div>}}
   }
@@ -4273,7 +4507,8 @@ con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
   use_uid = FALSE,
   flags_to_set,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4296,6 +4531,11 @@ preceded by two backslashes \code{\\}.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{unchanged_since}}{\code{NULL} (default) or a modification sequence:
+with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+CONDSTORE, RFC 7162) and only the messages not modified after that
+sequence are updated; the ids the server refused are returned in the
+\code{"modified"} attribute of the result.}
     }
     \if{html}{\out{</div>}}
   }
@@ -4326,7 +4566,8 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
   use_uid = FALSE,
   flags_to_unset,
   mute = FALSE,
-  retries = 1
+  retries = 1,
+  unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4349,6 +4590,11 @@ preceded by two backslashes \code{\\}.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{unchanged_since}}{\code{NULL} (default) or a modification sequence:
+with it the \code{STORE} is conditional (\code{UNCHANGEDSINCE},
+CONDSTORE, RFC 7162) and only the messages not modified after that
+sequence are updated; the ids the server refused are returned in the
+\code{"modified"} attribute of the result.}
     }
     \if{html}{\out{</div>}}
   }

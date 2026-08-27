@@ -6,7 +6,7 @@
 #' @param retries Number of attempts to connect and execute the command. Default
 #'   is \code{1}.
 #' @noRd
-select_folder_int <- function(self, name, mute, retries) {
+select_folder_int <- function(self, name, mute, retries, condstore = FALSE) {
 
   check_args(name = name, mute = mute, retries = retries) # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
@@ -27,7 +27,14 @@ select_folder_int <- function(self, name, mute, retries) {
   # self$auth
 
   tryCatch({
-    curl::handle_setopt(h, customrequest = paste0('SELECT ', folder))
+    # CONDSTORE (RFC 7162): "SELECT folder (CONDSTORE)" makes the server report
+    # HIGHESTMODSEQ and MODSEQ in this session
+    if (isTRUE(condstore)) {
+      assert_capability(self, "CONDSTORE", command = "select_folder(condstore = TRUE)",
+                        rfc = "RFC 7162", retries = retries)
+    }
+    curl::handle_setopt(h, customrequest = paste0('SELECT ', folder,
+                                                  if (isTRUE(condstore)) " (CONDSTORE)" else ""))
   }, error = function(e){
     stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
   })
@@ -83,6 +90,13 @@ select_folder_int <- function(self, name, mute, retries) {
     }
   }
 
+
+  # servers with CONDSTORE report the folder's HIGHESTMODSEQ in the SELECT
+  # response; keep it on the connection for fetch_changes()/modseq()
+  if (exists("response", inherits = FALSE) && !is.null(response)) {
+    self$con_params$highestmodseq <- parse_highestmodseq(
+      paste(rawToChar(response$headers), rawToChar(response$content)))
+  }
 
   invisible(name)
   # invisible(0L)

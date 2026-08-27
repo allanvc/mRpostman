@@ -26,40 +26,8 @@ search_charset_policy <- function(self, text, retries = 1) {
   "CHARSET UTF-8 "
 }
 
-#' Enable UTF8=ACCEPT on the current connection (INTERNAL HELPER)
-#'
-#' \code{ENABLE} is only accepted in the authenticated, not-selected state
-#' (RFC 5161), and what it enables lives on the current TCP connection, which
-#' libcurl may replace at any time (servers such as Gmail close the connection
-#' after a rejected command). The connection epoch counted by the debug
-#' callback tells whether the extension is still enabled; when it is not, the
-#' selected folder is released with \code{UNSELECT}, the extension enabled,
-#' and the folder selected again.
-#' @return \code{TRUE} when UTF-8 search terms may be sent as is; \code{FALSE}
-#'   when the server lacks \code{UNSELECT} and the folder cannot be released
-#'   without expunging (the caller then falls back to \code{CHARSET UTF-8}).
-#' @noRd
 ensure_utf8_enabled <- function(self, caps, retries = 1) {
-  epoch <- if (is.null(self$con_debug)) 0L else self$con_debug$epoch
-  if (identical(self$utf8_epoch, epoch)) {
-    return(TRUE)
-  }
-  folder <- self$con_params$folder
-  if (!is.na(folder)) {
-    if (!("UNSELECT" %in% caps)) {
-      return(FALSE)
-    }
-    unselect_folder_int(self, retries)
-    self$con_params$folder <- NA
-  }
-  enable_int(self, "UTF8=ACCEPT", retries)
-  # the ENABLE may itself have triggered a reconnection: record the epoch now
-  self$utf8_epoch <- if (is.null(self$con_debug)) 0L else self$con_debug$epoch
-  if (!is.na(folder)) {
-    select_folder_int(self, name = folder, mute = TRUE, retries = 0)
-    self$con_params$folder <- folder
-  }
-  TRUE
+  ensure_enabled(self, "UTF8=ACCEPT", caps, retries)
 }
 
 #' Verify the extensions a custom search request relies on (INTERNAL HELPER)

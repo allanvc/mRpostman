@@ -1,9 +1,9 @@
-**mRpostman - Update to v1.5.4**
+**mRpostman - Update to v1.5.5**
 
 This is a feature release: it completes the IMAP4rev1 client command set
 (`CHECK`) and adds the `UIDPLUS`, `LIST-STATUS`, `LIST-EXTENDED`, `ACL`,
 `SETQUOTA`, `ENABLE`, `SEARCHRES`, `ESORT`, `PREVIEW`, `SAVEDATE`,
-`STATUS=SIZE`, and a `CONDSTORE` subset, all capability-checked; parses
+`STATUS=SIZE`, `CONDSTORE`, `QRESYNC`, and `METADATA`, all capability-checked; parses
 `ENVELOPE` and `BODYSTRUCTURE` into data frames; and handles non-ASCII
 mailbox names (modified UTF-7) and attachment extraction by MIME part. See
 NEWS.md. No new dependencies.

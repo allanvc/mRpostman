@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.5</span>
       </span>
     </div>
 
@@ -173,9 +173,9 @@
 <li>
 <strong>configuration and connection methods</strong>: <code><a href="reference/configure_imap.html">configure_imap()</a></code>, <code>disconnect()</code>, <code>noop()</code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_use_ssl()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server information methods</strong>: <code>list_server_capabilities()</code>, <code>enable()</code>, <code>id()</code>, <code>namespace()</code>, <code>get_quota_root()</code>, <code>get_quota()</code>, <code>set_quota()</code>;</li>
+<strong>server information methods</strong>: <code>list_server_capabilities()</code>, <code>enable()</code>, <code>id()</code>, <code>namespace()</code>, <code>get_quota_root()</code>, <code>get_quota()</code>, <code>set_quota()</code>, <code>get_metadata()</code>, <code>set_metadata()</code>;</li>
 <li>
-<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>list_subscribed_folders()</code>, <code>list_folders_status()</code>, <code>list_special_use_folders()</code>, <code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, <code>my_rights()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>status()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>delete_folder()</code>, <code>subscribe_folder()</code>, <code>unsubscribe_folder()</code>, <code>close_folder()</code>, <code>unselect_folder()</code>, <code>check()</code>, <code>list_flags()</code>;</li>
+<strong>mailbox operations methods</strong>: <code>list_mail_folders()</code>, <code>list_subscribed_folders()</code>, <code>list_folders_status()</code>, <code>list_special_use_folders()</code>, <code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, <code>my_rights()</code>, <code>select_folder()</code>, <code>resync_folder()</code>, <code>fetch_changes()</code>, <code>examine_folder()</code>, <code>status()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>delete_folder()</code>, <code>subscribe_folder()</code>, <code>unsubscribe_folder()</code>, <code>close_folder()</code>, <code>unselect_folder()</code>, <code>check()</code>, <code>list_flags()</code>;</li>
 <li>
 <strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
 <li>
@@ -315,10 +315,10 @@
 </h3>
 <table class="table">
 <colgroup>
-<col width="22%">
-<col width="41%">
-<col width="16%">
-<col width="19%">
+<col width="31%">
+<col width="47%">
+<col width="10%">
+<col width="11%">
 </colgroup>
 <thead><tr class="header">
 <th>IMAP command</th>
@@ -476,13 +476,33 @@
 </tr>
 <tr class="odd">
 <td>
-<code>STATUS (HIGHESTMODSEQ)</code>, <code>FETCH (MODSEQ)</code>, <code>SEARCH MODSEQ</code>
+<code>SELECT (CONDSTORE)</code>, <code>STATUS (HIGHESTMODSEQ)</code>, <code>FETCH (MODSEQ)</code>, <code>FETCH ... (CHANGEDSINCE)</code>, <code>STORE ... (UNCHANGEDSINCE)</code>, <code>SEARCH MODSEQ</code>
 </td>
 <td>
-<code>status(items = "HIGHESTMODSEQ")</code>, <code>fetch_metadata(attribute = "MODSEQ")</code>, <code><a href="reference/modseq.html">modseq()</a></code>
+<code>select_folder(condstore = TRUE)</code>, <code>status(items = "HIGHESTMODSEQ")</code>, <code>fetch_metadata(attribute = "MODSEQ", changed_since = )</code>, <code>add_flags()</code>/<code>replace_flags()</code>/<code>remove_flags()</code> <code>(unchanged_since = )</code>, <code><a href="reference/modseq.html">modseq()</a></code>
 </td>
 <td><code>CONDSTORE</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc7162" class="external-link">7162</a></td>
+</tr>
+<tr class="even">
+<td>
+<code>SELECT (QRESYNC ...)</code>, <code>UID FETCH ... (CHANGEDSINCE VANISHED)</code>
+</td>
+<td>
+<code>resync_folder()</code>, <code>fetch_changes()</code>
+</td>
+<td><code>QRESYNC</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7162" class="external-link">7162</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>GETMETADATA</code> / <code>SETMETADATA</code>
+</td>
+<td>
+<code>get_metadata()</code> / <code>set_metadata()</code>
+</td>
+<td><code>METADATA</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5464" class="external-link">5464</a></td>
 </tr>
 <tr class="even">
 <td><code>LIST ... RETURN (MYRIGHTS)</code></td>
@@ -505,7 +525,7 @@
 </tr>
 </tbody>
 </table>
-<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: <code>QRESYNC</code> and the conditional <code>STORE</code>/<code>FETCH</code> forms of <code>CONDSTORE</code> (mailbox-synchronization machinery for offline readers; the <code>HIGHESTMODSEQ</code>/<code>MODSEQ</code> subset above is what an analytical client needs) and <code>IDLE</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
+<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Intentionally unimplemented: <code>IDLE</code> and <code>NOTIFY</code> (not feasible with libcurl’s one-shot request model — see the <em>Basics</em> vignette).</p>
 </div>
 </div>
 <div class="section level2">
