@@ -221,13 +221,18 @@ check_args <- function(...) {
   # ----------------- FETCH ARGG CHECKING
 
   # fetch_body
+  if ("msg_id" %in% names(argg_list) && identical(argg_list$msg_id, "$")) {
+    # SEARCHRES (RFC 5182): "$" refers to the result saved by search(save = TRUE)
+    argg_list$msg_id <- NULL
+  }
+
   if ("msg_id" %in% names(argg_list)) {
     # if (!is.numeric(argg_list$msg)) {
     #   stop('"msg" must be a numeric vector of length equal or greater than 1.')
     # }
     assertthat::assert_that(
       is.numeric(argg_list$msg_id),
-      msg='"msg_id" must be a numeric vector of length equal to or greater than 1.')
+      msg='"msg_id" must be a numeric vector of length equal to or greater than 1, or the "$" reference to a saved search result.')
 
     # if (any(is.na(argg_list$msg))) {
     #   stop('"msg" cannot have NAs as ids.')

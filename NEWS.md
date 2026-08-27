@@ -1,3 +1,51 @@
+## mRpostman 1.5.1 (2026-08-27 feature update)
+
+### New features
+
+- **ACL** extension (RFC 4314), capability-checked: new `ImapCon$get_acl()` (`GETACL`, a `data.frame` of identifiers and rights), `ImapCon$set_acl()` (`SETACL`, replacing or, with a `+`/`-` prefix, adding/removing rights), `ImapCon$delete_acl()` (`DELETEACL`), `ImapCon$list_rights()` (`LISTRIGHTS`), and `ImapCon$my_rights()` (`MYRIGHTS`).
+
+- new `ImapCon$set_quota()` method (`SETQUOTA`, RFC 2087) to set the `STORAGE` and/or `MESSAGE` limits of a quota root. Most servers restrict the command to administrators (Dovecot, for instance, refuses it unless a `quota_set` dictionary is configured).
+
+- new `ImapCon$enable()` method (`ENABLE`, RFC 5161) to enable server extensions for the session, returning the ones the server confirmed.
+
+- **SEARCHRES** extension (RFC 5182): `ImapCon$search()` gained a `save` argument. With `save = TRUE` the result is kept on the server (`SEARCH RETURN (SAVE)`) and the method returns the `"$"` reference, which `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `add_flags()`/`remove_flags()`/`replace_flags()`, `copy_msg()`, `move_msg()`, and `delete_msg()` now accept as `msg_id`, so that a search-then-act workflow no longer transfers the message ids. A fetch on `"$"` returns one element per matching message, named by sequence number or UID.
+
+- **ESORT** extension (RFC 5267): `ImapCon$sort()` gained a `return` argument (`"COUNT"`, `"MIN"`, `"MAX"`, `"ALL"`); when given, `SORT RETURN (...)` is issued and only the requested items, computed by the server in sort order, are returned as a named list.
+
+### Bug fixes
+
+- `get_quota()` / `get_quota_root()` no longer return duplicated rows when libcurl delivers the untagged `QUOTA` line through both its header and body callbacks (as libcurl 8.x does).
+
+### Tests
+
+- the Docker sandbox (`inst/docker/dovecot.conf`) now enables Dovecot's `acl` and `quota` plugins (with `acl_anyone = allow` and a 1 GB storage quota), so that the `ACL` and `QUOTA` methods can be exercised locally. The new `ACL`, `ENABLE`, `SEARCHRES`, and `ESORT` features were verified against it.
+
+- new offline tests for the ACL, ESORT, and ENABLE response parsers, the `SEARCH RETURN (SAVE)` request builder, the multi-message `FETCH` splitter, and the `QUOTA` de-duplication (`test-parse-acl-esort-enable.R`).
+
+## mRpostman 1.5.0 (2026-08-27 feature update)
+
+### New features
+
+- new `ImapCon$check()` method issuing the IMAP `CHECK` command (RFC 3501, section 6.4.1), which requests a checkpoint of the selected folder. It has no client-observable effect (use `noop()` as a keep-alive) and is provided for completeness of the IMAP4rev1 client command set.
+
+- **UIDPLUS** extension (RFC 4315), capability-checked:
+  - `ImapCon$append_msg()` now returns (invisibly) the UID that the server assigned to the appended message, read from the `[APPENDUID <uidvalidity> <uid>]` response code, or `NA` when the server does not advertise `UIDPLUS`. Previously it returned `TRUE`.
+  - `ImapCon$copy_msg()` and `ImapCon$move_msg()` now attach the `[COPYUID ...]` mapping to their (unchanged) return value as a `"copyuid"` attribute: a `data.frame` with `source_uid` and `dest_uid`, and the destination `uidvalidity` as an attribute. The message ids are still returned, so pipes are unaffected.
+  - `ImapCon$expunge(msg_uid = ...)` (`UID EXPUNGE`) now verifies the `UIDPLUS` capability before issuing the command; a plain `expunge()` is unaffected.
+  - `ingest_maildir()` (and therefore `enron_sandbox()`) records the assigned UID of every uploaded message in a new `uid` column of the returned manifest.
+
+- **LIST-STATUS** extension (RFC 5819): new `ImapCon$list_folders_status()` method issuing `LIST "" "*" RETURN (STATUS (...))`, which returns the folder list together with the requested `STATUS` items (`MESSAGES`, `RECENT`, `UIDNEXT`, `UIDVALIDITY`, `UNSEEN`) in a single round trip, as a `data.frame` with one row per selectable folder. Requires the server `LIST-STATUS` capability.
+
+- `ImapCon$append_msg()` gained a `flags` argument (`"Seen"`, `"Flagged"`, `"Answered"`, `"Draft"`, `"Deleted"`) sent through libcurl's `CURLOPT_UPLOAD_FLAGS`. By default the message is now stored **without** flags. Note that this depends on the libcurl version: libcurl >= 8.13 honors the option, while earlier versions ignore it and always store the message with `\Seen`, as they always did.
+
+### Bug fixes
+
+- `populate_sandbox()` now sets the planned `\Seen` state in both directions (adding it to the read messages and removing it from the unread ones) instead of only removing it. It relied on libcurl marking every appended message as read, which libcurl >= 8.13 no longer does, so the sandbox's read/unread schedule was no longer reproduced on current libcurl builds.
+
+### Tests
+
+- new offline tests for the UIDPLUS response-code parsers (`parse_appenduid()`, `parse_copyuid()`, sequence-set expansion) and for the `LIST-STATUS` response parser (`parse_list_status()`). All three features were also verified live against the Dovecot sandbox (`inst/docker/`).
+
 ## mRpostman 1.4.1 (2026-08-26 bugfix update)
 
 ### Bug fixes

@@ -11,7 +11,16 @@
 #'   \code{"UTF-8"}.
 #' @param retries Number of attempts to connect and execute the command.
 #' @noRd
-sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries) {
+sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries,
+                     return = NULL) {
+
+  if (!is.null(return)) {
+    assertthat::assert_that(
+      is.character(return),
+      all(toupper(return) %in% c("COUNT", "MIN", "MAX", "ALL")),
+      msg='"return" must be NULL or a subset of "COUNT", "MIN", "MAX", "ALL".')
+    return <- toupper(return)
+  }
 
   assertthat::assert_that(
     is.character(by),
@@ -43,6 +52,11 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries) {
   # if the server does not advertise it (e.g. Gmail does not support SORT).
   assert_capability(self, "SORT", command = "sort", rfc = "RFC 5256",
                     retries = retries)
+  if (!is.null(return)) {
+    # ESORT (RFC 5267): "SORT RETURN (...)" answers with an ESEARCH response
+    assert_capability(self, "ESORT", command = "sort(return = ...)",
+                      rfc = "RFC 5267", retries = retries)
+  }
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -51,7 +65,12 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries) {
   keys_str <- paste0("(", paste(keys, collapse = " "), ")")
 
   prefix <- if (isTRUE(use_uid)) "UID SORT " else "SORT "
-  customrequest <- paste0(prefix, keys_str, " ", char_set, " ", criteria)
+  return_str <- if (!is.null(return)) {
+    paste0("RETURN (", paste(return, collapse = " "), ") ")
+  } else {
+    ""
+  }
+  customrequest <- paste0(prefix, return_str, keys_str, " ", char_set, " ", criteria)
 
   url <- self$con_params$url
 
@@ -66,7 +85,8 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries) {
 
   response <- execute_ordered_search(self = self, url = url, handle = h,
                                      customrequest = customrequest,
-                                     parser = parse_sort, retries = retries)
+                                     parser = if (is.null(return)) parse_sort else parse_esort,
+                                     retries = retries)
 
   return(response)
 

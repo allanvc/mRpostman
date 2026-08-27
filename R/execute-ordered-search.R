@@ -57,7 +57,9 @@ execute_ordered_search <- function(self, url, handle, customrequest, parser, ret
     }
   }
 
-  final_output <- parser(rawToChar(response$content))
+  # untagged lines may arrive through the header or the body callback
+  final_output <- parser(paste(rawToChar(response$headers),
+                               rawToChar(response$content), sep = "\r\n"))
 
   # handle sanitizing
   rm(handle)

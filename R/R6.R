@@ -242,6 +242,25 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Enable server extensions for the current session (IMAP
+    #'   \code{ENABLE}, RFC 5161). Some extensions, such as \code{CONDSTORE}
+    #'   or \code{UTF8=ACCEPT}, only take effect after the client enables
+    #'   them. Requires the server \code{ENABLE} capability.
+    #' @param capabilities A \code{character} vector with the names of the
+    #'   extensions to enable.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{character} vector with the extensions the server
+    #'   confirmed as enabled (possibly empty).
+    #' @examples
+    #' \dontrun{
+    #' con$enable("CONDSTORE")
+    #' }
+    enable = function(capabilities, retries = 1) {
+      out <- enable_int(self, capabilities, retries)
+      return(out)
+    },
+
     #' @description Request the server's namespaces (IMAP \code{NAMESPACE}, RFC
     #'   2342): the personal, other users', and shared namespace prefixes and
     #'   their hierarchy delimiters. Requires the server \code{NAMESPACE}
@@ -319,6 +338,128 @@ ImapCon <- R6::R6Class("ImapCon",
       return(out)
     },
 
+    #' @description Set the resource limits of a quota root (IMAP
+    #'   \code{SETQUOTA}, RFC 2087). Most servers restrict this command to
+    #'   administrators. Requires the server \code{QUOTA} capability.
+    #' @param quota_root A \code{character} string with the quota root name,
+    #'   as returned by \code{get_quota_root()}.
+    #' @param storage \code{NULL} or the new \code{STORAGE} limit, in
+    #'   kibibytes.
+    #' @param message \code{NULL} or the new \code{MESSAGE} limit (number of
+    #'   messages). At least one of the two limits must be given.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with the quota as confirmed by the server
+    #'   (columns \code{quota_root}, \code{resource}, \code{usage},
+    #'   \code{limit}).
+    #' @examples
+    #' \dontrun{
+    #' con$set_quota(quota_root = "User quota", storage = 2 * 1024^2)
+    #' }
+    set_quota = function(quota_root, storage = NULL, message = NULL,
+                         retries = 1) {
+      out <- set_quota_int(self, quota_root, storage, message, retries)
+      return(out)
+    },
+
+    ## ACL (RFC 4314)
+    #' @description Get the access control list of a mail folder (IMAP
+    #'   \code{GETACL}, RFC 4314). Requires the server \code{ACL} capability.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with columns \code{identifier} (a user
+    #'   name, or a group such as \code{anyone}) and \code{rights} (a string
+    #'   of right letters, e.g. \code{"lrwstipekxa"}).
+    #' @examples
+    #' \dontrun{
+    #' con$get_acl(name = "INBOX")
+    #' }
+    get_acl = function(name = NULL, retries = 1) {
+      out <- get_acl_int(self, name, retries)
+      return(out)
+    },
+
+    #' @description Set or modify the rights of an identifier on a mail folder
+    #'   (IMAP \code{SETACL}, RFC 4314). Requires the server \code{ACL}
+    #'   capability and the \code{a} (administer) right on the folder.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param identifier A \code{character} string with the user name (or
+    #'   group, e.g. \code{"anyone"}) whose rights are set.
+    #' @param rights A \code{character} string of right letters. Without a
+    #'   prefix it replaces the current rights (e.g. \code{"lrs"}); prefixed
+    #'   with \code{"+"} or \code{"-"} it adds or removes rights (e.g.
+    #'   \code{"+w"}, \code{"-d"}).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$set_acl(name = "Shared", identifier = "anyone", rights = "lrs")
+    #' con$set_acl(name = "Shared", identifier = "anyone", rights = "+w")
+    #' }
+    set_acl = function(name = NULL, identifier, rights, retries = 1) {
+      invisible(set_acl_int(self, name, identifier, rights, retries))
+    },
+
+    #' @description Remove all rights of an identifier on a mail folder (IMAP
+    #'   \code{DELETEACL}, RFC 4314). Requires the server \code{ACL}
+    #'   capability.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param identifier A \code{character} string with the user name (or
+    #'   group) whose rights are removed.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$delete_acl(name = "Shared", identifier = "anyone")
+    #' }
+    delete_acl = function(name = NULL, identifier, retries = 1) {
+      invisible(delete_acl_int(self, name, identifier, retries))
+    },
+
+    #' @description List the rights that may be granted to an identifier on a
+    #'   mail folder (IMAP \code{LISTRIGHTS}, RFC 4314). Requires the server
+    #'   \code{ACL} capability.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param identifier A \code{character} string with the user name (or
+    #'   group).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} with \code{required} (the rights the identifier
+    #'   always has) and \code{optional} (a \code{character} vector with the
+    #'   sets of rights that may be granted).
+    #' @examples
+    #' \dontrun{
+    #' con$list_rights(name = "INBOX", identifier = "anyone")
+    #' }
+    list_rights = function(name = NULL, identifier, retries = 1) {
+      out <- list_rights_int(self, name, identifier, retries)
+      return(out)
+    },
+
+    #' @description Get the rights of the current user on a mail folder (IMAP
+    #'   \code{MYRIGHTS}, RFC 4314). Requires the server \code{ACL}
+    #'   capability.
+    #' @param name A \code{character} string with the mail folder name. If no
+    #'   name is passed, the command uses the previously selected folder.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{character} string of right letters.
+    #' @examples
+    #' \dontrun{
+    #' con$my_rights(name = "INBOX")
+    #' }
+    my_rights = function(name = NULL, retries = 1) {
+      out <- my_rights_int(self, name, retries)
+      return(out)
+    },
+
     #' @description Issue a \code{NOOP} command. It does nothing on the server
     #'   other than resetting the inactivity autologout timer, which makes it
     #'   useful as a keep-alive during long idle periods and as a way to keep
@@ -332,6 +473,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     noop = function(retries = 1) {
       invisible(noop_int(self, retries))
+    },
+
+    #' @description Request a checkpoint of the selected mail folder (IMAP
+    #'   \code{CHECK}). The server performs any implementation-dependent
+    #'   housekeeping of the mailbox, such as flushing its state to disk.
+    #'   The command has no client-observable effect; use \code{noop()} as a
+    #'   keep-alive.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return \code{TRUE} in case the operation is successful.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' con$check()
+    #' }
+    check = function(retries = 1) {
+      invisible(check_int(self, retries))
     },
 
     ## mailbox operations
@@ -365,6 +523,30 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     list_subscribed_folders = function(retries = 1) {
       out <- list_subscribed_folders_int(self, retries)
+      return(out)
+    },
+
+    #' @description List the mail folders together with their status counts in
+    #'   a single round trip (IMAP \code{LIST ... RETURN (STATUS ...)}, RFC
+    #'   5819). Equivalent to \code{list_mail_folders()} followed by
+    #'   \code{status()} on every folder, but issued as one command. Requires
+    #'   the server \code{LIST-STATUS} capability.
+    #' @param items A \code{character} vector with the status data items to
+    #'   request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
+    #'   \code{"UIDNEXT"}, \code{"UIDVALIDITY"}, and \code{"UNSEEN"}. Default
+    #'   is \code{c("MESSAGES", "UNSEEN")}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with the column \code{folder} followed by one
+    #'   numeric column per requested item (\code{NA} for folders that cannot
+    #'   be selected).
+    #' @examples
+    #' \dontrun{
+    #' con$list_folders_status()
+    #' con$list_folders_status(items = c("MESSAGES", "UNSEEN", "UIDNEXT"))
+    #' }
+    list_folders_status = function(items = c("MESSAGES", "UNSEEN"), retries = 1) {
+      out <- list_folders_status_int(self, items, retries)
       return(out)
     },
 
@@ -611,6 +793,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   returns UIDs instead of sequence numbers. Default is \code{FALSE}.
     #' @param char_set A \code{character} string with the charset of the search
     #'   criteria. Default is \code{"UTF-8"}.
+    #' @param return \code{NULL} (default) or a \code{character} vector with
+    #'   any of \code{"COUNT"}, \code{"MIN"}, \code{"MAX"}, and \code{"ALL"}.
+    #'   When given, issues \code{SORT RETURN (...)} (ESORT, RFC 5267) and
+    #'   returns only the requested items, computed by the server in sort
+    #'   order, as a named \code{list}. Requires the server \code{ESORT}
+    #'   capability.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return An \code{integer} vector of message ids in the server-provided
@@ -621,8 +809,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$sort(by = "DATE", reverse = TRUE)
     #' }
     sort = function(by = "DATE", reverse = FALSE, criteria = "ALL",
-                    use_uid = FALSE, char_set = "UTF-8", retries = 1) {
-      out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries)
+                    use_uid = FALSE, char_set = "UTF-8", return = NULL,
+                    retries = 1) {
+      out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries,
+                      return = return)
       return(out)
     },
 
@@ -682,6 +872,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{buffersize} to avoid results stripping. Check if your IMAP server
     #'   supports \code{ESEARCH} with
     #'   \href{#method-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}.
+    #' @param save A logical. Default is \code{FALSE}. If \code{TRUE}, the
+    #'   result is saved on the server (\code{SEARCH RETURN (SAVE)}, SEARCHRES,
+    #'   RFC 5182) instead of being returned, and the method returns the
+    #'   \code{"$"} reference, which the fetch, flag, copy, move, and delete
+    #'   methods accept as \code{msg_id}. Requires the server
+    #'   \code{SEARCHRES} capability.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @note \href{#method-search}{\code{ImapCon$search()}}: IMAP queries follow
@@ -709,8 +905,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                string(expr = "@ksu.edu", where = "CC")))
     #' }
     search = function(request, negate = FALSE, use_uid = FALSE,
-                      esearch = FALSE, retries = 1) {
-      out <- search_int(self, request, negate, use_uid, esearch, retries)
+                      esearch = FALSE, save = FALSE, retries = 1) {
+      out <- search_int(self, request, negate, use_uid, esearch, retries,
+                        save = save)
+      if (isTRUE(save)) {
+        return(invisible(out))
+      }
       return(out)
     },
 
@@ -1635,6 +1835,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return An invisible \code{numeric vector} containing the message ids.
+    #'   When the server advertises \code{UIDPLUS} (RFC 4315), the vector
+    #'   carries a \code{"copyuid"} attribute: a \code{data.frame} mapping each
+    #'   \code{source_uid} to the \code{dest_uid} assigned in the destination
+    #'   folder.
     #' @family complementary operations
     #' @examples
     #' \dontrun{
@@ -1656,7 +1860,11 @@ ImapCon <- R6::R6Class("ImapCon",
         self$con_params$folder <- out$folder
       }
 
-      invisible(out$msg_id)
+      ids <- out$msg_id
+      if (!is.null(out$copyuid)) {
+        attr(ids, "copyuid") <- out$copyuid
+      }
+      invisible(ids)
 
     },
 
@@ -1679,6 +1887,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return An invisible \code{numeric vector} containing the message ids.
+    #'   When the server advertises \code{UIDPLUS} (RFC 4315), the vector
+    #'   carries a \code{"copyuid"} attribute: a \code{data.frame} mapping each
+    #'   \code{source_uid} to the \code{dest_uid} assigned in the destination
+    #'   folder.
     #' @family complementary operations
     #' @examples
     #' \dontrun{
@@ -1700,32 +1912,46 @@ ImapCon <- R6::R6Class("ImapCon",
         self$con_params$folder <- out$folder
       }
 
-      invisible(out$msg_id)
+      ids <- out$msg_id
+      if (!is.null(out$copyuid)) {
+        attr(ids, "copyuid") <- out$copyuid
+      }
+      invisible(ids)
 
     },
 
     #' @description Append a full RFC 822 message to a mail folder (IMAP
     #'   \code{APPEND}). Useful to save a message to folders such as
     #'   \code{Drafts} or \code{Sent}. Unlike the other operations this is
-    #'   performed by an upload to the folder; the message is stored with the
-    #'   server's default flags.
+    #'   performed by an upload to the folder. The message is stored with the
+    #'   flags given in \code{flags} (none by default). When the server
+    #'   advertises \code{UIDPLUS} (RFC 4315), the UID assigned to the message
+    #'   is returned.
     #' @param message A \code{character} string or \code{raw} vector with the
     #'   full RFC 822 message (headers and body).
     #' @param folder A \code{character} string with the destination folder. If no
     #'   folder is passed, the previously selected folder is used.
+    #' @param flags \code{NULL} (default) or a \code{character} vector with the
+    #'   flags to store with the message: any of \code{"Seen"},
+    #'   \code{"Flagged"}, \code{"Answered"}, \code{"Draft"}, and
+    #'   \code{"Deleted"}. Requires libcurl >= 8.13; earlier versions ignore
+    #'   this argument and always store the message with \code{\\Seen}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
-    #' @return \code{TRUE} in case the operation is successful.
+    #' @return Invisibly, the UID assigned to the appended message when the
+    #'   server reports it (\code{APPENDUID} response code, UIDPLUS), or
+    #'   \code{NA} otherwise.
     #' @examples
     #' \dontrun{
     #' msg <- paste("From: me@example.com", "To: you@example.com",
     #'              "Subject: Hi", "", "Message body.", sep = "\r\n")
-    #' con$append_msg(message = msg, folder = "Drafts")
+    #' con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
     #' }
-    append_msg = function(message, folder = NULL, mute = FALSE, retries = 1) {
-      invisible(append_int(self, message, folder, mute, retries))
+    append_msg = function(message, folder = NULL, flags = NULL, mute = FALSE,
+                          retries = 1) {
+      invisible(append_int(self, message, folder, flags, mute, retries))
     },
 
     #' @description Count the number of messages with a specific flag(s) in a
@@ -1793,6 +2019,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description Permanently removes all or specific messages marked as deleted from the selected folder
     #' @param msg_uid A \code{numeric vector} containing one or more messages UIDs.
     #'   Only UIDs are allowed in this operation (note the "u" in msg_\emph{u}id).
+    #'   Expunging specific messages (\code{UID EXPUNGE}) requires the server
+    #'   \code{UIDPLUS} capability (RFC 4315); a plain expunge does not.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.

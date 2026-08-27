@@ -11,11 +11,37 @@
 #'   RFC 822 message (headers + body).
 #' @param folder A string with the destination folder. If \code{NULL}, uses the
 #'   previously selected folder.
+#' @param flags \code{NULL} (default) or a character vector with the flags to
+#'   store with the message: any of \code{"Seen"}, \code{"Flagged"},
+#'   \code{"Answered"}, \code{"Draft"}, and \code{"Deleted"}. Sent through
+#'   libcurl's \code{CURLOPT_UPLOAD_FLAGS} (libcurl >= 8.13); earlier
+#'   libcurl versions ignore it and always store the message with
+#'   \code{\\Seen}.
 #' @param mute A \code{logical}. Provides a confirmation message if the command
 #'   is successfully executed. Default is \code{FALSE}.
 #' @param retries Number of attempts to connect and execute the command.
+#' @return Invisibly, the UID assigned to the appended message when the server
+#'   reports it through the \code{APPENDUID} response code (UIDPLUS, RFC
+#'   4315), or \code{NA} otherwise.
 #' @noRd
-append_int <- function(self, message, folder, mute, retries) {
+append_int <- function(self, message, folder, flags, mute, retries) {
+
+  # flags -> CURLOPT_UPLOAD_FLAGS bitmask (curl.h: ANSWERED 1, DELETED 2,
+  # DRAFT 4, FLAGGED 8, SEEN 16)
+  flag_bits <- c(answered = 1L, deleted = 2L, draft = 4L, flagged = 8L,
+                 seen = 16L)
+  if (!is.null(flags)) {
+    assertthat::assert_that(
+      is.character(flags),
+      msg='"flags" must be NULL or a character vector.')
+    flags_key <- tolower(gsub("^\\\\", "", flags))
+    assertthat::assert_that(
+      all(flags_key %in% names(flag_bits)),
+      msg='"flags" must be a subset of: Seen, Flagged, Answered, Draft, Deleted.')
+    upload_flags <- sum(flag_bits[unique(flags_key)])
+  } else {
+    upload_flags <- 0L
+  }
 
   assertthat::assert_that(
     any(is.character(message), is.raw(message)),
@@ -61,6 +87,11 @@ append_int <- function(self, message, folder, mute, retries) {
     # customrequest makes libcurl hang right after the server's APPEND "+ go
     # ahead" continuation, so we reset it to the default before uploading.
     curl::handle_setopt(handle = h, customrequest = NULL)
+    # store the message with exactly the requested flags (none by default);
+    # libcurl < 8.13 has no such option and hardcodes \Seen in APPEND
+    if ("upload_flags" %in% names(curl::curl_options())) {
+      curl::handle_setopt(handle = h, upload_flags = as.integer(upload_flags))
+    }
     curl::handle_setopt(
       handle = h,
       upload = TRUE,
@@ -94,13 +125,20 @@ append_int <- function(self, message, folder, mute, retries) {
     }
   }
 
+  # UIDPLUS (RFC 4315): servers that advertise it report the UID assigned to
+  # the appended message in the tagged "OK [APPENDUID <uidvalidity> <uid>]"
+  resp_char <- paste(rawToChar(response$headers), rawToChar(response$content))
+  appenduid <- parse_appenduid(resp_char)
+  uid <- if (is.null(appenduid)) NA_integer_ else unname(appenduid[["uid"]])
+
   if (!mute) {
     if (self$con_params$verbose) {
       Sys.sleep(0.01)  # wait for the end of the client-server conversation
     }
-    cat(paste0("\n::mRpostman: message appended to ", '"', folder, '"', ".\n"))
+    cat(paste0("\n::mRpostman: message appended to ", '"', folder, '"',
+               if (!is.na(uid)) paste0(" (UID ", uid, ")") else "", ".\n"))
   }
 
-  invisible(TRUE)
+  invisible(uid)
 
 }

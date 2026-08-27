@@ -26,14 +26,18 @@
 #' @param retries Number of attempts for each \code{APPEND}. Default is
 #'   \code{1}.
 #' @return Invisibly, a \code{data.frame} with one row per message file:
-#'   \code{path}, \code{size}, and \code{appended} (a \code{logical}
-#'   indicating whether the upload succeeded).
-#' @details \code{APPEND} via libcurl stores messages with the \code{\\Seen}
-#'   flag and the current internal date (see \code{\link{populate_sandbox}}
-#'   for the implications); header-based \code{SENT*} searches are therefore
-#'   the appropriate way to query ingested corpora by date. Files that fail
-#'   to upload (e.g., malformed messages rejected by the server) are skipped
-#'   with a warning rather than aborting the ingestion.
+#'   \code{path}, \code{size}, \code{appended} (a \code{logical}
+#'   indicating whether the upload succeeded), and \code{uid} (the UID the
+#'   server assigned to the message, when it advertises \code{UIDPLUS};
+#'   \code{NA} otherwise).
+#' @details \code{APPEND} stores every message with the current time as its
+#'   internal date (see \code{\link{populate_sandbox}} for the implications),
+#'   so header-based \code{SENT*} searches are the appropriate way to query
+#'   ingested corpora by date. Messages are stored without flags on libcurl
+#'   >= 8.13 (earlier versions hardcode \code{\\Seen} in \code{APPEND}); use
+#'   \code{ImapCon$add_flags()} to mark them as read if desired. Files that fail to upload (e.g., malformed messages rejected by
+#'   the server) are skipped with a warning rather than aborting the
+#'   ingestion.
 #' @family sandbox
 #' @export
 #' @examples
@@ -86,11 +90,12 @@ ingest_maildir <- function(con, path = NULL, folder = basename(path),
   }
 
   appended <- logical(length(files))
+  uid <- rep(NA_integer_, length(files))
   for (i in seq_along(files)) {
     raw_msg <- readChar(files[i], file.size(files[i]), useBytes = TRUE)
     appended[i] <- tryCatch({
-      con$append_msg(message = raw_msg, folder = folder, mute = TRUE,
-                     retries = retries)
+      uid[i] <- con$append_msg(message = raw_msg, folder = folder, mute = TRUE,
+                               retries = retries)
       TRUE
     }, error = function(e) {
       warning('skipping "', files[i], '": ', conditionMessage(e),
@@ -111,5 +116,6 @@ ingest_maildir <- function(con, path = NULL, folder = basename(path),
   invisible(data.frame(path = files,
                        size = file.size(files),
                        appended = appended,
+                       uid = uid,
                        stringsAsFactors = FALSE))
 }

@@ -38,7 +38,12 @@ parse_quota <- function(content_char) {
     }
   }
 
-  data.frame(quota_root = qroot, resource = res,
-             usage = usage, limit = limit, stringsAsFactors = FALSE)
+  out <- data.frame(quota_root = qroot, resource = res,
+                    usage = usage, limit = limit, stringsAsFactors = FALSE)
+  # libcurl may deliver the untagged QUOTA line through both the header and
+  # the body callbacks; keep one row per (root, resource)
+  out <- out[!duplicated(out[, c("quota_root", "resource")]), , drop = FALSE]
+  rownames(out) <- NULL
+  out
 
 }

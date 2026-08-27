@@ -80,7 +80,12 @@ move_msg_int <- function(self, msg_id, use_uid, to_folder, reselect, mute, retri
   }
 
   # final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
+  # UIDPLUS (RFC 4315): servers that advertise it report the UIDs assigned in
+  # the destination folder through the "[COPYUID ...]" response code
+  resp_char <- paste(rawToChar(response$headers), rawToChar(response$content))
+  copyuid <- parse_copyuid(resp_char)
+
   # will allow users to pipe more operations after adding flags
-  return(list(msg_id = msg_id, folder = reselected_folder))
+  return(list(msg_id = msg_id, folder = reselected_folder, copyuid = copyuid))
 
 }

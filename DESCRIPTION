@@ -1,8 +1,8 @@
 Package: mRpostman
 Type: Package
 Title: An IMAP Client for R
-Version: 1.4.1
-Date: 2026-08-26
+Version: 1.5.1
+Date: 2026-08-27
 Authors@R: c(
     person(given="Allan", family="Quadros",
     role = c("aut", "cre"),
@@ -35,4 +35,4 @@ SystemRequirements: libcurl: libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0), httr, jsonlite
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-RoxygenNote: 7.3.2
+Config/roxygen2/version: 8.1.0

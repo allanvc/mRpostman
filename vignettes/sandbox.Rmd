@@ -92,7 +92,7 @@ The corpus is designed so that each feature of the package has matching messages
 * accented subjects in MIME encoded-words and quoted-printable bodies, for the decoding helpers;
 * CSV, PNG, and one-page PDF attachments (some with repeated filenames), for the attachment methods, binary base64 decoding, and filename deduplication — see `info$attachment_type`;
 * reply chains (`In-Reply-To`/`References`), for `SORT` and `THREAD`;
-* `\Seen`, `\Flagged`, and `\Answered` flags, adjusted after the upload, for flag searches. (libcurl's `APPEND` stores every message with the `\Seen` flag, so `populate_sandbox()` *removes* it from the messages planned as unread — exercising `STORE` in both directions.)
+* `\Seen`, `\Flagged`, and `\Answered` flags, adjusted after the upload, for flag searches. (`append_msg()` stores the messages without flags on libcurl >= 8.13, while earlier libcurl versions hardcode `\Seen` in `APPEND`, so `populate_sandbox()` sets the planned `\Seen` state explicitly, adding it to the read messages and removing it from the rest, which exercises `STORE` in both directions.)
 
 For use from the shell, the wrapper script `inst/docker/populate_mailbox.R` does the same: `Rscript populate_mailbox.R 200`.
 

@@ -29,20 +29,20 @@ res <- con$search(request = OR(string(expr = "XYZ@k-state.edu",
 
 }
 \seealso{
-Other custom search: 
-\code{\link{AND}()},
+Other custom search:
+\code{\link[=AND]{AND()}},
 \code{\link{ImapCon}},
-\code{\link{OR}()},
-\code{\link{before}()},
-\code{\link{flag}()},
-\code{\link{larger_than}()},
-\code{\link{older_than}()},
-\code{\link{on}()},
-\code{\link{sent_before}()},
-\code{\link{sent_on}()},
-\code{\link{sent_since}()},
-\code{\link{since}()},
-\code{\link{string}()},
-\code{\link{younger_than}()}
+\code{\link[=OR]{OR()}},
+\code{\link[=before]{before()}},
+\code{\link[=flag]{flag()}},
+\code{\link[=larger_than]{larger_than()}},
+\code{\link[=older_than]{older_than()}},
+\code{\link[=on]{on()}},
+\code{\link[=sent_before]{sent_before()}},
+\code{\link[=sent_on]{sent_on()}},
+\code{\link[=sent_since]{sent_since()}},
+\code{\link[=since]{since()}},
+\code{\link[=string]{string()}},
+\code{\link[=younger_than]{younger_than()}}
 }
 \concept{custom search}

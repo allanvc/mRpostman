@@ -96,6 +96,19 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
 
     # print(exists("response")); print(exists("response")); print(exists("response"))
 
+    if (!is.null(response) && identical(id, "$")) {
+      # SEARCHRES (RFC 5182): one FETCH on the saved result returns every
+      # matching message in a single reply; split it into one element per
+      # message and return, since "$" is necessarily the only id
+      msg_list <- split_fetch_responses(rawToChar(response$headers), fetch_type,
+                                        use_uid = use_uid,
+                                        metadata_attribute = metadata_attribute)
+      if (isTRUE(base64_decode)) {
+        msg_list <- lapply(msg_list, decode_base64_text_if_needed)
+      }
+      return(msg_list)
+    }
+
     if (!is.null(response)) {
       if (!is.null(chunked_text)) {
         msg_text <- chunked_text

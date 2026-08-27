@@ -98,9 +98,9 @@ table(manifest$custodian, manifest$appended)
 }
 }
 \seealso{
-Other sandbox: 
-\code{\link{ingest_maildir}()},
-\code{\link{populate_sandbox}()},
-\code{\link{sandbox_corpus}()}
+Other sandbox:
+\code{\link[=ingest_maildir]{ingest_maildir()}},
+\code{\link[=populate_sandbox]{populate_sandbox()}},
+\code{\link[=sandbox_corpus]{sandbox_corpus()}}
 }
 \concept{sandbox}

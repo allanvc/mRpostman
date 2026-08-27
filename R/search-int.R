@@ -27,9 +27,17 @@
 #' @param retries Number of attempts to connect and execute the command.
 #'   Default is \code{1}.
 #' @noRd
-search_int <- function(self, request, negate, use_uid, esearch, retries) {
+search_int <- function(self, request, negate, use_uid, esearch, retries,
+                       save = FALSE) {
 
   check_args(negate = negate, use_uid = use_uid, esearch = esearch, retries = retries)
+  assertthat::assert_that(is.logical(save), length(save) == 1,
+                          msg='"save" must be a logical.')
+  if (isTRUE(save)) {
+    # SEARCHRES is an optional extension (RFC 5182)
+    assert_capability(self, "SEARCHRES", command = "search(save = TRUE)",
+                      rfc = "RFC 5182", retries = retries)
+  }
   # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
 
@@ -44,10 +52,17 @@ search_int <- function(self, request, negate, use_uid, esearch, retries) {
   #define customrequest to this handle
   define_out <- define_searchrequest_custom(request, negate = negate,
                                             use_uid = use_uid,
-                                            esearch = esearch, handle = h)
+                                            esearch = esearch, handle = h,
+                                            save = save)
 
   h <- define_out$handle
   customrequest <- define_out$customrequest
+
+  if (isTRUE(save)) {
+    # the server keeps the result; nothing is returned but the "$" reference
+    execute_simple_command(self, customrequest, retries)
+    return(invisible("$"))
+  }
 
   response <- execute_search(self = self, url = url, handle = h,
                              customrequest = customrequest, esearch, retries)

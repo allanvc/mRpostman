@@ -51,9 +51,9 @@ cat(corpus$messages[[1]], sep = "\n")
 corpus$info
 }
 \seealso{
-Other sandbox: 
-\code{\link{enron_sandbox}()},
-\code{\link{ingest_maildir}()},
-\code{\link{populate_sandbox}()}
+Other sandbox:
+\code{\link[=enron_sandbox]{enron_sandbox()}},
+\code{\link[=ingest_maildir]{ingest_maildir()}},
+\code{\link[=populate_sandbox]{populate_sandbox()}}
 }
 \concept{sandbox}

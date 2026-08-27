@@ -98,13 +98,16 @@ type of operation:
     `reset_buffersize()`, `reset_timeout_ms()`,
     `reset_xoauth2_bearer()`;
   - **server information methods**: `list_server_capabilities()`,
-    `id()`, `namespace()`, `get_quota_root()`, `get_quota()`;
+    `enable()`, `id()`, `namespace()`, `get_quota_root()`,
+    `get_quota()`, `set_quota()`;
   - **mailbox operations methods**: `list_mail_folders()`,
-    `list_subscribed_folders()`, `list_special_use_folders()`,
-    `select_folder()`, `examine_folder()`, `status()`,
-    `create_folder()`, `rename_folder()`, `delete_folder()`,
-    `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`,
-    `unselect_folder()`, `list_flags()`;
+    `list_subscribed_folders()`, `list_folders_status()`,
+    `list_special_use_folders()`, `get_acl()`, `set_acl()`,
+    `delete_acl()`, `list_rights()`, `my_rights()`, `select_folder()`,
+    `examine_folder()`, `status()`, `create_folder()`,
+    `rename_folder()`, `delete_folder()`, `subscribe_folder()`,
+    `unsubscribe_folder()`, `close_folder()`, `unselect_folder()`,
+    `check()`, `list_flags()`;
   - **single-search methods**: `search_before()`, `search_since()`,
     `search_period()`, `search_on()`,
     `search_sent_before()`,`search_sent_since()`,
@@ -148,6 +151,7 @@ what your server supports with `list_server_capabilities()`.
 | ------------------------------ | ------------------------------------------------------------------------------------------- |
 | `CAPABILITY`                   | `list_server_capabilities()`                                                                |
 | `NOOP`                         | `noop()`                                                                                    |
+| `CHECK`                        | `check()`                                                                                   |
 | `LOGIN` / `AUTHENTICATE`       | `configure_imap()`                                                                          |
 | `LOGOUT`                       | `disconnect()`                                                                              |
 | `SELECT` / `EXAMINE`           | `select_folder()` / `examine_folder()`                                                      |
@@ -165,25 +169,33 @@ what your server supports with `list_server_capabilities()`.
 
 ### Optional extensions (server-dependent — capability-checked)
 
-| IMAP command                | `mRpostman` method(s)                                                               | Capability                                    | RFC                                                   |
-| --------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
-| `SORT`                      | `sort()`                                                                            | `SORT`                                        | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `THREAD`                    | `thread()`                                                                          | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `GETQUOTA` / `GETQUOTAROOT` | `get_quota()` / `get_quota_root()`                                                  | `QUOTA`                                       | [2087](https://datatracker.ietf.org/doc/html/rfc2087) |
-| `NAMESPACE`                 | `namespace()`                                                                       | `NAMESPACE`                                   | [2342](https://datatracker.ietf.org/doc/html/rfc2342) |
-| `ID`                        | `id()`                                                                              | `ID`                                          | [2971](https://datatracker.ietf.org/doc/html/rfc2971) |
-| `UNSELECT`                  | `unselect_folder()`                                                                 | `UNSELECT`                                    | [3691](https://datatracker.ietf.org/doc/html/rfc3691) |
-| `LIST` (special-use)        | `list_special_use_folders()`                                                        | `SPECIAL-USE`                                 | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
-| `MOVE`                      | `move_msg()`                                                                        | `MOVE`                                        | [6851](https://datatracker.ietf.org/doc/html/rfc6851) |
-| `SEARCH RETURN` (ESEARCH)   | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH`                                     | [4731](https://datatracker.ietf.org/doc/html/rfc4731) |
+| IMAP command                                                  | `mRpostman` method(s)                                                                                           | Capability                                    | RFC                                                   |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------- |
+| `SORT`                                                        | `sort()`                                                                                                        | `SORT`                                        | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
+| `THREAD`                                                      | `thread()`                                                                                                      | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
+| `GETQUOTA` / `GETQUOTAROOT`                                   | `get_quota()` / `get_quota_root()`                                                                              | `QUOTA`                                       | [2087](https://datatracker.ietf.org/doc/html/rfc2087) |
+| `NAMESPACE`                                                   | `namespace()`                                                                                                   | `NAMESPACE`                                   | [2342](https://datatracker.ietf.org/doc/html/rfc2342) |
+| `ID`                                                          | `id()`                                                                                                          | `ID`                                          | [2971](https://datatracker.ietf.org/doc/html/rfc2971) |
+| `UNSELECT`                                                    | `unselect_folder()`                                                                                             | `UNSELECT`                                    | [3691](https://datatracker.ietf.org/doc/html/rfc3691) |
+| `LIST` (special-use)                                          | `list_special_use_folders()`                                                                                    | `SPECIAL-USE`                                 | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
+| `MOVE`                                                        | `move_msg()`                                                                                                    | `MOVE`                                        | [6851](https://datatracker.ietf.org/doc/html/rfc6851) |
+| `SEARCH RETURN` (ESEARCH)                                     | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()`                             | `ESEARCH`                                     | [4731](https://datatracker.ietf.org/doc/html/rfc4731) |
+| `UID EXPUNGE`, `APPENDUID` / `COPYUID`                        | `expunge(msg_uid = ...)`, `append_msg()` (returns the UID), `copy_msg()` / `move_msg()` (`"copyuid"` attribute) | `UIDPLUS`                                     | [4315](https://datatracker.ietf.org/doc/html/rfc4315) |
+| `LIST ... RETURN (STATUS ...)`                                | `list_folders_status()`                                                                                         | `LIST-STATUS`                                 | [5819](https://datatracker.ietf.org/doc/html/rfc5819) |
+| `SETQUOTA`                                                    | `set_quota()`                                                                                                   | `QUOTA`                                       | [2087](https://datatracker.ietf.org/doc/html/rfc2087) |
+| `GETACL` / `SETACL` / `DELETEACL` / `LISTRIGHTS` / `MYRIGHTS` | `get_acl()` / `set_acl()` / `delete_acl()` / `list_rights()` / `my_rights()`                                    | `ACL`                                         | [4314](https://datatracker.ietf.org/doc/html/rfc4314) |
+| `ENABLE`                                                      | `enable()`                                                                                                      | `ENABLE`                                      | [5161](https://datatracker.ietf.org/doc/html/rfc5161) |
+| `SEARCH RETURN (SAVE)`                                        | `search(save = TRUE)`, then `msg_id = "$"` in fetch/flag/copy/move/delete methods                               | `SEARCHRES`                                   | [5182](https://datatracker.ietf.org/doc/html/rfc5182) |
+| `SORT RETURN (...)`                                           | `sort(return = ...)`                                                                                            | `ESORT`                                       | [5267](https://datatracker.ietf.org/doc/html/rfc5267) |
 
 Availability varies by provider. Gmail, for instance, supports every
 extension above **except `SORT` and `THREAD`**, which it has never
 implemented; to exercise `sort()` and `thread()` you need a server that
 advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office
 365). Two extensions remain intentionally unimplemented:
-`CONDSTORE`/`QRESYNC` (out of scope) and `IDLE` (not feasible with
-libcurl’s one-shot request model — see the *Basics* vignette).
+`CONDSTORE`/`QRESYNC` (out of scope, although `enable("CONDSTORE")` is
+available) and `IDLE` (not feasible with libcurl’s one-shot request
+model — see the *Basics* vignette).
 
 ## Installation
 

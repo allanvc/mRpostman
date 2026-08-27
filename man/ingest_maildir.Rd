@@ -45,8 +45,10 @@ messages and a final summary. Default is \code{FALSE}.}
 }
 \value{
 Invisibly, a \code{data.frame} with one row per message file:
-  \code{path}, \code{size}, and \code{appended} (a \code{logical}
-  indicating whether the upload succeeded).
+  \code{path}, \code{size}, \code{appended} (a \code{logical}
+  indicating whether the upload succeeded), and \code{uid} (the UID the
+  server assigned to the message, when it advertises \code{UIDPLUS};
+  \code{NA} otherwise).
 }
 \description{
 Uploads every message file found under a local directory to a
@@ -58,12 +60,14 @@ Uploads every message file found under a local directory to a
   corpus (see \code{\link{enron_sandbox}}).
 }
 \details{
-\code{APPEND} via libcurl stores messages with the \code{\\Seen}
-  flag and the current internal date (see \code{\link{populate_sandbox}}
-  for the implications); header-based \code{SENT*} searches are therefore
-  the appropriate way to query ingested corpora by date. Files that fail
-  to upload (e.g., malformed messages rejected by the server) are skipped
-  with a warning rather than aborting the ingestion.
+\code{APPEND} stores every message with the current time as its
+  internal date (see \code{\link{populate_sandbox}} for the implications),
+  so header-based \code{SENT*} searches are the appropriate way to query
+  ingested corpora by date. Messages are stored without flags on libcurl
+  >= 8.13 (earlier versions hardcode \code{\\Seen} in \code{APPEND}); use
+  \code{ImapCon$add_flags()} to mark them as read if desired. Files that fail to upload (e.g., malformed messages rejected by
+  the server) are skipped with a warning rather than aborting the
+  ingestion.
 }
 \examples{
 \dontrun{
@@ -77,9 +81,9 @@ table(manifest$appended)
 }
 }
 \seealso{
-Other sandbox: 
-\code{\link{enron_sandbox}()},
-\code{\link{populate_sandbox}()},
-\code{\link{sandbox_corpus}()}
+Other sandbox:
+\code{\link[=enron_sandbox]{enron_sandbox()}},
+\code{\link[=populate_sandbox]{populate_sandbox()}},
+\code{\link[=sandbox_corpus]{sandbox_corpus()}}
 }
 \concept{sandbox}

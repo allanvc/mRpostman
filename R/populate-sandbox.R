@@ -21,14 +21,12 @@
 #'   summary. Default is \code{FALSE}.
 #' @return Invisibly, the \code{info} data.frame of the generated corpus (see
 #'   \code{\link{sandbox_corpus}}).
-#' @details \code{APPEND} via libcurl stores messages with the \code{\\Seen}
-#'   flag (hardcoded in libcurl's IMAP module) and the current internal date,
-#'   so flags are adjusted afterwards with \code{ImapCon$add_flags()} and
-#'   \code{ImapCon$remove_flags()}. Internal-date searches
-#'   (\code{BEFORE}/\code{SINCE}/\code{ON}, \code{WITHIN}) therefore only make
-#'   sense relative to the population time; searches on fixed dates should use
-#'   the \code{SENT*} variants, which read the \code{Date:} header — spread
-#'   over the year 2020 in this corpus.
+#' @details \code{ImapCon$append_msg()} stores the messages without flags on
+#'   libcurl >= 8.13, but earlier libcurl versions hardcode \code{\\Seen} in
+#'   \code{APPEND}, so \code{populate_sandbox()} sets the planned
+#'   \code{\\Seen} state explicitly in both directions after the upload. \code{APPEND} also stores the current time as the internal date
+#'   of every message, which is why the date searches below use the
+#'   header-based \code{SENT*} variants.
 #' @family sandbox
 #' @export
 #' @examples
@@ -81,14 +79,20 @@ populate_sandbox <- function(con, n = 200, seed = 3501,
   }
 
   # flags are set after the append -- which conveniently also exercises STORE.
-  # libcurl hardcodes the \Seen flag in its APPEND command, so every uploaded
-  # message arrives marked as read; the planned unseen ones have it removed.
+  # append_msg() stores the messages without flags on libcurl >= 8.13, but
+  # older libcurl versions hardcode \Seen in APPEND, so the planned state is
+  # enforced in both directions: \Seen is added to the seen messages and
+  # removed from the rest.
   con$select_folder("INBOX", mute = TRUE)
 
+  seen_ids     <- which(corpus$info$seen)
   unseen_ids   <- which(!corpus$info$seen)
   flagged_ids  <- which(corpus$info$flagged)
   answered_ids <- which(corpus$info$is_reply)
 
+  if (length(seen_ids)) {
+    con$add_flags(msg_id = seen_ids, flags_to_set = "\\Seen", mute = TRUE)
+  }
   if (length(unseen_ids)) {
     con$remove_flags(msg_id = unseen_ids, flags_to_unset = "\\Seen",
                      mute = TRUE)

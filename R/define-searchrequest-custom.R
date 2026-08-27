@@ -27,10 +27,13 @@
 #' @param handle A curl handle object.
 #' @noRd
 define_searchrequest_custom <- function(request, negate, use_uid, esearch,
-                                        handle) {
+                                        handle, save = FALSE) {
 
-  # esearch
-  if (isTRUE(esearch)) {
+  # esearch / SEARCHRES (RFC 5182): "RETURN (SAVE)" stores the result on the
+  # server, where later commands can refer to it as "$"
+  if (isTRUE(save)) {
+    esearch_string = "RETURN (SAVE) "
+  } else if (isTRUE(esearch)) {
     esearch_string = "RETURN () "
   } else {
     esearch_string = NULL
