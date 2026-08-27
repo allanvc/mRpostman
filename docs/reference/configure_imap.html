@@ -105,9 +105,11 @@
 
 <dt id="arg-oauth-mechanism">oauth_mechanism<a class="anchor" aria-label="anchor" href="#arg-oauth-mechanism"></a></dt>
 <dd><p>The SASL mechanism used to send the OAuth 2.0 token:
-<code>"XOAUTH2"</code> (default; Gmail, Yahoo, and Microsoft 365) or
-<code>"OAUTHBEARER"</code> (RFC 7628; the mechanism Microsoft 365 recommends).
-Ignored when authenticating with a password.</p></dd>
+<code>"XOAUTH2"</code> (default; advertised by Gmail, Yahoo, and Microsoft 365)
+or <code>"OAUTHBEARER"</code> (RFC 7628; advertised by Gmail, but not by the
+Microsoft 365 IMAP server). Check <code>list_server_capabilities()</code> for
+the <code>AUTH=</code> tokens of your server. Ignored when authenticating with
+a password.</p></dd>
 
 
 <dt id="arg-use-ssl">use_ssl<a class="anchor" aria-label="anchor" href="#arg-use-ssl"></a></dt>

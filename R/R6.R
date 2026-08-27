@@ -51,8 +51,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param password A character string containing the user's password.
     #' @param xoauth2_bearer A character string containing the oauth2 bearer token.
     #' @param oauth_mechanism The SASL mechanism used to send the OAuth 2.0
-    #'   token: \code{"XOAUTH2"} (default) or \code{"OAUTHBEARER"} (RFC 7628).
-    #'   Ignored when authenticating with a password.
+    #'   token: \code{"XOAUTH2"} (default; Gmail, Yahoo, Microsoft 365) or
+    #'   \code{"OAUTHBEARER"} (RFC 7628; Gmail). Ignored when authenticating
+    #'   with a password.
     #' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
     #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
     #' @param verbose If \code{FALSE}, mutes the flow of information between the
@@ -2455,9 +2456,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   ids, or the \code{"$"} reference of a saved search.
     #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
     #'   performed with UIDs.
-    #' @param parts \code{NULL} (default: every part flagged as an attachment)
-    #'   or a \code{character} vector of section numbers to fetch, e.g.
-    #'   \code{c("2", "3.1")}.
+    #' @param parts \code{NULL} (default: the parts selected by
+    #'   \code{content_disposition}) or a \code{character} vector of section
+    #'   numbers to fetch, e.g. \code{c("2", "3.1")}.
+    #' @param content_disposition As in \code{fetch_attachments()}:
+    #'   \code{"both"} (default), \code{"attachment"}, or \code{"inline"},
+    #'   selecting the parts by the \code{Content-Disposition} the server
+    #'   declares in the \code{BODYSTRUCTURE}. With \code{"both"}, non-text
+    #'   parts that carry a filename but no disposition are included as well.
     #' @param local_dir The base directory where the files are written, in a
     #'   \code{<username>/<folder>/<msg id>} tree, as in
     #'   \code{fetch_attachments()}. Default is \code{"."}. If \code{NULL},
@@ -2480,10 +2486,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   con$fetch_attachment_parts(local_dir = "~/attachments")
     #' }
     fetch_attachment_parts = function(msg_id, use_uid = FALSE, parts = NULL,
+                                      content_disposition = "both",
                                       local_dir = ".", override = FALSE,
                                       mute = FALSE, retries = 1) {
       out <- fetch_attachment_parts_int(self, msg_id, use_uid, parts, local_dir,
-                                        override, mute, retries)
+                                        override, mute, retries,
+                                        content_disposition = content_disposition)
       invisible(out)
     },
 

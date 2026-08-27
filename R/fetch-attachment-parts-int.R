@@ -37,10 +37,15 @@ decode_part_raw <- function(txt, encoding) {
 #' returns them as raw vectors.
 #' @noRd
 fetch_attachment_parts_int <- function(self, msg_id, use_uid, parts, local_dir,
-                                       override, mute, retries) {
+                                       override, mute, retries,
+                                       content_disposition = "both") {
 
   check_args(msg_id = msg_id, use_uid = use_uid, override = override,
              mute = mute, retries = retries)
+  assertthat::assert_that(
+    is.character(content_disposition), length(content_disposition) == 1,
+    content_disposition %in% c("both", "attachment", "inline"),
+    msg='"content_disposition" must be one of "both", "attachment", or "inline".')
   if (!is.null(parts)) {
     assertthat::assert_that(is.character(parts),
                             msg='"parts" must be NULL or a character vector of section numbers, e.g. c("2", "3.1").')
@@ -52,8 +57,25 @@ fetch_attachment_parts_int <- function(self, msg_id, use_uid, parts, local_dir,
 
   bs <- fetch_bodystructure_int(self, msg_id, use_uid, retries)
   idcol <- names(bs)[1]
-  sel <- if (is.null(parts)) bs$is_attachment & !is.na(bs$part) else bs$part %in% parts
+  # part selection, mirroring fetch_attachments(): "attachment" and "inline"
+  # follow the Content-Disposition declared by the server; "both" takes every
+  # part with either disposition, plus non-text parts that carry a filename
+  # (attachments some senders declare without a disposition)
+  sel <- if (!is.null(parts)) {
+    bs$part %in% parts
+  } else if (content_disposition == "both") {
+    !is.na(bs$part) & (bs$disposition %in% c("attachment", "inline") | bs$is_attachment)
+  } else {
+    !is.na(bs$part) & bs$disposition %in% content_disposition
+  }
   bs <- bs[sel, , drop = FALSE]
+  if (nrow(bs) == 0) {
+    out <- data.frame(id = integer(0), part = character(0), filename = character(0),
+                      type = character(0), size = numeric(0), stringsAsFactors = FALSE)
+    names(out)[1] <- idcol
+    if (!is.null(local_dir)) out$path <- character(0) else out$content <- list()
+    return(out)
+  }
 
   forbidden_chars <- "[\\\\/:*?\"<>|]"
   user_folder <- gsub(forbidden_chars, "", self$con_params$username)

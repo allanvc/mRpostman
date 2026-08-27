@@ -356,8 +356,9 @@
 
       <dt><code>oauth_mechanism</code></dt>
 <dd><p>The SASL mechanism used to send the OAuth 2.0
-token: <code>"XOAUTH2"</code> (default) or <code>"OAUTHBEARER"</code> (RFC 7628).
-Ignored when authenticating with a password.</p></dd>
+token: <code>"XOAUTH2"</code> (default; Gmail, Yahoo, Microsoft 365) or
+<code>"OAUTHBEARER"</code> (RFC 7628; Gmail). Ignored when authenticating
+with a password.</p></dd>
 
       <dt><code>use_ssl</code></dt>
 <dd><p>A logical indicating the use or not of Secure Sockets Layer
@@ -3752,6 +3753,7 @@ is <code>1</code>.</p></dd>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  parts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  content_disposition <span class="op">=</span> <span class="st">"both"</span>,</span>
 <span>  local_dir <span class="op">=</span> <span class="st">"."</span>,</span>
 <span>  override <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  mute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3768,9 +3770,16 @@ ids, or the <code>"$"</code> reference of a saved search.</p></dd>
 performed with UIDs.</p></dd>
 
       <dt><code>parts</code></dt>
-<dd><p><code>NULL</code> (default: every part flagged as an attachment)
-or a <code>character</code> vector of section numbers to fetch, e.g.
-<code>c("2", "3.1")</code>.</p></dd>
+<dd><p><code>NULL</code> (default: the parts selected by
+<code>content_disposition</code>) or a <code>character</code> vector of section
+numbers to fetch, e.g. <code>c("2", "3.1")</code>.</p></dd>
+
+      <dt><code>content_disposition</code></dt>
+<dd><p>As in <code>fetch_attachments()</code>:
+<code>"both"</code> (default), <code>"attachment"</code>, or <code>"inline"</code>,
+selecting the parts by the <code>Content-Disposition</code> the server
+declares in the <code>BODYSTRUCTURE</code>. With <code>"both"</code>, non-text
+parts that carry a filename but no disposition are included as well.</p></dd>
 
       <dt><code>local_dir</code></dt>
 <dd><p>The base directory where the files are written, in a

@@ -2,9 +2,15 @@
 
 ### New features
 
-- new `ImapCon$fetch_attachment_parts()` method: attachments fetched by MIME part, guided by the server's `BODYSTRUCTURE` (`fetch_bodystructure()`), each part retrieved with `BODY.PEEK[<part>]`, decoded from base64 or quoted-printable, and written to the same `<username>/<folder>/<msg id>` tree as `fetch_attachments()` (or returned as raw vectors with `local_dir = NULL`). Only the attachments are transferred, and no MIME boundary parsing of the fetched body is involved. Returns a manifest with the part, filename, type, size, and path of every file.
+- new `ImapCon$fetch_attachment_parts()` method: attachments fetched by MIME part, guided by the server's `BODYSTRUCTURE` (`fetch_bodystructure()`), each part retrieved with `BODY.PEEK[<part>]`, decoded from base64 or quoted-printable, and written to the same `<username>/<folder>/<msg id>` tree as `fetch_attachments()` (or returned as raw vectors with `local_dir = NULL`). Only the attachments are transferred, and no MIME boundary parsing of the fetched body is involved. Accepts the same `content_disposition` filter as `fetch_attachments()` (`"both"`, `"attachment"`, `"inline"`). Returns a manifest with the part, filename, type, size, and path of every file.
+
+### Bug fixes
+
+- the libcurl debug callback introduced in 1.5.2 (which records the server's `NO`/`BAD` replies) tried to convert every debug event to text, including the raw TLS records libcurl also reports; on `imaps://` connections this printed harmless but noisy `embedded nul in string` errors after every command. Only text and header events are processed now.
 
 ### Improvements
+
+- `configure_imap(oauth_mechanism = ...)` was verified live against Gmail: both `XOAUTH2` and `OAUTHBEARER` authenticate and operate normally (folder listing, `STATUS`, search, `ENVELOPE`, special-use folders, quota).
 
 - searches whose term the server cannot handle in the declared character set (`NO [BADCHARSET ...]`) are retried automatically in the charsets the server lists in its reply, or in `ISO-8859-1` and `US-ASCII`, whenever the term is representable in them; otherwise the error reports the server's reply and the reason.
 
@@ -22,7 +28,7 @@
 
 - new `ImapCon$fetch_bodystructure()` method and exported `parse_bodystructure()` helper: the MIME structure of each message parsed into one row per part, with the section number usable in `fetch_body(mime_level = )`, type/subtype, charset, filename, encoding, size, disposition, and an `is_attachment` flag. Both parsers are built on a new IMAP list tokenizer that handles quoted strings, literals, and `NIL`.
 
-- `configure_imap()` / `ImapCon$new()` gained `oauth_mechanism = c("XOAUTH2", "OAUTHBEARER")`, selecting the SASL mechanism used to send the OAuth 2.0 token (`OAUTHBEARER`, RFC 7628, is the mechanism Microsoft 365 recommends). Not exercised live in this release (no OAuth account in the sandbox); it maps to libcurl's `CURLOPT_LOGIN_OPTIONS = "AUTH=OAUTHBEARER"`.
+- `configure_imap()` / `ImapCon$new()` gained `oauth_mechanism = c("XOAUTH2", "OAUTHBEARER")`, selecting the SASL mechanism used to send the OAuth 2.0 token. Gmail advertises both `AUTH=XOAUTH2` and `AUTH=OAUTHBEARER` (RFC 7628); the Microsoft 365 IMAP server advertises `AUTH=XOAUTH2` only. It maps to libcurl's `CURLOPT_LOGIN_OPTIONS = "AUTH=OAUTHBEARER"` (verified live against Gmail in 1.5.4).
 
 - `list_mail_folders(detailed = TRUE)` adds a `my_rights` column when the server advertises `LIST-MYRIGHTS` (RFC 8440).
 

@@ -17,7 +17,12 @@
 #' @noRd
 make_debug_function <- function(dbg) {
   function(type, msg) {
-    txt <- rawToChar(msg)
+    # 0 = text, 1 = header in, 2 = header out; 3/4 are body data and 5/6 are
+    # raw TLS records, which are binary and of no interest here
+    if (!(type %in% c(0L, 1L, 2L))) {
+      return(invisible(NULL))
+    }
+    txt <- rawToChar(msg[msg != as.raw(0)])
     if (type == 2L) {          # header out: a new command is being sent
       dbg$lines <- character(0)
     } else if (type == 1L) {   # header in: server response line(s)

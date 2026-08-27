@@ -1086,8 +1086,9 @@ Other attachments:
       \item{\code{password}}{A character string containing the user's password.}
       \item{\code{xoauth2_bearer}}{A character string containing the oauth2 bearer token.}
       \item{\code{oauth_mechanism}}{The SASL mechanism used to send the OAuth 2.0
-token: \code{"XOAUTH2"} (default) or \code{"OAUTHBEARER"} (RFC 7628).
-Ignored when authenticating with a password.}
+token: \code{"XOAUTH2"} (default; Gmail, Yahoo, Microsoft 365) or
+\code{"OAUTHBEARER"} (RFC 7628; Gmail). Ignored when authenticating
+with a password.}
       \item{\code{use_ssl}}{A logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to the IMAP server. Default is \code{TRUE}.}
       \item{\code{verbose}}{If \code{FALSE}, mutes the flow of information between the
@@ -4487,6 +4488,7 @@ out
   msg_id,
   use_uid = FALSE,
   parts = NULL,
+  content_disposition = "both",
   local_dir = ".",
   override = FALSE,
   mute = FALSE,
@@ -4501,9 +4503,14 @@ out
 ids, or the \code{"$"} reference of a saved search.}
       \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
 performed with UIDs.}
-      \item{\code{parts}}{\code{NULL} (default: every part flagged as an attachment)
-or a \code{character} vector of section numbers to fetch, e.g.
-\code{c("2", "3.1")}.}
+      \item{\code{parts}}{\code{NULL} (default: the parts selected by
+\code{content_disposition}) or a \code{character} vector of section
+numbers to fetch, e.g. \code{c("2", "3.1")}.}
+      \item{\code{content_disposition}}{As in \code{fetch_attachments()}:
+\code{"both"} (default), \code{"attachment"}, or \code{"inline"},
+selecting the parts by the \code{Content-Disposition} the server
+declares in the \code{BODYSTRUCTURE}. With \code{"both"}, non-text
+parts that carry a filename but no disposition are included as well.}
       \item{\code{local_dir}}{The base directory where the files are written, in a
 \code{<username>/<folder>/<msg id>} tree, as in
 \code{fetch_attachments()}. Default is \code{"."}. If \code{NULL},
