@@ -57,12 +57,15 @@ search_string_int <- function(self, expr, where = NULL, negate = FALSE,
   h <- self$con_handle
 
   #define customrequest
+  charset_string <- search_charset_policy(self, expr, retries = retries)
+
   define_out <- define_searchrequest_string(expr = expr,
                                             where = where,
                                             negate = negate,
                                             use_uid = use_uid, flag = flag,
                                             esearch = esearch,
-                                            handle = h)
+                                            handle = h,
+                                            charset_string = charset_string)
 
   h <- define_out$handle
   customrequest <- define_out$customrequest

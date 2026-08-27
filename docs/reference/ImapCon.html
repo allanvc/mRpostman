@@ -577,7 +577,10 @@ Default is <code>1</code>.</p></dd>
 <p>Enable server extensions for the current session (IMAP
   <code>ENABLE</code>, RFC 5161). Some extensions, such as <code>CONDSTORE</code>
   or <code>UTF8=ACCEPT</code>, only take effect after the client enables
-  them. Requires the server <code>ENABLE</code> capability.</p><div class="section">
+  them. Requires the server <code>ENABLE</code> capability. The command is
+  only accepted before a folder is selected (RFC 5161), and what it
+  enables lasts for the current connection; the package handles
+  <code>UTF8=ACCEPT</code> itself for non-ASCII searches.</p><div class="section">
 <h4 id="usage-11">Usage<a class="anchor" aria-label="anchor" href="#usage-11"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">enable</span><span class="op">(</span><span class="va">capabilities</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">

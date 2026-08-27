@@ -6,6 +6,16 @@
 
 ### Bug fixes
 
+- **non-ASCII search terms on Gmail.** Gmail rejects a `CHARSET UTF-8` search (`BAD Could not parse command`) and only accepts UTF-8 terms after `ENABLE UTF8=ACCEPT` (RFC 6855), which in turn is accepted only with no folder selected and lasts for the current connection (Gmail closes the connection after any rejected command). The search methods now choose per server: on servers that advertise `UTF8=ACCEPT`, the extension is enabled once per connection (releasing and re-selecting the folder with `UNSELECT`) and the term is sent as is; on the others, `CHARSET UTF-8` is declared as before. A connection replaced by libcurl is detected and the extension re-enabled.
+
+- **duplicate `APPEND` after a dropped connection.** When a reused connection turns out to be dead, libcurl re-sends the request on a fresh connection; for `APPEND` this stored the message twice whenever the server had accepted the first copy before closing (observed on Gmail after deleting the selected folder). `append_msg()` now sends a `NOOP` first whenever the connection may be stale (after the selected folder was deleted, closed, or unselected, or after a minute without server activity), so that any reconnection happens before the upload.
+
+- `search_larger_than()`, `search_smaller_than()`, `search_younger_than()`, `search_older_than()` and the matching criterion constructors formatted large numbers in scientific notation (`LARGER 5e+06`), which servers reject; numbers are now written in full.
+
+- `search_younger_than()`, `search_older_than()`, and the `younger_than()`/`older_than()` criteria are now gated on the `WITHIN` capability (Gmail does not implement it and answered `BAD Could not parse command`); likewise the `saved_*()` criteria on `SAVEDATE` and `modseq()` on `CONDSTORE`.
+
+- `delete_folder()` on the currently selected folder now clears the selection recorded in the connection object.
+
 - the libcurl debug callback introduced in 1.5.2 (which records the server's `NO`/`BAD` replies) tried to convert every debug event to text, including the raw TLS records libcurl also reports; on `imaps://` connections this printed harmless but noisy `embedded nul in string` errors after every command. Only text and header events are processed now.
 
 ### Improvements

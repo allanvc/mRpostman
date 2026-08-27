@@ -63,6 +63,7 @@ unselect_folder_int <- function(self, retries) {
   if (self$con_params$verbose) {
     Sys.sleep(0.01)  # wait for the end of the client-server conversation
   }
+  self$con_stale <- TRUE  # some servers drop the connection here (see append_int)
   invisible(TRUE)
 
 }

@@ -66,6 +66,8 @@ define_searchrequest_size <- function(operation, size, negate, use_uid, flag, es
     negate_string = NULL
   }
 
+  size <- format(size, scientific = FALSE, trim = TRUE)
+
   customrequest <- paste0(use_uid_string, "SEARCH ", esearch_string, flag_string,
                           negate_string, operation, ' ', size)
 

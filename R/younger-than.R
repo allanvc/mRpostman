@@ -19,6 +19,9 @@ younger_than <- function(seconds, negate = FALSE) {
 
   check_args(seconds, negate)
 
+  # never let R print large numbers in scientific notation (5e+06)
+  seconds <- format(seconds, scientific = FALSE, trim = TRUE)
+
   # setting part of the search string
 
   if (!isTRUE(negate)) {

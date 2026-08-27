@@ -27,7 +27,7 @@
 #' @param handle A curl handle object.
 #' @noRd
 define_searchrequest_custom <- function(request, negate, use_uid, esearch,
-                                        handle, save = FALSE) {
+                                        handle, save = FALSE, charset_string = NULL) {
 
   # esearch / SEARCHRES (RFC 5182): "RETURN (SAVE)" stores the result on the
   # server, where later commands can refer to it as "$"
@@ -60,11 +60,16 @@ define_searchrequest_custom <- function(request, negate, use_uid, esearch,
     negate_string = NULL
   }
 
-  # issue #12: declare "CHARSET UTF-8" when the built request has non-ASCII text
+  # issue #12: declare "CHARSET UTF-8" when the built request has non-ASCII
+  # text, unless the caller already decided (see search_charset_policy())
   request <- enc2utf8(request)
-  if (any(as.integer(charToRaw(request)) > 127L)) {
-    charset_string = "CHARSET UTF-8 "
-  } else {
+  if (is.null(charset_string)) {
+    if (any(as.integer(charToRaw(request)) > 127L)) {
+      charset_string = "CHARSET UTF-8 "
+    } else {
+      charset_string = NULL
+    }
+  } else if (!nzchar(charset_string)) {
     charset_string = NULL
   }
 

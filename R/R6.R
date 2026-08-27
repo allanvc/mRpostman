@@ -252,7 +252,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description Enable server extensions for the current session (IMAP
     #'   \code{ENABLE}, RFC 5161). Some extensions, such as \code{CONDSTORE}
     #'   or \code{UTF8=ACCEPT}, only take effect after the client enables
-    #'   them. Requires the server \code{ENABLE} capability.
+    #'   them. Requires the server \code{ENABLE} capability. The command is
+    #'   only accepted before a folder is selected (RFC 5161), and what it
+    #'   enables lasts for the current connection; the package handles
+    #'   \code{UTF8=ACCEPT} itself for non-ASCII searches.
     #' @param capabilities A \code{character} vector with the names of the
     #'   extensions to enable.
     #' @param retries Number of attempts to connect and execute the command.

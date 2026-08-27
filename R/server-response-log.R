@@ -23,12 +23,17 @@ make_debug_function <- function(dbg) {
       return(invisible(NULL))
     }
     txt <- rawToChar(msg[msg != as.raw(0)])
+    if (type == 0L && grepl("^Connected to ", txt)) {
+      # a (re)connection: per-connection server state (ENABLE, selection) is lost
+      dbg$epoch <- (if (is.null(dbg$epoch)) 0L else dbg$epoch) + 1L
+    }
     if (type == 2L) {          # header out: a new command is being sent
       dbg$lines <- character(0)
     } else if (type == 1L) {   # header in: server response line(s)
       new <- strsplit(txt, "\r?\n")[[1]]
       dbg$lines <- c(dbg$lines, new[nzchar(new)])
       .mR_last_response$lines <- dbg$lines
+      dbg$last_in <- Sys.time()
     }
     if (isTRUE(dbg$verbose)) {
       prefix <- switch(as.character(type), "0" = "* ", "1" = "< ", "2" = "> ",

@@ -30,6 +30,11 @@ search_younger_than_int <- function(self, seconds, negate, use_uid, flag, esearc
   check_args(seconds = seconds, negate = negate, use_uid = use_uid, flag = flag,
              esearch = esearch, retries = retries)
 
+  # WITHIN is an optional extension (RFC 5032) -- Gmail, for instance, does
+  # not implement it and answers "BAD Could not parse command"
+  assert_capability(self, "WITHIN", command = "search_younger_than",
+                    rfc = "RFC 5032", retries = retries)
+
   # forcing retries as an integer
   retries <- as.integer(retries)
 

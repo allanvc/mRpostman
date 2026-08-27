@@ -74,6 +74,19 @@ append_int <- function(self, message, folder, flags, mute, retries) {
   # isolating the handle
   h <- self$con_handle
 
+  # libcurl re-sends a request when the reused connection turns out to be
+  # dead; for APPEND that would store the message twice if the server had
+  # already accepted the first copy before closing the connection. Send a
+  # NOOP first (which may be retried harmlessly) whenever the connection may
+  # be stale: after the selected folder was deleted/closed, or after a minute
+  # without server activity.
+  idle <- if (is.null(self$con_debug) || is.null(self$con_debug$last_in)) Inf else
+    as.numeric(difftime(Sys.time(), self$con_debug$last_in, units = "secs"))
+  if (isTRUE(self$con_stale) || idle > 60) {
+    tryCatch(noop_int(self, retries = 0), error = function(e) NULL)
+    self$con_stale <- FALSE
+  }
+
   # always restore the handle out of upload mode, even on error
   on.exit(
     tryCatch(curl::handle_setopt(h, upload = FALSE), error = function(e) NULL),

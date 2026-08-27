@@ -176,6 +176,8 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   con_debug <- new.env(parent = emptyenv())
   con_debug$verbose <- isTRUE(verbose)
   con_debug$lines <- character(0)
+  con_debug$epoch <- 0L
+  con_debug$last_in <- NULL
   curl::handle_setopt(h, verbose = TRUE,
                       debugfunction = make_debug_function(con_debug))
 

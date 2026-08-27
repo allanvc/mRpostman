@@ -25,3 +25,10 @@ test_that("qp_decode_raw() and decode_part_raw() decode transfer encodings", {
   expect_identical(mRpostman:::decode_part_raw("abc", "7bit"), charToRaw("abc"))
   expect_identical(mRpostman:::decode_part_raw("abc", NA), charToRaw("abc"))
 })
+
+test_that("size and time criteria never use scientific notation", {
+  expect_identical(larger_than(5e6), "(LARGER 5000000)")
+  expect_identical(smaller_than(1e5, negate = TRUE), "(NOT (SMALLER 100000))")
+  expect_identical(younger_than(1e6), "(YOUNGER 1000000)")
+  expect_identical(older_than(2e7), "(OLDER 20000000)")
+})

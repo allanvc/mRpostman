@@ -56,6 +56,8 @@ define_searchrequest_within <- function(operation, seconds, negate, use_uid, fla
     negate_string = NULL
   }
 
+  seconds <- format(seconds, scientific = FALSE, trim = TRUE)
+
   customrequest <-  paste0(use_uid_string, "SEARCH ", esearch_string, flag_string,
                            negate_string, operation, ' ', seconds)
 

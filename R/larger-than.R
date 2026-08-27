@@ -17,6 +17,9 @@ larger_than <- function(size, negate = FALSE) {
 
   check_args(size, negate)
 
+  # never let R print large numbers in scientific notation (5e+06)
+  size <- format(size, scientific = FALSE, trim = TRUE)
+
   # setting part of the search string
 
   if (!isTRUE(negate)) {

@@ -78,6 +78,12 @@ delete_folder_int <- function(self, name, mute, retries) {
     }
   }
 
+  # deleting the selected folder leaves the session with no folder selected
+  # (and some servers drop the connection): forget the selection
+  if (!is.na(self$con_params$folder) && identical(self$con_params$folder, name)) {
+    self$con_params$folder <- NA
+  }
+  self$con_stale <- TRUE
   invisible(TRUE)
 
 }

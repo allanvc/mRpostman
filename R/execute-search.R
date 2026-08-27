@@ -55,6 +55,16 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
                     ") and the search term cannot be represented in any ",
                     "character set it accepts."), call. = FALSE)
       }
+    } else if (!is.na(server_reply) && grepl("Could not parse|parse error", server_reply, ignore.case = TRUE) &&
+               any(as.integer(charToRaw(customrequest)) > 127L) &&
+               "UTF8=ACCEPT" %in% toupper(get_server_capabilities(self, retries = retries))) {
+      # the connection was replaced since UTF8=ACCEPT was enabled (Gmail drops
+      # the connection after any rejected command): enable it again and retry
+      self$utf8_epoch <- NULL
+      ensure_utf8_enabled(self, toupper(get_server_capabilities(self, retries = retries)), retries)
+      curl::handle_setopt(handle = handle, customrequest = customrequest)
+      response <- tryCatch(curl::curl_fetch_memory(url, handle = handle),
+                           error = function(e) response_error_handling(conditionMessage(e)))
     } else {
       response <- response_error_handling(conditionMessage(response))
     }

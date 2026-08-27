@@ -27,7 +27,8 @@
 #' @param handle A curl handle object.
 #' @noRd
 define_searchrequest_string <- function(expr, where, negate, use_uid, flag,
-                                        esearch, handle) {
+                                        esearch, handle,
+                                        charset_string = NULL) {
 
   # esearch
   if (isTRUE(esearch)) {
@@ -65,9 +66,13 @@ define_searchrequest_string <- function(expr, where, negate, use_uid, flag,
   # "CHARSET UTF-8" and send the term as UTF-8 bytes, so servers such as Gmail
   # can match accented/non-Latin text. Pure-ASCII terms are left unchanged.
   expr <- enc2utf8(expr)
-  if (any(as.integer(charToRaw(expr)) > 127L)) {
-    charset_string = "CHARSET UTF-8 "
-  } else {
+  if (is.null(charset_string)) {
+    if (any(as.integer(charToRaw(expr)) > 127L)) {
+      charset_string = "CHARSET UTF-8 "
+    } else {
+      charset_string = NULL
+    }
+  } else if (!nzchar(charset_string)) {
     charset_string = NULL
   }
   expr_string = paste0('"', expr, '"')

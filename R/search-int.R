@@ -50,10 +50,15 @@ search_int <- function(self, request, negate, use_uid, esearch, retries,
   h <- self$con_handle
 
   #define customrequest to this handle
+  # extension search keys and the non-ASCII charset policy depend on the server
+  assert_search_extensions(self, request, retries = retries)
+  charset_string <- search_charset_policy(self, request, retries = retries)
+
   define_out <- define_searchrequest_custom(request, negate = negate,
                                             use_uid = use_uid,
                                             esearch = esearch, handle = h,
-                                            save = save)
+                                            save = save,
+                                            charset_string = charset_string)
 
   h <- define_out$handle
   customrequest <- define_out$customrequest
