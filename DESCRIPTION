@@ -1,6 +1,6 @@
 Package: mRpostman
 Type: Package
-Title: An IMAP4rev2 and IMAP4rev1 Client for R
+Title: An IMAP4rev2 Client for R
 Version: 2.2.0
 Date: 2026-08-27
 Authors@R: c(
