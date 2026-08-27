@@ -29,7 +29,7 @@ status_int <- function(self, name, items, retries) {
   items <- toupper(items)
 
   valid_items <- c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN",
-                   "SIZE", "HIGHESTMODSEQ")
+                   "SIZE", "HIGHESTMODSEQ", "MAILBOXID", "APPENDLIMIT")
 
   assertthat::assert_that(
     all(items %in% valid_items),
@@ -46,6 +46,14 @@ status_int <- function(self, name, items, retries) {
   if ("HIGHESTMODSEQ" %in% items) {
     assert_capability(self, "CONDSTORE", command = 'status(items = "HIGHESTMODSEQ")',
                       rfc = "RFC 7162", retries = retries)
+  }
+  if ("MAILBOXID" %in% items) {
+    assert_capability(self, "OBJECTID", command = 'status(items = "MAILBOXID")',
+                      rfc = "RFC 8474", retries = retries)
+  }
+  if ("APPENDLIMIT" %in% items) {
+    assert_capability(self, "APPENDLIMIT", command = 'status(items = "APPENDLIMIT")',
+                      rfc = "RFC 7889", prefix = TRUE, retries = retries)
   } # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
 

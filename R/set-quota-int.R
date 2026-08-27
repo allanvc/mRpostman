@@ -1,6 +1,6 @@
 #' Set the resource limits of a quota root (INTERNAL HELPER)
 #'
-#' Issues \code{SETQUOTA <root> (<resource> <limit> ...)} (RFC 2087). Most
+#' Issues \code{SETQUOTA <root> (<resource> <limit> ...)} (RFC 9208). Most
 #' servers restrict this command to administrators; the server's answer is
 #' returned as parsed by \code{parse_quota()}.
 #' @param quota_root A string with the quota root name.
@@ -27,7 +27,7 @@ set_quota_int <- function(self, quota_root, storage, message, retries) {
 
   check_args(retries = retries)
 
-  assert_capability(self, "QUOTA", command = "set_quota", rfc = "RFC 2087",
+  assert_capability(self, "QUOTA", command = "set_quota", rfc = "RFC 9208",
                     retries = retries)
 
   limits <- c(if (!is.null(storage)) paste("STORAGE", format(storage, scientific = FALSE)),

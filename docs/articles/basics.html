@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -948,7 +948,7 @@
 <div class="section level3">
 <h3 id="access-control-lists-and-quota-limits">9.6) Access control lists and quota limits<a class="anchor" aria-label="anchor" href="#access-control-lists-and-quota-limits"></a>
 </h3>
-<p><code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, and <code>my_rights()</code> implement the <code>ACL</code> extension (RFC 4314); <code>set_quota()</code> implements <code>SETQUOTA</code> (RFC 2087), which most servers restrict to administrators. <code>enable()</code> (RFC 5161) enables extensions that require it.</p>
+<p><code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, and <code>my_rights()</code> implement the <code>ACL</code> extension (RFC 4314); <code>set_quota()</code> implements <code>SETQUOTA</code> (RFC 9208), which most servers restrict to administrators. <code>enable()</code> (RFC 5161) enables extensions that require it.</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">my_rights</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">set_acl</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Shared"</span>, identifier <span class="op">=</span> <span class="st">"user=bob"</span>, rights <span class="op">=</span> <span class="st">"lrs"</span><span class="op">)</span></span>
@@ -976,6 +976,7 @@
 <span><span class="va">pdf</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_binary</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">3</span>, part <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>              <span class="co"># bytes, already decoded by the server</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">append_catenate</span><span class="op">(</span>parts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Subject: Fwd\r\n\r\n"</span>, <span class="fu"><a href="../reference/imap_url.html">imap_url</a></span><span class="op">(</span><span class="st">"INBOX"</span>, uid <span class="op">=</span> <span class="fl">12</span>, section <span class="op">=</span> <span class="st">"TEXT"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>                    folder <span class="op">=</span> <span class="st">"Archive"</span><span class="op">)</span></span></code></pre></div>
+<p>Version 2.2.0 closes the sweep of the IANA capability registry. On servers that advertise the corresponding capability, <code>sort(by = "DISPLAYFROM")</code> (RFC 5957), <code>thread(algorithm = "REFS")</code>, and <code>esearch_partial()</code> (paged searching, RFC 9394 / RFC 5267) become available, while non-synchronizing literals (RFC 7888) and the <code>APPENDLIMIT</code> guard (RFC 7889) are applied automatically. The remaining registered capabilities are covered by experimental methods – <code>esort_partial()</code>, <code>replace_msg()</code>, <code>fetch_objectid()</code>, <code>uid_batches()</code>, <code>esearch_multi()</code>, <code>unauthenticate()</code>, <code>language()</code>, <code>comparator()</code>, <code>genurlauth()</code>, <code>urlfetch()</code>, <code>fetch_convert()</code>, <code>fetch_annotation()</code>, <code>store_annotation()</code>, and the <code><a href="../reference/fuzzy.html">fuzzy()</a></code> and <code><a href="../reference/filter_stored.html">filter_stored()</a></code> search criteria – which follow the RFC grammars but could not be exercised against a live server, since no widely deployed server advertises those capabilities.</p>
 <p>The second connection needs the credentials again: they are kept in a private field of the connection object (never printed, not part of <code>con_params</code>) and cleared by <code>disconnect()</code>. For TLS, the URL must be <code>imaps://</code> (STARTTLS is not available on the raw socket).</p>
 </div>
 <div class="section level2">

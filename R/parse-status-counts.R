@@ -18,19 +18,26 @@ parse_status_counts <- function(resp_char) {
   # accidentally match the "STATUS" inside the "LIST-STATUS" capability token,
   # which is present in the buffer after a reconnection and would otherwise
   # capture the "(Success)" of the "... authenticated (Success)" line instead.
-  grp <- stringr::str_match(resp_char, "\\*[[:space:]]*STATUS[^\\(]*\\(([^\\)]*)\\)")[, 2]
+  grp <- stringr::str_match(resp_char, "\\*[[:space:]]*STATUS[^\\(]*\\(((?:[^()]|\\([^()]*\\))*)\\)")[, 2]
 
   if (is.na(grp)) {
     return(numeric(0))
   }
 
-  pairs <- stringr::str_match_all(grp, "([A-Za-z]+)\\s+(\\d+)")[[1]]
+  # values are numbers, except MAILBOXID (OBJECTID, RFC 8474), whose value is
+  # an object identifier in parentheses
+  pairs <- stringr::str_match_all(grp, "([A-Za-z]+)\\s+(\\d+|\\(([^)]*)\\))")[[1]]
 
   if (nrow(pairs) == 0) {
     return(numeric(0))
   }
 
-  out <- as.numeric(pairs[, 3])
+  vals <- ifelse(is.na(pairs[, 4]), pairs[, 3], pairs[, 4])
+  out <- suppressWarnings(as.numeric(vals))
+  if (anyNA(out)) {
+    # a non-numeric item is present: return everything as character
+    out <- vals
+  }
   names(out) <- toupper(pairs[, 2])
 
   # if a keyword appears more than once, keep the last occurrence

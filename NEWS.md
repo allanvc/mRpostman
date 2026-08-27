@@ -1,3 +1,27 @@
+## mRpostman 2.2.0 (2026-08-27 feature update)
+
+### New features
+
+A sweep of the IANA IMAP capability registry: every registered capability the package did not yet cover is now implemented.
+
+Exercised against a live server (Dovecot sandbox):
+
+- **SORT=DISPLAY** (RFC 5957): `sort()` and `esort_partial()` accept the `DISPLAYFROM` and `DISPLAYTO` keys (sorting by the display name of the address).
+- **THREAD=REFS**: `thread(algorithm = "REFS")` (Dovecot's threading by references only).
+- **PARTIAL** (RFC 9394) / **CONTEXT=SEARCH** (RFC 5267): new `ImapCon$esearch_partial()` returns only one slice `m:n` of the result set (negative positions count from the most recent match).
+- **LITERAL+ / LITERAL-** (RFC 7888): the raw socket layer now sends non-synchronizing `{n+}` literals in a single write when the server allows it, sparing one round trip per literal in `append_msgs()`, `append_catenate()`, and `replace_msg()`.
+- **APPENDLIMIT** (RFC 7889): `append_msg()`, `append_msgs()`, and `replace_msg()` fail before uploading a message larger than the server's advertised limit, and `status(items = "APPENDLIMIT")` queries the per-mailbox limit.
+
+Implemented from the RFC grammars and marked **experimental** in the documentation, since no server available for validation advertises these capabilities (they are rare, brand new, or were never adopted):
+
+- `esort_partial()` (**CONTEXT=SORT**, RFC 5267), `replace_msg()` (**REPLACE**, RFC 8508), `fetch_objectid()` and `status(items = "MAILBOXID")` (**OBJECTID**, RFC 8474), `uid_batches()` (**UIDBATCHES**, RFC 10022), `esearch_multi()` (**MULTISEARCH**, RFC 7377), `unauthenticate()` (RFC 8437), `language()` and `comparator()` (**LANGUAGE**/**I18NLEVEL=2**, RFC 5255), `genurlauth()` and `urlfetch()` (**URLAUTH**, RFC 4467), `fetch_convert()` (**CONVERT**, RFC 5259), `fetch_annotation()` and `store_annotation()` (**ANNOTATE-EXPERIMENT-1**, RFC 5257), and the search criterion helpers `fuzzy()` (**SEARCH=FUZZY**, RFC 6203) and `filter_stored()` (**FILTERS**, RFC 5466).
+
+### Minor improvements
+
+- The package now presents itself as an IMAP4rev2 and IMAP4rev1 client: version 2.1.0 had already completed everything RFC 9051 consolidates into the core (the last piece being BINARY), and 2.2.0 adds the remaining registered extensions.
+- **UIDONLY** (RFC 9586) tolerance: `UIDFETCH` responses are understood by the fetch parsers after `enable("UIDONLY")`.
+- QUOTA references updated from RFC 2087 to RFC 9208, which obsoleted it (the commands are unchanged).
+
 ## mRpostman 2.1.0 (2026-08-27 feature update)
 
 ### New features

@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>An IMAP Client for R • mRpostman</title>
+<title>An IMAP4rev2 and IMAP4rev1 Client for R • mRpostman</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="48x48" href="favicon-48x48.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -16,8 +16,8 @@
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="An IMAP Client for R">
-<meta property="og:description" content="A session-based IMAP client that implements the full functionality of the IMAP4rev1 protocol (RFC 3501), allowing virtually all e-mail operations to be performed from within R, paving the way for e-mail data analysis.">
+<script src="pkgdown.js"></script><meta property="og:title" content="An IMAP4rev2 and IMAP4rev1 Client for R">
+<meta property="og:description" content="A session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing virtually all e-mail operations to be performed from within R, paving the way for e-mail data analysis.">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -97,7 +97,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><code>mRpostman</code> is a session-based IMAP client that implements the full functionality of the IMAP4rev1 protocol (RFC 3501), allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, <code>mRpostman</code> makes extensive use of the {curl} package and the libcurl C library.</p>
+<p><code>mRpostman</code> is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, <code>mRpostman</code> makes extensive use of the {curl} package and the libcurl C library.</p>
 <p><code>mRpostman</code>’s official website: <a href="https://allanvc.github.io/mRpostman/" class="external-link uri">https://allanvc.github.io/mRpostman/</a></p>
 <p>Cite <code>mRpostman</code>: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. <a href="https://doi.org/10.5334/jors.480" class="external-link">http</a>. Refer to <code>citation("mRpostman")</code>.</p>
 <p><strong>IMPORTANT</strong>:</p>
@@ -199,7 +199,7 @@
 <div class="section level2">
 <h2 id="supported-imap-commands-and-capabilities">Supported IMAP commands and capabilities<a class="anchor" aria-label="anchor" href="#supported-imap-commands-and-capabilities"></a>
 </h2>
-<p>The IMAP protocol has a <strong>mandatory core</strong> — the IMAP4rev1 commands defined in <a href="https://datatracker.ietf.org/doc/html/rfc3501" class="external-link">RFC 3501</a>, which every compliant server must implement — plus a set of <strong>optional extensions</strong>, each advertised by the server in its <code>CAPABILITY</code> response. <code>mRpostman</code> covers both. For the extension-based methods, <code>mRpostman</code> checks the server’s advertised capabilities and, if the required one is missing, raises an informative error instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. You can inspect what your server supports with <code>list_server_capabilities()</code>.</p>
+<p>The IMAP protocol has a <strong>mandatory core</strong> — the IMAP4rev1 commands defined in <a href="https://datatracker.ietf.org/doc/html/rfc3501" class="external-link">RFC 3501</a>, revised and consolidated by IMAP4rev2 in <a href="https://datatracker.ietf.org/doc/html/rfc9051" class="external-link">RFC 9051</a>, which every compliant server must implement — plus a set of <strong>optional extensions</strong>, each advertised by the server in its <code>CAPABILITY</code> response. <code>mRpostman</code> covers both. For the extension-based methods, <code>mRpostman</code> checks the server’s advertised capabilities and, if the required one is missing, raises an informative error instead of letting the server reply with a cryptic <code>BAD Unknown command</code>. You can inspect what your server supports with <code>list_server_capabilities()</code>.</p>
 <div class="section level3">
 <h3 id="core-commands-rfc-3501--always-available">Core commands (RFC 3501 — always available)<a class="anchor" aria-label="anchor" href="#core-commands-rfc-3501--always-available"></a>
 </h3>
@@ -315,10 +315,10 @@
 </h3>
 <table class="table">
 <colgroup>
-<col width="31%">
-<col width="47%">
-<col width="10%">
+<col width="26%">
+<col width="40%">
 <col width="11%">
+<col width="20%">
 </colgroup>
 <thead><tr class="header">
 <th>IMAP command</th>
@@ -338,7 +338,7 @@
 <td><code>THREAD</code></td>
 <td><code>thread()</code></td>
 <td>
-<code>THREAD=REFERENCES</code> / <code>THREAD=ORDEREDSUBJECT</code>
+<code>THREAD=REFERENCES</code> / <code>THREAD=ORDEREDSUBJECT</code> / <code>THREAD=REFS</code>
 </td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc5256" class="external-link">5256</a></td>
 </tr>
@@ -350,7 +350,7 @@
 <code>get_quota()</code> / <code>get_quota_root()</code>
 </td>
 <td><code>QUOTA</code></td>
-<td><a href="https://datatracker.ietf.org/doc/html/rfc2087" class="external-link">2087</a></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc9208" class="external-link">9208</a></td>
 </tr>
 <tr class="even">
 <td><code>NAMESPACE</code></td>
@@ -411,7 +411,7 @@
 <td><code>SETQUOTA</code></td>
 <td><code>set_quota()</code></td>
 <td><code>QUOTA</code></td>
-<td><a href="https://datatracker.ietf.org/doc/html/rfc2087" class="external-link">2087</a></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc9208" class="external-link">9208</a></td>
 </tr>
 <tr class="odd">
 <td>
@@ -566,9 +566,137 @@
 <td><code>AUTH=OAUTHBEARER</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc7628" class="external-link">7628</a></td>
 </tr>
+<tr class="odd">
+<td>
+<code>SORT</code> (display keys)</td>
+<td><code>sort(by = "DISPLAYFROM"/"DISPLAYTO")</code></td>
+<td><code>SORT=DISPLAY</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5957" class="external-link">5957</a></td>
+</tr>
+<tr class="even">
+<td><code>SEARCH RETURN (PARTIAL m:n)</code></td>
+<td><code>esearch_partial()</code></td>
+<td>
+<code>PARTIAL</code> / <code>CONTEXT=SEARCH</code>
+</td>
+<td>
+<a href="https://datatracker.ietf.org/doc/html/rfc9394" class="external-link">9394</a> / <a href="https://datatracker.ietf.org/doc/html/rfc5267" class="external-link">5267</a>
+</td>
+</tr>
+<tr class="odd">
+<td><code>SORT RETURN (PARTIAL m:n)</code></td>
+<td>
+<code>esort_partial()</code> *</td>
+<td><code>CONTEXT=SORT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5267" class="external-link">5267</a></td>
+</tr>
+<tr class="even">
+<td><code>REPLACE</code></td>
+<td>
+<code>replace_msg()</code> *</td>
+<td><code>REPLACE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8508" class="external-link">8508</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>FETCH (EMAILID THREADID)</code>, <code>STATUS (MAILBOXID)</code>
+</td>
+<td>
+<code>fetch_objectid()</code> *, <code>status(items = "MAILBOXID")</code> *</td>
+<td><code>OBJECTID</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8474" class="external-link">8474</a></td>
+</tr>
+<tr class="even">
+<td><code>UIDBATCHES</code></td>
+<td>
+<code>uid_batches()</code> *</td>
+<td><code>UIDBATCHES</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc10022" class="external-link">10022</a></td>
+</tr>
+<tr class="odd">
+<td><code>ESEARCH IN (...)</code></td>
+<td>
+<code>esearch_multi()</code> *</td>
+<td><code>MULTISEARCH</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7377" class="external-link">7377</a></td>
+</tr>
+<tr class="even">
+<td><code>UNAUTHENTICATE</code></td>
+<td>
+<code>unauthenticate()</code> *</td>
+<td><code>UNAUTHENTICATE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8437" class="external-link">8437</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>LANGUAGE</code> / <code>COMPARATOR</code>
+</td>
+<td>
+<code>language()</code> * / <code>comparator()</code> *</td>
+<td>
+<code>LANGUAGE</code> / <code>I18NLEVEL=2</code>
+</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5255" class="external-link">5255</a></td>
+</tr>
+<tr class="even">
+<td>
+<code>GENURLAUTH</code> / <code>URLFETCH</code>
+</td>
+<td>
+<code>genurlauth()</code> * / <code>urlfetch()</code> *</td>
+<td><code>URLAUTH</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc4467" class="external-link">4467</a></td>
+</tr>
+<tr class="odd">
+<td><code>CONVERT</code></td>
+<td>
+<code>fetch_convert()</code> *</td>
+<td><code>CONVERT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5259" class="external-link">5259</a></td>
+</tr>
+<tr class="even">
+<td>
+<code>FETCH ANNOTATION</code> / <code>STORE ANNOTATION</code>
+</td>
+<td>
+<code>fetch_annotation()</code> * / <code>store_annotation()</code> *</td>
+<td><code>ANNOTATE-EXPERIMENT-1</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5257" class="external-link">5257</a></td>
+</tr>
+<tr class="odd">
+<td><code>SEARCH ... FUZZY</code></td>
+<td>
+<code><a href="reference/fuzzy.html">fuzzy()</a></code> criterion modifier *</td>
+<td><code>SEARCH=FUZZY</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc6203" class="external-link">6203</a></td>
+</tr>
+<tr class="even">
+<td><code>SEARCH ... FILTER</code></td>
+<td>
+<code><a href="reference/filter_stored.html">filter_stored()</a></code> criterion *</td>
+<td><code>FILTERS</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc5466" class="external-link">5466</a></td>
+</tr>
+<tr class="odd">
+<td>
+<code>APPEND</code> size guard, <code>STATUS (APPENDLIMIT)</code>
+</td>
+<td>automatic in <code>append_msg()</code>/<code>append_msgs()</code>; <code>status(items = "APPENDLIMIT")</code>
+</td>
+<td><code>APPENDLIMIT</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7889" class="external-link">7889</a></td>
+</tr>
+<tr class="even">
+<td>non-synchronizing literals</td>
+<td>automatic on the raw-socket methods</td>
+<td>
+<code>LITERAL+</code> / <code>LITERAL-</code>
+</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7888" class="external-link">7888</a></td>
+</tr>
 </tbody>
 </table>
-<p>Availability varies by provider. Gmail, for instance, supports every extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Every registered IMAP4rev1 extension in common use is now implemented; the raw-socket methods (<code>idle()</code>, <code>notify()</code>, <code>append_msgs()</code>, <code>append_catenate()</code>, <code>fetch_binary()</code>) need an <code>imaps://</code> URL for TLS, since STARTTLS is not available on that connection.</p>
+<p>Every capability registered with IANA is covered. The methods marked with an asterisk (*) are <strong>experimental</strong>: they follow the RFC grammars, but no widely deployed server advertises those capabilities (they are rare, brand new, or were never adopted), so they could not be exercised against a live server. Availability of the others varies by provider: Gmail, for instance, supports every non-experimental extension above <strong>except <code>SORT</code> and <code>THREAD</code></strong>, which it has never implemented; to exercise <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>thread()</code> you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Announcement-only capabilities (<code>AUTH=</code>, <code>LOGINDISABLED</code>, <code>RIGHTS=</code>, <code>QUOTA=</code>, <code>APPENDLIMIT=n</code>, <code>MESSAGELIMIT=</code>/<code>SAVELIMIT=</code>, <code>IMAPSIEVE=</code>, <code>JMAPACCESS</code>, <code>INPROGRESS</code>, <code>CHILDREN</code>, <code>I18NLEVEL=1</code>, referrals) require no dedicated command and are honored where they matter (folder listings, appends, error reporting). <code>UIDONLY</code> (RFC 9586) responses (<code>UIDFETCH</code>) are understood after <code>enable("UIDONLY")</code>. The raw-socket methods (<code>idle()</code>, <code>notify()</code>, <code>append_msgs()</code>, <code>append_catenate()</code>, <code>fetch_binary()</code>, <code>replace_msg()</code>, <code>esearch_multi()</code>, <code>urlfetch()</code>, <code>fetch_convert()</code>) need an <code>imaps://</code> URL for TLS, since STARTTLS is not available on that connection.</p>
 </div>
 </div>
 <div class="section level2">

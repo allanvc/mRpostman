@@ -1,6 +1,6 @@
 #' Sort messages on the server (INTERNAL HELPER)
 #' @param by A character vector of sort keys (subset of "ARRIVAL", "CC", "DATE",
-#'   "FROM", "SIZE", "SUBJECT", "TO").
+#'   "FROM", "SIZE", "SUBJECT", "TO", "DISPLAYFROM", "DISPLAYTO").
 #' @param reverse A logical. If \code{TRUE}, each sort key is prefixed with
 #'   \code{REVERSE} (descending order).
 #' @param criteria A string with the search criteria to restrict the set to be
@@ -28,7 +28,8 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries,
 
   by <- toupper(by)
 
-  valid_keys <- c("ARRIVAL", "CC", "DATE", "FROM", "SIZE", "SUBJECT", "TO")
+  valid_keys <- c("ARRIVAL", "CC", "DATE", "FROM", "SIZE", "SUBJECT", "TO",
+                  "DISPLAYFROM", "DISPLAYTO")
 
   assertthat::assert_that(
     all(by %in% valid_keys),
@@ -56,6 +57,11 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries,
     # ESORT (RFC 5267): "SORT RETURN (...)" answers with an ESEARCH response
     assert_capability(self, "ESORT", command = "sort(return = ...)",
                       rfc = "RFC 5267", retries = retries)
+  }
+  if (any(c("DISPLAYFROM", "DISPLAYTO") %in% by)) {
+    # SORT=DISPLAY (RFC 5957): sort by the display name of the address
+    assert_capability(self, "SORT=DISPLAY", command = "sort (DISPLAYFROM/DISPLAYTO keys)",
+                      rfc = "RFC 5957", retries = retries)
   }
 
   # forcing retries as an integer

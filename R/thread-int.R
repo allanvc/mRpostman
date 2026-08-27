@@ -1,6 +1,7 @@
 #' Thread messages on the server (INTERNAL HELPER)
 #' @param algorithm A string with the threading algorithm, either
-#'   \code{"REFERENCES"} or \code{"ORDEREDSUBJECT"}.
+#'   \code{"REFERENCES"}, \code{"ORDEREDSUBJECT"}, or \code{"REFS"}
+#'   (Dovecot's threading by references only).
 #' @param criteria A string with the search criteria to restrict the set to be
 #'   threaded. Default is \code{"ALL"}.
 #' @param use_uid A logical. If \code{TRUE}, issues \code{UID THREAD} and returns
@@ -17,7 +18,7 @@ thread_int <- function(self, algorithm, criteria, use_uid, char_set, retries) {
 
   algorithm <- toupper(algorithm)
 
-  valid_algorithms <- c("REFERENCES", "ORDEREDSUBJECT")
+  valid_algorithms <- c("REFERENCES", "ORDEREDSUBJECT", "REFS")
 
   assertthat::assert_that(
     algorithm %in% valid_algorithms,

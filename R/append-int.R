@@ -47,6 +47,11 @@ append_int <- function(self, message, folder, flags, mute, retries) {
     any(is.character(message), is.raw(message)),
     msg='"message" must be a character string or a raw vector (a full RFC 822 message).')
 
+  # APPENDLIMIT (RFC 7889): fail before uploading a message the server caps out
+  msg_size <- if (is.raw(message)) length(message) else
+    nchar(paste(message, collapse = "\r\n"), type = "bytes")
+  assert_within_appendlimit(self, msg_size, retries)
+
   if (!is.null(folder)) {
     assertthat::assert_that(
       is.character(folder),

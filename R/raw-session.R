@@ -136,7 +136,27 @@ raw_command <- function(sess, command, literals = list(), timeout_ms = sess$time
     pieces <- substring(command, c(1L, ends + 1L), c(ends, nchar(command)))
     pieces <- pieces[c(rep(TRUE, length(ends)), nzchar(pieces[length(pieces)]))]
   }
-  raw_send(sess, paste0(tag, " ", pieces[1], "\r\n"))
+  # LITERAL+ / LITERAL- (RFC 7888): with non-synchronizing literals the whole
+  # command goes out in one write, with "{n+}" markers and no waiting for the
+  # server's "+" continuations
+  nonsync <- length(literals) > 0 && marks[1] > 0 &&
+    (("LITERAL+" %in% sess$caps) ||
+       (("LITERAL-" %in% sess$caps) &&
+          all(vapply(literals, length, integer(1)) <= 4096L)))
+  if (nonsync) {
+    plus <- function(x, mark) {
+      if (mark) sub("\\{([0-9]+)\\}$", "{\\1+}", x) else x
+    }
+    parts <- list(charToRaw(paste0(tag, " ", plus(pieces[1], TRUE), "\r\n")))
+    for (i in seq_along(literals)) {
+      tail_text <- if (i + 1L <= length(pieces)) pieces[i + 1L] else ""
+      parts <- c(parts, list(literals[[i]]),
+                 list(charToRaw(paste0(plus(tail_text, i < length(literals)), "\r\n"))))
+    }
+    raw_send(sess, do.call(c, parts))
+  } else {
+    raw_send(sess, paste0(tag, " ", pieces[1], "\r\n"))
+  }
   lines <- character(0)
   received <- list()   # literals the server sent, keyed by the index of their line
   lit_i <- 0L
@@ -219,7 +239,8 @@ raw_idle_events <- function(lines) {
   empty <- data.frame(type = character(0), id = integer(0), detail = character(0),
                       stringsAsFactors = FALSE)
   if (length(lines) == 0) return(empty)
-  m <- stringr::str_match(lines, "^\\*\\s+(\\d+)\\s+(EXISTS|RECENT|EXPUNGE|FETCH)\\b\\s*(.*)$")
+  # UIDFETCH is the UIDONLY (RFC 9586) form of FETCH
+  m <- stringr::str_match(lines, "^\\*\\s+(\\d+)\\s+(EXISTS|RECENT|EXPUNGE|FETCH|UIDFETCH)\\b\\s*(.*)$")
   ok <- !is.na(m[, 1])
   out <- data.frame(type = m[ok, 3], id = as.integer(m[ok, 2]), detail = m[ok, 4],
                     stringsAsFactors = FALSE)

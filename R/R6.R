@@ -415,6 +415,406 @@ ImapCon <- R6::R6Class("ImapCon",
       invisible(out)
     },
 
+    #' @description Paged search: return only one slice of the result set
+    #'   (\code{SEARCH RETURN (PARTIAL m:n)}, RFC 9394; also accepted by
+    #'   servers with the older \code{CONTEXT=SEARCH} capability, RFC 5267).
+    #'   Negative positions count backwards from the most recent result.
+    #'   Requires the server \code{PARTIAL} or \code{CONTEXT=SEARCH}
+    #'   capability.
+    #' @param range A \code{character} string \code{"m:n"} with the positions
+    #'   of the first and the last result wanted, e.g. \code{"1:100"}, or
+    #'   \code{"-1:-100"} for the hundred most recent matches.
+    #' @param criteria A string with the search criteria. Default is
+    #'   \code{"ALL"}.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs and results are presented as UIDs.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return An \code{integer} vector with the ids of the requested slice;
+    #'   the requested range is kept in the \code{"range"} attribute.
+    #' @examples
+    #' \dontrun{
+    #' # the fifty most recent matches only
+    #' con$esearch_partial(range = "-1:-50", criteria = "UNSEEN", use_uid = TRUE)
+    #' }
+    esearch_partial = function(range, criteria = "ALL", use_uid = FALSE,
+                               retries = 1) {
+      out <- esearch_partial_int(self, range, criteria, use_uid, retries)
+      return(out)
+    },
+
+    #' @description Paged sort: return only one slice of the sorted result
+    #'   set (\code{SORT RETURN (PARTIAL m:n)}, \code{CONTEXT=SORT}, RFC
+    #'   5267). Requires the server \code{SORT} and \code{CONTEXT=SORT}
+    #'   capabilities. Experimental: no server available for this package's
+    #'   validation advertises \code{CONTEXT=SORT}, so the method follows the
+    #'   RFC grammar but has not been exercised against a live server.
+    #' @param range A \code{character} string \code{"m:n"} with the positions
+    #'   of the first and the last result wanted, e.g. \code{"1:100"}.
+    #' @param by A character vector of sort keys, a subset of
+    #'   \code{"ARRIVAL"}, \code{"CC"}, \code{"DATE"}, \code{"FROM"},
+    #'   \code{"SIZE"}, \code{"SUBJECT"}, \code{"TO"}, \code{"DISPLAYFROM"},
+    #'   \code{"DISPLAYTO"}. Default is \code{"DATE"}.
+    #' @param reverse A logical. If \code{TRUE}, each sort key is applied in
+    #'   descending order. Default is \code{FALSE}.
+    #' @param criteria A string with the search criteria restricting the set
+    #'   to be sorted. Default is \code{"ALL"}.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs and results are presented as UIDs.
+    #' @param char_set A string with the charset of the search criteria.
+    #'   Default is \code{"UTF-8"}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return An \code{integer} vector with the ids of the requested slice,
+    #'   in sort order; the requested range is kept in the \code{"range"}
+    #'   attribute.
+    #' @examples
+    #' \dontrun{
+    #' con$esort_partial(range = "1:20", by = "SIZE", reverse = TRUE)
+    #' }
+    esort_partial = function(range, by = "DATE", reverse = FALSE,
+                             criteria = "ALL", use_uid = FALSE,
+                             char_set = "UTF-8", retries = 1) {
+      out <- esort_partial_int(self, range, by, reverse, criteria, use_uid,
+                               char_set, retries)
+      return(out)
+    },
+
+    #' @description Replace a message by a new version in a single command
+    #'   (IMAP \code{REPLACE}, RFC 8508), over the raw socket layer, since the
+    #'   new message is sent as a literal. The replacement is atomic: no
+    #'   moment exists in which both, or neither, of the versions are present
+    #'   (the usual APPEND + EXPUNGE dance). Typical use: updating a draft.
+    #'   Requires the server \code{REPLACE} capability. Experimental: no
+    #'   server available for this package's validation advertises
+    #'   \code{REPLACE}, so the method follows the RFC grammar but has not
+    #'   been exercised against a live server.
+    #' @param msg_id A single message id.
+    #' @param message A \code{character} string or \code{raw} vector with the
+    #'   full RFC 822 message that takes the place of message \code{msg_id}.
+    #' @param folder The folder holding the message. If \code{NULL}
+    #'   (default), the currently selected folder.
+    #' @param flags \code{NULL} (default) or a \code{character} vector of
+    #'   flags stored with the new version.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE},
+    #'   \code{msg_id} is a UID.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message. Default is \code{FALSE}.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return Invisibly, the UID assigned to the new version (\code{NA} when
+    #'   the server does not report it).
+    #' @examples
+    #' \dontrun{
+    #' con$replace_msg(msg_id = 4, message = new_draft, folder = "Drafts",
+    #'                 flags = c("Seen", "Draft"), use_uid = TRUE)
+    #' }
+    replace_msg = function(msg_id, message, folder = NULL, flags = NULL,
+                           use_uid = FALSE, mute = FALSE, compress = FALSE,
+                           retries = 1) {
+      out <- replace_msg_int(self, private$auth, msg_id, message, folder,
+                             flags, use_uid, mute, compress, retries)
+      invisible(out)
+    },
+
+    #' @description Fetch the unique, immutable object identifiers of
+    #'   messages (\code{EMAILID} and \code{THREADID}, OBJECTID, RFC 8474).
+    #'   \code{EMAILID} survives moves and copies (unlike UIDs), and
+    #'   \code{THREADID} names the conversation the server files the message
+    #'   under. Requires the server \code{OBJECTID} capability. Experimental:
+    #'   no server available for this package's validation advertises
+    #'   \code{OBJECTID}, so the method follows the RFC grammar but has not
+    #'   been exercised against a live server.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with the columns \code{id},
+    #'   \code{emailid}, and \code{threadid} (\code{NA} when the server has
+    #'   no thread for the message).
+    #' @examples
+    #' \dontrun{
+    #' con$fetch_objectid(msg_id = 1:5)
+    #' }
+    fetch_objectid = function(msg_id, use_uid = FALSE, retries = 1) {
+      out <- fetch_objectid_int(self, msg_id, use_uid, retries)
+      return(out)
+    },
+
+    #' @description Partition the UIDs of the selected folder into batches of
+    #'   a given size (IMAP \code{UIDBATCHES}, RFC 10022), from the most
+    #'   recent messages to the oldest, so that a large mailbox can be
+    #'   processed in fixed-size pages. Requires the server \code{UIDBATCHES}
+    #'   capability. Experimental: no server available for this package's
+    #'   validation advertises \code{UIDBATCHES}, so the method follows the
+    #'   RFC grammar but has not been exercised against a live server.
+    #' @param batch_size A single positive number: how many messages each
+    #'   batch should contain.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with the columns \code{from} and
+    #'   \code{to}: the first (highest) and last (lowest) UID of each batch,
+    #'   in server order (most recent batch first).
+    #' @examples
+    #' \dontrun{
+    #' batches <- con$uid_batches(batch_size = 500)
+    #' }
+    uid_batches = function(batch_size, retries = 1) {
+      out <- uid_batches_int(self, batch_size, retries)
+      return(out)
+    },
+
+    #' @description Search several mailboxes with one command (IMAP
+    #'   \code{ESEARCH IN}, MULTISEARCH, RFC 7377), over the raw socket
+    #'   layer, since the reply carries one untagged response per matching
+    #'   mailbox. Requires the server \code{MULTISEARCH} capability.
+    #'   Experimental: no server available for this package's validation
+    #'   advertises \code{MULTISEARCH}, so the method follows the RFC grammar
+    #'   but has not been exercised against a live server.
+    #' @param mailboxes \code{"personal"} (every folder of the account,
+    #'   the default), \code{"subscribed"}, \code{"inboxes"},
+    #'   \code{"selected"}, or a \code{character} vector of folder names.
+    #' @param criteria A string with the search criteria. Default is
+    #'   \code{"ALL"}.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per matching message:
+    #'   \code{mailbox}, \code{uidvalidity}, and \code{uid}.
+    #' @examples
+    #' \dontrun{
+    #' con$esearch_multi(mailboxes = "personal", criteria = "UNSEEN")
+    #' }
+    esearch_multi = function(mailboxes = "personal", criteria = "ALL",
+                             compress = FALSE, retries = 1) {
+      out <- esearch_multi_int(self, private$auth, mailboxes, criteria,
+                               compress, retries)
+      return(out)
+    },
+
+    #' @description Return the connection to the not-authenticated state
+    #'   (IMAP \code{UNAUTHENTICATE}, RFC 8437). Since libcurl's request
+    #'   model has no use for an unauthenticated connection, the method then
+    #'   opens a fresh connection (authenticating again), so the object
+    #'   remains usable; the practical effect is a clean session: no selected
+    #'   folder, no enabled extensions. Requires the server
+    #'   \code{UNAUTHENTICATE} capability. Experimental: no server available
+    #'   for this package's validation advertises \code{UNAUTHENTICATE}, so
+    #'   the method follows the RFC grammar but has not been exercised
+    #'   against a live server.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return Invisibly, \code{TRUE}.
+    #' @examples
+    #' \dontrun{
+    #' con$unauthenticate()
+    #' }
+    unauthenticate = function(retries = 1) {
+      out <- unauthenticate_int(self, retries)
+      invisible(out)
+    },
+
+    #' @description List or choose the language of the server's
+    #'   human-readable responses (IMAP \code{LANGUAGE}, RFC 5255). Requires
+    #'   the server \code{LANGUAGE} capability. Experimental: no server
+    #'   available for this package's validation advertises \code{LANGUAGE},
+    #'   so the method follows the RFC grammar but has not been exercised
+    #'   against a live server.
+    #' @param language \code{NULL} (default) to list the languages the
+    #'   server supports, or a \code{character} vector of RFC 4646 language
+    #'   tags in order of preference (e.g. \code{c("pt-BR", "en")}).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{character} vector: the supported languages (when
+    #'   listing) or the language the server switched to.
+    #' @examples
+    #' \dontrun{
+    #' con$language()
+    #' con$language("pt-BR")
+    #' }
+    language = function(language = NULL, retries = 1) {
+      out <- language_int(self, language, retries)
+      return(out)
+    },
+
+    #' @description List or choose the comparator that collates search and
+    #'   sort results (IMAP \code{COMPARATOR}, RFC 5255). Requires the server
+    #'   \code{I18NLEVEL=2} capability. Experimental: no server available for
+    #'   this package's validation advertises \code{I18NLEVEL=2}, so the
+    #'   method follows the RFC grammar but has not been exercised against a
+    #'   live server.
+    #' @param order \code{NULL} (default) to ask which comparator is active,
+    #'   or a \code{character} vector of comparator names in order of
+    #'   preference (e.g. \code{"i;basic"}).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{character} string with the comparator in use.
+    #' @examples
+    #' \dontrun{
+    #' con$comparator()
+    #' }
+    comparator = function(order = NULL, retries = 1) {
+      out <- comparator_int(self, order, retries)
+      return(out)
+    },
+
+    #' @description Generate an authorized IMAP URL that grants access to a
+    #'   message, or a part of it, without sharing credentials (IMAP
+    #'   \code{GENURLAUTH}, URLAUTH, RFC 4467), e.g. for forward-without-
+    #'   download submission (BURL). Requires the server \code{URLAUTH}
+    #'   capability. Experimental: no server available for this package's
+    #'   validation advertises \code{URLAUTH}, so the method follows the RFC
+    #'   grammar but has not been exercised against a live server.
+    #' @param url An \code{\link{imap_url}()} object or an IMAP URL string
+    #'   naming the message (or message part).
+    #' @param access Who may use the URL: \code{"anonymous"} (default),
+    #'   \code{"authuser"}, \code{"submit+<user>"}, or \code{"user+<user>"}.
+    #' @param mechanism The authorization mechanism. Default is
+    #'   \code{"INTERNAL"}.
+    #' @param expire \code{NULL} (default) or an RFC 3339 date-time string
+    #'   after which the URL stops working.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{character} vector with the authorized URL(s) returned
+    #'   by the server.
+    #' @examples
+    #' \dontrun{
+    #' con$genurlauth(imap_url("INBOX", uid = 20, section = "1.2"),
+    #'                access = "submit+fred")
+    #' }
+    genurlauth = function(url, access = "anonymous", mechanism = "INTERNAL",
+                          expire = NULL, retries = 1) {
+      out <- genurlauth_int(self, url, access, mechanism, expire, retries)
+      return(out)
+    },
+
+    #' @description Fetch the content named by URLAUTH-authorized IMAP URLs
+    #'   (IMAP \code{URLFETCH}, RFC 4467), over the raw socket layer, since
+    #'   the reply is a literal. Requires the server \code{URLAUTH}
+    #'   capability. Experimental: no server available for this package's
+    #'   validation advertises \code{URLAUTH}, so the method follows the RFC
+    #'   grammar but has not been exercised against a live server.
+    #' @param urls A \code{character} vector of authorized IMAP URLs, as
+    #'   returned by \code{genurlauth()}.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A named \code{list} of \code{raw} vectors, one per URL.
+    #' @examples
+    #' \dontrun{
+    #' u <- con$genurlauth(imap_url("INBOX", uid = 20), access = "anonymous")
+    #' con$urlfetch(u)
+    #' }
+    urlfetch = function(urls, compress = FALSE, retries = 1) {
+      out <- urlfetch_int(self, private$auth, urls, compress, retries)
+      return(out)
+    },
+
+    #' @description Fetch a body part converted by the server to another MIME
+    #'   type (IMAP \code{CONVERT}, RFC 5259), over the raw socket layer,
+    #'   since the reply is a binary literal. Requires the server
+    #'   \code{CONVERT} capability. Experimental: no known server deploys
+    #'   \code{CONVERT}, so the method follows the RFC grammar but has not
+    #'   been exercised against a live server.
+    #' @param msg_id A single message id.
+    #' @param mimetype A string with the target MIME type, e.g.
+    #'   \code{"application/pdf"}.
+    #' @param part A \code{character} string with the section number of the
+    #'   part to convert. Default is \code{"1"}.
+    #' @param params \code{NULL} (default) or a named \code{list}/vector of
+    #'   conversion parameters (e.g. \code{c("pix-x" = "320")}).
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE},
+    #'   \code{msg_id} is a UID.
+    #' @param folder The folder to read from. If \code{NULL} (default), the
+    #'   currently selected folder.
+    #' @param compress A \code{logical}. If \code{TRUE}, the second connection
+    #'   is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+    #'   \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{raw} vector with the converted content.
+    #' @examples
+    #' \dontrun{
+    #' pdf <- con$fetch_convert(msg_id = 2, mimetype = "application/pdf",
+    #'                          part = "3")
+    #' }
+    fetch_convert = function(msg_id, mimetype, part = "1", params = NULL,
+                             use_uid = FALSE, folder = NULL, compress = FALSE,
+                             retries = 1) {
+      out <- fetch_convert_int(self, private$auth, msg_id, mimetype, part,
+                               params, use_uid, folder, compress, retries)
+      return(out)
+    },
+
+    #' @description Fetch per-message annotations (IMAP \code{FETCH
+    #'   ANNOTATION}, ANNOTATE, RFC 5257). Requires the server
+    #'   \code{ANNOTATE-EXPERIMENT-1} capability. Experimental, as the
+    #'   capability name itself declares: the extension never left
+    #'   experimental status and no server available for this package's
+    #'   validation advertises it.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids.
+    #' @param entries A \code{character} vector of annotation entries.
+    #'   Default is \code{"/*"} (every entry); \code{"/comment"} and
+    #'   \code{"/flags/..."} are typical.
+    #' @param attributes A \code{character} vector of attributes:
+    #'   \code{"value"} (default; both private and shared),
+    #'   \code{"value.priv"}, \code{"value.shared"}, or the corresponding
+    #'   \code{"size"} forms.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per annotation:
+    #'   \code{id}, \code{entry}, \code{attribute}, and \code{value}.
+    #' @examples
+    #' \dontrun{
+    #' con$fetch_annotation(msg_id = 1)
+    #' }
+    fetch_annotation = function(msg_id, entries = "/*", attributes = "value",
+                                use_uid = FALSE, retries = 1) {
+      out <- fetch_annotation_int(self, msg_id, entries, attributes, use_uid,
+                                  retries)
+      return(out)
+    },
+
+    #' @description Store a per-message annotation (IMAP \code{STORE
+    #'   ANNOTATION}, ANNOTATE, RFC 5257). Requires the server
+    #'   \code{ANNOTATE-EXPERIMENT-1} capability. Experimental, as the
+    #'   capability name itself declares: the extension never left
+    #'   experimental status and no server available for this package's
+    #'   validation advertises it.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids.
+    #' @param entry A single annotation entry, e.g. \code{"/comment"}.
+    #' @param values A named \code{character} vector whose names are
+    #'   \code{"value.priv"} and/or \code{"value.shared"}; use \code{NA} as
+    #'   a value to delete that annotation.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return Invisibly, \code{TRUE}.
+    #' @examples
+    #' \dontrun{
+    #' con$store_annotation(msg_id = 1, entry = "/comment",
+    #'                      values = c("value.priv" = "check this one"))
+    #' }
+    store_annotation = function(msg_id, entry, values, use_uid = FALSE,
+                                mute = FALSE, retries = 1) {
+      out <- store_annotation_int(self, msg_id, entry, values, use_uid, mute,
+                                  retries)
+      invisible(out)
+    },
+
     # List elements
     # access = function() {
     #   list(
@@ -503,7 +903,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Get the quota root(s) and quota usage/limits of a mail folder
-    #'   (IMAP \code{GETQUOTAROOT}, RFC 2087). Requires the server \code{QUOTA}
+    #'   (IMAP \code{GETQUOTAROOT}, RFC 9208). Requires the server \code{QUOTA}
     #'   capability.
     #' @param name A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
@@ -522,7 +922,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Get the quota usage/limits of a quota root (IMAP
-    #'   \code{GETQUOTA}, RFC 2087). Requires the server \code{QUOTA} capability.
+    #'   \code{GETQUOTA}, RFC 9208). Requires the server \code{QUOTA} capability.
     #' @param quota_root A \code{character} string with the quota root name.
     #'   Default is \code{""} (the default root). Use \code{get_quota_root()} to
     #'   discover the root(s) of a folder.
@@ -540,7 +940,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Set the resource limits of a quota root (IMAP
-    #'   \code{SETQUOTA}, RFC 2087). Most servers restrict this command to
+    #'   \code{SETQUOTA}, RFC 9208). Most servers restrict this command to
     #'   administrators. Requires the server \code{QUOTA} capability.
     #' @param quota_root A \code{character} string with the quota root name,
     #'   as returned by \code{get_quota_root()}.

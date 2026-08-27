@@ -51,5 +51,13 @@ assert_search_extensions <- function(self, request, retries = 1) {
     assert_capability(self, "CONDSTORE", command = "search (MODSEQ criterion)",
                       rfc = "RFC 7162", retries = retries)
   }
+  if (grepl("\\bFUZZY\\b", up)) {
+    assert_capability(self, "SEARCH=FUZZY", command = "search (FUZZY modifier)",
+                      rfc = "RFC 6203", retries = retries)
+  }
+  if (grepl("\\bFILTER\\s", up)) {
+    assert_capability(self, "FILTERS", command = "search (FILTER criterion)",
+                      rfc = "RFC 5466", retries = retries)
+  }
   invisible(TRUE)
 }

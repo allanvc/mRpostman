@@ -68,6 +68,7 @@ append_msgs_int <- function(self, auth, messages, folder, flags, mute, retries,
   }
 
   payloads <- lapply(messages, as_bytes)
+  assert_within_appendlimit(self, vapply(payloads, length, integer(1)), retries)
   sess <- raw_session_start(self, auth, compress = compress,
                             timeout_ms = max(30000, self$con_params$timeout_ms))
   on.exit(raw_session_close(sess), add = TRUE)

@@ -996,7 +996,7 @@ con$sort(by = "SIZE", reverse = TRUE, return = c("COUNT", "MAX"))
 
 ### 9.6) Access control lists and quota limits
 
-`get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, and `my_rights()` implement the `ACL` extension (RFC 4314); `set_quota()` implements `SETQUOTA` (RFC 2087), which most servers restrict to administrators. `enable()` (RFC 5161) enables extensions that require it.
+`get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, and `my_rights()` implement the `ACL` extension (RFC 4314); `set_quota()` implements `SETQUOTA` (RFC 9208), which most servers restrict to administrators. `enable()` (RFC 5161) enables extensions that require it.
 
 ```{r, eval = FALSE}
 con$my_rights(name = "INBOX")
@@ -1033,6 +1033,8 @@ pdf <- con$fetch_binary(msg_id = 3, part = "2")              # bytes, already de
 con$append_catenate(parts = list("Subject: Fwd\r\n\r\n", imap_url("INBOX", uid = 12, section = "TEXT")),
                     folder = "Archive")
 ```
+
+Version 2.2.0 closes the sweep of the IANA capability registry. On servers that advertise the corresponding capability, `sort(by = "DISPLAYFROM")` (RFC 5957), `thread(algorithm = "REFS")`, and `esearch_partial()` (paged searching, RFC 9394 / RFC 5267) become available, while non-synchronizing literals (RFC 7888) and the `APPENDLIMIT` guard (RFC 7889) are applied automatically. The remaining registered capabilities are covered by experimental methods -- `esort_partial()`, `replace_msg()`, `fetch_objectid()`, `uid_batches()`, `esearch_multi()`, `unauthenticate()`, `language()`, `comparator()`, `genurlauth()`, `urlfetch()`, `fetch_convert()`, `fetch_annotation()`, `store_annotation()`, and the `fuzzy()` and `filter_stored()` search criteria -- which follow the RFC grammars but could not be exercised against a live server, since no widely deployed server advertises those capabilities.
 
 The second connection needs the credentials again: they are kept in a private field of the connection object (never printed, not part of `con_params`) and cleared by `disconnect()`. For TLS, the URL must be `imaps://` (STARTTLS is not available on the raw socket).
 

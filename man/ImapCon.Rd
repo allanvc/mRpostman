@@ -254,6 +254,125 @@ con$append_msgs(msgs, folder = "Archive", flags = "Seen")
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$esearch_partial()`
+## ------------------------------------------------
+
+\dontrun{
+# the fifty most recent matches only
+con$esearch_partial(range = "-1:-50", criteria = "UNSEEN", use_uid = TRUE)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$esort_partial()`
+## ------------------------------------------------
+
+\dontrun{
+con$esort_partial(range = "1:20", by = "SIZE", reverse = TRUE)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$replace_msg()`
+## ------------------------------------------------
+
+\dontrun{
+con$replace_msg(msg_id = 4, message = new_draft, folder = "Drafts",
+                flags = c("Seen", "Draft"), use_uid = TRUE)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_objectid()`
+## ------------------------------------------------
+
+\dontrun{
+con$fetch_objectid(msg_id = 1:5)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$uid_batches()`
+## ------------------------------------------------
+
+\dontrun{
+batches <- con$uid_batches(batch_size = 500)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$esearch_multi()`
+## ------------------------------------------------
+
+\dontrun{
+con$esearch_multi(mailboxes = "personal", criteria = "UNSEEN")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$unauthenticate()`
+## ------------------------------------------------
+
+\dontrun{
+con$unauthenticate()
+}
+
+## ------------------------------------------------
+## Method `ImapCon$language()`
+## ------------------------------------------------
+
+\dontrun{
+con$language()
+con$language("pt-BR")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$comparator()`
+## ------------------------------------------------
+
+\dontrun{
+con$comparator()
+}
+
+## ------------------------------------------------
+## Method `ImapCon$genurlauth()`
+## ------------------------------------------------
+
+\dontrun{
+con$genurlauth(imap_url("INBOX", uid = 20, section = "1.2"),
+               access = "submit+fred")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$urlfetch()`
+## ------------------------------------------------
+
+\dontrun{
+u <- con$genurlauth(imap_url("INBOX", uid = 20), access = "anonymous")
+con$urlfetch(u)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_convert()`
+## ------------------------------------------------
+
+\dontrun{
+pdf <- con$fetch_convert(msg_id = 2, mimetype = "application/pdf",
+                         part = "3")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_annotation()`
+## ------------------------------------------------
+
+\dontrun{
+con$fetch_annotation(msg_id = 1)
+}
+
+## ------------------------------------------------
+## Method `ImapCon$store_annotation()`
+## ------------------------------------------------
+
+\dontrun{
+con$store_annotation(msg_id = 1, entry = "/comment",
+                     values = c("value.priv" = "check this one"))
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$list_server_capabilities()`
 ## ------------------------------------------------
 
@@ -1039,7 +1158,9 @@ Other custom search:
 \code{\link[=AND]{AND()}},
 \code{\link[=OR]{OR()}},
 \code{\link[=before]{before()}},
+\code{\link[=filter_stored]{filter_stored()}},
 \code{\link[=flag]{flag()}},
+\code{\link[=fuzzy]{fuzzy()}},
 \code{\link[=larger_than]{larger_than()}},
 \code{\link[=modseq]{modseq()}},
 \code{\link[=older_than]{older_than()}},
@@ -1083,6 +1204,20 @@ Other attachments:
     \item \href{#method-ImapCon-fetch_binary}{\code{ImapCon$fetch_binary()}}
     \item \href{#method-ImapCon-append_catenate}{\code{ImapCon$append_catenate()}}
     \item \href{#method-ImapCon-append_msgs}{\code{ImapCon$append_msgs()}}
+    \item \href{#method-ImapCon-esearch_partial}{\code{ImapCon$esearch_partial()}}
+    \item \href{#method-ImapCon-esort_partial}{\code{ImapCon$esort_partial()}}
+    \item \href{#method-ImapCon-replace_msg}{\code{ImapCon$replace_msg()}}
+    \item \href{#method-ImapCon-fetch_objectid}{\code{ImapCon$fetch_objectid()}}
+    \item \href{#method-ImapCon-uid_batches}{\code{ImapCon$uid_batches()}}
+    \item \href{#method-ImapCon-esearch_multi}{\code{ImapCon$esearch_multi()}}
+    \item \href{#method-ImapCon-unauthenticate}{\code{ImapCon$unauthenticate()}}
+    \item \href{#method-ImapCon-language}{\code{ImapCon$language()}}
+    \item \href{#method-ImapCon-comparator}{\code{ImapCon$comparator()}}
+    \item \href{#method-ImapCon-genurlauth}{\code{ImapCon$genurlauth()}}
+    \item \href{#method-ImapCon-urlfetch}{\code{ImapCon$urlfetch()}}
+    \item \href{#method-ImapCon-fetch_convert}{\code{ImapCon$fetch_convert()}}
+    \item \href{#method-ImapCon-fetch_annotation}{\code{ImapCon$fetch_annotation()}}
+    \item \href{#method-ImapCon-store_annotation}{\code{ImapCon$store_annotation()}}
     \item \href{#method-ImapCon-list_server_capabilities}{\code{ImapCon$list_server_capabilities()}}
     \item \href{#method-ImapCon-enable}{\code{ImapCon$enable()}}
     \item \href{#method-ImapCon-namespace}{\code{ImapCon$namespace()}}
@@ -1685,6 +1820,663 @@ con$append_msgs(msgs, folder = "Archive", flags = "Seen")
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-esearch_partial"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esearch_partial}{}}}
+\subsection{\code{ImapCon$esearch_partial()}}{
+  Paged search: return only one slice of the result set
+  (\code{SEARCH RETURN (PARTIAL m:n)}, RFC 9394; also accepted by
+  servers with the older \code{CONTEXT=SEARCH} capability, RFC 5267).
+  Negative positions count backwards from the most recent result.
+  Requires the server \code{PARTIAL} or \code{CONTEXT=SEARCH}
+  capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$esearch_partial(range, criteria = "ALL", use_uid = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{range}}{A \code{character} string \code{"m:n"} with the positions
+of the first and the last result wanted, e.g. \code{"1:100"}, or
+\code{"-1:-100"} for the hundred most recent matches.}
+      \item{\code{criteria}}{A string with the search criteria. Default is
+\code{"ALL"}.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs and results are presented as UIDs.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{integer} vector with the ids of the requested slice;
+  the requested range is kept in the \code{"range"} attribute.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{# the fifty most recent matches only
+con$esearch_partial(range = "-1:-50", criteria = "UNSEEN", use_uid = TRUE)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-esort_partial"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esort_partial}{}}}
+\subsection{\code{ImapCon$esort_partial()}}{
+  Paged sort: return only one slice of the sorted result
+  set (\code{SORT RETURN (PARTIAL m:n)}, \code{CONTEXT=SORT}, RFC
+  5267). Requires the server \code{SORT} and \code{CONTEXT=SORT}
+  capabilities. Experimental: no server available for this package's
+  validation advertises \code{CONTEXT=SORT}, so the method follows the
+  RFC grammar but has not been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$esort_partial(
+  range,
+  by = "DATE",
+  reverse = FALSE,
+  criteria = "ALL",
+  use_uid = FALSE,
+  char_set = "UTF-8",
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{range}}{A \code{character} string \code{"m:n"} with the positions
+of the first and the last result wanted, e.g. \code{"1:100"}.}
+      \item{\code{by}}{A character vector of sort keys, a subset of
+\code{"ARRIVAL"}, \code{"CC"}, \code{"DATE"}, \code{"FROM"},
+\code{"SIZE"}, \code{"SUBJECT"}, \code{"TO"}, \code{"DISPLAYFROM"},
+\code{"DISPLAYTO"}. Default is \code{"DATE"}.}
+      \item{\code{reverse}}{A logical. If \code{TRUE}, each sort key is applied in
+descending order. Default is \code{FALSE}.}
+      \item{\code{criteria}}{A string with the search criteria restricting the set
+to be sorted. Default is \code{"ALL"}.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs and results are presented as UIDs.}
+      \item{\code{char_set}}{A string with the charset of the search criteria.
+Default is \code{"UTF-8"}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    An \code{integer} vector with the ids of the requested slice,
+  in sort order; the requested range is kept in the \code{"range"}
+  attribute.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$esort_partial(range = "1:20", by = "SIZE", reverse = TRUE)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-replace_msg"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-replace_msg}{}}}
+\subsection{\code{ImapCon$replace_msg()}}{
+  Replace a message by a new version in a single command
+  (IMAP \code{REPLACE}, RFC 8508), over the raw socket layer, since the
+  new message is sent as a literal. The replacement is atomic: no
+  moment exists in which both, or neither, of the versions are present
+  (the usual APPEND + EXPUNGE dance). Typical use: updating a draft.
+  Requires the server \code{REPLACE} capability. Experimental: no
+  server available for this package's validation advertises
+  \code{REPLACE}, so the method follows the RFC grammar but has not
+  been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$replace_msg(
+  msg_id,
+  message,
+  folder = NULL,
+  flags = NULL,
+  use_uid = FALSE,
+  mute = FALSE,
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A single message id.}
+      \item{\code{message}}{A \code{character} string or \code{raw} vector with the
+full RFC 822 message that takes the place of message \code{msg_id}.}
+      \item{\code{folder}}{The folder holding the message. If \code{NULL}
+(default), the currently selected folder.}
+      \item{\code{flags}}{\code{NULL} (default) or a \code{character} vector of
+flags stored with the new version.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE},
+\code{msg_id} is a UID.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message. Default is \code{FALSE}.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly, the UID assigned to the new version (\code{NA} when
+  the server does not report it).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$replace_msg(msg_id = 4, message = new_draft, folder = "Drafts",
+                flags = c("Seen", "Draft"), use_uid = TRUE)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_objectid"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_objectid}{}}}
+\subsection{\code{ImapCon$fetch_objectid()}}{
+  Fetch the unique, immutable object identifiers of
+  messages (\code{EMAILID} and \code{THREADID}, OBJECTID, RFC 8474).
+  \code{EMAILID} survives moves and copies (unlike UIDs), and
+  \code{THREADID} names the conversation the server files the message
+  under. Requires the server \code{OBJECTID} capability. Experimental:
+  no server available for this package's validation advertises
+  \code{OBJECTID}, so the method follows the RFC grammar but has not
+  been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_objectid(msg_id, use_uid = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with the columns \code{id},
+  \code{emailid}, and \code{threadid} (\code{NA} when the server has
+  no thread for the message).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$fetch_objectid(msg_id = 1:5)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-uid_batches"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-uid_batches}{}}}
+\subsection{\code{ImapCon$uid_batches()}}{
+  Partition the UIDs of the selected folder into batches of
+  a given size (IMAP \code{UIDBATCHES}, RFC 10022), from the most
+  recent messages to the oldest, so that a large mailbox can be
+  processed in fixed-size pages. Requires the server \code{UIDBATCHES}
+  capability. Experimental: no server available for this package's
+  validation advertises \code{UIDBATCHES}, so the method follows the
+  RFC grammar but has not been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$uid_batches(batch_size, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{batch_size}}{A single positive number: how many messages each
+batch should contain.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with the columns \code{from} and
+  \code{to}: the first (highest) and last (lowest) UID of each batch,
+  in server order (most recent batch first).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{batches <- con$uid_batches(batch_size = 500)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-esearch_multi"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-esearch_multi}{}}}
+\subsection{\code{ImapCon$esearch_multi()}}{
+  Search several mailboxes with one command (IMAP
+  \code{ESEARCH IN}, MULTISEARCH, RFC 7377), over the raw socket
+  layer, since the reply carries one untagged response per matching
+  mailbox. Requires the server \code{MULTISEARCH} capability.
+  Experimental: no server available for this package's validation
+  advertises \code{MULTISEARCH}, so the method follows the RFC grammar
+  but has not been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$esearch_multi(
+  mailboxes = "personal",
+  criteria = "ALL",
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{mailboxes}}{\code{"personal"} (every folder of the account,
+the default), \code{"subscribed"}, \code{"inboxes"},
+\code{"selected"}, or a \code{character} vector of folder names.}
+      \item{\code{criteria}}{A string with the search criteria. Default is
+\code{"ALL"}.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per matching message:
+  \code{mailbox}, \code{uidvalidity}, and \code{uid}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$esearch_multi(mailboxes = "personal", criteria = "UNSEEN")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-unauthenticate"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-unauthenticate}{}}}
+\subsection{\code{ImapCon$unauthenticate()}}{
+  Return the connection to the not-authenticated state
+  (IMAP \code{UNAUTHENTICATE}, RFC 8437). Since libcurl's request
+  model has no use for an unauthenticated connection, the method then
+  opens a fresh connection (authenticating again), so the object
+  remains usable; the practical effect is a clean session: no selected
+  folder, no enabled extensions. Requires the server
+  \code{UNAUTHENTICATE} capability. Experimental: no server available
+  for this package's validation advertises \code{UNAUTHENTICATE}, so
+  the method follows the RFC grammar but has not been exercised
+  against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$unauthenticate(retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly, \code{TRUE}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$unauthenticate()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-language"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-language}{}}}
+\subsection{\code{ImapCon$language()}}{
+  List or choose the language of the server's
+  human-readable responses (IMAP \code{LANGUAGE}, RFC 5255). Requires
+  the server \code{LANGUAGE} capability. Experimental: no server
+  available for this package's validation advertises \code{LANGUAGE},
+  so the method follows the RFC grammar but has not been exercised
+  against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$language(language = NULL, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{language}}{\code{NULL} (default) to list the languages the
+server supports, or a \code{character} vector of RFC 4646 language
+tags in order of preference (e.g. \code{c("pt-BR", "en")}).}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{character} vector: the supported languages (when
+  listing) or the language the server switched to.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$language()
+con$language("pt-BR")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-comparator"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-comparator}{}}}
+\subsection{\code{ImapCon$comparator()}}{
+  List or choose the comparator that collates search and
+  sort results (IMAP \code{COMPARATOR}, RFC 5255). Requires the server
+  \code{I18NLEVEL=2} capability. Experimental: no server available for
+  this package's validation advertises \code{I18NLEVEL=2}, so the
+  method follows the RFC grammar but has not been exercised against a
+  live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$comparator(order = NULL, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{order}}{\code{NULL} (default) to ask which comparator is active,
+or a \code{character} vector of comparator names in order of
+preference (e.g. \code{"i;basic"}).}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{character} string with the comparator in use.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$comparator()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-genurlauth"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-genurlauth}{}}}
+\subsection{\code{ImapCon$genurlauth()}}{
+  Generate an authorized IMAP URL that grants access to a
+  message, or a part of it, without sharing credentials (IMAP
+  \code{GENURLAUTH}, URLAUTH, RFC 4467), e.g. for forward-without-
+  download submission (BURL). Requires the server \code{URLAUTH}
+  capability. Experimental: no server available for this package's
+  validation advertises \code{URLAUTH}, so the method follows the RFC
+  grammar but has not been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$genurlauth(
+  url,
+  access = "anonymous",
+  mechanism = "INTERNAL",
+  expire = NULL,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{url}}{An \code{\link{imap_url}()} object or an IMAP URL string
+naming the message (or message part).}
+      \item{\code{access}}{Who may use the URL: \code{"anonymous"} (default),
+\code{"authuser"}, \code{"submit+<user>"}, or \code{"user+<user>"}.}
+      \item{\code{mechanism}}{The authorization mechanism. Default is
+\code{"INTERNAL"}.}
+      \item{\code{expire}}{\code{NULL} (default) or an RFC 3339 date-time string
+after which the URL stops working.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{character} vector with the authorized URL(s) returned
+  by the server.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$genurlauth(imap_url("INBOX", uid = 20, section = "1.2"),
+               access = "submit+fred")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-urlfetch"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-urlfetch}{}}}
+\subsection{\code{ImapCon$urlfetch()}}{
+  Fetch the content named by URLAUTH-authorized IMAP URLs
+  (IMAP \code{URLFETCH}, RFC 4467), over the raw socket layer, since
+  the reply is a literal. Requires the server \code{URLAUTH}
+  capability. Experimental: no server available for this package's
+  validation advertises \code{URLAUTH}, so the method follows the RFC
+  grammar but has not been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$urlfetch(urls, compress = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{urls}}{A \code{character} vector of authorized IMAP URLs, as
+returned by \code{genurlauth()}.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A named \code{list} of \code{raw} vectors, one per URL.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{u <- con$genurlauth(imap_url("INBOX", uid = 20), access = "anonymous")
+con$urlfetch(u)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_convert"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_convert}{}}}
+\subsection{\code{ImapCon$fetch_convert()}}{
+  Fetch a body part converted by the server to another MIME
+  type (IMAP \code{CONVERT}, RFC 5259), over the raw socket layer,
+  since the reply is a binary literal. Requires the server
+  \code{CONVERT} capability. Experimental: no known server deploys
+  \code{CONVERT}, so the method follows the RFC grammar but has not
+  been exercised against a live server.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_convert(
+  msg_id,
+  mimetype,
+  part = "1",
+  params = NULL,
+  use_uid = FALSE,
+  folder = NULL,
+  compress = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A single message id.}
+      \item{\code{mimetype}}{A string with the target MIME type, e.g.
+\code{"application/pdf"}.}
+      \item{\code{part}}{A \code{character} string with the section number of the
+part to convert. Default is \code{"1"}.}
+      \item{\code{params}}{\code{NULL} (default) or a named \code{list}/vector of
+conversion parameters (e.g. \code{c("pix-x" = "320")}).}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE},
+\code{msg_id} is a UID.}
+      \item{\code{folder}}{The folder to read from. If \code{NULL} (default), the
+currently selected folder.}
+      \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
+is compressed with \code{COMPRESS DEFLATE} (RFC 4978). Default is
+\code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{raw} vector with the converted content.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{pdf <- con$fetch_convert(msg_id = 2, mimetype = "application/pdf",
+                         part = "3")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_annotation"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_annotation}{}}}
+\subsection{\code{ImapCon$fetch_annotation()}}{
+  Fetch per-message annotations (IMAP \code{FETCH
+  ANNOTATION}, ANNOTATE, RFC 5257). Requires the server
+  \code{ANNOTATE-EXPERIMENT-1} capability. Experimental, as the
+  capability name itself declares: the extension never left
+  experimental status and no server available for this package's
+  validation advertises it.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_annotation(
+  msg_id,
+  entries = "/*",
+  attributes = "value",
+  use_uid = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids.}
+      \item{\code{entries}}{A \code{character} vector of annotation entries.
+Default is \code{"/*"} (every entry); \code{"/comment"} and
+\code{"/flags/..."} are typical.}
+      \item{\code{attributes}}{A \code{character} vector of attributes:
+\code{"value"} (default; both private and shared),
+\code{"value.priv"}, \code{"value.shared"}, or the corresponding
+\code{"size"} forms.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per annotation:
+  \code{id}, \code{entry}, \code{attribute}, and \code{value}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$fetch_annotation(msg_id = 1)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-store_annotation"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-store_annotation}{}}}
+\subsection{\code{ImapCon$store_annotation()}}{
+  Store a per-message annotation (IMAP \code{STORE
+  ANNOTATION}, ANNOTATE, RFC 5257). Requires the server
+  \code{ANNOTATE-EXPERIMENT-1} capability. Experimental, as the
+  capability name itself declares: the extension never left
+  experimental status and no server available for this package's
+  validation advertises it.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$store_annotation(
+  msg_id,
+  entry,
+  values,
+  use_uid = FALSE,
+  mute = FALSE,
+  retries = 1
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids.}
+      \item{\code{entry}}{A single annotation entry, e.g. \code{"/comment"}.}
+      \item{\code{values}}{A named \code{character} vector whose names are
+\code{"value.priv"} and/or \code{"value.shared"}; use \code{NA} as
+a value to delete that annotation.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message. Default is \code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    Invisibly, \code{TRUE}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$store_annotation(msg_id = 1, entry = "/comment",
+                     values = c("value.priv" = "check this one"))
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-list_server_capabilities"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-list_server_capabilities}{}}}
 \subsection{\code{ImapCon$list_server_capabilities()}}{
@@ -1829,7 +2621,7 @@ con$id(fields = c(name = "mRpostman", version = "1.2.1"))
 \if{latex}{\out{\hypertarget{method-ImapCon-get_quota_root}{}}}
 \subsection{\code{ImapCon$get_quota_root()}}{
   Get the quota root(s) and quota usage/limits of a mail folder
-  (IMAP \code{GETQUOTAROOT}, RFC 2087). Requires the server \code{QUOTA}
+  (IMAP \code{GETQUOTAROOT}, RFC 9208). Requires the server \code{QUOTA}
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -1864,7 +2656,7 @@ Default is \code{1}.}
 \if{latex}{\out{\hypertarget{method-ImapCon-get_quota}{}}}
 \subsection{\code{ImapCon$get_quota()}}{
   Get the quota usage/limits of a quota root (IMAP
-  \code{GETQUOTA}, RFC 2087). Requires the server \code{QUOTA} capability.
+  \code{GETQUOTA}, RFC 9208). Requires the server \code{QUOTA} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$get_quota(quota_root = "", retries = 1)}
@@ -1898,7 +2690,7 @@ Default is \code{1}.}
 \if{latex}{\out{\hypertarget{method-ImapCon-set_quota}{}}}
 \subsection{\code{ImapCon$set_quota()}}{
   Set the resource limits of a quota root (IMAP
-  \code{SETQUOTA}, RFC 2087). Most servers restrict this command to
+  \code{SETQUOTA}, RFC 9208). Most servers restrict this command to
   administrators. Requires the server \code{QUOTA} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}

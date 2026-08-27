@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.2.0</span>
       </span>
     </div>
 
@@ -63,6 +63,33 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.2.0" id="mrpostman-220-2026-08-27-feature-update">mRpostman 2.2.0 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-220-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-2-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-2-0"></a></h3>
+<p>A sweep of the IANA IMAP capability registry: every registered capability the package did not yet cover is now implemented.</p>
+<p>Exercised against a live server (Dovecot sandbox):</p>
+<ul><li>
+<strong>SORT=DISPLAY</strong> (RFC 5957): <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> and <code>esort_partial()</code> accept the <code>DISPLAYFROM</code> and <code>DISPLAYTO</code> keys (sorting by the display name of the address).</li>
+<li>
+<strong>THREAD=REFS</strong>: <code>thread(algorithm = "REFS")</code> (Dovecot’s threading by references only).</li>
+<li>
+<strong>PARTIAL</strong> (RFC 9394) / <strong>CONTEXT=SEARCH</strong> (RFC 5267): new <code>ImapCon$esearch_partial()</code> returns only one slice <code>m:n</code> of the result set (negative positions count from the most recent match).</li>
+<li>
+<strong>LITERAL+ / LITERAL-</strong> (RFC 7888): the raw socket layer now sends non-synchronizing <code>{n+}</code> literals in a single write when the server allows it, sparing one round trip per literal in <code>append_msgs()</code>, <code>append_catenate()</code>, and <code>replace_msg()</code>.</li>
+<li>
+<strong>APPENDLIMIT</strong> (RFC 7889): <code>append_msg()</code>, <code>append_msgs()</code>, and <code>replace_msg()</code> fail before uploading a message larger than the server’s advertised limit, and <code>status(items = "APPENDLIMIT")</code> queries the per-mailbox limit.</li>
+</ul><p>Implemented from the RFC grammars and marked <strong>experimental</strong> in the documentation, since no server available for validation advertises these capabilities (they are rare, brand new, or were never adopted):</p>
+<ul><li>
+<code>esort_partial()</code> (<strong>CONTEXT=SORT</strong>, RFC 5267), <code>replace_msg()</code> (<strong>REPLACE</strong>, RFC 8508), <code>fetch_objectid()</code> and <code>status(items = "MAILBOXID")</code> (<strong>OBJECTID</strong>, RFC 8474), <code>uid_batches()</code> (<strong>UIDBATCHES</strong>, RFC 10022), <code>esearch_multi()</code> (<strong>MULTISEARCH</strong>, RFC 7377), <code>unauthenticate()</code> (RFC 8437), <code>language()</code> and <code>comparator()</code> (<strong>LANGUAGE</strong>/<strong>I18NLEVEL=2</strong>, RFC 5255), <code>genurlauth()</code> and <code>urlfetch()</code> (<strong>URLAUTH</strong>, RFC 4467), <code>fetch_convert()</code> (<strong>CONVERT</strong>, RFC 5259), <code>fetch_annotation()</code> and <code>store_annotation()</code> (<strong>ANNOTATE-EXPERIMENT-1</strong>, RFC 5257), and the search criterion helpers <code><a href="../reference/fuzzy.html">fuzzy()</a></code> (<strong>SEARCH=FUZZY</strong>, RFC 6203) and <code><a href="../reference/filter_stored.html">filter_stored()</a></code> (<strong>FILTERS</strong>, RFC 5466).</li></ul></div>
+<div class="section level3">
+<h3 id="minor-improvements-2-2-0">Minor improvements<a class="anchor" aria-label="anchor" href="#minor-improvements-2-2-0"></a></h3>
+<ul><li>The package now presents itself as an IMAP4rev2 and IMAP4rev1 client: version 2.1.0 had already completed everything RFC 9051 consolidates into the core (the last piece being BINARY), and 2.2.0 adds the remaining registered extensions.</li>
+<li>
+<strong>UIDONLY</strong> (RFC 9586) tolerance: <code>UIDFETCH</code> responses are understood by the fetch parsers after <code>enable("UIDONLY")</code>.</li>
+<li>QUOTA references updated from RFC 2087 to RFC 9208, which obsoleted it (the commands are unchanged).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.1.0" id="mrpostman-210-2026-08-27-feature-update">mRpostman 2.1.0 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-210-2026-08-27-feature-update"></a></h2>
 <div class="section level3">

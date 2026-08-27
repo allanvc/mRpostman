@@ -11,10 +11,10 @@ get_quota_int <- function(self, quota_root, retries) {
 
   check_args(retries = retries)
 
-  # QUOTA is an optional extension (RFC 2087) -- fail early with a clear
+  # QUOTA is an optional extension (RFC 9208) -- fail early with a clear
   # message if the server does not advertise it.
   assert_capability(self, "QUOTA", command = "get_quota",
-                    rfc = "RFC 2087", retries = retries)
+                    rfc = "RFC 9208", retries = retries)
 
   # forcing retries as an integer
   retries <- as.integer(retries)

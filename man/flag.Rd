@@ -32,6 +32,8 @@ Other custom search:
 \code{\link{ImapCon}},
 \code{\link[=OR]{OR()}},
 \code{\link[=before]{before()}},
+\code{\link[=filter_stored]{filter_stored()}},
+\code{\link[=fuzzy]{fuzzy()}},
 \code{\link[=larger_than]{larger_than()}},
 \code{\link[=modseq]{modseq()}},
 \code{\link[=older_than]{older_than()}},
