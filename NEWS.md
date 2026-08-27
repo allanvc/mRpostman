@@ -1,3 +1,29 @@
+## mRpostman 1.5.3 (2026-08-27 feature update)
+
+### New features
+
+- **Non-ASCII folder names.** Mailbox names are now encoded to IMAP modified UTF-7 (RFC 3501, section 5.1.3) in every command that sends one (`select_folder()`, `create_folder()`, `rename_folder()`, `copy_msg()`, `append_msg()`, `status()`, ...) and decoded in every listing (`list_mail_folders()`, `list_folders_status()`, `list_special_use_folders()`), so folders such as `École` or `Entwürfe` can be referred to by their real names. Previously such names had to be given and were returned in their encoded form (`&AMk-cole`). The helpers `imap_utf7_encode()` and `imap_utf7_decode()` are exported.
+
+- new `ImapCon$fetch_envelope()` method and exported `parse_envelope()` helper: the `ENVELOPE` of each message parsed into a data frame (date, subject, from, sender, reply_to, to, cc, bcc, in_reply_to, message_id), with addresses formatted as `Name <mailbox@host>` and RFC 2047 encoded words decoded.
+
+- new `ImapCon$fetch_bodystructure()` method and exported `parse_bodystructure()` helper: the MIME structure of each message parsed into one row per part, with the section number usable in `fetch_body(mime_level = )`, type/subtype, charset, filename, encoding, size, disposition, and an `is_attachment` flag. Both parsers are built on a new IMAP list tokenizer that handles quoted strings, literals, and `NIL`.
+
+- `configure_imap()` / `ImapCon$new()` gained `oauth_mechanism = c("XOAUTH2", "OAUTHBEARER")`, selecting the SASL mechanism used to send the OAuth 2.0 token (`OAUTHBEARER`, RFC 7628, is the mechanism Microsoft 365 recommends). Not exercised live in this release (no OAuth account in the sandbox); it maps to libcurl's `CURLOPT_LOGIN_OPTIONS = "AUTH=OAUTHBEARER"`.
+
+- `list_mail_folders(detailed = TRUE)` adds a `my_rights` column when the server advertises `LIST-MYRIGHTS` (RFC 8440).
+
+- `create_folder()` gained a `special_use` argument (`CREATE name (USE (\Archive))`, CREATE-SPECIAL-USE, RFC 6154), capability-checked.
+
+### Bug fixes
+
+- `list_mail_folders()` classified every folder as a child on servers whose hierarchy delimiter is `.` (Dovecot, and therefore most self-hosted servers): the delimiter was interpolated unescaped into a regular expression. It is now matched literally, and `root`/`children` are split correctly.
+
+- `list_special_use_folders()` returned the delimiter (`"."`) instead of the folder name on servers that send unquoted mailbox names (Dovecot). The name is now read as the token after the delimiter, quoted or not.
+
+### Tests
+
+- the Docker sandbox now defines special-use mailboxes (`Drafts`, `Sent`, `Junk`, `Trash`, `Archive`), so `list_special_use_folders()` and the `special_use` column of `list_mail_folders(detailed = TRUE)` can be exercised locally. New offline tests cover modified UTF-7 round trips, the IMAP list tokenizer, `parse_envelope()`, `parse_bodystructure()`, the `LIST-MYRIGHTS` join, and the `CREATE ... (USE ...)` request (`test-round4.R`).
+
 ## mRpostman 1.5.2 (2026-08-27 feature update)
 
 ### New features

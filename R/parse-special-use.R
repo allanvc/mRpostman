@@ -34,12 +34,13 @@ parse_special_use <- function(content_char) {
     if (length(present) == 0) {
       next
     }
-    # folder name is the last quoted token on the line
-    quoted <- regmatches(ln, gregexpr('"[^"]*"', ln))[[1]]
-    if (length(quoted) == 0) {
+    # folder name: the token after the delimiter, quoted or not
+    m <- stringr::str_match(ln, '^\\*\\s+LIST\\s+\\([^\\)]*\\)\\s+(?:"[^"]*"|NIL)\\s+(?:"(.*)"|(\\S+))\\s*$')
+    nm <- if (!is.na(m[1, 2])) m[1, 2] else m[1, 3]
+    if (is.na(nm)) {
       next
     }
-    nm <- gsub('"', '', quoted[length(quoted)])
+    nm <- imap_utf7_decode(nm)
     for (p in present) {
       folder <- c(folder, nm)
       special <- c(special, p)

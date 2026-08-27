@@ -28,6 +28,7 @@ parse_folder_list <- function(content_char, command = "LIST") {
   occurrences_names <- regmatches(content_char, m)
   occurrences_names <- lapply(occurrences_names, function(x) gsub('\" |\"', "", x))
   occurrences_names <- unlist(lapply(occurrences_names, function(x) gsub('\r\n.*$', "", x)))
+  occurrences_names <- imap_utf7_decode(occurrences_names)
 
   # server-declared hierarchy separator, e.g. "/" (Gmail/Yahoo/AOL) or "|" (Yandex)
   hierarchy_sep <- unlist(regmatches(occurrences_splitted[[1]][1],
@@ -37,15 +38,16 @@ parse_folder_list <- function(content_char, command = "LIST") {
   # cleaning
   hierarchy_sep <- gsub('\\"', "", hierarchy_sep)
 
-  if (!is.na(hierarchy_sep) && hierarchy_sep == "|") { # v0.9.1 - Yandex uses root|children
-    hierarchy_sep <- paste0('\\', hierarchy_sep)
+  # a folder is a child when the separator occurs strictly inside its name;
+  # the separator is matched literally ("." on Dovecot, "|" on Yandex, "/" on
+  # Gmail), never as a regular expression
+  folder_check_children <- if (is.na(hierarchy_sep) || !nzchar(hierarchy_sep)) {
+    rep(FALSE, length(occurrences_names))
+  } else {
+    vapply(occurrences_names, function(nm) {
+      nchar(nm) > 2 && grepl(hierarchy_sep, substr(nm, 2, nchar(nm) - 1), fixed = TRUE)
+    }, logical(1), USE.NAMES = FALSE)
   }
-
-  pattern_hierarchy_sep = paste0('.', hierarchy_sep, '.')
-
-  folder_check_children <- do.call(
-    grepl, c(pattern = pattern_hierarchy_sep, x = list(occurrences_names))
-  )
 
   # dropping type \Noselect
   folder_check_children <- folder_check_children[!folder_check_noselect]

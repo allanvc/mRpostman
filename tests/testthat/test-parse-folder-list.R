@@ -31,3 +31,12 @@ test_that("a Yandex-style '|' hierarchy separator is handled", {
   expect_identical(out$root, "Root")
   expect_identical(out$children, "Root|Child")
 })
+
+test_that("a '.' hierarchy separator is matched literally (Dovecot)", {
+  resp <- paste0('* LIST (\\HasNoChildren) "." INBOX\r\n',
+                 '* LIST (\\HasNoChildren) "." ProjectAtlas\r\n',
+                 '* LIST (\\HasNoChildren) "." Archive.2020\r\n')
+  x <- mRpostman:::parse_folder_list(resp, command = "LIST")
+  expect_identical(x$root, c("INBOX", "ProjectAtlas"))
+  expect_identical(x$children, "Archive.2020")
+})

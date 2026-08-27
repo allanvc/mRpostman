@@ -123,8 +123,9 @@ type of operation:
         `modseq()`;
   - **server-side sort and thread methods**: `sort()`, `thread()`;
   - **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-    `fetch_metadata()`, `fetch_preview()`, `metadata_options()`,
-    `fetch_attachments_list()`, `fetch_attachments()`;
+    `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`,
+    `fetch_preview()`, `metadata_options()`, `fetch_attachments_list()`,
+    `fetch_attachments()`;
   - **attachments methods**: `list_attachments()`, `get_attachments()`,
     `fetch_attachments_list()`, `fetch_attachments()`;
   - **complementary methods**: `copy_msg()`, `move_msg()`,
@@ -132,7 +133,8 @@ type of operation:
     `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`,
     `remove_flags()`, `replace_flags()`;
   - **MIME-decoding and message-text helper functions**:
-    `decode_mime_header()`, `clean_msg_text()`.
+    `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`,
+    `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`.
 
 ## Supported IMAP commands and capabilities
 
@@ -193,6 +195,9 @@ what your server supports with `list_server_capabilities()`.
 | `FETCH (PREVIEW)`                                             | `fetch_preview()`, `fetch_metadata(attribute = "PREVIEW")`                                                      | `PREVIEW`                                     | [8970](https://datatracker.ietf.org/doc/html/rfc8970) |
 | `FETCH (SAVEDATE)`, `SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE`   | `fetch_metadata(attribute = "SAVEDATE")`, `saved_before()` / `saved_on()` / `saved_since()`                     | `SAVEDATE`                                    | [8514](https://datatracker.ietf.org/doc/html/rfc8514) |
 | `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `SEARCH MODSEQ`   | `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ")`, `modseq()`                           | `CONDSTORE`                                   | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
+| `LIST ... RETURN (MYRIGHTS)`                                  | `list_mail_folders(detailed = TRUE)` (`my_rights` column)                                                       | `LIST-MYRIGHTS`                               | [8440](https://datatracker.ietf.org/doc/html/rfc8440) |
+| `CREATE ... (USE (...))`                                      | `create_folder(special_use = ...)`                                                                              | `CREATE-SPECIAL-USE`                          | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
+| `AUTHENTICATE OAUTHBEARER`                                    | `configure_imap(oauth_mechanism = "OAUTHBEARER")`                                                               | `AUTH=OAUTHBEARER`                            | [7628](https://datatracker.ietf.org/doc/html/rfc7628) |
 
 Availability varies by provider. Gmail, for instance, supports every
 extension above **except `SORT` and `THREAD`**, which it has never

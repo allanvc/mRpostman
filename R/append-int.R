@@ -69,7 +69,7 @@ append_int <- function(self, message, folder, flags, mute, retries) {
 
   # the destination folder goes in the URL path (percent-encoded)
   url_append <- paste0(self$con_params$url, "/",
-                       utils::URLencode(folder, reserved = TRUE))
+                       utils::URLencode(imap_utf7_encode(folder), reserved = TRUE))
 
   # isolating the handle
   h <- self$con_handle

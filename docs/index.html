@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
       </span>
     </div>
 
@@ -187,13 +187,13 @@
 <li>
 <strong>server-side sort and thread methods</strong>: <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code>, <code>thread()</code>;</li>
 <li>
-<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_preview()</code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_envelope()</code>, <code>fetch_bodystructure()</code>, <code>fetch_preview()</code>, <code><a href="reference/metadata_options.html">metadata_options()</a></code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
 <strong>attachments methods</strong>: <code><a href="reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
 <li>
 <strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>append_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>;</li>
 <li>
-<strong>MIME-decoding and message-text helper functions</strong>: <code><a href="reference/decode_mime_header.html">decode_mime_header()</a></code>, <code><a href="reference/clean_msg_text.html">clean_msg_text()</a></code>.</li>
+<strong>MIME-decoding and message-text helper functions</strong>: <code><a href="reference/decode_mime_header.html">decode_mime_header()</a></code>, <code><a href="reference/clean_msg_text.html">clean_msg_text()</a></code>, <code><a href="reference/parse_envelope.html">parse_envelope()</a></code>, <code><a href="reference/parse_bodystructure.html">parse_bodystructure()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_encode()</a></code>, <code><a href="reference/imap_utf7_encode.html">imap_utf7_decode()</a></code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -483,6 +483,25 @@
 </td>
 <td><code>CONDSTORE</code></td>
 <td><a href="https://datatracker.ietf.org/doc/html/rfc7162" class="external-link">7162</a></td>
+</tr>
+<tr class="even">
+<td><code>LIST ... RETURN (MYRIGHTS)</code></td>
+<td>
+<code>list_mail_folders(detailed = TRUE)</code> (<code>my_rights</code> column)</td>
+<td><code>LIST-MYRIGHTS</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc8440" class="external-link">8440</a></td>
+</tr>
+<tr class="odd">
+<td><code>CREATE ... (USE (...))</code></td>
+<td><code>create_folder(special_use = ...)</code></td>
+<td><code>CREATE-SPECIAL-USE</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc6154" class="external-link">6154</a></td>
+</tr>
+<tr class="even">
+<td><code>AUTHENTICATE OAUTHBEARER</code></td>
+<td><code>configure_imap(oauth_mechanism = "OAUTHBEARER")</code></td>
+<td><code>AUTH=OAUTHBEARER</code></td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc7628" class="external-link">7628</a></td>
 </tr>
 </tbody>
 </table>

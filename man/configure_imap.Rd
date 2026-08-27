@@ -9,6 +9,7 @@ configure_imap(
   username,
   password = NULL,
   xoauth2_bearer = NULL,
+  oauth_mechanism = c("XOAUTH2", "OAUTHBEARER"),
   use_ssl = TRUE,
   verbose = FALSE,
   buffersize = 16000,
@@ -24,6 +25,11 @@ configure_imap(
 \item{password}{A character string containing the user's password.}
 
 \item{xoauth2_bearer}{A character string containing the oauth2 bearer token.}
+
+\item{oauth_mechanism}{The SASL mechanism used to send the OAuth 2.0 token:
+\code{"XOAUTH2"} (default; Gmail, Yahoo, and Microsoft 365) or
+\code{"OAUTHBEARER"} (RFC 7628; the mechanism Microsoft 365 recommends).
+Ignored when authenticating with a password.}
 
 \item{use_ssl}{A logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to the IMAP server. Default is \code{TRUE}.}

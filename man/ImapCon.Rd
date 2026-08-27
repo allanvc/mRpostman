@@ -698,6 +698,25 @@ con$search_flag("UNSEEN") \%>\% con$fetch_preview()
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$fetch_envelope()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
+}
+
+## ------------------------------------------------
+## Method `ImapCon$fetch_bodystructure()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+parts <- con$fetch_bodystructure(msg_id = 1:10)
+parts[parts$is_attachment, ]
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$fetch_text()`
 ## ------------------------------------------------
 
@@ -1007,6 +1026,8 @@ Other attachments:
     \item \href{#method-ImapCon-fetch_header}{\code{ImapCon$fetch_header()}}
     \item \href{#method-ImapCon-fetch_metadata}{\code{ImapCon$fetch_metadata()}}
     \item \href{#method-ImapCon-fetch_preview}{\code{ImapCon$fetch_preview()}}
+    \item \href{#method-ImapCon-fetch_envelope}{\code{ImapCon$fetch_envelope()}}
+    \item \href{#method-ImapCon-fetch_bodystructure}{\code{ImapCon$fetch_bodystructure()}}
     \item \href{#method-ImapCon-fetch_text}{\code{ImapCon$fetch_text()}}
     \item \href{#method-ImapCon-copy_msg}{\code{ImapCon$copy_msg()}}
     \item \href{#method-ImapCon-move_msg}{\code{ImapCon$move_msg()}}
@@ -1037,6 +1058,7 @@ Other attachments:
   username,
   password = NULL,
   xoauth2_bearer = NULL,
+  oauth_mechanism = c("XOAUTH2", "OAUTHBEARER"),
   use_ssl = TRUE,
   verbose = FALSE,
   buffersize = 16000,
@@ -1052,6 +1074,9 @@ Other attachments:
       \item{\code{username}}{A character string containing the username.}
       \item{\code{password}}{A character string containing the user's password.}
       \item{\code{xoauth2_bearer}}{A character string containing the oauth2 bearer token.}
+      \item{\code{oauth_mechanism}}{The SASL mechanism used to send the OAuth 2.0
+token: \code{"XOAUTH2"} (default) or \code{"OAUTHBEARER"} (RFC 7628).
+Ignored when authenticating with a password.}
       \item{\code{use_ssl}}{A logical indicating the use or not of Secure Sockets Layer
 encryption when connecting to the IMAP server. Default is \code{TRUE}.}
       \item{\code{verbose}}{If \code{FALSE}, mutes the flow of information between the
@@ -2088,7 +2113,7 @@ con$status(items = c("MESSAGES", "UNSEEN"))
   Create a new mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$create_folder(name, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$create_folder(name, mute = FALSE, retries = 1, special_use = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2100,6 +2125,10 @@ created.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{special_use}}{\code{NULL} (default) or a \code{character} vector of
+special-use attributes to assign to the new folder, e.g.
+\code{"\\Archive"} (CREATE-SPECIAL-USE, RFC 6154; requires that
+server capability).}
     }
     \if{html}{\out{</div>}}
   }
@@ -3614,6 +3643,84 @@ Default is \code{1}.}
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$select_folder(name = "INBOX")
 con$search_flag("UNSEEN") \%>\% con$fetch_preview()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_envelope"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_envelope}{}}}
+\subsection{\code{ImapCon$fetch_envelope()}}{
+  Fetch the envelope of messages parsed into a data frame
+  (IMAP \code{FETCH ... (ENVELOPE)}): date, subject, and the address
+  lists, with RFC 2047 encoded words decoded. See
+  \code{\link{parse_envelope}}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_envelope(msg_id, use_uid = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids, or the \code{"$"} reference of a saved search.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs and the first column is \code{uid}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per message: \code{id} (or
+  \code{uid}), \code{date}, \code{subject}, \code{from},
+  \code{sender}, \code{reply_to}, \code{to}, \code{cc}, \code{bcc},
+  \code{in_reply_to}, and \code{message_id}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-fetch_bodystructure"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-fetch_bodystructure}{}}}
+\subsection{\code{ImapCon$fetch_bodystructure()}}{
+  Fetch the MIME structure of messages parsed into a data
+  frame of parts (IMAP \code{FETCH ... (BODYSTRUCTURE)}), one row per
+  part with its section number, type, charset, filename, encoding,
+  size, and disposition. See \code{\link{parse_bodystructure}}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$fetch_bodystructure(msg_id, use_uid = FALSE, retries = 1)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
+ids, or the \code{"$"} reference of a saved search.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+performed with UIDs and the first column is \code{uid}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per MIME part of each message.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+parts <- con$fetch_bodystructure(msg_id = 1:10)
+parts[parts$is_attachment, ]
 }
     \if{html}{\out{</div>}}
   }

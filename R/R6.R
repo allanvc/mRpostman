@@ -50,6 +50,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param username A character string containing the username.
     #' @param password A character string containing the user's password.
     #' @param xoauth2_bearer A character string containing the oauth2 bearer token.
+    #' @param oauth_mechanism The SASL mechanism used to send the OAuth 2.0
+    #'   token: \code{"XOAUTH2"} (default) or \code{"OAUTHBEARER"} (RFC 7628).
+    #'   Ignored when authenticating with a password.
     #' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
     #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
     #' @param verbose If \code{FALSE}, mutes the flow of information between the
@@ -71,6 +74,7 @@ ImapCon <- R6::R6Class("ImapCon",
                           username,
                           password = NULL,
                           xoauth2_bearer = NULL,
+                          oauth_mechanism = c("XOAUTH2", "OAUTHBEARER"),
                           use_ssl = TRUE,
                           verbose = FALSE,
                           buffersize = 16000,
@@ -79,6 +83,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
       out <- config_con_handle_and_params(url = url, username = username,
                                    password = password, xoauth2_bearer = xoauth2_bearer,
+                                   oauth_mechanism = oauth_mechanism,
                                    use_ssl = use_ssl, verbose = verbose,
                                    buffersize = buffersize, timeout_ms = timeout_ms,
                                    ...)
@@ -689,13 +694,17 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   when the command is successfully executed. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
+    #' @param special_use \code{NULL} (default) or a \code{character} vector of
+    #'   special-use attributes to assign to the new folder, e.g.
+    #'   \code{"\\Archive"} (CREATE-SPECIAL-USE, RFC 6154; requires that
+    #'   server capability).
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
     #' con$create_folder(name = "New Folder Name")
     #' }
-    create_folder = function(name, mute = FALSE, retries = 1) {
-      invisible(create_folder_int(self, name, mute, retries))
+    create_folder = function(name, mute = FALSE, retries = 1, special_use = NULL) {
+      invisible(create_folder_int(self, name, mute, retries, special_use = special_use))
     },
 
     #' @description Rename a mail folder.
@@ -1787,6 +1796,52 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     fetch_preview = function(msg_id, use_uid = FALSE, retries = 1) {
       out <- fetch_preview_int(self, msg_id, use_uid, retries)
+      return(out)
+    },
+
+    #' @description Fetch the envelope of messages parsed into a data frame
+    #'   (IMAP \code{FETCH ... (ENVELOPE)}): date, subject, and the address
+    #'   lists, with RFC 2047 encoded words decoded. See
+    #'   \code{\link{parse_envelope}}.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids, or the \code{"$"} reference of a saved search.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs and the first column is \code{uid}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per message: \code{id} (or
+    #'   \code{uid}), \code{date}, \code{subject}, \code{from},
+    #'   \code{sender}, \code{reply_to}, \code{to}, \code{cc}, \code{bcc},
+    #'   \code{in_reply_to}, and \code{message_id}.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' con$search_since(date_char = "01-Jan-2026") %>% con$fetch_envelope()
+    #' }
+    fetch_envelope = function(msg_id, use_uid = FALSE, retries = 1) {
+      out <- fetch_envelope_int(self, msg_id, use_uid, retries)
+      return(out)
+    },
+
+    #' @description Fetch the MIME structure of messages parsed into a data
+    #'   frame of parts (IMAP \code{FETCH ... (BODYSTRUCTURE)}), one row per
+    #'   part with its section number, type, charset, filename, encoding,
+    #'   size, and disposition. See \code{\link{parse_bodystructure}}.
+    #' @param msg_id A \code{numeric vector} containing one or more message
+    #'   ids, or the \code{"$"} reference of a saved search.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #'   performed with UIDs and the first column is \code{uid}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per MIME part of each message.
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' parts <- con$fetch_bodystructure(msg_id = 1:10)
+    #' parts[parts$is_attachment, ]
+    #' }
+    fetch_bodystructure = function(msg_id, use_uid = FALSE, retries = 1) {
+      out <- fetch_bodystructure_int(self, msg_id, use_uid, retries)
       return(out)
     },
 

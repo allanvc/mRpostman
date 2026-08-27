@@ -20,9 +20,17 @@
 #' @noRd
 config_con_handle_and_params <- function(url, username, password, xoauth2_bearer,
                                          use_ssl, verbose, buffersize, timeout_ms,
+                                         oauth_mechanism = c("XOAUTH2", "OAUTHBEARER"),
                                          ...) {
 
   other_argg_list <- list(...)
+
+  oauth_mechanism <- toupper(match.arg(oauth_mechanism))
+  if (!is.null(xoauth2_bearer) && oauth_mechanism == "OAUTHBEARER") {
+    # libcurl selects the SASL mechanism through CURLOPT_LOGIN_OPTIONS; the
+    # token itself is still passed as xoauth2_bearer
+    other_argg_list$login_options <- "AUTH=OAUTHBEARER"
+  }
 
   default_params <- list()
 
@@ -138,6 +146,9 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   }
 
   default_params <- c(default_params, other_argg_list)
+  if (!is.null(xoauth2_bearer)) {
+    default_params <- c(default_params, "oauth_mechanism" = oauth_mechanism)
+  }
 
   # print(default_params)
 
@@ -145,7 +156,7 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   id_to_drop <- c()
   for (i in 1:length(default_params)) {
 
-    if (is.null(default_params[[i]]) || names(default_params)[i] == "url") {
+    if (is.null(default_params[[i]]) || names(default_params)[i] %in% c("url", "oauth_mechanism")) {
       id_to_drop <- append(id_to_drop, i)
     }
 

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
       </span>
     </div>
 
@@ -63,6 +63,26 @@
       <small>Source: <a href="https://github.com/allanvc/mRpostman/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.5.3" id="mrpostman-153-2026-08-27-feature-update">mRpostman 1.5.3 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-153-2026-08-27-feature-update"></a></h2>
+<div class="section level3">
+<h3 id="new-features-1-5-3">New features<a class="anchor" aria-label="anchor" href="#new-features-1-5-3"></a></h3>
+<ul><li><p><strong>Non-ASCII folder names.</strong> Mailbox names are now encoded to IMAP modified UTF-7 (RFC 3501, section 5.1.3) in every command that sends one (<code>select_folder()</code>, <code>create_folder()</code>, <code>rename_folder()</code>, <code>copy_msg()</code>, <code>append_msg()</code>, <code>status()</code>, …) and decoded in every listing (<code>list_mail_folders()</code>, <code>list_folders_status()</code>, <code>list_special_use_folders()</code>), so folders such as <code>École</code> or <code>Entwürfe</code> can be referred to by their real names. Previously such names had to be given and were returned in their encoded form (<code>&amp;AMk-cole</code>). The helpers <code><a href="../reference/imap_utf7_encode.html">imap_utf7_encode()</a></code> and <code><a href="../reference/imap_utf7_encode.html">imap_utf7_decode()</a></code> are exported.</p></li>
+<li><p>new <code>ImapCon$fetch_envelope()</code> method and exported <code><a href="../reference/parse_envelope.html">parse_envelope()</a></code> helper: the <code>ENVELOPE</code> of each message parsed into a data frame (date, subject, from, sender, reply_to, to, cc, bcc, in_reply_to, message_id), with addresses formatted as <code>Name &lt;mailbox@host&gt;</code> and RFC 2047 encoded words decoded.</p></li>
+<li><p>new <code>ImapCon$fetch_bodystructure()</code> method and exported <code><a href="../reference/parse_bodystructure.html">parse_bodystructure()</a></code> helper: the MIME structure of each message parsed into one row per part, with the section number usable in <code>fetch_body(mime_level = )</code>, type/subtype, charset, filename, encoding, size, disposition, and an <code>is_attachment</code> flag. Both parsers are built on a new IMAP list tokenizer that handles quoted strings, literals, and <code>NIL</code>.</p></li>
+<li><p><code><a href="../reference/configure_imap.html">configure_imap()</a></code> / <code>ImapCon$new()</code> gained <code>oauth_mechanism = c("XOAUTH2", "OAUTHBEARER")</code>, selecting the SASL mechanism used to send the OAuth 2.0 token (<code>OAUTHBEARER</code>, RFC 7628, is the mechanism Microsoft 365 recommends). Not exercised live in this release (no OAuth account in the sandbox); it maps to libcurl’s <code>CURLOPT_LOGIN_OPTIONS = "AUTH=OAUTHBEARER"</code>.</p></li>
+<li><p><code>list_mail_folders(detailed = TRUE)</code> adds a <code>my_rights</code> column when the server advertises <code>LIST-MYRIGHTS</code> (RFC 8440).</p></li>
+<li><p><code>create_folder()</code> gained a <code>special_use</code> argument (<code>CREATE name (USE (\Archive))</code>, CREATE-SPECIAL-USE, RFC 6154), capability-checked.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-1-5-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-3"></a></h3>
+<ul><li><p><code>list_mail_folders()</code> classified every folder as a child on servers whose hierarchy delimiter is <code>.</code> (Dovecot, and therefore most self-hosted servers): the delimiter was interpolated unescaped into a regular expression. It is now matched literally, and <code>root</code>/<code>children</code> are split correctly.</p></li>
+<li><p><code>list_special_use_folders()</code> returned the delimiter (<code>"."</code>) instead of the folder name on servers that send unquoted mailbox names (Dovecot). The name is now read as the token after the delimiter, quoted or not.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="tests-1-5-3">Tests<a class="anchor" aria-label="anchor" href="#tests-1-5-3"></a></h3>
+<ul><li>the Docker sandbox now defines special-use mailboxes (<code>Drafts</code>, <code>Sent</code>, <code>Junk</code>, <code>Trash</code>, <code>Archive</code>), so <code>list_special_use_folders()</code> and the <code>special_use</code> column of <code>list_mail_folders(detailed = TRUE)</code> can be exercised locally. New offline tests cover modified UTF-7 round trips, the IMAP list tokenizer, <code><a href="../reference/parse_envelope.html">parse_envelope()</a></code>, <code><a href="../reference/parse_bodystructure.html">parse_bodystructure()</a></code>, the <code>LIST-MYRIGHTS</code> join, and the <code>CREATE ... (USE ...)</code> request (<code>test-round4.R</code>).</li></ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.2" id="mrpostman-152-2026-08-27-feature-update">mRpostman 1.5.2 (2026-08-27 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-152-2026-08-27-feature-update"></a></h2>
 <div class="section level3">

@@ -27,3 +27,12 @@ test_that("no special-use folders yields an empty data.frame", {
   expect_s3_class(x, "data.frame")
   expect_equal(nrow(x), 0L)
 })
+
+test_that("unquoted folder names (Dovecot) and mUTF-7 names are read", {
+  resp <- paste0('* LIST (\\Drafts \\HasNoChildren) "." Drafts\r\n',
+                 '* LIST (\\Sent \\HasNoChildren) "." "&AMk-cole"\r\n',
+                 '* LIST (\\HasNoChildren) "." INBOX\r\n')
+  x <- mRpostman:::parse_special_use(resp)
+  expect_identical(x$folder, c("Drafts", "École"))
+  expect_identical(x$special_use, c("\\Drafts", "\\Sent"))
+})

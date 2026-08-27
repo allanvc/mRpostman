@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mRpostman</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.5.3</span>
       </span>
     </div>
 
@@ -305,6 +305,8 @@
 <li><p><a href="#method-ImapCon-fetch_header"><code>ImapCon$fetch_header()</code></a></p></li>
 <li><p><a href="#method-ImapCon-fetch_metadata"><code>ImapCon$fetch_metadata()</code></a></p></li>
 <li><p><a href="#method-ImapCon-fetch_preview"><code>ImapCon$fetch_preview()</code></a></p></li>
+<li><p><a href="#method-ImapCon-fetch_envelope"><code>ImapCon$fetch_envelope()</code></a></p></li>
+<li><p><a href="#method-ImapCon-fetch_bodystructure"><code>ImapCon$fetch_bodystructure()</code></a></p></li>
 <li><p><a href="#method-ImapCon-fetch_text"><code>ImapCon$fetch_text()</code></a></p></li>
 <li><p><a href="#method-ImapCon-copy_msg"><code>ImapCon$copy_msg()</code></a></p></li>
 <li><p><a href="#method-ImapCon-move_msg"><code>ImapCon$move_msg()</code></a></p></li>
@@ -330,6 +332,7 @@
 <span>  <span class="va">username</span>,</span>
 <span>  password <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  xoauth2_bearer <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  oauth_mechanism <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XOAUTH2"</span>, <span class="st">"OAUTHBEARER"</span><span class="op">)</span>,</span>
 <span>  use_ssl <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffersize <span class="op">=</span> <span class="fl">16000</span>,</span>
@@ -349,6 +352,11 @@
 
       <dt><code>xoauth2_bearer</code></dt>
 <dd><p>A character string containing the oauth2 bearer token.</p></dd>
+
+      <dt><code>oauth_mechanism</code></dt>
+<dd><p>The SASL mechanism used to send the OAuth 2.0
+token: <code>"XOAUTH2"</code> (default) or <code>"OAUTHBEARER"</code> (RFC 7628).
+Ignored when authenticating with a password.</p></dd>
 
       <dt><code>use_ssl</code></dt>
 <dd><p>A logical indicating the use or not of Secure Sockets Layer
@@ -1272,7 +1280,7 @@ Default is <code>1</code>.</p></dd>
 <h3 id="imapcon-create-folder-"><code>ImapCon$create_folder()</code><a class="anchor" aria-label="anchor" href="#imapcon-create-folder-"></a></h3>
 <p>Create a new mail folder.</p><div class="section">
 <h4 id="usage-33">Usage<a class="anchor" aria-label="anchor" href="#usage-33"></a></h4>
-<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">create_folder</span><span class="op">(</span><span class="va">name</span>, mute <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">create_folder</span><span class="op">(</span><span class="va">name</span>, mute <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span>, special_use <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
 <h4 id="arguments-32">Arguments<a class="anchor" aria-label="anchor" href="#arguments-32"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>name</code></dt>
@@ -1286,6 +1294,12 @@ when the command is successfully executed. Default is <code>FALSE</code>.</p></d
       <dt><code>retries</code></dt>
 <dd><p>Number of attempts to connect and execute the command.
 Default is <code>1</code>.</p></dd>
+
+      <dt><code>special_use</code></dt>
+<dd><p><code>NULL</code> (default) or a <code>character</code> vector of
+special-use attributes to assign to the new folder, e.g.
+<code>"\Archive"</code> (CREATE-SPECIAL-USE, RFC 6154; requires that
+server capability).</p></dd>
 
 
 </dl><p></p></div>
@@ -2896,10 +2910,84 @@ Default is <code>1</code>.</p></dd>
 
 </div>
 
+<p></p><hr><a id="method-ImapCon-fetch_envelope"></a><div class="section">
+<h3 id="imapcon-fetch-envelope-"><code>ImapCon$fetch_envelope()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-envelope-"></a></h3>
+<p>Fetch the envelope of messages parsed into a data frame
+  (IMAP <code>FETCH ... (ENVELOPE)</code>): date, subject, and the address
+  lists, with RFC 2047 encoded words decoded. See
+  <code><a href="parse_envelope.html">parse_envelope</a></code>.</p><div class="section">
+<h4 id="usage-60">Usage<a class="anchor" aria-label="anchor" href="#usage-60"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_envelope</span><span class="op">(</span><span class="va">msg_id</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-59">Arguments<a class="anchor" aria-label="anchor" href="#arguments-59"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
+<dd><p>A <code>numeric vector</code> containing one or more message
+ids, or the <code>"$"</code> reference of a saved search.</p></dd>
+
+      <dt><code>use_uid</code></dt>
+<dd><p>Default is <code>FALSE</code>. If <code>TRUE</code>, the command is
+performed with UIDs and the first column is <code>uid</code>.</p></dd>
+
+      <dt><code>retries</code></dt>
+<dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-52">Returns<a class="anchor" aria-label="anchor" href="#returns-52"></a></h4>
+<p>A <code>data.frame</code> with one row per message: <code>id</code> (or
+  <code>uid</code>), <code>date</code>, <code>subject</code>, <code>from</code>,
+  <code>sender</code>, <code>reply_to</code>, <code>to</code>, <code>cc</code>, <code>bcc</code>,
+  <code>in_reply_to</code>, and <code>message_id</code>.</p>
+</div><p></p><div class="section">
+<h4 id="examples-51">Examples<a class="anchor" aria-label="anchor" href="#examples-51"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Jan-2026"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_envelope</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
+<p></p><hr><a id="method-ImapCon-fetch_bodystructure"></a><div class="section">
+<h3 id="imapcon-fetch-bodystructure-"><code>ImapCon$fetch_bodystructure()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-bodystructure-"></a></h3>
+<p>Fetch the MIME structure of messages parsed into a data
+  frame of parts (IMAP <code>FETCH ... (BODYSTRUCTURE)</code>), one row per
+  part with its section number, type, charset, filename, encoding,
+  size, and disposition. See <code><a href="parse_bodystructure.html">parse_bodystructure</a></code>.</p><div class="section">
+<h4 id="usage-61">Usage<a class="anchor" aria-label="anchor" href="#usage-61"></a></h4>
+<p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_bodystructure</span><span class="op">(</span><span class="va">msg_id</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
+</div><p></p><div class="section">
+<h4 id="arguments-60">Arguments<a class="anchor" aria-label="anchor" href="#arguments-60"></a></h4>
+<p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
+<dd><p>A <code>numeric vector</code> containing one or more message
+ids, or the <code>"$"</code> reference of a saved search.</p></dd>
+
+      <dt><code>use_uid</code></dt>
+<dd><p>Default is <code>FALSE</code>. If <code>TRUE</code>, the command is
+performed with UIDs and the first column is <code>uid</code>.</p></dd>
+
+      <dt><code>retries</code></dt>
+<dd><p>Number of attempts to connect and execute the command.
+Default is <code>1</code>.</p></dd>
+
+
+</dl><p></p></div>
+</div><p></p><div class="section">
+<h4 id="returns-53">Returns<a class="anchor" aria-label="anchor" href="#returns-53"></a></h4>
+<p>A <code>data.frame</code> with one row per MIME part of each message.</p>
+</div><p></p><div class="section">
+<h4 id="examples-52">Examples<a class="anchor" aria-label="anchor" href="#examples-52"></a></h4>
+<p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
+<span><span class="va">parts</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_bodystructure</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">parts</span><span class="op">[</span><span class="va">parts</span><span class="op">$</span><span class="va">is_attachment</span>, <span class="op">]</span></span></code></pre></div><p></p></div>
+</div>
+
+</div>
+
 <p></p><hr><a id="method-ImapCon-fetch_text"></a><div class="section">
 <h3 id="imapcon-fetch-text-"><code>ImapCon$fetch_text()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-text-"></a></h3>
 <p>Fetch message text</p><div class="section">
-<h4 id="usage-60">Usage<a class="anchor" aria-label="anchor" href="#usage-60"></a></h4>
+<h4 id="usage-62">Usage<a class="anchor" aria-label="anchor" href="#usage-62"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -2912,7 +3000,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-59">Arguments<a class="anchor" aria-label="anchor" href="#arguments-59"></a></h4>
+<h4 id="arguments-61">Arguments<a class="anchor" aria-label="anchor" href="#arguments-61"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -2961,11 +3049,11 @@ is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-52">Returns<a class="anchor" aria-label="anchor" href="#returns-52"></a></h4>
+<h4 id="returns-54">Returns<a class="anchor" aria-label="anchor" href="#returns-54"></a></h4>
 <p>A <code>list</code> with the fetch contents or a logical if
   <code>write_to_disk = TRUE</code> and <code>keep_in_mem = FALSE</code>.</p>
 </div><p></p><div class="section">
-<h4 id="examples-51">Examples<a class="anchor" aria-label="anchor" href="#examples-51"></a></h4>
+<h4 id="examples-53">Examples<a class="anchor" aria-label="anchor" href="#examples-53"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and partially fetch the results using the pipe</span></span>
 <span><span class="co"># first 200 characters, writing to disk, silence results in the console</span></span>
@@ -2987,7 +3075,7 @@ is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-copy_msg"></a><div class="section">
 <h3 id="imapcon-copy-msg-"><code>ImapCon$copy_msg()</code><a class="anchor" aria-label="anchor" href="#imapcon-copy-msg-"></a></h3>
 <p>Copy message(s) between the selected folder and another one</p><div class="section">
-<h4 id="usage-61">Usage<a class="anchor" aria-label="anchor" href="#usage-61"></a></h4>
+<h4 id="usage-63">Usage<a class="anchor" aria-label="anchor" href="#usage-63"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">copy_msg</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -2997,7 +3085,7 @@ is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-60">Arguments<a class="anchor" aria-label="anchor" href="#arguments-60"></a></h4>
+<h4 id="arguments-62">Arguments<a class="anchor" aria-label="anchor" href="#arguments-62"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3030,14 +3118,14 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-53">Returns<a class="anchor" aria-label="anchor" href="#returns-53"></a></h4>
+<h4 id="returns-55">Returns<a class="anchor" aria-label="anchor" href="#returns-55"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.
   When the server advertises <code>UIDPLUS</code> (RFC 4315), the vector
   carries a <code>"copyuid"</code> attribute: a <code>data.frame</code> mapping each
   <code>source_uid</code> to the <code>dest_uid</code> assigned in the destination
   folder.</p>
 </div><p></p><div class="section">
-<h4 id="examples-52">Examples<a class="anchor" aria-label="anchor" href="#examples-52"></a></h4>
+<h4 id="examples-54">Examples<a class="anchor" aria-label="anchor" href="#examples-54"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and copy the results to another folder</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3053,7 +3141,7 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-move_msg"></a><div class="section">
 <h3 id="imapcon-move-msg-"><code>ImapCon$move_msg()</code><a class="anchor" aria-label="anchor" href="#imapcon-move-msg-"></a></h3>
 <p>Move message(s) between the selected folder and another one</p><div class="section">
-<h4 id="usage-62">Usage<a class="anchor" aria-label="anchor" href="#usage-62"></a></h4>
+<h4 id="usage-64">Usage<a class="anchor" aria-label="anchor" href="#usage-64"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">move_msg</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3063,7 +3151,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-61">Arguments<a class="anchor" aria-label="anchor" href="#arguments-61"></a></h4>
+<h4 id="arguments-63">Arguments<a class="anchor" aria-label="anchor" href="#arguments-63"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3096,14 +3184,14 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-54">Returns<a class="anchor" aria-label="anchor" href="#returns-54"></a></h4>
+<h4 id="returns-56">Returns<a class="anchor" aria-label="anchor" href="#returns-56"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.
   When the server advertises <code>UIDPLUS</code> (RFC 4315), the vector
   carries a <code>"copyuid"</code> attribute: a <code>data.frame</code> mapping each
   <code>source_uid</code> to the <code>dest_uid</code> assigned in the destination
   folder.</p>
 </div><p></p><div class="section">
-<h4 id="examples-53">Examples<a class="anchor" aria-label="anchor" href="#examples-53"></a></h4>
+<h4 id="examples-55">Examples<a class="anchor" aria-label="anchor" href="#examples-55"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and copy the results to another folder</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3125,7 +3213,7 @@ Default is <code>1</code>.</p></dd>
   flags given in <code>flags</code> (none by default). When the server
   advertises <code>UIDPLUS</code> (RFC 4315), the UID assigned to the message
   is returned.</p><div class="section">
-<h4 id="usage-63">Usage<a class="anchor" aria-label="anchor" href="#usage-63"></a></h4>
+<h4 id="usage-65">Usage<a class="anchor" aria-label="anchor" href="#usage-65"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">append_msg</span><span class="op">(</span></span>
 <span>  <span class="va">message</span>,</span>
 <span>  folder <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -3134,7 +3222,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-62">Arguments<a class="anchor" aria-label="anchor" href="#arguments-62"></a></h4>
+<h4 id="arguments-64">Arguments<a class="anchor" aria-label="anchor" href="#arguments-64"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>message</code></dt>
 <dd><p>A <code>character</code> string or <code>raw</code> vector with the
 full RFC 822 message (headers and body).</p></dd>
@@ -3161,12 +3249,12 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-55">Returns<a class="anchor" aria-label="anchor" href="#returns-55"></a></h4>
+<h4 id="returns-57">Returns<a class="anchor" aria-label="anchor" href="#returns-57"></a></h4>
 <p>Invisibly, the UID assigned to the appended message when the
   server reports it (<code>APPENDUID</code> response code, UIDPLUS), or
   <code>NA</code> otherwise.</p>
 </div><p></p><div class="section">
-<h4 id="examples-54">Examples<a class="anchor" aria-label="anchor" href="#examples-54"></a></h4>
+<h4 id="examples-56">Examples<a class="anchor" aria-label="anchor" href="#examples-56"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"From: me@example.com"</span>, <span class="st">"To: you@example.com"</span>,</span>
 <span>             <span class="st">"Subject: Hi"</span>, <span class="st">""</span>, <span class="st">"Message body."</span>, sep <span class="op">=</span> <span class="st">"\r\n"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">append_msg</span><span class="op">(</span>message <span class="op">=</span> <span class="va">msg</span>, folder <span class="op">=</span> <span class="st">"Drafts"</span>, flags <span class="op">=</span> <span class="st">"Draft"</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3178,10 +3266,10 @@ Default is <code>1</code>.</p></dd>
 <h3 id="imapcon-esearch-count-"><code>ImapCon$esearch_count()</code><a class="anchor" aria-label="anchor" href="#imapcon-esearch-count-"></a></h3>
 <p>Count the number of messages with a specific flag(s) in a
   folder (depends on ESEARCH capability)</p><div class="section">
-<h4 id="usage-64">Usage<a class="anchor" aria-label="anchor" href="#usage-64"></a></h4>
+<h4 id="usage-66">Usage<a class="anchor" aria-label="anchor" href="#usage-66"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span><span class="va">flag</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-63">Arguments<a class="anchor" aria-label="anchor" href="#arguments-63"></a></h4>
+<h4 id="arguments-65">Arguments<a class="anchor" aria-label="anchor" href="#arguments-65"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>flag</code></dt>
 <dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the counting operation. Use <a href="#method-list_flags"><code>ImapCon$list_flags()</code></a>
@@ -3204,11 +3292,11 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-56">Returns<a class="anchor" aria-label="anchor" href="#returns-56"></a></h4>
+<h4 id="returns-58">Returns<a class="anchor" aria-label="anchor" href="#returns-58"></a></h4>
 <p>A numeric <code>vector</code> of length <code>1</code> containing the number
   of messages in the folder that meet the specified criteria.</p>
 </div><p></p><div class="section">
-<h4 id="examples-55">Examples<a class="anchor" aria-label="anchor" href="#examples-55"></a></h4>
+<h4 id="examples-57">Examples<a class="anchor" aria-label="anchor" href="#examples-57"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># count the number of messages marked as "Flagged" and "Answered"</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Flagged"</span>, <span class="st">"Answered"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3219,10 +3307,10 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-delete_msg"></a><div class="section">
 <h3 id="imapcon-delete-msg-"><code>ImapCon$delete_msg()</code><a class="anchor" aria-label="anchor" href="#imapcon-delete-msg-"></a></h3>
 <p>Delete message(s) in the selected mail folder</p><div class="section">
-<h4 id="usage-65">Usage<a class="anchor" aria-label="anchor" href="#usage-65"></a></h4>
+<h4 id="usage-67">Usage<a class="anchor" aria-label="anchor" href="#usage-67"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span><span class="va">msg_id</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, mute <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-64">Arguments<a class="anchor" aria-label="anchor" href="#arguments-64"></a></h4>
+<h4 id="arguments-66">Arguments<a class="anchor" aria-label="anchor" href="#arguments-66"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3246,10 +3334,10 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-57">Returns<a class="anchor" aria-label="anchor" href="#returns-57"></a></h4>
+<h4 id="returns-59">Returns<a class="anchor" aria-label="anchor" href="#returns-59"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.</p>
 </div><p></p><div class="section">
-<h4 id="examples-56">Examples<a class="anchor" aria-label="anchor" href="#examples-56"></a></h4>
+<h4 id="examples-58">Examples<a class="anchor" aria-label="anchor" href="#examples-58"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># delete</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Flagged"</span>, <span class="st">"Answered"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3260,10 +3348,10 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-expunge"></a><div class="section">
 <h3 id="imapcon-expunge-"><code>ImapCon$expunge()</code><a class="anchor" aria-label="anchor" href="#imapcon-expunge-"></a></h3>
 <p>Permanently removes all or specific messages marked as deleted from the selected folder</p><div class="section">
-<h4 id="usage-66">Usage<a class="anchor" aria-label="anchor" href="#usage-66"></a></h4>
+<h4 id="usage-68">Usage<a class="anchor" aria-label="anchor" href="#usage-68"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">expunge</span><span class="op">(</span>msg_uid <span class="op">=</span> <span class="cn">NULL</span>, mute <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-65">Arguments<a class="anchor" aria-label="anchor" href="#arguments-65"></a></h4>
+<h4 id="arguments-67">Arguments<a class="anchor" aria-label="anchor" href="#arguments-67"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_uid</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more messages UIDs.
 Only UIDs are allowed in this operation (note the "u" in msg_<em>u</em>id).
@@ -3281,10 +3369,10 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-58">Returns<a class="anchor" aria-label="anchor" href="#returns-58"></a></h4>
+<h4 id="returns-60">Returns<a class="anchor" aria-label="anchor" href="#returns-60"></a></h4>
 <p><code>TRUE</code> if the operation is successful.</p>
 </div><p></p><div class="section">
-<h4 id="examples-57">Examples<a class="anchor" aria-label="anchor" href="#examples-57"></a></h4>
+<h4 id="examples-59">Examples<a class="anchor" aria-label="anchor" href="#examples-59"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># count the number of messages marked as "Flagged" and "Answered"</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Flagged"</span>, <span class="st">"Answered"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3296,10 +3384,10 @@ Default is <code>1</code>.</p></dd>
 <h3 id="imapcon-esearch-min-id-"><code>ImapCon$esearch_min_id()</code><a class="anchor" aria-label="anchor" href="#imapcon-esearch-min-id-"></a></h3>
 <p>Search the minimum message id in the selected mail folder
   (depends on ESEARCH capability)</p><div class="section">
-<h4 id="usage-67">Usage<a class="anchor" aria-label="anchor" href="#usage-67"></a></h4>
+<h4 id="usage-69">Usage<a class="anchor" aria-label="anchor" href="#usage-69"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span><span class="va">flag</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-66">Arguments<a class="anchor" aria-label="anchor" href="#arguments-66"></a></h4>
+<h4 id="arguments-68">Arguments<a class="anchor" aria-label="anchor" href="#arguments-68"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>flag</code></dt>
 <dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use <a href="#method-list_flags"><code>ImapCon$list_flags()</code></a>
@@ -3322,11 +3410,11 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-59">Returns<a class="anchor" aria-label="anchor" href="#returns-59"></a></h4>
+<h4 id="returns-61">Returns<a class="anchor" aria-label="anchor" href="#returns-61"></a></h4>
 <p>A numeric <code>vector</code> of length <code>1</code> containing the minimum
   message id in the folder.</p>
 </div><p></p><div class="section">
-<h4 id="examples-58">Examples<a class="anchor" aria-label="anchor" href="#examples-58"></a></h4>
+<h4 id="examples-60">Examples<a class="anchor" aria-label="anchor" href="#examples-60"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># Search the minimum id of messages marked as "Answered"</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="st">"Answered"</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3338,10 +3426,10 @@ Default is <code>1</code>.</p></dd>
 <h3 id="imapcon-esearch-max-id-"><code>ImapCon$esearch_max_id()</code><a class="anchor" aria-label="anchor" href="#imapcon-esearch-max-id-"></a></h3>
 <p>Search the maximum message id in the selected mail folder
   (depends on ESEARCH capability)</p><div class="section">
-<h4 id="usage-68">Usage<a class="anchor" aria-label="anchor" href="#usage-68"></a></h4>
+<h4 id="usage-70">Usage<a class="anchor" aria-label="anchor" href="#usage-70"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">esearch_max_id</span><span class="op">(</span><span class="va">flag</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-67">Arguments<a class="anchor" aria-label="anchor" href="#arguments-67"></a></h4>
+<h4 id="arguments-69">Arguments<a class="anchor" aria-label="anchor" href="#arguments-69"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>flag</code></dt>
 <dd><p>A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use <a href="#method-list_flags"><code>ImapCon$list_flags()</code></a>
@@ -3364,11 +3452,11 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-60">Returns<a class="anchor" aria-label="anchor" href="#returns-60"></a></h4>
+<h4 id="returns-62">Returns<a class="anchor" aria-label="anchor" href="#returns-62"></a></h4>
 <p>A numeric <code>vector</code> of length <code>1</code> containing the maximum
   message id in the folder.</p>
 </div><p></p><div class="section">
-<h4 id="examples-59">Examples<a class="anchor" aria-label="anchor" href="#examples-59"></a></h4>
+<h4 id="examples-61">Examples<a class="anchor" aria-label="anchor" href="#examples-61"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># Search the minimum id of messages marked as "Seen"</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_max_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="st">"Seen"</span><span class="op">)</span></span></code></pre></div><p></p></div>
@@ -3379,7 +3467,7 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-add_flags"></a><div class="section">
 <h3 id="imapcon-add-flags-"><code>ImapCon$add_flags()</code><a class="anchor" aria-label="anchor" href="#imapcon-add-flags-"></a></h3>
 <p>Add flags to one or more messages</p><div class="section">
-<h4 id="usage-69">Usage<a class="anchor" aria-label="anchor" href="#usage-69"></a></h4>
+<h4 id="usage-71">Usage<a class="anchor" aria-label="anchor" href="#usage-71"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">add_flags</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3388,7 +3476,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-68">Arguments<a class="anchor" aria-label="anchor" href="#arguments-68"></a></h4>
+<h4 id="arguments-70">Arguments<a class="anchor" aria-label="anchor" href="#arguments-70"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3418,10 +3506,10 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-61">Returns<a class="anchor" aria-label="anchor" href="#returns-61"></a></h4>
+<h4 id="returns-63">Returns<a class="anchor" aria-label="anchor" href="#returns-63"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.</p>
 </div><p></p><div class="section">
-<h4 id="examples-60">Examples<a class="anchor" aria-label="anchor" href="#examples-60"></a></h4>
+<h4 id="examples-62">Examples<a class="anchor" aria-label="anchor" href="#examples-62"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># Add the "\Seen" permanent flag to the messages received in the last hour</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_younger_than</span><span class="op">(</span>seconds <span class="op">=</span> <span class="fl">3600</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="co"># depends on the WITHIN extension</span></span>
@@ -3433,7 +3521,7 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-replace_flags"></a><div class="section">
 <h3 id="imapcon-replace-flags-"><code>ImapCon$replace_flags()</code><a class="anchor" aria-label="anchor" href="#imapcon-replace-flags-"></a></h3>
 <p>Replace the current flags of one or more messages</p><div class="section">
-<h4 id="usage-70">Usage<a class="anchor" aria-label="anchor" href="#usage-70"></a></h4>
+<h4 id="usage-72">Usage<a class="anchor" aria-label="anchor" href="#usage-72"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">replace_flags</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3442,7 +3530,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-69">Arguments<a class="anchor" aria-label="anchor" href="#arguments-69"></a></h4>
+<h4 id="arguments-71">Arguments<a class="anchor" aria-label="anchor" href="#arguments-71"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3472,10 +3560,10 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-62">Returns<a class="anchor" aria-label="anchor" href="#returns-62"></a></h4>
+<h4 id="returns-64">Returns<a class="anchor" aria-label="anchor" href="#returns-64"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.</p>
 </div><p></p><div class="section">
-<h4 id="examples-61">Examples<a class="anchor" aria-label="anchor" href="#examples-61"></a></h4>
+<h4 id="examples-63">Examples<a class="anchor" aria-label="anchor" href="#examples-63"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># Replace the current flags of the messages in the search results for the</span></span>
 <span><span class="co">#.. flags "\UNSEEN" and "\Flagged"</span></span>
@@ -3488,7 +3576,7 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-remove_flags"></a><div class="section">
 <h3 id="imapcon-remove-flags-"><code>ImapCon$remove_flags()</code><a class="anchor" aria-label="anchor" href="#imapcon-remove-flags-"></a></h3>
 <p>Remove flag(s) of one or more messages</p><div class="section">
-<h4 id="usage-71">Usage<a class="anchor" aria-label="anchor" href="#usage-71"></a></h4>
+<h4 id="usage-73">Usage<a class="anchor" aria-label="anchor" href="#usage-73"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">remove_flags</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3497,7 +3585,7 @@ Default is <code>1</code>.</p></dd>
 <span>  retries <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-70">Arguments<a class="anchor" aria-label="anchor" href="#arguments-70"></a></h4>
+<h4 id="arguments-72">Arguments<a class="anchor" aria-label="anchor" href="#arguments-72"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3527,10 +3615,10 @@ Default is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-63">Returns<a class="anchor" aria-label="anchor" href="#returns-63"></a></h4>
+<h4 id="returns-65">Returns<a class="anchor" aria-label="anchor" href="#returns-65"></a></h4>
 <p>An invisible <code>numeric vector</code> containing the message ids.</p>
 </div><p></p><div class="section">
-<h4 id="examples-62">Examples<a class="anchor" aria-label="anchor" href="#examples-62"></a></h4>
+<h4 id="examples-64">Examples<a class="anchor" aria-label="anchor" href="#examples-64"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># Remove the "\SEEN" flag from the messages in the search result</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"20-Aug-2020"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3542,7 +3630,7 @@ Default is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-get_attachments"></a><div class="section">
 <h3 id="imapcon-get-attachments-"><code>ImapCon$get_attachments()</code><a class="anchor" aria-label="anchor" href="#imapcon-get-attachments-"></a></h3>
 <p>Extract attached file(s) from fetched message(s)</p><div class="section">
-<h4 id="usage-72">Usage<a class="anchor" aria-label="anchor" href="#usage-72"></a></h4>
+<h4 id="usage-74">Usage<a class="anchor" aria-label="anchor" href="#usage-74"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span></span>
 <span>  <span class="va">msg_list</span>,</span>
 <span>  content_disposition <span class="op">=</span> <span class="st">"both"</span>,</span>
@@ -3552,7 +3640,7 @@ Default is <code>1</code>.</p></dd>
 <span>  local_dir <span class="op">=</span> <span class="st">"."</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-71">Arguments<a class="anchor" aria-label="anchor" href="#arguments-71"></a></h4>
+<h4 id="arguments-73">Arguments<a class="anchor" aria-label="anchor" href="#arguments-73"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_list</code></dt>
 <dd><p>A <code>list</code> with the body or text content of the messages
 fetched with <a href="#method-fetch_body"><code>ImapCon$fetch_body()</code></a> or
@@ -3585,11 +3673,11 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-64">Returns<a class="anchor" aria-label="anchor" href="#returns-64"></a></h4>
+<h4 id="returns-66">Returns<a class="anchor" aria-label="anchor" href="#returns-66"></a></h4>
 <p><code>TRUE</code> if the operation is successful. The files are saved
 locally.</p>
 </div><p></p><div class="section">
-<h4 id="examples-63">Examples<a class="anchor" aria-label="anchor" href="#examples-63"></a></h4>
+<h4 id="examples-65">Examples<a class="anchor" aria-label="anchor" href="#examples-65"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="co"># example 1</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@gmail"</span>, where <span class="op">=</span> <span class="st">"CC"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3607,10 +3695,10 @@ locally.</p>
 <p></p><hr><a id="method-ImapCon-fetch_attachments_list"></a><div class="section">
 <h3 id="imapcon-fetch-attachments-list-"><code>ImapCon$fetch_attachments_list()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-attachments-list-"></a></h3>
 <p>Fetch attachments' list</p><div class="section">
-<h4 id="usage-73">Usage<a class="anchor" aria-label="anchor" href="#usage-73"></a></h4>
+<h4 id="usage-75">Usage<a class="anchor" aria-label="anchor" href="#usage-75"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="va">msg_id</span>, use_uid <span class="op">=</span> <span class="cn">FALSE</span>, retries <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-72">Arguments<a class="anchor" aria-label="anchor" href="#arguments-72"></a></h4>
+<h4 id="arguments-74">Arguments<a class="anchor" aria-label="anchor" href="#arguments-74"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3630,10 +3718,10 @@ is <code>1</code>.</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-65">Returns<a class="anchor" aria-label="anchor" href="#returns-65"></a></h4>
+<h4 id="returns-67">Returns<a class="anchor" aria-label="anchor" href="#returns-67"></a></h4>
 <p>A <code>list</code> with the fetch contents.</p>
 </div><p></p><div class="section">
-<h4 id="examples-64">Examples<a class="anchor" aria-label="anchor" href="#examples-64"></a></h4>
+<h4 id="examples-66">Examples<a class="anchor" aria-label="anchor" href="#examples-66"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and fetch the attachments' list of the messages</span></span>
 <span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3651,7 +3739,7 @@ is <code>1</code>.</p></dd>
 <p></p><hr><a id="method-ImapCon-fetch_attachments"></a><div class="section">
 <h3 id="imapcon-fetch-attachments-"><code>ImapCon$fetch_attachments()</code><a class="anchor" aria-label="anchor" href="#imapcon-fetch-attachments-"></a></h3>
 <p>Fetch message attachments</p><div class="section">
-<h4 id="usage-74">Usage<a class="anchor" aria-label="anchor" href="#usage-74"></a></h4>
+<h4 id="usage-76">Usage<a class="anchor" aria-label="anchor" href="#usage-76"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span></span>
 <span>  <span class="va">msg_id</span>,</span>
 <span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -3663,7 +3751,7 @@ is <code>1</code>.</p></dd>
 <span>  local_dir <span class="op">=</span> <span class="st">"."</span></span>
 <span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-73">Arguments<a class="anchor" aria-label="anchor" href="#arguments-73"></a></h4>
+<h4 id="arguments-75">Arguments<a class="anchor" aria-label="anchor" href="#arguments-75"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>msg_id</code></dt>
 <dd><p>A <code>numeric vector</code> containing one or more message ids.</p></dd>
 
@@ -3708,10 +3796,10 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 
 </dl><p></p></div>
 </div><p></p><div class="section">
-<h4 id="returns-66">Returns<a class="anchor" aria-label="anchor" href="#returns-66"></a></h4>
+<h4 id="returns-68">Returns<a class="anchor" aria-label="anchor" href="#returns-68"></a></h4>
 <p>A <code>list</code> with the fetch contents.</p>
 </div><p></p><div class="section">
-<h4 id="examples-65">Examples<a class="anchor" aria-label="anchor" href="#examples-65"></a></h4>
+<h4 id="examples-67">Examples<a class="anchor" aria-label="anchor" href="#examples-67"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="co"># do a search and fetch the attachments' list of the messages</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_string</span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"@k-state.edu"</span>, where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -3728,10 +3816,10 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 <p></p><hr><a id="method-ImapCon-clone"></a><div class="section">
 <h3 id="imapcon-clone-"><code>ImapCon$clone()</code><a class="anchor" aria-label="anchor" href="#imapcon-clone-"></a></h3>
 <p>The objects of this class are cloneable with this method.</p><div class="section">
-<h4 id="usage-75">Usage<a class="anchor" aria-label="anchor" href="#usage-75"></a></h4>
+<h4 id="usage-77">Usage<a class="anchor" aria-label="anchor" href="#usage-77"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">clone</span><span class="op">(</span>deep <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div><p></p><div class="section">
-<h4 id="arguments-74">Arguments<a class="anchor" aria-label="anchor" href="#arguments-74"></a></h4>
+<h4 id="arguments-76">Arguments<a class="anchor" aria-label="anchor" href="#arguments-76"></a></h4>
 <p></p><div class="arguments"><dl><dt><code>deep</code></dt>
 <dd><p>Whether to make a deep clone.</p></dd>
 
@@ -4280,6 +4368,25 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_flag</span><span class="op">(</span><span class="st">"UNSEEN"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_preview</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `ImapCon$fetch_envelope()`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Jan-2026"</span><span class="op">)</span> <span class="op"><a href="pipe.html">%&gt;%</a></span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_envelope</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co">## Method `ImapCon$fetch_bodystructure()`</span></span></span>
+<span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">parts</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_bodystructure</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">parts</span><span class="op">[</span><span class="va">parts</span><span class="op">$</span><span class="va">is_attachment</span>, <span class="op">]</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>

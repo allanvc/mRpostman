@@ -6,10 +6,24 @@
 #' @param retries Number of attempts to connect and execute the command.
 #'   Default is \code{1}.
 #' @noRd
-create_folder_int <- function(self, name, mute, retries) {
+create_folder_int <- function(self, name, mute, retries, special_use = NULL) {
 
   check_args(name = name, mute = mute, retries = retries) # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
+
+  # CREATE-SPECIAL-USE (RFC 6154, section 5.3): "CREATE name (USE (\\Attr))"
+  use_string <- ""
+  if (!is.null(special_use)) {
+    valid_use <- c("\\All", "\\Archive", "\\Drafts", "\\Flagged", "\\Junk",
+                   "\\Sent", "\\Trash")
+    assertthat::assert_that(
+      is.character(special_use), all(special_use %in% valid_use),
+      msg=paste0('"special_use" must be NULL or a subset of: ',
+                 paste(valid_use, collapse = ", "), '.'))
+    assert_capability(self, "CREATE-SPECIAL-USE", command = "create_folder(special_use = ...)",
+                      rfc = "RFC 6154", retries = retries)
+    use_string <- paste0(" (USE (", paste(special_use, collapse = " "), "))")
+  }
 
   # forcing retries as an integer
   retries <- as.integer(retries)
@@ -22,7 +36,7 @@ create_folder_int <- function(self, name, mute, retries) {
   h <- self$con_handle
 
   tryCatch({
-    curl::handle_setopt(h, customrequest = paste0('CREATE ', name2))
+    curl::handle_setopt(h, customrequest = paste0('CREATE ', name2, use_string))
   }, error = function(e){
     stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
   })

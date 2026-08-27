@@ -4,6 +4,10 @@
 #' @param username A character string containing the username.
 #' @param password A character string containing the user's password.
 #' @param xoauth2_bearer A character string containing the oauth2 bearer token.
+#' @param oauth_mechanism The SASL mechanism used to send the OAuth 2.0 token:
+#'   \code{"XOAUTH2"} (default; Gmail, Yahoo, and Microsoft 365) or
+#'   \code{"OAUTHBEARER"} (RFC 7628; the mechanism Microsoft 365 recommends).
+#'   Ignored when authenticating with a password.
 #' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
 #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
 #' @param verbose If \code{FALSE}, mutes the flow of information between the
@@ -40,6 +44,7 @@ configure_imap <- function(url,
                            username,
                            password = NULL,
                            xoauth2_bearer = NULL,
+                           oauth_mechanism = c("XOAUTH2", "OAUTHBEARER"),
                            use_ssl = TRUE,
                            verbose = FALSE,
                            buffersize = 16000,
@@ -50,6 +55,7 @@ configure_imap <- function(url,
                      username,
                      password = password,
                      xoauth2_bearer = xoauth2_bearer,
+                     oauth_mechanism = oauth_mechanism,
                      use_ssl = use_ssl,
                      verbose = verbose,
                      buffersize = buffersize,

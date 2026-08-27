@@ -27,7 +27,7 @@ parse_list_status <- function(resp_char, items) {
   folders <- folders[keep]
   # libcurl may deliver the untagged lines through both the header and the
   # body callbacks; keep the first occurrence of each folder
-  folders <- folders[!duplicated(folders)]
+  folders <- imap_utf7_decode(folders[!duplicated(folders)])
 
   out <- data.frame(folder = folders, stringsAsFactors = FALSE)
   for (it in items) {
@@ -39,7 +39,7 @@ parse_list_status <- function(resp_char, items) {
   sm <- stringr::str_match(status_lines,
                            "^\\*\\s+STATUS\\s+(?:\"(.*)\"|(\\S+))\\s+\\(([^\\)]*)\\)")
   for (i in seq_len(nrow(sm))) {
-    name <- ifelse(is.na(sm[i, 2]), sm[i, 3], sm[i, 2])
+    name <- imap_utf7_decode(ifelse(is.na(sm[i, 2]), sm[i, 3], sm[i, 2]))
     row <- match(name, out$folder)
     if (is.na(row)) {
       next
