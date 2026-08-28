@@ -5,8 +5,8 @@ test_that("saved_*() and modseq() build their search keys", {
   expect_identical(unclass(saved_since("27-Aug-2026")), "(SAVEDSINCE 27-Aug-2026)")
   expect_identical(unclass(saved_before("01-Jan-2020", negate = TRUE)), "(NOT (SAVEDBEFORE 01-Jan-2020))")
   expect_identical(unclass(saved_on("15-Mar-2021")), "(SAVEDON 15-Mar-2021)")
-  expect_identical(modseq(205), "(MODSEQ 205)")
-  expect_identical(modseq(1e6), "(MODSEQ 1000000)")
+  expect_identical(unclass(modseq(205)), "(MODSEQ 205)")
+  expect_identical(unclass(modseq(1e6)), "(MODSEQ 1000000)")
   expect_error(modseq(-1))
 })
 
