@@ -26,6 +26,6 @@ modseq <- function(value, negate = FALSE) {
                           msg='"value" must be a single non-negative number.')
   assertthat::assert_that(is.logical(negate), msg='"negate" must be a logical.')
   v <- format(value, scientific = FALSE)
-  if (!isTRUE(negate)) paste0('(MODSEQ ', v, ')')
-  else paste0('(NOT (MODSEQ ', v, '))')
+  if (!isTRUE(negate)) as_imap_search(paste0('(MODSEQ ', v, ')'))
+  else as_imap_search(paste0('(NOT (MODSEQ ', v, '))'))
 }

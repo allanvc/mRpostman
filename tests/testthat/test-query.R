@@ -29,6 +29,8 @@ test_that("imap_query() translates size and age", {
   expect_identical(q(imap_query(age < 3600)), "(YOUNGER 3600)")
   expect_identical(q(imap_query(age >= 3600)), "(OLDER 3599)")
   expect_error(imap_query(age == 10), "seconds")
+  expect_identical(q(imap_query(modseq >= 205)), "(MODSEQ 205)")
+  expect_identical(q(imap_query(modseq > 205)), "(MODSEQ 206)")
 })
 
 test_that("imap_query() translates the three date fields exactly", {
@@ -118,5 +120,7 @@ test_that("query() returns the same ids as the classic search on the sandbox", {
   expect_true(length(d) > 0)
   expect_identical(sort(d), sort(con$search(request = AND(
     sent_since(date_char = "01-Jan-2020"), sent_before(date_char = "01-Apr-2020")))))
+  expect_identical(sort(con$query(size < 1400)), sort(con$search_smaller_than(1400)))
+  expect_identical(sort(con$query(flag == "FLAGGED")), sort(con$search_flag("FLAGGED")))
   con$disconnect()
 })

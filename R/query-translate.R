@@ -12,7 +12,7 @@
                           FLAGGED = "UNFLAGGED", DELETED = "UNDELETED",
                           DRAFT = "UNDRAFT", RECENT = "OLD")
 .query_fields <- c(names(.query_string_fields), "flag", "keyword", "size",
-                   names(.query_date_prefix), "age")
+                   names(.query_date_prefix), "age", "modseq")
 
 #' Translate a query expression into an IMAP search string
 #'
@@ -24,8 +24,8 @@
 #' \code{flag} (\code{==}/\code{!=} against system flags or custom
 #' keywords), \code{size} in bytes and \code{age} in seconds
 #' (\code{>}, \code{>=}, \code{<}, \code{<=}), the date fields \code{sent},
-#' \code{date} (internal date), and \code{saved} (SAVEDATE servers), and
-#' \code{header("Name")}. Date fields accept \code{"YYYY-MM-DD"},
+#' \code{date} (internal date), and \code{saved} (SAVEDATE servers),
+#' \code{modseq} (CONDSTORE servers, \code{>=}), and \code{header("Name")}. Date fields accept \code{"YYYY-MM-DD"},
 #' \code{"DD-Mon-YYYY"}, or \code{Date} values with \code{>=}, \code{>},
 #' \code{<}, \code{<=}, and \code{==}. Comparisons are combined with
 #' \code{&}, \code{|}, \code{!}, \code{\%in\%} (one field against several
@@ -180,6 +180,18 @@ tq_cmp_field <- function(f, op, v) {
       ">"  = paste0("(OLDER ", fmt(n), ")"),
       ">=" = paste0("(OLDER ", fmt(n - 1), ")"),
       stop('"age" supports <, <=, >, and >= (seconds).', call. = FALSE))
+    return(as_imap_search(out))
+  }
+  if (f == "modseq") {
+    n <- as.numeric(v)
+    assertthat::assert_that(length(n) == 1, !is.na(n), n >= 0,
+                            msg = '"modseq" must be compared with a single non-negative number.')
+    fmt <- function(x) format(x, scientific = FALSE, trim = TRUE)
+    out <- switch(op,
+      ">=" = paste0("(MODSEQ ", fmt(n), ")"),
+      ">"  = paste0("(MODSEQ ", fmt(n + 1), ")"),
+      "<"  = paste0("(NOT (MODSEQ ", fmt(n), "))"),
+      stop('"modseq" supports >=, >, and < (the criterion means at least, RFC 7162).', call. = FALSE))
     return(as_imap_search(out))
   }
   if (f %in% names(.query_date_prefix)) {

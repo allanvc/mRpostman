@@ -22,8 +22,8 @@ with \code{==} and \code{!=}, meaning contains and does not contain),
 \code{flag} (\code{==}/\code{!=} against system flags or custom
 keywords), \code{size} in bytes and \code{age} in seconds
 (\code{>}, \code{>=}, \code{<}, \code{<=}), the date fields \code{sent},
-\code{date} (internal date), and \code{saved} (SAVEDATE servers), and
-\code{header("Name")}. Date fields accept \code{"YYYY-MM-DD"},
+\code{date} (internal date), and \code{saved} (SAVEDATE servers),
+\code{modseq} (CONDSTORE servers, \code{>=}), and \code{header("Name")}. Date fields accept \code{"YYYY-MM-DD"},
 \code{"DD-Mon-YYYY"}, or \code{Date} values with \code{>=}, \code{>},
 \code{<}, \code{<=}, and \code{==}. Comparisons are combined with
 \code{&}, \code{|}, \code{!}, \code{\%in\%} (one field against several
