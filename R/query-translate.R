@@ -1,5 +1,5 @@
 # The expression-based search language behind ImapCon$query() and
-# imap_query(): ordinary R expressions, captured unevaluated and translated
+# translate_query(): ordinary R expressions, captured unevaluated and translated
 # into RFC 3501 search strings by a pure function. Field names (subject,
 # from, to, cc, bcc, body, text, flag, size, sent, date, saved, age, and
 # header("Name")) are special only on the left side of a comparison;
@@ -38,12 +38,12 @@
 #'   \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.
 #' @return The translated search string, of class \code{"imap_search"}.
 #' @examples
-#' imap_query((subject == "budget" | "budget 3") & flag != "SEEN")
-#' imap_query(sent >= "2001-10-01" & size > 5e6)
-#' imap_query(subject %in% c("budget", "forecast") & age < 86400)
+#' translate_query((subject == "budget" | "budget 3") & flag != "SEEN")
+#' translate_query(sent >= "2001-10-01" & size > 5e6)
+#' translate_query(subject %in% c("budget", "forecast") & age < 86400)
 #' @export
-imap_query <- function(expr) {
-  translate_query(substitute(expr), parent.frame())
+translate_query <- function(expr) {
+  translate_query_(substitute(expr), parent.frame())
 }
 
 #' @noRd

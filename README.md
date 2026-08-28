@@ -138,8 +138,8 @@ type of operation:
   - **the query language (2.3.0)**: `query()` searches with plain R
     expressions, e.g. `con$query((subject == "budget" | "budget 3") &
     flag != "SEEN")`, translated to RFC 3501 search strings by the pure
-    function `imap_query()`; criterion constructors also combine with
-    the native `&`, `|`, and `!`;
+    function `translate_query()`; criterion constructors also combine
+    with the native `&`, `|`, and `!`;
   - **MIME-decoding and message-text helper functions**:
     `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`,
     `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`,

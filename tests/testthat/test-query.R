@@ -3,89 +3,89 @@
 
 q <- function(x) unclass(x)
 
-test_that("imap_query() translates string-field comparisons", {
-  expect_identical(q(imap_query(subject == "budget")), '(SUBJECT "budget")')
-  expect_identical(q(imap_query(subject != "budget")), '(NOT (SUBJECT "budget"))')
-  expect_identical(q(imap_query(from == "kaminski")), '(FROM "kaminski")')
-  expect_identical(q(imap_query(text == 'say "hi"')), '(TEXT "say \\"hi\\"")')
-  expect_error(imap_query(subject > "a"), "== \\(contains\\) and !=")
+test_that("translate_query() translates string-field comparisons", {
+  expect_identical(q(translate_query(subject == "budget")), '(SUBJECT "budget")')
+  expect_identical(q(translate_query(subject != "budget")), '(NOT (SUBJECT "budget"))')
+  expect_identical(q(translate_query(from == "kaminski")), '(FROM "kaminski")')
+  expect_identical(q(translate_query(text == 'say "hi"')), '(TEXT "say \\"hi\\"")')
+  expect_error(translate_query(subject > "a"), "== \\(contains\\) and !=")
 })
 
-test_that("imap_query() translates flags", {
-  expect_identical(q(imap_query(flag == "SEEN")), "(SEEN)")
-  expect_identical(q(imap_query(flag != "SEEN")), "(UNSEEN)")
-  expect_identical(q(imap_query(flag != "RECENT")), "(OLD)")
-  expect_identical(q(imap_query(flag == "\\Draft")), "(DRAFT)")
-  expect_identical(q(imap_query(flag == "todo")), "(KEYWORD todo)")
-  expect_identical(q(imap_query(flag != "todo")), "(UNKEYWORD todo)")
+test_that("translate_query() translates flags", {
+  expect_identical(q(translate_query(flag == "SEEN")), "(SEEN)")
+  expect_identical(q(translate_query(flag != "SEEN")), "(UNSEEN)")
+  expect_identical(q(translate_query(flag != "RECENT")), "(OLD)")
+  expect_identical(q(translate_query(flag == "\\Draft")), "(DRAFT)")
+  expect_identical(q(translate_query(flag == "todo")), "(KEYWORD todo)")
+  expect_identical(q(translate_query(flag != "todo")), "(UNKEYWORD todo)")
 })
 
-test_that("imap_query() translates size and age", {
-  expect_identical(q(imap_query(size > 5e6)), "(LARGER 5000000)")
-  expect_identical(q(imap_query(size >= 5e6)), "(LARGER 4999999)")
-  expect_identical(q(imap_query(size < 1400)), "(SMALLER 1400)")
-  expect_identical(q(imap_query(size <= 1400)), "(SMALLER 1401)")
-  expect_identical(q(imap_query(size == 100)), "(LARGER 99 SMALLER 101)")
-  expect_identical(q(imap_query(age < 3600)), "(YOUNGER 3600)")
-  expect_identical(q(imap_query(age >= 3600)), "(OLDER 3599)")
-  expect_error(imap_query(age == 10), "seconds")
-  expect_identical(q(imap_query(modseq >= 205)), "(MODSEQ 205)")
-  expect_identical(q(imap_query(modseq > 205)), "(MODSEQ 206)")
+test_that("translate_query() translates size and age", {
+  expect_identical(q(translate_query(size > 5e6)), "(LARGER 5000000)")
+  expect_identical(q(translate_query(size >= 5e6)), "(LARGER 4999999)")
+  expect_identical(q(translate_query(size < 1400)), "(SMALLER 1400)")
+  expect_identical(q(translate_query(size <= 1400)), "(SMALLER 1401)")
+  expect_identical(q(translate_query(size == 100)), "(LARGER 99 SMALLER 101)")
+  expect_identical(q(translate_query(age < 3600)), "(YOUNGER 3600)")
+  expect_identical(q(translate_query(age >= 3600)), "(OLDER 3599)")
+  expect_error(translate_query(age == 10), "seconds")
+  expect_identical(q(translate_query(modseq >= 205)), "(MODSEQ 205)")
+  expect_identical(q(translate_query(modseq > 205)), "(MODSEQ 206)")
 })
 
-test_that("imap_query() translates the three date fields exactly", {
-  expect_identical(q(imap_query(sent >= "2001-10-01")), "(SENTSINCE 1-Oct-2001)")
-  expect_identical(q(imap_query(sent > "2001-10-01")), "(SENTSINCE 2-Oct-2001)")
-  expect_identical(q(imap_query(sent < "2002-01-01")), "(SENTBEFORE 1-Jan-2002)")
-  expect_identical(q(imap_query(sent <= "2001-12-31")), "(SENTBEFORE 1-Jan-2002)")
-  expect_identical(q(imap_query(sent == "2001-10-16")), "(SENTON 16-Oct-2001)")
-  expect_identical(q(imap_query(date >= "01-Oct-2001")), "(SINCE 1-Oct-2001)")
-  expect_identical(q(imap_query(saved >= as.Date("2026-01-02"))), "(SAVEDSINCE 2-Jan-2026)")
-  expect_error(imap_query(sent >= "soon"), "not a date")
+test_that("translate_query() translates the three date fields exactly", {
+  expect_identical(q(translate_query(sent >= "2001-10-01")), "(SENTSINCE 1-Oct-2001)")
+  expect_identical(q(translate_query(sent > "2001-10-01")), "(SENTSINCE 2-Oct-2001)")
+  expect_identical(q(translate_query(sent < "2002-01-01")), "(SENTBEFORE 1-Jan-2002)")
+  expect_identical(q(translate_query(sent <= "2001-12-31")), "(SENTBEFORE 1-Jan-2002)")
+  expect_identical(q(translate_query(sent == "2001-10-16")), "(SENTON 16-Oct-2001)")
+  expect_identical(q(translate_query(date >= "01-Oct-2001")), "(SINCE 1-Oct-2001)")
+  expect_identical(q(translate_query(saved >= as.Date("2026-01-02"))), "(SAVEDSINCE 2-Jan-2026)")
+  expect_error(translate_query(sent >= "soon"), "not a date")
 })
 
-test_that("imap_query() combines with R's operators and precedence", {
-  expect_identical(q(imap_query(subject == "a" & flag != "SEEN")),
+test_that("translate_query() combines with R's operators and precedence", {
+  expect_identical(q(translate_query(subject == "a" & flag != "SEEN")),
                    '((SUBJECT "a") (UNSEEN))')
-  expect_identical(q(imap_query(subject == "a" | text == "b")),
+  expect_identical(q(translate_query(subject == "a" | text == "b")),
                    '(OR (SUBJECT "a") (TEXT "b"))')
-  expect_identical(q(imap_query(!(subject == "a"))), '(NOT (SUBJECT "a"))')
+  expect_identical(q(translate_query(!(subject == "a"))), '(NOT (SUBJECT "a"))')
   # & binds tighter than |, as in R
-  expect_identical(q(imap_query(subject == "a" & flag != "SEEN" | text == "b")),
+  expect_identical(q(translate_query(subject == "a" & flag != "SEEN" | text == "b")),
                    '(OR ((SUBJECT "a") (UNSEEN)) (TEXT "b"))')
-  expect_identical(q(imap_query(subject == "a" & (flag != "SEEN" | text == "b"))),
+  expect_identical(q(translate_query(subject == "a" & (flag != "SEEN" | text == "b"))),
                    '((SUBJECT "a") (OR (UNSEEN) (TEXT "b")))')
 })
 
 test_that("bare values inherit the preceding comparison (implicit OR)", {
-  expect_identical(q(imap_query(subject == "budget" | "budget 3")),
+  expect_identical(q(translate_query(subject == "budget" | "budget 3")),
                    '(OR (SUBJECT "budget") (SUBJECT "budget 3"))')
-  expect_identical(q(imap_query((subject == "budget" | "budget 3") & flag != "SEEN")),
+  expect_identical(q(translate_query((subject == "budget" | "budget 3") & flag != "SEEN")),
                    '((OR (SUBJECT "budget") (SUBJECT "budget 3")) (UNSEEN))')
-  expect_error(imap_query(subject %in% list("a")), "vector of values")
-  expect_error(imap_query("orphan"), "bare value")
+  expect_error(translate_query(subject %in% list("a")), "vector of values")
+  expect_error(translate_query("orphan"), "bare value")
 })
 
 test_that("%in% expands into OR chains over one field", {
-  expect_identical(q(imap_query(subject %in% c("a", "b"))),
+  expect_identical(q(translate_query(subject %in% c("a", "b"))),
                    '(OR (SUBJECT "a") (SUBJECT "b"))')
-  expect_identical(q(imap_query(subject %in% c("a", "b", "c"))),
+  expect_identical(q(translate_query(subject %in% c("a", "b", "c"))),
                    '(OR (OR (SUBJECT "a") (SUBJECT "b")) (SUBJECT "c"))')
-  expect_identical(q(imap_query(flag %in% c("SEEN", "todo"))),
+  expect_identical(q(translate_query(flag %in% c("SEEN", "todo"))),
                    "(OR (SEEN) (KEYWORD todo))")
 })
 
 test_that("variables and helper calls are evaluated in the caller frame", {
   needle <- "budget"
   n <- 5e6
-  expect_identical(q(imap_query(subject == needle & size > n)),
+  expect_identical(q(translate_query(subject == needle & size > n)),
                    '((SUBJECT "budget") (LARGER 5000000))')
-  expect_identical(q(imap_query(string("x", where = "SUBJECT") & flag != "SEEN")),
+  expect_identical(q(translate_query(string("x", where = "SUBJECT") & flag != "SEEN")),
                    '((SUBJECT "x") (UNSEEN))')
-  expect_identical(q(imap_query(header("X-Mailer") == "Outlook")),
+  expect_identical(q(translate_query(header("X-Mailer") == "Outlook")),
                    '(HEADER X-Mailer "Outlook")')
-  expect_error(imap_query(subject), "must appear in a comparison")
-  expect_error(imap_query(header("X-Mailer")), "must appear in a comparison")
+  expect_error(translate_query(subject), "must appear in a comparison")
+  expect_error(translate_query(header("X-Mailer")), "must appear in a comparison")
 })
 
 test_that("Ops combinators work on the criterion constructors", {
