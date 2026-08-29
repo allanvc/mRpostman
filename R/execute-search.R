@@ -9,33 +9,42 @@
 #' @noRd
 execute_search <- function(self, url, handle, customrequest, esearch, retries) {
 
-  # previous folder selection checking
-  # if (is.na(self$folder)) {
-  #   stop('No folder previously selected.')
-  # }
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
+  if (is.na(self$con_params$folder)) {
+    stop_no_folder()
+  }
 
   # ESEARCH is an optional extension (RFC 4731). Only the esearch = TRUE path
-  # relies on it; gate it here so any search_*() call fails early with a clear
-  # message on a server that does not advertise ESEARCH.
+  # relies on it; gate it here so any search call fails early with a clear
+  # message on a server that does not advertise ESEARCH. The gate runs BEFORE
+  # the command is set on the handle (inside imap_exec), so its CAPABILITY
+  # fetch can never clobber the pending SEARCH.
   if (isTRUE(esearch)) {
     assert_capability(self, "ESEARCH", command = "search (esearch = TRUE)",
                       rfc = "RFC 4731", retries = retries)
   }
 
-  # the capability gate above may have fetched CAPABILITY on this same
-  # handle (first call of a session), overwriting the customrequest that
-  # the caller set; re-set it so the SEARCH itself is what goes out
+  parse_ids <- function(response) {
+    content <- rawToChar(response$content)
+    pre <- if (isTRUE(esearch)) parse_esearch_all(content) else parse_search_ids(content)
+    # ESEARCH condenses the response (e.g. "ALL 1:5,8"); parse_esearch_all()
+    # expands the sequence-set without eval()-ing server-provided text.
+    if (length(pre) > 0) {
+      pre
+    } else if (grepl("\\* (ESEARCH|SEARCH)", content)) {
+      # a confirmed search response with no ids: a legitimate empty result
+      integer(0)
+    } else {
+      NA
+    }
+  }
+
+  # first attempt: the raw error object is needed to drive the charset and
+  # UTF8=ACCEPT recoveries, so this one bypasses imap_exec
   tryCatch({
     curl::handle_setopt(handle, customrequest = customrequest)
   }, error = function(e) {
-    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+    stop_dead_handle()
   })
-
-  # searching
-  # REQUEST
   response <- tryCatch({
     curl::curl_fetch_memory(url, handle = handle)
   }, error = function(e) e)
@@ -60,9 +69,10 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
         }
       }
       if (is.null(response)) {
-        stop(paste0("The server rejected the search charset (", server_reply,
-                    ") and the search term cannot be represented in any ",
-                    "character set it accepts."), call. = FALSE)
+        stop_mrp(paste0("The server rejected the search charset (", server_reply,
+                        ") and the search term cannot be represented in any ",
+                        "character set it accepts."), "server_error",
+                 server_reply = server_reply)
       }
     } else if (!is.na(server_reply) && grepl("Could not parse|parse error", server_reply, ignore.case = TRUE) &&
                any(as.integer(charToRaw(customrequest)) > 127L) &&
@@ -73,108 +83,20 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
       ensure_utf8_enabled(self, toupper(get_server_capabilities(self, retries = retries)), retries)
       curl::handle_setopt(handle = handle, customrequest = customrequest)
       response <- tryCatch(curl::curl_fetch_memory(url, handle = handle),
-                           error = function(e) response_error_handling(conditionMessage(e)))
+                           error = function(e) response_error_handling(conditionMessage(e), self))
     } else {
-      response <- response_error_handling(conditionMessage(response))
+      response <- response_error_handling(conditionMessage(response), self)
     }
   }
 
-  if (!is.null(response)) {
-    if (isTRUE(esearch)) {
-      pre_response <- parse_esearch_all(rawToChar(response$content))
-
-    } else {
-      pre_response <- parse_search_ids(rawToChar(response$content))
-
-    }
-    # ESEARCH condenses the response (e.g. "ALL 1:5,8"); parse_esearch_all()
-    # expands the sequence-set without eval()-ing server-provided text.
-
-    if (length(pre_response) > 0) {
-      response <- pre_response
-      rm(pre_response)
-
-    } else if (grepl("\\* (ESEARCH|SEARCH)", rawToChar(response$content))) {
-      # a confirmed search response with no ids: a legitimate empty result
-      response <- integer(0)
-
-    } else {
-      response = NA
-
-    }
-
-  } else {
-    count_retries = 0
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-
-    # reselect the folder:
-    select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0) # ok! v0.0.9
-    # just to keep the folder selection in case of "BAD SEARCH not allowed now",
-    # for example
-    # this happens when we execute the search after a long period without
-    # executing any command. It loses folder selection
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-
-      # reselect the folder:
-      # select_folder_int(self, name = self$folder, silent = TRUE, retries = 1)
-      # just to keep the folder selection in case of "BAD SEARCH not allowed now",
-      # for example
-      # this happens when we execute the search after a long period without
-      # executing any command. It loses folder selection
-
-      # reset customrequest in handle
-      tryCatch({
-        curl::handle_setopt(
-          handle = handle,
-          customrequest = customrequest)
-      }, error = function(e){
-        stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-      })
-
-      # REQUEST
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = handle)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-    }
-
-    if (!is.null(response)) {
-      if (isTRUE(esearch)) {
-        pre_response <- parse_esearch_all(rawToChar(response$content))
-
-      } else {
-        pre_response <- parse_search_ids(rawToChar(response$content))
-
-      }
-      # ESEARCH condenses the response (e.g. "ALL 1:5,8"); parse_esearch_all()
-      # expands the sequence-set without eval()-ing server-provided text.
-
-      if (length(pre_response) > 0) {
-        response <- pre_response
-        rm(pre_response)
-
-      } else {
-        response = NA
-
-      }
-
-    } else {
-      # end reselecting the folder:
-      # select_folder(name = IMAP_conn$imapconf$folder, silent = TRUE)
-      # select_folder_int(self, name = self$folder, silent = TRUE, retries = 1)
-      # just to keep the folder selection in case of BAD SEARCH not allowed now
-      # this happens when we execute the search after a long period without
-      # executing any command. It loses folder selection
-      stop('Request error: the server returned an error.')
-    }
-
+  if (is.null(response)) {
+    # retryable failure: the unified engine restores the session state
+    # (ENABLEd extensions, the selected folder) and replays the command
+    response <- imap_exec(self, customrequest, retries = retries,
+                          needs_folder = TRUE, command = "SEARCH")$response
   }
-  # handle sanitizing
-  rm(handle)
+
+  response <- parse_ids(response)
   response <- as.integer(as.character(response))
 
   # fix stripping
@@ -188,19 +110,6 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
     )
   }
 
-  # if (isTRUE(return_imapconf)) {
-  #   final_output <- list("imapconf" = imapconf, "msg_id" = response)
-  #   return(final_output)
-  #
-  # } else {
-  #
-  #   return(response)
-  #
-  # }
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(response)
-
 
 }

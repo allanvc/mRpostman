@@ -49,12 +49,7 @@ list_subscribed_folders_int <- function(self, retries) {
   final_output <- parse_folder_list(rawToChar(response$content), command = "LSUB")
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

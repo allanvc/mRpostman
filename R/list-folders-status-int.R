@@ -85,12 +85,7 @@ list_folders_status_int <- function(self, items, retries) {
   final_output <- parse_list_status(resp_char, items)
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

@@ -73,12 +73,7 @@ get_quota_root_int <- function(self, name, retries) {
   final_output <- parse_quota(resp_char)
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

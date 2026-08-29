@@ -14,58 +14,7 @@
 #' @param retries Number of attempts to connect and execute the command.
 #' @noRd
 execute_ordered_search <- function(self, url, handle, customrequest, parser, retries) {
-
-  # previous folder selection checking
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
-
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = handle)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self)
-  })
-
-  if (is.null(response)) {
-    count_retries = 0
-
-    # reselect the folder, mirroring execute_search(): a long idle period can
-    # drop the folder selection and yield "BAD ... not allowed now"
-    select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0)
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-
-      # reset customrequest in handle
-      tryCatch({
-        curl::handle_setopt(handle = handle, customrequest = customrequest)
-      }, error = function(e){
-        stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-      })
-
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = handle)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-    }
-
-    if (is.null(response)) {
-      stop('Request error: the server returned an error.')
-    }
-  }
-
+  out <- imap_exec(self, customrequest, retries = retries, needs_folder = TRUE)
   # untagged lines may arrive through the header or the body callback
-  final_output <- parser(paste(rawToChar(response$headers),
-                               rawToChar(response$content), sep = "\r\n"))
-
-  # handle sanitizing
-  rm(handle)
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
-  return(final_output)
-
+  parser(out$text)
 }

@@ -34,9 +34,9 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
 
   # base64_decode is only used for fetch_text_int
 
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
+  if (is.na(self$con_params$folder)) {
+    stop_no_folder()
+  }
 
   retries <- as.integer(retries)
   url <- self$con_params$url

@@ -69,12 +69,7 @@ list_mail_folders_int <- function(self, retries, detailed = FALSE) {
   final_output <- parse_folder_list(rawToChar(response$content), command = "LIST")
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

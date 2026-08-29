@@ -75,7 +75,6 @@ esearch_partial_int <- function(self, range, criteria, use_uid, retries) {
                                                customrequest, retries)
   out <- parse_esort_partial(paste(rawToChar(response$headers),
                                    rawToChar(response$content), sep = "\r\n"))
-  rm(h)
   out
 }
 
@@ -181,7 +180,6 @@ fetch_objectid_int <- function(self, msg_id, use_uid, retries) {
   response <- execute_complementary_operations(self, url, handle = h,
                                                customrequest, retries)
   txt <- paste(rawToChar(response$headers), rawToChar(response$content), sep = "\r\n")
-  rm(h)
   parse_objectid(txt, use_uid = use_uid)
 }
 
@@ -218,7 +216,6 @@ uid_batches_int <- function(self, batch_size, retries) {
   response <- execute_complementary_operations(self, url, handle = h,
                                                customrequest, retries)
   txt <- paste(rawToChar(response$headers), rawToChar(response$content), sep = "\r\n")
-  rm(h)
   parse_uid_batches(txt)
 }
 
@@ -440,7 +437,6 @@ fetch_annotation_int <- function(self, msg_id, entries, attributes, use_uid, ret
   response <- execute_complementary_operations(self, url, handle = h,
                                                customrequest, retries)
   txt <- paste(rawToChar(response$headers), rawToChar(response$content), sep = "\r\n")
-  rm(h)
   parse_annotation(txt, use_uid = use_uid)
 }
 
@@ -496,7 +492,6 @@ store_annotation_int <- function(self, msg_id, entry, values, use_uid, mute, ret
   url <- self$con_params$url
   h <- self$con_handle
   execute_complementary_operations(self, url, handle = h, customrequest, retries)
-  rm(h)
   if (!mute) {
     cat(paste0("\n::mRpostman: annotation \"", entry, "\" stored.\n"))
   }

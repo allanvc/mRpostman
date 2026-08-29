@@ -60,7 +60,6 @@ esearch_count_int <- function(self, flag, use_uid = FALSE, retries = 1) {
 
   names(response) <- c("COUNT")
   # handle sanitizing
-  rm(h)
   return(response)
 
 }

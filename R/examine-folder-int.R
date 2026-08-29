@@ -100,10 +100,6 @@ examine_folder_int <- function(self, name, retries) {
   }
 
   # handle sanitizing
-  rm(h)
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(exam_out)
 
 }

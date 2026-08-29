@@ -71,9 +71,6 @@ select_folder_int <- function(self, name, mute, retries, condstore = FALSE) {
 
     } else { # v0.3.2
       if (!mute) {
-        if (self$con_params$verbose) {
-          Sys.sleep(0.01)  # wait for the end of the client-server conversation
-        }
         cat(paste0("\n::mRpostman: ", '"', name, '"', " selected.\n")) # v0.3.2
         # using the folder name without any transformation
       }
@@ -82,9 +79,6 @@ select_folder_int <- function(self, name, mute, retries, condstore = FALSE) {
 
   } else {
     if (!mute) {
-      if (self$con_params$verbose) {
-        Sys.sleep(0.01)
-      }
       cat(paste0("\n::mRpostman: ", '"', name, '"', " selected.\n")) # v0.3.2
       # using the folder name without any transformation
     }

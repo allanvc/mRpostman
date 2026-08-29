@@ -63,7 +63,6 @@ esearch_min_id_int <- function(self, flag, use_uid, retries) {
     names(response) <- c("MIN")
 
     # handle sanitizing
-    rm(h)
 
     return(response)
 

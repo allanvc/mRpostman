@@ -70,12 +70,7 @@ id_int <- function(self, fields, retries) {
   final_output <- parse_id(resp_char)
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

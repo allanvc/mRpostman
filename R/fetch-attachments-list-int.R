@@ -124,9 +124,6 @@ fetch_attachments_list_int <- function(self, msg_id, use_uid, retries) {
 
   }
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(attachments_list)
 
 }

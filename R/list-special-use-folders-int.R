@@ -53,12 +53,7 @@ list_special_use_folders_int <- function(self, retries) {
   final_output <- parse_special_use(rawToChar(response$content))
 
   # sanitizing
-  rm(h)
-  rm(response)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(final_output)
 
 }

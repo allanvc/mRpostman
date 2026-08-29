@@ -114,12 +114,6 @@ test_that("list_attachments() and get_attachments() run on the torture corpus", 
   unlink(tmp, recursive = TRUE)
 })
 
-att_sandbox_up <- function() {
-  tryCatch({
-    s <- mRpostman:::imap_socket_open("imap://localhost:1430", 2000, FALSE)
-    mRpostman:::imap_socket_close(s); TRUE
-  }, error = function(e) FALSE)
-}
 
 test_that("the whole attachment family round-trips on the sandbox", {
   skip_if_not(att_sandbox_up(), "Docker sandbox not reachable on localhost:1430")

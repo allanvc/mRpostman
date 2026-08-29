@@ -62,9 +62,6 @@ copy_msg_int <- function(self, msg_id, use_uid, to_folder, reselect, mute, retri
   }
 
   if (!mute) {
-    if (self$con_params$verbose) {
-      Sys.sleep(0.01)
-    }
     cat(paste0("\n::mRpostman: message(s) copied")) # v0.3.2
     # using the folder name without any transformation
   }

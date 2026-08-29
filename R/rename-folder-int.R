@@ -112,9 +112,6 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
 
       if (!mute) {
 
-        if (self$con_params$verbose) {
-          Sys.sleep(0.01)  # wait for the end of the client-server conversation
-        }
 
         if (is.null(name)) {
 
@@ -153,9 +150,6 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
 
     if (!mute) {
 
-      if (self$con_params$verbose) {
-        Sys.sleep(0.01)  # wait for the end of the client-server conversation
-      }
 
       if (is.null(name)) {
 
@@ -181,7 +175,6 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
   }
 
   # handle sanitizing
-  rm(h)
 
   return(out)
 

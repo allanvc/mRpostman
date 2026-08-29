@@ -51,11 +51,7 @@ noop_int <- function(self, retries) {
   }
 
   # sanitizing
-  rm(h)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   invisible(TRUE)
 
 }

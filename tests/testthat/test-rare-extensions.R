@@ -112,12 +112,6 @@ test_that("the new extension methods are capability-gated", {
   expect_error(con$search(request = filter_stored("f")), "FILTERS")
 })
 
-rare_sandbox_up <- function() {
-  tryCatch({
-    s <- mRpostman:::imap_socket_open("imap://localhost:1430", 2000, FALSE)
-    mRpostman:::imap_socket_close(s); TRUE
-  }, error = function(e) FALSE)
-}
 
 test_that("SORT=DISPLAY, THREAD=REFS, PARTIAL, and LITERAL+ work on the sandbox", {
   skip_if_not(rare_sandbox_up(), "Docker sandbox not reachable on localhost:1430")

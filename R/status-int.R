@@ -115,10 +115,6 @@ status_int <- function(self, name, items, retries) {
   status_out <- parse_status_counts(resp_char)
 
   # handle sanitizing
-  rm(h)
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(status_out)
 
 }

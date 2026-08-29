@@ -42,13 +42,13 @@ assert_capability <- function(self, cap, command, rfc = NULL,
   target <- toupper(cap)
   ok <- if (isTRUE(prefix)) any(startsWith(caps, target)) else target %in% caps
   if (!isTRUE(ok)) {
-    stop(sprintf(
+    stop_mrp(sprintf(
       paste0('The IMAP server does not advertise the "%s" capability%s, ',
              'which is required by the "%s" command. This is a server ',
              'limitation, not an error in your call. Check what your server ',
              'supports with `list_server_capabilities()`.'),
       cap, if (!is.null(rfc)) paste0(" (", rfc, ")") else "", command),
-      call. = FALSE)
+      "capability_error", capability = cap)
   }
   invisible(TRUE)
 }

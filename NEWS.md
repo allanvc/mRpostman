@@ -10,6 +10,12 @@
 
 ### Bug fixes and internal hardening
 
+- **One execution choke point**: the libcurl transport now goes through a single internal engine (`imap_exec()`) that sets the command on the shared handle and fetches back to back, with nothing in between, so a capability check or state fetch can no longer overwrite a pending command (the bug class behind several historical fixes). The retry policy lives there once: on a retryable failure the session state - `ENABLE`d extensions and the selected folder - is restored before the command is replayed.
+- **Classed error conditions**: every failure is now signaled as an `mRpostman_error` with a specific subclass (`mRpostman_connection_error`, `mRpostman_state_error`, `mRpostman_capability_error`, `mRpostman_server_error` - carrying the server's reason in `$server_reply` -, `mRpostman_response_too_large`), so callers can `tryCatch()` on failure kinds instead of matching message text.
+- **Offline tests for the command layer**: the transport is now mockable (`testthat >= 3.1.7`), with canned-response tests covering request assembly, the retry contract, and each error class; the four copies of the sandbox probe in the test suite were consolidated into one helper.
+- Dead code removed (two unreachable internal files), along with ~40 `Sys.sleep()` output-flush races and ~44 no-op `rm()` calls.
+
+
 - The declared R dependency was wrong: the package uses `deparse1()` (R >= 4.0) and `isFALSE()` (R >= 3.5) while declaring `R (>= 3.1.0)`; it now requires `R (>= 4.1.0)`.
 - A rejected `STORE` (e.g. a non-existent flag) was reported as success: the error check was anchored to the start of the whole response (which begins with the server greeting), and a *tagged* `NO` made the error handler itself fail. Flag operations now scan every response line and report the server's reason.
 - The retry path of the fetch engine had drifted from its main path: a retried `fetch_text(base64_decode = TRUE)` returned raw base64, a retried `fetch_metadata()` was cleaned without the attribute list, a first-try retry with `write_to_disk = TRUE` failed with an internal error, and `write_to_disk` with `keep_in_mem = FALSE` grew the result list to the size of the message id. The retry now re-issues the fetch and flows through the same processing as a first try.

@@ -8,9 +8,9 @@
 #' @noRd
 check_int <- function(self, retries) {
 
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
+  if (is.na(self$con_params$folder)) {
+    stop_no_folder()
+  }
 
   check_args(retries = retries)
 
@@ -25,9 +25,6 @@ check_int <- function(self, retries) {
   execute_complementary_operations(self, url, handle = h,
                                    customrequest = "CHECK", retries)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   invisible(TRUE)
 
 }

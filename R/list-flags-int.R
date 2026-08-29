@@ -4,9 +4,9 @@
 #' @noRd
 list_flags_int <- function(self, retries) {
 
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
+  if (is.na(self$con_params$folder)) {
+    stop_no_folder()
+  }
 
   check_args(retries = retries) # we have to pass
   #.. the argg as arg = arg, in order to the check_argg capture the names
@@ -121,8 +121,5 @@ list_flags_int <- function(self, retries) {
   flags_out$flags  <- unlist(strsplit(x = all_flags, split = " "))
   flags_out$permanent_flags <- unlist(strsplit(x = permanent_flags, split = " "))
   flags_out$custom_flags_allowed <- custom_flags_allowed
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(flags_out)
 }

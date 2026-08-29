@@ -19,12 +19,14 @@ response_error_handling <- function(error_message, self = NULL) {
 
   if (error_check_resolving) {
 
-    stop("Resolving timeout: check your internet connection status or try to increase
-         the timeout_ms argument in ImapCon$new().")
+    stop_mrp(paste0("Resolving timeout: check your internet connection ",
+                    "status or try to increase the timeout_ms argument in ",
+                    "configure_imap()."), "connection_error")
 
   } else if (error_check_login) {
 
-    stop("Login denied: the server returned an authentication error.")
+    stop_mrp("Login denied: the server returned an authentication error.",
+             "connection_error")
 
   } else if (!is.na(server_error) &&
              grepl("No mailbox selected|not allowed now|not allowed in this state",
@@ -36,18 +38,18 @@ response_error_handling <- function(error_message, self = NULL) {
 
   } else if (!is.na(server_error)) {
 
-    stop(paste0("The server rejected the command: ", server_error), call. = FALSE)
+    stop_server_rejected(server_error)
 
   } else if (grepl("grew larger than allowed", error_message)) {
 
     # libcurl >= 8.7 (CURLE_TOO_LARGE): one response line exceeded what
     # libcurl accepts, typically the id list of a SEARCH matching many
     # thousands of messages; retrying cannot help, but ESEARCH can
-    stop(paste0("The response is larger than libcurl accepts in one line ",
-                "(typically a SEARCH matching many thousands of messages). ",
-                "Use esearch = TRUE, which condenses the id list, or an ",
-                "esearch_*() aggregation, or restrict the search criteria."),
-         call. = FALSE)
+    stop_mrp(paste0("The response is larger than libcurl accepts in one line ",
+                    "(typically a SEARCH matching many thousands of messages). ",
+                    "Use esearch = TRUE, which condenses the id list, or an ",
+                    "esearch_*() aggregation, or restrict the search criteria."),
+             "response_too_large")
 
   } else {
 

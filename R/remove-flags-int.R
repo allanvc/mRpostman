@@ -77,15 +77,11 @@ remove_flags_int <- function(self, msg_id, use_uid, flags_to_unset, mute, retrie
   }
 
   if (!mute) {
-    if (self$con_params$verbose) {
-      Sys.sleep(0.01)
-    }
     cat(paste0("\n::mRpostman: flag(s) successfully removed.")) # v0.3.2
     # using the folder name without any transformation
   }
 
   # handle sanitizing
-  rm(h)
 
   # return(TRUE)
   if (!is.null(unchanged_since) && !is.null(response)) {

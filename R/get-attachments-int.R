@@ -18,7 +18,7 @@ get_attachments_int <- function(self, msg_list, content_disposition, override,
 
   # previous folder selection checking
   if (is.na(self$con_params$folder)) {
-    stop('No folder previously selected.')
+    stop_no_folder()
   }
 
   check_args(msg_list = msg_list, content_disposition = content_disposition,

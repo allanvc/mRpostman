@@ -46,13 +46,9 @@ delete_msg_int <- function(self, msg_id, use_uid, mute, retries = 1) {
                                                retries)
 
   # handle sanitizing
-  rm(h)
 
   # final_output <- list("imapconf" = imapconf, "msg_id" = msg_id) # 2nd arg bit different from others
   if (!mute) {
-    if (self$con_params$verbose) {
-      Sys.sleep(0.01)
-    }
     cat(paste0('\n::mRpostman: message(s) deleted.')) # v0.3.2
     # using the folder name without any transformation
   }

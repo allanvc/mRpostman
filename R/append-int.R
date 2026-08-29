@@ -150,9 +150,6 @@ append_int <- function(self, message, folder, flags, mute, retries) {
   uid <- if (is.null(appenduid)) NA_integer_ else unname(appenduid[["uid"]])
 
   if (!mute) {
-    if (self$con_params$verbose) {
-      Sys.sleep(0.01)  # wait for the end of the client-server conversation
-    }
     cat(paste0("\n::mRpostman: message appended to ", '"', folder, '"',
                if (!is.na(uid)) paste0(" (UID ", uid, ")") else "", ".\n"))
   }

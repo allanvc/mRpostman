@@ -18,13 +18,6 @@ test_that("raw_capability_tokens() reads CAPABILITY lines and response codes", {
   expect_identical(mRpostman:::raw_capability_tokens("A1 OK done"), character(0))
 })
 
-sandbox_up <- function() {
-  ok <- tryCatch({
-    s <- mRpostman:::imap_socket_open("imap://localhost:1430", 2000, FALSE)
-    mRpostman:::imap_socket_close(s); TRUE
-  }, error = function(e) FALSE)
-  ok
-}
 
 test_that("the raw session logs in, appends with MULTIAPPEND, and idles (sandbox)", {
   skip_if_not(sandbox_up(), "Docker sandbox not reachable on localhost:1430")

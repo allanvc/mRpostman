@@ -56,9 +56,6 @@ delete_folder_int <- function(self, name, mute, retries) {
     } else {
       if (!mute) {
 
-        if (self$con_params$verbose) {
-          Sys.sleep(0.01)  # wait for the end of the client-server conversation
-        }
 
         cat(paste0("\n::mRpostman: folder ", '"', name, '"', " deleted.\n"))
 
@@ -69,9 +66,6 @@ delete_folder_int <- function(self, name, mute, retries) {
   } else {
     if (!mute) {
 
-      if (self$con_params$verbose) {
-        Sys.sleep(0.01)  # wait for the end of the client-server conversation
-      }
 
       cat(paste0("\n::mRpostman: folder ", '"', name, '"', " deleted.\n"))
 

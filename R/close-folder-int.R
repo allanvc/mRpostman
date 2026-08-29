@@ -3,9 +3,9 @@
 #' @noRd
 close_folder_int <- function(self, retries) {
 
-  assertthat::assert_that(
-    !is.na(self$con_params$folder),
-    msg='No folder previously selected.')
+  if (is.na(self$con_params$folder)) {
+    stop_no_folder()
+  }
 
   check_args(retries = retries)
 
@@ -49,11 +49,7 @@ close_folder_int <- function(self, retries) {
   }
 
   # sanitizing
-  rm(h)
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   self$con_stale <- TRUE  # some servers drop the connection here (see append_int)
   invisible(TRUE)
 

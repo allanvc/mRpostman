@@ -64,7 +64,6 @@ esearch_max_id_int <- function(self, flag, use_uid, retries) {
   names(response) <- c("MAX")
 
   # handle sanitizing
-  rm(h)
 
   return(response)
 

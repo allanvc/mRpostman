@@ -53,8 +53,6 @@ list_server_capabilities_int <- function(self, retries) {
                                     split = " ")
 
     # sanitizing
-    rm(h)
-    rm(response)
 
   } else {
     count_retries = 0 #the first try doesnt count
@@ -86,8 +84,6 @@ list_server_capabilities_int <- function(self, retries) {
                                       split = " ")
 
       # sanitizing
-      rm(h)
-      rm(response)
 
 
     } else {
@@ -96,9 +92,6 @@ list_server_capabilities_int <- function(self, retries) {
 
   }
 
-  if (self$con_params$verbose) {
-    Sys.sleep(0.01)  # wait for the end of the client-server conversation
-  }
   return(unlist(server_capabilities))
 
 }

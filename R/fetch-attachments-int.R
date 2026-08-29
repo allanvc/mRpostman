@@ -27,7 +27,7 @@ fetch_attachments_int <- function(self, msg_id, use_uid, content_disposition, ov
              override = override, mute = mute, retries = retries)
 
   if (is.na(self$con_params$folder)) {
-    stop('No folder previously selected.')
+    stop_no_folder()
   }
 
   # since 2.3.0 the fetch is guided by the BODYSTRUCTURE the server reports:
