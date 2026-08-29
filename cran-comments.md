@@ -3,7 +3,8 @@
 This release adds the query language: `ImapCon$query()` searches with an
 ordinary R expression, e.g. `con$query((subject == "budget" | "budget 3")
 & flag != "SEEN" & size > 5e6)`, captured unevaluated and translated into
-an RFC 3501 search string by the exported pure function `translate_query()`.
+an RFC 3501 search string by a pure internal function, exercised offline
+by the test suite.
 The criterion constructors (`string()`, `flag()`, ...) now also combine
 with the native operators `&`, `|`, and `!` through an Ops group method,
 with `AND()`/`OR()` unchanged. Oversized search results (an id list

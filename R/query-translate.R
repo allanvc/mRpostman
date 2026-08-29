@@ -66,11 +66,7 @@
 #' @param expr An unquoted expression, e.g.
 #'   \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.
 #' @return The translated search string, of class \code{"imap_search"}.
-#' @examples
-#' translate_query((subject == "budget" | "budget 3") & flag != "SEEN")
-#' translate_query(sent >= "2001-10-01" & size > 5e6)
-#' translate_query(subject %in% c("budget", "forecast") & age < 86400)
-#' @export
+#' @noRd
 translate_query <- function(expr) {
   translate_query_(substitute(expr), parent.frame())
 }

@@ -2,6 +2,7 @@
 # and the Ops combinators on the criterion constructors.
 
 q <- function(x) unclass(x)
+translate_query <- mRpostman:::translate_query
 
 test_that("translate_query() translates string-field comparisons", {
   expect_identical(q(translate_query(subject == "budget")), '(SUBJECT "budget")')

@@ -943,7 +943,7 @@ con$append_msg(message = msg, folder = "Drafts")
 
 ## 8.5) The query language (2.3.0)
 
-Since 2.3.0 a search can be written as an ordinary R expression. `query()` captures the expression unevaluated, translates it into the same RFC 3501 search string through the pure function `translate_query()`, and executes it exactly like `search()`:
+Since 2.3.0 a search can be written as an ordinary R expression. `query()` captures the expression unevaluated, translates it internally, through a pure function, into the same RFC 3501 search string, and executes it exactly like `search()`:
 
 ```{r, eval = FALSE}
 con$query((subject == "budget" | "budget 3") & flag != "SEEN")
@@ -951,14 +951,7 @@ con$query(sent >= "2001-10-01" & sent < "2002-01-01" & size > 5e6, use_uid = TRU
 con$query(subject %in% c("budget", "forecast") & age < 7 * 86400)
 ```
 
-Fields: `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` (where `==` means contains, as the protocol defines), `flag` (system flags and custom keywords), `size` in bytes, `age` in seconds, the date fields `sent`, `date` (internal date), and `saved` (on SAVEDATE servers), and `header("Name")`. Comparisons combine with `&`, `|`, `!`, `%in%`, and parentheses, with R's usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to `|` or `&` inherits the field of the preceding comparison, which is what makes `subject == "budget" | "budget 3"` work. `translate_query()` shows the translation without a server:
-
-```{r, eval = FALSE}
-translate_query((subject == "budget" | "budget 3") & flag != "SEEN")
-#> <imap_search> ((OR (SUBJECT "budget") (SUBJECT "budget 3")) (UNSEEN))
-```
-
-The criterion constructors of the previous section also gained the native operators: `string("budget", where = "SUBJECT") & !flag("SEEN")` is equivalent to `AND(string("budget", where = "SUBJECT"), flag("SEEN", negate = TRUE))`.
+Fields: `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` (where `==` means contains, as the protocol defines), `flag` (system flags and custom keywords), `size` in bytes, `age` in seconds, the date fields `sent`, `date` (internal date), and `saved` (on SAVEDATE servers), and `header("Name")`. Comparisons combine with `&`, `|`, `!`, `%in%`, and parentheses, with R's usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to `|` or `&` inherits the field of the preceding comparison, which is what makes `subject == "budget" | "budget 3"` work. The criterion constructors of the previous section also gained the native operators: `string("budget", where = "SUBJECT") & !flag("SEEN")` is equivalent to `AND(string("budget", where = "SUBJECT"), flag("SEEN", negate = TRUE))`.
 
 ## 9) Protocol extensions (since 1.5.0)
 
