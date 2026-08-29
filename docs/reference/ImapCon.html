@@ -1547,7 +1547,7 @@ Default is <code>1</code>.</p></dd>
 <p>Search with an ordinary R expression (the query
   language). The expression is captured unevaluated, translated
   into an RFC 3501 search string by the pure function
-  <code>translate_query</code>, and executed exactly like
+  <code>translate_query()</code>, and executed exactly like
   <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>. Fields: <code>subject</code>, <code>from</code>, <code>to</code>,
   <code>cc</code>, <code>bcc</code>, <code>body</code>, <code>text</code> (with <code>==</code>
   meaning contains), <code>flag</code>, <code>size</code> (bytes), <code>age</code>
@@ -4946,8 +4946,8 @@ command is successfully executed. Default is <code>FALSE</code>.</p></dd>
 when the command is successfully executed. Default is <code>FALSE</code>.</p></dd>
 
       <dt><code>as_is</code></dt>
-<dd><p>If <code>TRUE</code> then write out attachments without base64
-decoding. Default is <code>FALSE</code>.</p></dd>
+<dd><p>If <code>TRUE</code>, writes the attachments out without
+reversing the transfer encoding. Default is <code>FALSE</code>.</p></dd>
 
       <dt><code>local_dir</code></dt>
 <dd><p>A <code>character</code> string with the base directory where the
@@ -5148,8 +5148,8 @@ when the command is successfully executed. Default is <code>FALSE</code>.</p></d
 is <code>1</code>.</p></dd>
 
       <dt><code>as_is</code></dt>
-<dd><p>If <code>TRUE</code> then write out attachments without base64
-decoding. Default is <code>FALSE</code>.</p></dd>
+<dd><p>If <code>TRUE</code>, writes the attachments out without
+reversing the transfer encoding. Default is <code>FALSE</code>.</p></dd>
 
       <dt><code>local_dir</code></dt>
 <dd><p>A <code>character</code> string with the base directory where the
