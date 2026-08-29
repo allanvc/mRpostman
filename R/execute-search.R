@@ -85,6 +85,10 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
       response <- pre_response
       rm(pre_response)
 
+    } else if (grepl("\\* (ESEARCH|SEARCH)", rawToChar(response$content))) {
+      # a confirmed search response with no ids: a legitimate empty result
+      response <- integer(0)
+
     } else {
       response = NA
 

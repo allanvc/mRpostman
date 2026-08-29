@@ -123,5 +123,6 @@ test_that("query() returns the same ids as the classic search on the sandbox", {
     sent_since(date_char = "01-Jan-2020"), sent_before(date_char = "01-Apr-2020")))))
   expect_identical(sort(con$query(size < 1400)), sort(con$search_smaller_than(1400)))
   expect_identical(sort(con$query(flag == "FLAGGED")), sort(con$search_flag("FLAGGED")))
+  expect_identical(con$query(subject == "zzz-no-such-subject", esearch = TRUE), integer(0))
   con$disconnect()
 })
