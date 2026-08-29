@@ -88,7 +88,7 @@ status_int <- function(self, name, items, retries) {
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if (is.null(response)) { # it is not necessary to select again
@@ -100,7 +100,7 @@ status_int <- function(self, name, items, retries) {
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

@@ -15,11 +15,13 @@
 #'                                smaller_than(size = 512000)))
 #' }
 #'
+#' @return A search criterion of class \code{imap_search}, to be combined
+#'   into a search statement (see \code{Ops.imap_search}).
 #' @export
 #'
 smaller_than <- function(size, negate = FALSE) {
 
-  check_args(size, negate)
+  check_args(size = size, negate = negate)
 
   # never let R print large numbers in scientific notation (5e+06)
   size <- format(size, scientific = FALSE, trim = TRUE)

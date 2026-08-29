@@ -2,12 +2,24 @@
 \name{mRpostman-package}
 \alias{mRpostman-package}
 \alias{mRpostman}
-\title{An IMAP client for R}
+\title{An IMAP4rev2 client for R}
 
 \description{
-  \pkg{mRpostman} is a session-based IMAP client that implements the full functionality
-    of the IMAP4rev1 protocol (RFC 3501), allowing virtually all e-mail operations to be
-    performed from within \R, paving the way for e-mail data analysis.
+  \pkg{mRpostman} is a session-based IMAP client that implements the full
+    command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501)
+    protocols, along with the optional extensions registered with IANA,
+    allowing virtually all e-mail operations to be performed from within
+    \R, paving the way for e-mail data analysis.
+}
+
+\section{Options}{
+  \describe{
+    \item{\code{mRpostman.raw_debug}}{If \code{TRUE}, prints the raw
+      dialogue of the second (event) connection used by \code{idle()},
+      \code{append_msgs()}, and the other raw-socket commands, in the same
+      spirit as \code{verbose = TRUE} for the main connection. Default is
+      \code{FALSE}.}
+  }
 }
 
 

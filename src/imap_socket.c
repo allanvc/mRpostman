@@ -19,8 +19,7 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #else
-#include <sys/select.h>
-#include <sys/time.h>
+#include <poll.h>
 #include <unistd.h>
 #endif
 
@@ -45,16 +44,37 @@ static imap_sock *get_sock(SEXP ptr) {
 }
 
 /* wait until the socket is readable (for_recv) or writable; returns 1 when
- * ready, 0 on timeout, -1 on error */
+ * ready, 0 on timeout, -1 on error. timeout_ms <= 0 means wait forever.
+ * The wait is sliced so R_CheckUserInterrupt() can run: a wedged peer must
+ * not make the R session uninterruptible. */
 static int wait_on_socket(curl_socket_t sockfd, int for_recv, long timeout_ms) {
-  struct timeval tv;
-  fd_set infd, outfd, errfd;
-  tv.tv_sec = timeout_ms / 1000;
-  tv.tv_usec = (timeout_ms % 1000) * 1000;
-  FD_ZERO(&infd); FD_ZERO(&outfd); FD_ZERO(&errfd);
-  FD_SET(sockfd, &errfd);
-  if (for_recv) FD_SET(sockfd, &infd); else FD_SET(sockfd, &outfd);
-  return select((int) sockfd + 1, &infd, &outfd, &errfd, &tv);
+  long waited = 0;
+  for (;;) {
+    long slice = 200; /* ms */
+    if (timeout_ms > 0 && timeout_ms - waited < slice) slice = timeout_ms - waited;
+    if (timeout_ms > 0 && slice <= 0) return 0; /* timed out */
+#ifdef _WIN32
+    /* on Windows, select() takes counts, not fd numbers: FD_SETSIZE is safe */
+    struct timeval tv;
+    fd_set infd, outfd, errfd;
+    tv.tv_sec = slice / 1000;
+    tv.tv_usec = (slice % 1000) * 1000;
+    FD_ZERO(&infd); FD_ZERO(&outfd); FD_ZERO(&errfd);
+    FD_SET(sockfd, &errfd);
+    if (for_recv) FD_SET(sockfd, &infd); else FD_SET(sockfd, &outfd);
+    int r = select((int) sockfd + 1, &infd, &outfd, &errfd, &tv);
+#else
+    /* poll(): select()'s fd_set is undefined behavior for fd >= FD_SETSIZE */
+    struct pollfd pfd;
+    pfd.fd = (int) sockfd;
+    pfd.events = for_recv ? POLLIN : POLLOUT;
+    pfd.revents = 0;
+    int r = poll(&pfd, 1, (int) slice);
+#endif
+    if (r != 0) return r; /* ready or error */
+    waited += slice;
+    R_CheckUserInterrupt();
+  }
 }
 
 SEXP C_imap_socket_open(SEXP url, SEXP timeout_ms, SEXP verify_peer) {

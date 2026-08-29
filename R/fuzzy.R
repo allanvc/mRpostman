@@ -16,6 +16,8 @@
 #' res <- con$search(request = fuzzy(string(expr = "jump", where = "SUBJECT")))
 #' }
 #'
+#' @return A search criterion of class \code{imap_search}, to be combined
+#'   into a search statement (see \code{Ops.imap_search}).
 #' @export
 #'
 fuzzy <- function(criterion) {

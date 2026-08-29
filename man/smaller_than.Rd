@@ -13,6 +13,10 @@ search criterion.}
 \item{negate}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERIA". Default is \code{FALSE}.}
 }
+\value{
+A search criterion of class \code{imap_search}, to be combined
+  into a search statement (see \code{Ops.imap_search}).
+}
 \description{
 Criterion constructor function to be combined in a custom search statement
 }

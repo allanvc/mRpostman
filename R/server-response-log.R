@@ -50,11 +50,30 @@ make_debug_function <- function(dbg) {
 #' @return A string such as \code{"NO [CANNOT] ..."} (tag stripped), or
 #'   \code{NA_character_}.
 #' @noRd
-last_server_error <- function() {
-  l <- .mR_last_response$lines
+last_server_error <- function(lines = NULL) {
+  # prefer the calling connection's own log: the package-level fallback is
+  # shared by every connection in the session and can cross-contaminate
+  l <- if (!is.null(lines)) lines else .mR_last_response$lines
   m <- grep("^[A-Za-z]+[0-9]+ (NO|BAD)( |$)", l, value = TRUE)
   if (length(m) == 0) {
     return(NA_character_)
   }
   sub("^[A-Za-z]+[0-9]+ ", "", m[length(m)])
+}
+
+#' The reason of a NO reply anywhere in a response blob, if any (INTERNAL)
+#'
+#' Scans a raw response text (headers and/or content) for an untagged
+#' \code{* NO ...} or a tagged \code{A12 NO ...} line and returns the
+#' server's reason, or \code{NA_character_} when the response carries no NO
+#' reply. Anchored per line, so the greeting or any earlier line cannot hide
+#' a NO that appears later in the blob.
+#' @noRd
+find_no_reply <- function(text) {
+  lines <- strsplit(text, "\r?\n")[[1]]
+  m <- grep("^(\\*|[A-Za-z]+[0-9]+) NO( |$)", lines, value = TRUE)
+  if (length(m) == 0) {
+    return(NA_character_)
+  }
+  sub("^(\\*|[A-Za-z]+[0-9]+) NO ?", "", m[length(m)])
 }

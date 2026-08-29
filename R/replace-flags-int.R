@@ -20,7 +20,7 @@
 replace_flags_int <- function(self, msg_id, use_uid, flags_to_set, mute, retries,
                                 unchanged_since = NULL) {
 
-  check_args(msg_id = msg_id, use_uid, flags_to_set = flags_to_set,
+  check_args(msg_id = msg_id, use_uid = use_uid, flags_to_set = flags_to_set,
              mute = mute,
              retries = retries)
 
@@ -67,12 +67,12 @@ replace_flags_int <- function(self, msg_id, use_uid, flags_to_set, mute, retries
 
   # capture possible errors (in case of non-existent/allowed flags, curl does not assess the server response as an error)
   if (!is.null(response)) {
-    error_check <- grepl(pattern = "^\\* NO ", x = rawToChar(response$headers)) # it will be on headers in this case
-    if (isTRUE(error_check)) {
-      stop(unlist(regmatches(rawToChar(response$headers),
-                             regexec("\\* NO (.*?)\r\n",
-                                     rawToChar(response$headers))))[[2]])
-    } # if a flag "\flag" does not exist, it returns NULL (a regular error that we are used to)
+    no_reason <- find_no_reply(paste(rawToChar(response$headers),
+                                     rawToChar(response$content), sep = "\r\n"))
+    if (!is.na(no_reason)) {
+      # a rejected STORE (e.g. a non-existent flag) is not an error for curl
+      stop("The server rejected the STORE command: ", no_reason, call. = FALSE)
+    }
   }
 
   if (!mute) {

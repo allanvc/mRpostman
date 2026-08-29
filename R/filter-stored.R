@@ -17,6 +17,8 @@
 #'                                 string(expr = "boss@@example.com", where = "FROM")))
 #' }
 #'
+#' @return A search criterion of class \code{imap_search}, to be combined
+#'   into a search statement (see \code{Ops.imap_search}).
 #' @export
 #'
 filter_stored <- function(name) {

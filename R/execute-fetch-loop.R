@@ -34,55 +34,47 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
 
   # base64_decode is only used for fetch_text_int
 
-  # previous folder selection checking
-  # if (is.na(self$folder)) {
-  #   stop('No folder previously selected.')
-  # }
   assertthat::assert_that(
     !is.na(self$con_params$folder),
     msg='No folder previously selected.')
 
-  # forcing retries as an integer
   retries <- as.integer(retries)
-
   url <- self$con_params$url
-
   h <- self$con_handle
 
-  # fetching
   msg_list <- list()
   idx = 0
 
-  # loop exec
   for (id in msg_id) {
     idx = idx + 1
 
-    adjusted_fetch_request <- gsub(pattern = "#", replacement = id, x = fetch_request)
+    # the id slot is the first "#" of the request template; sub() (not gsub)
+    # so that a literal "#" later in the request (e.g. in a header-field
+    # name) is never touched
+    adjusted_fetch_request <- sub(pattern = "#", replacement = id,
+                                  x = fetch_request, fixed = TRUE)
 
-    tryCatch({
-      curl::handle_setopt(
-        handle = h,
-        customrequest = adjusted_fetch_request)
-    }, error = function(e){
-      stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-    })
+    fetch_once <- function() {
+      tryCatch({
+        curl::handle_setopt(handle = h, customrequest = adjusted_fetch_request)
+      }, error = function(e) {
+        stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+      })
+      curl::curl_fetch_memory(url, handle = h)
+    }
 
-    # REQUEST
     too_large <- FALSE
     response <- tryCatch({
-      curl::curl_fetch_memory(url, handle = h)
-    }, error = function(e){
-      # print(e$message)
+      fetch_once()
+    }, error = function(e) {
       if (grepl("grew larger than allowed", e$message[1], fixed = TRUE)) {
         # libcurl >= 8.x (CURLE_TOO_LARGE): the literal exceeds libcurl's
         # internal buffer; re-fetch the part in partial slices below
         too_large <<- TRUE
         NULL
       } else {
-        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+        response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
       }
-      # id = msg_id[1] # return to the beginning
-      # idx = 0
     })
 
     chunked_text <- NULL
@@ -94,9 +86,31 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
       }
     }
 
-    # print(exists("response")); print(exists("response")); print(exists("response"))
+    # retry path: recover the folder selection, then re-issue the same fetch;
+    # the response then flows through the very same processing below, so the
+    # two paths cannot drift apart
+    if (is.null(response) && !isTRUE(too_large)) {
+      count_retries = 0 # the first try was already counted
+      select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0)
 
-    if (!is.null(response) && identical(id, "$")) {
+      while (is.null(response) && count_retries < retries) {
+        count_retries = count_retries + 1
+        response <- tryCatch({
+          fetch_once()
+        }, error = function(e) {
+          response_error_handling(e$message[1], self)
+        })
+      }
+    }
+
+    if (is.null(response)) {
+      if (isTRUE(too_large)) {
+        stop('Fetch error: the server response is larger than libcurl allows in a single FETCH, and fetching it in partial slices also failed.')
+      }
+      stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
+    }
+
+    if (identical(id, "$")) {
       # SEARCHRES (RFC 5182): one FETCH on the saved result returns every
       # matching message in a single reply; split it into one element per
       # message and return, since "$" is necessarily the only id
@@ -109,137 +123,43 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
       return(msg_list)
     }
 
-    if (!is.null(response)) {
-      if (!is.null(chunked_text)) {
-        msg_text <- chunked_text
-      } else {
-        msg_text <- clean_fetch_results(
-          rawToChar(response$headers),
-          metadata_attribute # v0.9.2
-        )
-      }
-
-      if (isTRUE(base64_decode)) {
-        msg_list[[idx]] <- decode_base64_text_if_needed(msg_text)
-
-      } else {
-        msg_list[[idx]] <- msg_text
-
-      }
-
-    # if (!is.null(response)) {
-    #
-    #   msg_list[[idx]] <- clean_fetch_results(
-    #     rawToChar(response$headers))
-    #
-    #   rm(response)
-
-      if (isTRUE(use_uid)) {
-        names(msg_list)[idx] <- paste0(fetch_type, "UID", id) # v0.0.9
-
-      } else {
-        names(msg_list)[idx] <- paste0(fetch_type, id) # v0.0.9
-
-      }
-
-      if (isTRUE(write_to_disk)) {
-
-        folder_clean = gsub("%20", "_", self$con_params$folder)
-
-        forbiden_chars <- "[\\/:*?\"<>|]"
-        folder_clean = gsub(forbiden_chars, "", folder_clean)
-
-        # url <- "imaps://outlook.office365.com/"
-        # url_folder <- unlist(regmatches(url, gregexpr("://(.*?)(/|.)$", url)))
-        user_folder <- self$con_params$username
-        user_folder = gsub(forbiden_chars, "", user_folder)
-
-        complete_path <- paste0("./", user_folder, "/", folder_clean)
-        dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
-
-        write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
-                                              names(msg_list)[idx], ".txt"))
-
-        if (isFALSE(keep_in_mem)) { # immediately delete the content in case the user does not want to keep in memory while saving to disk
-          msg_list[[id]] <- NA
-        }
-
-      }
-
+    if (!is.null(chunked_text)) {
+      msg_text <- chunked_text
     } else {
-      count_retries = 0 #the first try was already counted
-      # FORCE appending fresh_connect
-      # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-      select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0) # ok! v0.0.9
+      msg_text <- clean_fetch_results(
+        rawToChar(response$headers),
+        metadata_attribute # v0.9.2
+      )
+    }
 
-      while (is.null(response) && count_retries < retries) {
-        count_retries = count_retries + 1
+    if (isTRUE(base64_decode)) {
+      msg_list[[idx]] <- decode_base64_text_if_needed(msg_text)
+    } else {
+      msg_list[[idx]] <- msg_text
+    }
 
-        # reset customrequest in handle
-        tryCatch({
-          curl::handle_setopt(
-            handle = h,
-            customrequest = adjusted_fetch_request) #bug: response was NULL when recovering from a fetch timeout error
-        }, error = function(e){
-          stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-        })
+    if (isTRUE(use_uid)) {
+      names(msg_list)[idx] <- paste0(fetch_type, "UID", id) # v0.0.9
+    } else {
+      names(msg_list)[idx] <- paste0(fetch_type, id) # v0.0.9
+    }
 
-        # REQUEST
-        response <- tryCatch({
-          curl::curl_fetch_memory(url, handle = h)
-        }, error = function(e){
-          # print(e$message)
-          response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
-          # id = msg_id[1] # return to the beginning
-          # idx = 0
-        })
+    if (isTRUE(write_to_disk)) {
+      forbiden_chars <- "[\\/:*?\"<>|]"
+      folder_clean = gsub("%20", "_", self$con_params$folder)
+      folder_clean = gsub(forbiden_chars, "", folder_clean)
+      user_folder = gsub(forbiden_chars, "", self$con_params$username)
 
-        if (!is.null(response)) {
+      complete_path <- paste0("./", user_folder, "/", folder_clean)
+      dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
 
-          msg_list[[idx]] <- clean_fetch_results(
-            rawToChar(response$headers))
+      write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
+                                            names(msg_list)[idx], ".txt"))
 
-          # rm(response)
-
-          if (isTRUE(use_uid)) {
-            names(msg_list)[idx] <- paste0(fetch_type, "UID", id)
-
-          } else {
-            names(msg_list)[idx] <- paste0(fetch_type, id) # v0.0.9
-
-          }
-
-          if (isTRUE(write_to_disk)) {
-
-            folder_clean = gsub("%20", "_", self$con_params$folder)
-
-            forbiden_chars <- "[\\/:*?\"<>|]"
-            folder_clean = gsub(forbiden_chars, "", folder_clean)
-
-            # url <- "imaps://outlook.office365.com/"
-            # url_folder <- regmatches(url, gregexpr("://(.*?)(/|.)$", url))
-            user_folder = gsub(forbiden_chars, "", user_folder)
-
-            complete_path <- paste0("./", user_folder, "/", folder_clean)
-            dir.create(path = complete_path, showWarnings = FALSE, recursive = TRUE)
-
-            write(unlist(msg_list[[idx]]), paste0(complete_path, "/",
-                                                  names(msg_list)[idx], ".txt"))
-
-            if (isFALSE(keep_in_mem)) { # immediately delete the content in case the user does not want to keep in memory while saving to disk
-              msg_list[[id]] <- NA
-            }
-
-          }
-        } else {
-          if (isTRUE(too_large)) {
-            stop('Fetch error: the server response is larger than libcurl allows in a single FETCH, and fetching it in partial slices also failed.')
-          }
-          stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
-
-        }
-      } #while
-    } #else-response
+      if (isFALSE(keep_in_mem)) { # immediately drop the content when the user does not want to keep it in memory while saving to disk
+        msg_list[[idx]] <- NA
+      }
+    }
   } #for
 
   return(msg_list)

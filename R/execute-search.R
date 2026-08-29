@@ -41,7 +41,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
   }, error = function(e) e)
 
   if (inherits(response, "error")) {
-    server_reply <- last_server_error()
+    server_reply <- last_server_error(self$con_debug$lines)
     if (!is.na(server_reply) && grepl("BADCHARSET", server_reply, fixed = TRUE)) {
       # the server does not accept the charset of the search term: retry with
       # the charsets it lists (or ISO-8859-1 / US-ASCII) in which the term is
@@ -138,7 +138,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
         curl::curl_fetch_memory(url, handle = handle)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

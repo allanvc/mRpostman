@@ -3,6 +3,12 @@
 \name{ImapCon}
 \alias{ImapCon}
 \title{An IMAP Connection Class}
+\value{
+An \code{ImapCon} object holding one stateful IMAP session:
+  the connection parameters, the transport handle, and the session caches
+  (selected folder, server capabilities). All the package's operations are
+  methods of this object.
+}
 \description{
 Configure an IMAP connection using the \code{ImapCon} \code{R6}
   class.
@@ -1018,8 +1024,8 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 
 \dontrun{
 con$select_folder(name = "INBOX")
-# delete
-con$delete_msg(flag = c("Flagged", "Answered"))
+# delete messages 70 to 73
+con$delete_msg(msg_id = 70:73)
 }
 
 ## ------------------------------------------------
@@ -1028,8 +1034,10 @@ con$delete_msg(flag = c("Flagged", "Answered"))
 
 \dontrun{
 con$select_folder(name = "INBOX")
-# count the number of messages marked as "Flagged" and "Answered"
-con$esearch_count(flag = c("Flagged", "Answered"))
+# remove every message marked as deleted
+con$expunge()
+# or only a specific one (UIDPLUS servers)
+con$expunge(msg_uid = 71)
 }
 
 ## ------------------------------------------------
@@ -3965,9 +3973,10 @@ Default is \code{1}.}
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A \code{list} containing the flags (\code{character vector}),
-  the permanent flags (\code{character vector}), and an indication if custom
-  flags are allowed by the server (\code{logical vector}).
+    A \code{numeric vector} with the ids of the messages that match
+  the search, or \code{integer(0)} when none does. With
+  \code{save = TRUE} the result set is also kept on the server
+  (SEARCHRES) and returned invisibly.
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
@@ -4906,12 +4915,12 @@ to fetch. Default is \code{NULL}, which will fetch the full specified content.}
       \item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
-      \item{\code{keep_in_mem}}{If \code{TRUE}, keeps a copy of each fetch result while
-the operation is being performed with \code{write_to_disk = TRUE}. Default
-is \code{FALSE}, and it can only be set \code{TRUE} when
-\code{write_to_disk = TRUE}.}
-      \item{\code{mute}}{A \code{logical}. It provides a confirmation message if the
-command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+      \item{\code{keep_in_mem}}{If \code{TRUE} (default), keeps a copy of each fetch
+result in the returned list. It can only be set \code{FALSE} along with
+\code{write_to_disk = TRUE}, to write the results to disk without
+keeping them in memory.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
 and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
@@ -4983,12 +4992,12 @@ to fetch. Default is \code{NULL}, which will fetch the full specified content.}
       \item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
-      \item{\code{keep_in_mem}}{If \code{TRUE}, keeps a copy of each fetch result while
-the operation is being performed with \code{write_to_disk = TRUE}. Default
-is \code{FALSE}, and it can only be set \code{TRUE} when
-\code{write_to_disk = TRUE}.}
-      \item{\code{mute}}{A \code{logical}. It provides a confirmation message if the
-command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+      \item{\code{keep_in_mem}}{If \code{TRUE} (default), keeps a copy of each fetch
+result in the returned list. It can only be set \code{FALSE} along with
+\code{write_to_disk = TRUE}, to write the results to disk without
+keeping them in memory.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
 and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
@@ -5053,12 +5062,12 @@ capability.}
       \item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
-      \item{\code{keep_in_mem}}{If \code{TRUE}, keeps a copy of each fetch result while
-the operation is being performed with \code{write_to_disk = TRUE}. Default
-is \code{FALSE}, and it can only be set \code{TRUE} when
-\code{write_to_disk = TRUE}.}
-      \item{\code{mute}}{A \code{logical}. It provides a confirmation message if the
-command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+      \item{\code{keep_in_mem}}{If \code{TRUE} (default), keeps a copy of each fetch
+result in the returned list. It can only be set \code{FALSE} along with
+\code{write_to_disk = TRUE}, to write the results to disk without
+keeping them in memory.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
 and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
@@ -5066,11 +5075,6 @@ is \code{1}.}
 with it only the messages modified after that sequence are returned
 (\code{CHANGEDSINCE}, CONDSTORE, RFC 7162), each with its
 \code{MODSEQ}.}
-      \item{\code{peek}}{If \code{TRUE}, it does not mark messages as "read" after
-fetching. Default is \code{TRUE}.}
-      \item{\code{partial}}{\code{NULL} or a character string with format
-"startchar.endchar" indicating the size (in characters) of a message slice
-to fetch. Default is \code{NULL}, which will fetch the full specified content.}
     }
     \if{html}{\out{</div>}}
   }
@@ -5248,12 +5252,12 @@ to fetch. Default is \code{NULL}, which will fetch the full specified content.}
       \item{\code{write_to_disk}}{If \code{TRUE}, writes the fetched content of each message
 to a text file in a local folder inside the working directory, also
 returning the results with \code{invisible()}. Default is \code{FALSE}.}
-      \item{\code{keep_in_mem}}{If \code{TRUE}, keeps a copy of each fetch result while
-the operation is being performed with \code{write_to_disk = TRUE}. Default
-is \code{FALSE}, and it can only be set \code{TRUE} when
-\code{write_to_disk = TRUE}.}
-      \item{\code{mute}}{A \code{logical}. It provides a confirmation message if the
-command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+      \item{\code{keep_in_mem}}{If \code{TRUE} (default), keeps a copy of each fetch
+result in the returned list. It can only be set \code{FALSE} along with
+\code{write_to_disk = TRUE}, to write the results to disk without
+keeping them in memory.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
 and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.}
       \item{\code{base64_decode}}{If \code{TRUE}, tries to guess and decode the fetched
 text from base64 format to \code{character}. Default is \code{FALSE}.}
@@ -5545,8 +5549,8 @@ Default is \code{1}.}
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$select_folder(name = "INBOX")
-# delete
-con$delete_msg(flag = c("Flagged", "Answered"))
+# delete messages 70 to 73
+con$delete_msg(msg_id = 70:73)
 }
     \if{html}{\out{</div>}}
   }
@@ -5582,8 +5586,10 @@ Default is \code{1}.}
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$select_folder(name = "INBOX")
-# count the number of messages marked as "Flagged" and "Answered"
-con$esearch_count(flag = c("Flagged", "Answered"))
+# remove every message marked as deleted
+con$expunge()
+# or only a specific one (UIDPLUS servers)
+con$expunge(msg_uid = 71)
 }
     \if{html}{\out{</div>}}
   }

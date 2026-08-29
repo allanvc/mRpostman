@@ -20,7 +20,7 @@
 #' }
 #' @export
 saved_before <- function(date_char, negate = FALSE) {
-  check_args(date_char, negate)
+  check_args(date_char = date_char, negate = negate)
   if (!isTRUE(negate)) as_imap_search(paste0('(SAVEDBEFORE ', date_char, ')'))
   else as_imap_search(paste0('(NOT (SAVEDBEFORE ', date_char, '))'))
 }
@@ -28,7 +28,7 @@ saved_before <- function(date_char, negate = FALSE) {
 #' @rdname saved_before
 #' @export
 saved_since <- function(date_char, negate = FALSE) {
-  check_args(date_char, negate)
+  check_args(date_char = date_char, negate = negate)
   if (!isTRUE(negate)) as_imap_search(paste0('(SAVEDSINCE ', date_char, ')'))
   else as_imap_search(paste0('(NOT (SAVEDSINCE ', date_char, '))'))
 }
@@ -36,7 +36,7 @@ saved_since <- function(date_char, negate = FALSE) {
 #' @rdname saved_before
 #' @export
 saved_on <- function(date_char, negate = FALSE) {
-  check_args(date_char, negate)
+  check_args(date_char = date_char, negate = negate)
   if (!isTRUE(negate)) as_imap_search(paste0('(SAVEDON ', date_char, ')'))
   else as_imap_search(paste0('(NOT (SAVEDON ', date_char, '))'))
 }

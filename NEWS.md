@@ -8,6 +8,20 @@
 - **An actionable error for oversized results**: a `SEARCH` matching many thousands of messages can produce an id list larger than libcurl accepts in one response line (`CURLE_TOO_LARGE`); this now fails with a message recommending `esearch = TRUE`, the `esearch_*()` aggregations, or narrower criteria, instead of a generic request error.
 - **Native operators on criteria**: the criterion constructors (`string()`, `flag()`, `sent_since()`, ...) now return classed objects that combine with `&`, `|`, and `!` directly, e.g. `con$search(string("budget", where = "SUBJECT") & !flag("SEEN"))`. `AND()` and `OR()` keep working unchanged.
 
+### Bug fixes and internal hardening
+
+- The declared R dependency was wrong: the package uses `deparse1()` (R >= 4.0) and `isFALSE()` (R >= 3.5) while declaring `R (>= 3.1.0)`; it now requires `R (>= 4.1.0)`.
+- A rejected `STORE` (e.g. a non-existent flag) was reported as success: the error check was anchored to the start of the whole response (which begins with the server greeting), and a *tagged* `NO` made the error handler itself fail. Flag operations now scan every response line and report the server's reason.
+- The retry path of the fetch engine had drifted from its main path: a retried `fetch_text(base64_decode = TRUE)` returned raw base64, a retried `fetch_metadata()` was cleaned without the attribute list, a first-try retry with `write_to_disk = TRUE` failed with an internal error, and `write_to_disk` with `keep_in_mem = FALSE` grew the result list to the size of the message id. The retry now re-issues the fetch and flows through the same processing as a first try.
+- A literal `#` in a fetch request (e.g. in a header-field name) was replaced by the message id; only the id placeholder is substituted now.
+- `SEARCH` responses split across several untagged `* SEARCH` lines are now read in full (previously only the first line was parsed), and the `ALL` sequence-set of an `ESEARCH` response is only read from an untagged `* ESEARCH` line, never from message content.
+- The internal search-result repair no longer errors when the stripped id is the last element of the response.
+- 14 criterion constructors called the argument checker positionally, silently disabling all validation (e.g. `before(42)` was accepted); `use_uid` was likewise never validated in the flag operations. All calls are named now.
+- The server-error log was a package-level global shared by every connection in the session, so one connection's `NO` reply could be attributed to another's failure; error reporting now reads the calling connection's own log.
+- A duplicate definition of the message-deletion internal (two files defining the same function with different signatures) was removed.
+- The raw socket layer now uses `poll()` instead of `select()` (undefined behavior for file descriptors above 1024), honors `timeout <= 0` as "no limit" instead of failing immediately, and checks for user interrupts while waiting, so a wedged server no longer makes the R session uninterruptible.
+- Documentation corrected where it contradicted the code: `keep_in_mem` (default is `TRUE`, not `FALSE`) and the polarity of `mute` in the four fetch methods, the return value of `search()`, and two parameters documented on `fetch_metadata()` that do not exist. The criterion constructors now document their return value.
+
 ## mRpostman 2.2.0 (2026-08-27 feature update)
 
 ### New features

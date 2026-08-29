@@ -2,7 +2,7 @@
 #' @param error_message A \code{character vector} containing the error message
 #'   of the curl request.
 #' @noRd
-response_error_handling <- function(error_message) {
+response_error_handling <- function(error_message, self = NULL) {
 
   pattern_resolving = 'Timeout was reached: Resolving timed out'
 
@@ -14,7 +14,8 @@ response_error_handling <- function(error_message) {
 
   # a tagged NO/BAD reply recorded by the debug callback: the server rejected
   # the command, so retrying is pointless and the reason is worth reporting
-  server_error <- last_server_error()
+  server_error <- last_server_error(
+    if (!is.null(self) && !is.null(self$con_debug)) self$con_debug$lines)
 
   if (error_check_resolving) {
 

@@ -24,7 +24,7 @@ execute_ordered_search <- function(self, url, handle, customrequest, parser, ret
     curl::curl_fetch_memory(url, handle = handle)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if (is.null(response)) {
@@ -48,7 +48,7 @@ execute_ordered_search <- function(self, url, handle, customrequest, parser, ret
         curl::curl_fetch_memory(url, handle = handle)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

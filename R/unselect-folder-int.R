@@ -36,7 +36,7 @@ unselect_folder_int <- function(self, retries) {
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if (is.null(response)) {
@@ -48,7 +48,7 @@ unselect_folder_int <- function(self, retries) {
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

@@ -13,7 +13,7 @@
 sent_before <- function(date_char, negate = FALSE) {
 
 
-  check_args(date_char, negate)
+  check_args(date_char = date_char, negate = negate)
 
   # setting part of the search string
 

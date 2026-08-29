@@ -62,7 +62,7 @@ examine_folder_int <- function(self, name, retries) {
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if (!is.null(response)) {
@@ -85,7 +85,7 @@ examine_folder_int <- function(self, name, retries) {
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

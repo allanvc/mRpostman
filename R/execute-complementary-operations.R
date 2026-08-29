@@ -31,7 +31,7 @@ execute_complementary_operations <- function(self, url, handle,  customrequest,
     curl::curl_fetch_memory(url, handle = handle)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+    response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
   })
 
   if (is.null(response)) {
@@ -59,7 +59,7 @@ execute_complementary_operations <- function(self, url, handle,  customrequest,
         curl::curl_fetch_memory(url, handle = handle)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+        response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
       })
     }
 

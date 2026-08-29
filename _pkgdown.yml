@@ -1,2 +1,58 @@
-url: ~
+url: https://allanvc.github.io/mRpostman/
 
+template:
+  bootstrap: 5
+
+reference:
+- title: Connection
+  desc: Configure and hold an IMAP session.
+  contents:
+  - configure_imap
+  - ImapCon
+- title: Search criteria
+  desc: >
+    Criterion constructors and combinators for custom search statements;
+    the same criteria the query language translates to.
+  contents:
+  - AND
+  - OR
+  - Ops.imap_search
+  - string
+  - flag
+  - before
+  - since
+  - "on"
+  - sent_before
+  - sent_since
+  - sent_on
+  - saved_before
+  - larger_than
+  - smaller_than
+  - older_than
+  - younger_than
+  - modseq
+  - fuzzy
+  - filter_stored
+  - verbatim
+- title: Decoding and parsing
+  desc: Turn fetched protocol payloads into analysis-ready data.
+  contents:
+  - clean_msg_text
+  - decode_mime_header
+  - list_attachments
+  - parse_envelope
+  - parse_bodystructure
+  - imap_utf7_encode
+  - imap_url
+  - metadata_options
+- title: Sandbox and corpus tools
+  desc: A disposable local server and reproducible corpora for tests and demos.
+  contents:
+  - populate_sandbox
+  - sandbox_corpus
+  - enron_sandbox
+  - ingest_maildir
+- title: Misc
+  contents:
+  - mRpostman-package
+  - "%>%"

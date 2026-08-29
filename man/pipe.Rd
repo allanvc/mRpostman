@@ -3,6 +3,9 @@
 \name{\%>\%}
 \alias{\%>\%}
 \title{Common Pipe operator}
+\value{
+The result of calling `rhs(lhs)` (see the magrittr package).
+}
 \description{
 Common Pipe operator
 }

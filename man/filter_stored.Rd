@@ -10,6 +10,10 @@ filter_stored(name)
 \item{name}{A \code{character} string with the name of the filter stored
 on the server.}
 }
+\value{
+A search criterion of class \code{imap_search}, to be combined
+  into a search statement (see \code{Ops.imap_search}).
+}
 \description{
 Builds a \code{FILTER <name>} search criterion (RFC 5466), which stands for
 the search criteria saved on the server under that name through the

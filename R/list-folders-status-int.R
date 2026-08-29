@@ -59,7 +59,7 @@ list_folders_status_int <- function(self, items, retries) {
   response <- tryCatch({
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if (is.null(response)) {
@@ -70,7 +70,7 @@ list_folders_status_int <- function(self, items, retries) {
       response <- tryCatch({
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
     }
 

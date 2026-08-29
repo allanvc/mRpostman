@@ -18,6 +18,8 @@
 #'                                       where = "CC")))
 #' }
 #'
+#' @return A search criterion of class \code{imap_search}, to be combined
+#'   into a search statement (see \code{Ops.imap_search}).
 #' @export
 #'
 string <- function(expr, where, negate = FALSE) {

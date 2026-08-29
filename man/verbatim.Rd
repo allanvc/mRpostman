@@ -9,6 +9,10 @@ verbatim(request)
 \arguments{
 \item{request}{A character string with the raw search fragment.}
 }
+\value{
+A search criterion of class \code{imap_search}, to be combined
+  into a search statement (see \code{Ops.imap_search}).
+}
 \description{
 Wraps any raw IMAP \code{SEARCH} fragment as a search criterion, so that
 protocol keys without a dedicated field in

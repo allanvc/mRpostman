@@ -81,7 +81,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+        response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
 
       })
 
@@ -118,7 +118,7 @@ execute_attachment_fetch <- function(self, id, id_folder, df_meta_to_fetch, fetc
             curl::curl_fetch_memory(url, handle = h)
           }, error = function(e){
             # print(e$message)
-            response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+            response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
 
           })
 

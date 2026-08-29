@@ -8,10 +8,10 @@
 #' @return A \code{numeric} vector of ids (possibly empty).
 #' @noRd
 parse_search_ids <- function(content_char) {
-  m <- stringr::str_match(content_char, "\\*\\s+SEARCH([^\r\n]*)")
-  if (is.na(m[1, 2])) {
+  m <- stringr::str_match_all(content_char, "\\*\\s+SEARCH([^\r\n]*)")[[1]]
+  if (nrow(m) == 0) {
     return(numeric(0))
   }
-  body <- gsub("\\(MODSEQ\\s+\\d+\\)", "", m[1, 2])
+  body <- gsub("\\(MODSEQ\\s+\\d+\\)", "", paste(m[, 2], collapse = " "))
   as.numeric(stringr::str_extract_all(body, "\\d+")[[1]])
 }

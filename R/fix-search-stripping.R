@@ -14,9 +14,13 @@ fix_search_stripping <- function(response) {
 
   sorted_response = sort(response)
 
-  if (any(which(response != sorted_response))) {
+  mismatch <- which(response != sorted_response)
 
-    stripped_idx <- which(response != sorted_response)[[1]]
+  # the fix needs the number to the right of the stripped one; when the
+  # mismatch is the last element there is nothing to infer from - leave it
+  if (length(mismatch) > 0 && mismatch[[1]] < length(response)) {
+
+    stripped_idx <- mismatch[[1]]
 
     stripped_number <- response[stripped_idx]
 

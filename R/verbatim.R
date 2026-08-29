@@ -22,6 +22,8 @@
 #'                   use_uid = TRUE)
 #' }
 #'
+#' @return A search criterion of class \code{imap_search}, to be combined
+#'   into a search statement (see \code{Ops.imap_search}).
 #' @export
 #'
 verbatim <- function(request) {

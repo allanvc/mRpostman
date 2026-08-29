@@ -10,6 +10,10 @@ fuzzy(criterion)
 \item{criterion}{A search criterion string, usually built with
 \code{\link{string}} (e.g. \code{string(expr = "jump", where = "SUBJECT")}).}
 }
+\value{
+A search criterion of class \code{imap_search}, to be combined
+  into a search statement (see \code{Ops.imap_search}).
+}
 \description{
 Prefixes a search criterion with \code{FUZZY} (RFC 6203), asking the server
 to match the criterion approximately (typically through its full-text

@@ -45,7 +45,7 @@ create_folder_int <- function(self, name, mute, retries, special_use = NULL) {
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+    response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
   })
 
   if(is.null(response)){
@@ -62,7 +62,7 @@ create_folder_int <- function(self, name, mute, retries, special_use = NULL) {
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1]) # returns NULL for operation timeout: try reconnection
+        response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
       })
 
     }

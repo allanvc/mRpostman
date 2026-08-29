@@ -43,7 +43,7 @@ select_folder_int <- function(self, name, mute, retries, condstore = FALSE) {
     curl::curl_fetch_memory(url, handle = h)
   }, error = function(e){
     # print(e$message)
-    response_error_handling(e$message[1])
+    response_error_handling(e$message[1], self)
   })
 
   if(is.null(response)){
@@ -60,7 +60,7 @@ select_folder_int <- function(self, name, mute, retries, condstore = FALSE) {
         curl::curl_fetch_memory(url, handle = h)
       }, error = function(e){
         # print(e$message)
-        response_error_handling(e$message[1])
+        response_error_handling(e$message[1], self)
       })
 
     }

@@ -120,7 +120,7 @@ append_int <- function(self, message, folder, flags, mute, retries) {
       curl::curl_fetch_memory(url_append, handle = h)
     }, error = function(e){
       # print(e$message)
-      response_error_handling(e$message[1])
+      response_error_handling(e$message[1], self)
     })
   }
 

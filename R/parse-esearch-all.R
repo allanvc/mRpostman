@@ -12,7 +12,12 @@
 #' @noRd
 parse_esearch_all <- function(content_char) {
 
-  m <- stringr::str_match_all(content_char, "ALL ([0-9,:]+)")[[1]]
+  # only the ALL item of an untagged "* ESEARCH ..." line counts; an
+  # "ALL n:m" occurring anywhere else in the payload must not be parsed
+  esearch_lines <- grep("^\\*\\s+ESEARCH",
+                        strsplit(content_char, "\r?\n")[[1]], value = TRUE)
+  m <- stringr::str_match_all(paste(esearch_lines, collapse = "\r\n"),
+                              "ALL ([0-9,:]+)")[[1]]
 
   if (nrow(m) == 0) {
     return(integer(0))

@@ -1,6 +1,10 @@
 #' @title An IMAP Connection Class
 #' @description Configure an IMAP connection using the \code{ImapCon} \code{R6}
 #'   class.
+#' @return An \code{ImapCon} object holding one stateful IMAP session:
+#'   the connection parameters, the transport handle, and the session caches
+#'   (selected folder, server capabilities). All the package's operations are
+#'   methods of this object.
 #' @importFrom R6 R6Class
 #' @export
 #' @examples
@@ -1685,9 +1689,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   is no "AND" operator in IMAP, this package adds a helper function
     #'   \code{\link{AND}} to indicate multiple arguments that must be searched
     #'   together, e.g. \code{AND(since("01-Jul-2018"), smaller_than(16000))}.
-    #' @return A \code{list} containing the flags (\code{character vector}),
-    #'   the permanent flags (\code{character vector}), and an indication if custom
-    #'   flags are allowed by the server (\code{logical vector}).
+    #' @return A \code{numeric vector} with the ids of the messages that match
+    #'   the search, or \code{integer(0)} when none does. With
+    #'   \code{save = TRUE} the result set is also kept on the server
+    #'   (SEARCHRES) and returned invisibly.
     #' @family custom search
     #' @examples
     #' \dontrun{
@@ -2391,12 +2396,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
-    #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
-    #'   the operation is being performed with \code{write_to_disk = TRUE}. Default
-    #'   is \code{FALSE}, and it can only be set \code{TRUE} when
-    #'   \code{write_to_disk = TRUE}.
-    #' @param mute A \code{logical}. It provides a confirmation message if the
-    #'   command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+    #' @param keep_in_mem If \code{TRUE} (default), keeps a copy of each fetch
+    #'   result in the returned list. It can only be set \code{FALSE} along with
+    #'   \code{write_to_disk = TRUE}, to write the results to disk without
+    #'   keeping them in memory.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
     #'   and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command. Default
     #'   is \code{1}.
@@ -2452,12 +2457,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
-    #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
-    #'   the operation is being performed with \code{write_to_disk = TRUE}. Default
-    #'   is \code{FALSE}, and it can only be set \code{TRUE} when
-    #'   \code{write_to_disk = TRUE}.
-    #' @param mute A \code{logical}. It provides a confirmation message if the
-    #'   command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+    #' @param keep_in_mem If \code{TRUE} (default), keeps a copy of each fetch
+    #'   result in the returned list. It can only be set \code{FALSE} along with
+    #'   \code{write_to_disk = TRUE}, to write the results to disk without
+    #'   keeping them in memory.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
     #'   and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command. Default
     #'   is \code{1}.
@@ -2506,20 +2511,15 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{"SAVEDATE"} (RFC 8514), and \code{"MODSEQ"} (CONDSTORE, RFC 7162)
     #'   may also be requested when the server advertises the corresponding
     #'   capability.
-    #' @param peek If \code{TRUE}, it does not mark messages as "read" after
-    #'   fetching. Default is \code{TRUE}.
-    #' @param partial \code{NULL} or a character string with format
-    #'   "startchar.endchar" indicating the size (in characters) of a message slice
-    #'   to fetch. Default is \code{NULL}, which will fetch the full specified content.
     #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
-    #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
-    #'   the operation is being performed with \code{write_to_disk = TRUE}. Default
-    #'   is \code{FALSE}, and it can only be set \code{TRUE} when
-    #'   \code{write_to_disk = TRUE}.
-    #' @param mute A \code{logical}. It provides a confirmation message if the
-    #'   command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+    #' @param keep_in_mem If \code{TRUE} (default), keeps a copy of each fetch
+    #'   result in the returned list. It can only be set \code{FALSE} along with
+    #'   \code{write_to_disk = TRUE}, to write the results to disk without
+    #'   keeping them in memory.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
     #'   and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.
     #' @param changed_since \code{NULL} (default) or a modification sequence:
     #'   with it only the messages modified after that sequence are returned
@@ -2642,12 +2642,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param write_to_disk If \code{TRUE}, writes the fetched content of each message
     #'   to a text file in a local folder inside the working directory, also
     #'   returning the results with \code{invisible()}. Default is \code{FALSE}.
-    #' @param keep_in_mem If \code{TRUE}, keeps a copy of each fetch result while
-    #'   the operation is being performed with \code{write_to_disk = TRUE}. Default
-    #'   is \code{FALSE}, and it can only be set \code{TRUE} when
-    #'   \code{write_to_disk = TRUE}.
-    #' @param mute A \code{logical}. It provides a confirmation message if the
-    #'   command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
+    #' @param keep_in_mem If \code{TRUE} (default), keeps a copy of each fetch
+    #'   result in the returned list. It can only be set \code{FALSE} along with
+    #'   \code{write_to_disk = TRUE}, to write the results to disk without
+    #'   keeping them in memory.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message when the command is successfully executed. It is only effective when \code{write_to_disk = TRUE}
     #'   and \code{keep_in_mem = FALSE}. Default is \code{FALSE}.
     #' @param base64_decode If \code{TRUE}, tries to guess and decode the fetched
     #'   text from base64 format to \code{character}. Default is \code{FALSE}.
@@ -2879,8 +2879,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @examples
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
-    #' # delete
-    #' con$delete_msg(flag = c("Flagged", "Answered"))
+    #' # delete messages 70 to 73
+    #' con$delete_msg(msg_id = 70:73)
     #' }
     delete_msg = function(msg_id, use_uid = FALSE, mute = FALSE, retries = 1) {
       out <- delete_msg_int(self, msg_id, use_uid, mute, retries)
@@ -2904,8 +2904,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @examples
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
-    #' # count the number of messages marked as "Flagged" and "Answered"
-    #' con$esearch_count(flag = c("Flagged", "Answered"))
+    #' # remove every message marked as deleted
+    #' con$expunge()
+    #' # or only a specific one (UIDPLUS servers)
+    #' con$expunge(msg_uid = 71)
     #' }
     expunge = function(msg_uid = NULL, mute = FALSE, retries = 1) {
       out <- expunge_int(self, msg_uid, mute, retries)
