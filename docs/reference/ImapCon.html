@@ -1665,7 +1665,7 @@ command. Default is <code>1</code>.</p></dd>
     <code>&lt;</code>, <code>&lt;=</code>, <code>==</code></td><td><code>SENTSINCE</code>,
     <code>SENTBEFORE</code>, <code>SENTON</code></td></tr><tr><td><code>date</code> (the internal date)</td><td>idem</td><td><code>SINCE</code>,
     <code>BEFORE</code>, <code>ON</code></td></tr><tr><td><code>saved</code></td><td>idem</td><td><code>SAVEDSINCE</code>, ... (SAVEDATE servers)</td></tr><tr><td><code>modseq</code></td><td><code>&gt;=</code>, <code>&gt;</code>, <code>&lt;</code></td><td><code>MODSEQ</code>
-    (CONDSTORE servers)</td></tr></table><p>Dates accept <code>"YYYY-MM-DD"</code>, <code>"DD-Mon-YYYY"</code>, or
+    (CONDSTORE servers)</td></tr><tr><td>any field, with <code>%in%</code></td><td><code>field %in% c(v1, v2, ...)</code></td><td>an <code>OR</code> chain over the field's key</td></tr></table><p>Dates accept <code>"YYYY-MM-DD"</code>, <code>"DD-Mon-YYYY"</code>, or
 <code>Date</code> values, exact at the protocol's day granularity.</p>
 </div><p></p><div class="section">
 <h4 id="returns-22">Returns<a class="anchor" aria-label="anchor" href="#returns-22"></a></h4>

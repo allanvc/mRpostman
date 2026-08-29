@@ -2673,6 +2673,8 @@ command. Default is \code{1}.}
   \code{saved} \tab idem \tab \code{SAVEDSINCE}, ... (SAVEDATE servers) \cr
   \code{modseq} \tab \code{>=}, \code{>}, \code{<} \tab \code{MODSEQ}
     (CONDSTORE servers) \cr
+  any field, with \code{\%in\%} \tab \code{field \%in\% c(v1, v2, ...)}
+    \tab an \code{OR} chain over the field's key \cr
 }
 Dates accept \code{"YYYY-MM-DD"}, \code{"DD-Mon-YYYY"}, or
 \code{Date} values, exact at the protocol's day granularity.
