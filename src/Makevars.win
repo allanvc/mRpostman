@@ -1,3 +1,8 @@
+# Rtools ships a static libcurl (no DLL): CURL_STATICLIB stops the libcurl
+# headers from declaring functions __declspec(dllimport), which would make
+# the linker look for __imp_ symbols that a static archive does not provide
+PKG_CPPFLAGS = -DCURL_STATICLIB
+
 # Rtools ships a static libcurl (as used by the 'curl' package); link it with
 # the libraries it depends on
 PKG_LIBS = -lcurl -lnormaliz -lssh2 -lgcrypt -lgpg-error -lidn2 -lunistring -liconv -lssl -lcrypto -lgdi32 -lwldap32 -lz -lws2_32 -lwsock32 -lcrypt32 -lbcrypt -lzstd -lbrotlidec -lbrotlicommon
