@@ -39,6 +39,8 @@ reference:
   contents:
   - clean_msg_text
   - decode_mime_header
+  - decode_mime_text
+  - extract_attachments
   - list_attachments
   - parse_envelope
   - parse_bodystructure

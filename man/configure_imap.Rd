@@ -14,6 +14,9 @@ configure_imap(
   verbose = FALSE,
   buffersize = 16000,
   timeout_ms = 0,
+  use_uid = FALSE,
+  mute = FALSE,
+  retries = 1,
   ...
 )
 }
@@ -48,6 +51,20 @@ as a request, not an order.}
 \item{timeout_ms}{Time in milliseconds (ms) to wait for the execution or
 re-execution of a command. Default is 0, which means that no timeout limit is
 set.}
+
+\item{use_uid}{Connection-level default for the \code{use_uid} argument
+of the methods: if \code{TRUE}, operations use the \code{"UID"}
+(unique identifier), stable during the life cycle of a message, instead
+of message sequence numbers. Each call can still override it. Default is
+\code{FALSE}.}
+
+\item{mute}{Connection-level default for the \code{mute} argument of the
+methods: if \code{TRUE}, confirmation messages are suppressed. Each
+call can still override it. Default is \code{FALSE}.}
+
+\item{retries}{Connection-level default for the \code{retries} argument
+of the methods (number of attempts to connect and execute a command).
+Each call can still override it. Default is \code{1}.}
 
 \item{...}{Further curl parameters (see \code{curl::curl_options}) that
 can be used with the IMAP protocol. Only for advanced users.}

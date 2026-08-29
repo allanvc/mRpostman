@@ -16,6 +16,8 @@
 #' @export
 #'
 AND <- function(..., negate = FALSE) {
+  lifecycle::deprecate_warn("3.0.0", "AND()",
+    details = "Combine criteria with R's own operators instead: crit1 & crit2.")
   # just a wrapper to paste
 
   # ... must be 2+ args

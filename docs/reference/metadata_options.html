@@ -53,8 +53,10 @@
     </div>
     <div class="section level2">
     <h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a></h2>
-    <p>This function lists message metadata used by
-    IMAP servers, according to the RFC 2060 (Crispin, 1996).</p>
+    <p>This function lists the message attributes that
+    <a href="#method-fetch_metadata"><code>ImapCon$fetch_metadata()</code></a> accepts.
+    The last three (<code>PREVIEW</code>, <code>SAVEDATE</code>, <code>MODSEQ</code>) are
+    capability-gated extensions, only sent when the server advertises them.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

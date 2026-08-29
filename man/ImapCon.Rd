@@ -201,11 +201,19 @@ con <- ImapCon$new(
 
 
 ## ------------------------------------------------
-## Method `ImapCon$disconnect()`
+## Method `ImapCon$print()`
 ## ------------------------------------------------
 
 \dontrun{
 con$disconnect()
+}
+
+## ------------------------------------------------
+## Method `ImapCon$has_capability()`
+## ------------------------------------------------
+
+\dontrun{
+if (con$has_capability("ESEARCH")) ids <- con$search_since("01-Jan-2020", esearch = TRUE)
 }
 
 ## ------------------------------------------------
@@ -1095,6 +1103,25 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 }
 
 ## ------------------------------------------------
+## Method `ImapCon$attachments()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
+manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
+}
+
+## ------------------------------------------------
+## Method `ImapCon$attachments_manifest()`
+## ------------------------------------------------
+
+\dontrun{
+con$select_folder(name = "INBOX")
+con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
+}
+
+## ------------------------------------------------
 ## Method `ImapCon$get_attachments()`
 ## ------------------------------------------------
 
@@ -1195,6 +1222,7 @@ Other custom search:
 \code{\link[=younger_than]{younger_than()}}
 
 Other attachments:
+\code{\link[=extract_attachments]{extract_attachments()}},
 \code{\link[=list_attachments]{list_attachments()}}
 }
 \concept{attachments}
@@ -1218,6 +1246,8 @@ Other attachments:
     \item \href{#method-ImapCon-reset_timeout_ms}{\code{ImapCon$reset_timeout_ms()}}
     \item \href{#method-ImapCon-reset_password}{\code{ImapCon$reset_password()}}
     \item \href{#method-ImapCon-reset_xoauth2_bearer}{\code{ImapCon$reset_xoauth2_bearer()}}
+    \item \href{#method-ImapCon-print}{\code{ImapCon$print()}}
+    \item \href{#method-ImapCon-has_capability}{\code{ImapCon$has_capability()}}
     \item \href{#method-ImapCon-disconnect}{\code{ImapCon$disconnect()}}
     \item \href{#method-ImapCon-idle}{\code{ImapCon$idle()}}
     \item \href{#method-ImapCon-notify}{\code{ImapCon$notify()}}
@@ -1307,6 +1337,8 @@ Other attachments:
     \item \href{#method-ImapCon-add_flags}{\code{ImapCon$add_flags()}}
     \item \href{#method-ImapCon-replace_flags}{\code{ImapCon$replace_flags()}}
     \item \href{#method-ImapCon-remove_flags}{\code{ImapCon$remove_flags()}}
+    \item \href{#method-ImapCon-attachments}{\code{ImapCon$attachments()}}
+    \item \href{#method-ImapCon-attachments_manifest}{\code{ImapCon$attachments_manifest()}}
     \item \href{#method-ImapCon-get_attachments}{\code{ImapCon$get_attachments()}}
     \item \href{#method-ImapCon-fetch_attachments_list}{\code{ImapCon$fetch_attachments_list()}}
     \item \href{#method-ImapCon-fetch_attachment_parts}{\code{ImapCon$fetch_attachment_parts()}}
@@ -1331,6 +1363,9 @@ Other attachments:
   verbose = FALSE,
   buffersize = 16000,
   timeout_ms = 0,
+  use_uid = FALSE,
+  mute = FALSE,
+  retries = 1,
   ...
 )}
     \if{html}{\out{</div>}}
@@ -1358,6 +1393,14 @@ as a request, not an order.}
       \item{\code{timeout_ms}}{Time in milliseconds (ms) to wait for the execution or
 re-execution of a command. Default is 0, which means that no timeout limit is
 set.}
+      \item{\code{use_uid}}{Connection-level default for the \code{use_uid}
+argument of the methods; each call can still override it. Default
+is \code{FALSE}.}
+      \item{\code{mute}}{Connection-level default for the \code{mute} argument of
+the methods; each call can still override it. Default is \code{FALSE}.}
+      \item{\code{retries}}{Connection-level default for the \code{retries}
+argument of the methods; each call can still override it. Default
+is \code{1}.}
       \item{\code{...}}{Further curl parameters (see \code{curl::curl_options}) that
 can be used with the IMAP protocol. Only for advanced users.}
     }
@@ -1529,17 +1572,29 @@ set.}
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-ImapCon-disconnect"></a>}}
-\if{latex}{\out{\hypertarget{method-ImapCon-disconnect}{}}}
-\subsection{\code{ImapCon$disconnect()}}{
+\if{html}{\out{<a id="method-ImapCon-print"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-print}{}}}
+\subsection{\code{ImapCon$print()}}{
   Disconnect and release the connection handle. After calling
   this method the connection object can no longer be used to issue
   commands; a new one must be created with \code{\link{configure_imap}}.
   Dropping the handle reference lets 'libcurl' close the underlying
   connection when the handle is garbage-collected.
+
+
+  Print a compact summary of the connection: server,
+  user, TLS, the selected folder, and whether the session has been
+  used. Credentials are never printed.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$disconnect()}
+    \preformatted{ImapCon$print(...)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{...}}{Ignored (matches the generic).}
+    }
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
@@ -1549,6 +1604,48 @@ set.}
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{con$disconnect()
 }
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-has_capability"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-has_capability}{}}}
+\subsection{\code{ImapCon$has_capability()}}{
+  Check whether the server advertises one capability.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$has_capability(cap, retries = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{cap}}{The capability token, case-insensitive (e.g. \code{"ESEARCH"},
+\code{"THREAD=REFERENCES"}).}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{logical}.
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{if (con$has_capability("ESEARCH")) ids <- con$search_since("01-Jan-2020", esearch = TRUE)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-disconnect"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-disconnect}{}}}
+\subsection{\code{ImapCon$disconnect()}}{
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$disconnect()}
     \if{html}{\out{</div>}}
   }
 }
@@ -1633,7 +1730,7 @@ if (any(ev$type == "EXISTS")) con$fetch_envelope(max(ev$id[ev$type == "EXISTS"])
   timeout = 300,
   callback = NULL,
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -1693,10 +1790,10 @@ ev <- con$notify(mailboxes = "personal", timeout = 600,
     \preformatted{ImapCon$fetch_binary(
   msg_id,
   part,
-  use_uid = FALSE,
+  use_uid = NULL,
   folder = NULL,
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -1748,7 +1845,7 @@ writeBin(pdf[[1]], "attachment.pdf")
   folder = NULL,
   flags = NULL,
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -1800,8 +1897,8 @@ con$append_catenate(parts = list(
   messages,
   folder = NULL,
   flags = NULL,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   compress = FALSE
 )}
     \if{html}{\out{</div>}}
@@ -1852,7 +1949,12 @@ con$append_msgs(msgs, folder = "Archive", flags = "Seen")
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$esearch_partial(range, criteria = "ALL", use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$esearch_partial(
+  range,
+  criteria = "ALL",
+  use_uid = NULL,
+  retries = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -1900,9 +2002,9 @@ con$esearch_partial(range = "-1:-50", criteria = "UNSEEN", use_uid = TRUE)
   by = "DATE",
   reverse = FALSE,
   criteria = "ALL",
-  use_uid = FALSE,
+  use_uid = NULL,
   char_set = "UTF-8",
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -1961,10 +2063,10 @@ Default is \code{1}.}
   message,
   folder = NULL,
   flags = NULL,
-  use_uid = FALSE,
-  mute = FALSE,
+  use_uid = NULL,
+  mute = NULL,
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2017,7 +2119,7 @@ Default is \code{1}.}
   been exercised against a live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_objectid(msg_id, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$fetch_objectid(msg_id, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2057,7 +2159,7 @@ Default is \code{1}.}
   RFC grammar but has not been exercised against a live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$uid_batches(batch_size, retries = 1)}
+    \preformatted{ImapCon$uid_batches(batch_size, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2100,7 +2202,7 @@ Default is \code{1}.}
   mailboxes = "personal",
   criteria = "ALL",
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2148,7 +2250,7 @@ Default is \code{1}.}
   against a live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$unauthenticate(retries = 1)}
+    \preformatted{ImapCon$unauthenticate(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2182,7 +2284,7 @@ Default is \code{1}.}
   against a live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$language(language = NULL, retries = 1)}
+    \preformatted{ImapCon$language(language = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2221,7 +2323,7 @@ con$language("pt-BR")
   live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$comparator(order = NULL, retries = 1)}
+    \preformatted{ImapCon$comparator(order = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2264,7 +2366,7 @@ Default is \code{1}.}
   access = "anonymous",
   mechanism = "INTERNAL",
   expire = NULL,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2309,7 +2411,7 @@ Default is \code{1}.}
   grammar but has not been exercised against a live server.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$urlfetch(urls, compress = FALSE, retries = 1)}
+    \preformatted{ImapCon$urlfetch(urls, compress = FALSE, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2354,10 +2456,10 @@ con$urlfetch(u)
   mimetype,
   part = "1",
   params = NULL,
-  use_uid = FALSE,
+  use_uid = NULL,
   folder = NULL,
   compress = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2411,8 +2513,8 @@ Default is \code{1}.}
   msg_id,
   entries = "/*",
   attributes = "value",
-  use_uid = FALSE,
-  retries = 1
+  use_uid = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2462,9 +2564,9 @@ Default is \code{1}.}
   msg_id,
   entry,
   values,
-  use_uid = FALSE,
-  mute = FALSE,
-  retries = 1
+  use_uid = NULL,
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2521,10 +2623,10 @@ Default is \code{1}.}
     \preformatted{ImapCon$query(
   expr,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   esearch = FALSE,
   save = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2596,7 +2698,7 @@ con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")
   List the server's IMAP capabilities.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_server_capabilities(retries = 1)}
+    \preformatted{ImapCon$list_server_capabilities(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2632,7 +2734,7 @@ cap
   \code{UTF8=ACCEPT} itself for non-ASCII searches.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$enable(capabilities, retries = 1)}
+    \preformatted{ImapCon$enable(capabilities, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2667,7 +2769,7 @@ Default is \code{1}.}
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$namespace(retries = 1)}
+    \preformatted{ImapCon$namespace(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2701,7 +2803,7 @@ Default is \code{1}.}
   id. Requires the server \code{ID} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$id(fields = NULL, retries = 1)}
+    \preformatted{ImapCon$id(fields = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2738,7 +2840,7 @@ con$id(fields = c(name = "mRpostman", version = "1.2.1"))
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$get_quota_root(name = NULL, retries = 1)}
+    \preformatted{ImapCon$get_quota_root(name = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2772,7 +2874,7 @@ Default is \code{1}.}
   \code{GETQUOTA}, RFC 9208). Requires the server \code{QUOTA} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$get_quota(quota_root = "", retries = 1)}
+    \preformatted{ImapCon$get_quota(quota_root = "", retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2807,7 +2909,7 @@ Default is \code{1}.}
   administrators. Requires the server \code{QUOTA} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$set_quota(quota_root, storage = NULL, message = NULL, retries = 1)}
+    \preformatted{ImapCon$set_quota(quota_root, storage = NULL, message = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2851,7 +2953,7 @@ Default is \code{1}.}
   entries,
   depth = NULL,
   max_size = NULL,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -2893,7 +2995,7 @@ con$get_metadata(name = NULL, entries = "/shared/comment")
   \code{METADATA} (or \code{METADATA-SERVER}) capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$set_metadata(name = NULL, entries, retries = 1)}
+    \preformatted{ImapCon$set_metadata(name = NULL, entries, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2929,7 +3031,7 @@ con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
   \code{GETACL}, RFC 4314). Requires the server \code{ACL} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$get_acl(name = NULL, retries = 1)}
+    \preformatted{ImapCon$get_acl(name = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -2964,7 +3066,7 @@ Default is \code{1}.}
   capability and the \code{a} (administer) right on the folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$set_acl(name = NULL, identifier, rights, retries = 1)}
+    \preformatted{ImapCon$set_acl(name = NULL, identifier, rights, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3004,7 +3106,7 @@ con$set_acl(name = "Shared", identifier = "anyone", rights = "+w")
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$delete_acl(name = NULL, identifier, retries = 1)}
+    \preformatted{ImapCon$delete_acl(name = NULL, identifier, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3039,7 +3141,7 @@ Default is \code{1}.}
   \code{ACL} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_rights(name = NULL, identifier, retries = 1)}
+    \preformatted{ImapCon$list_rights(name = NULL, identifier, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3076,7 +3178,7 @@ Default is \code{1}.}
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$my_rights(name = NULL, retries = 1)}
+    \preformatted{ImapCon$my_rights(name = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3110,7 +3212,7 @@ Default is \code{1}.}
   the connection handle alive between operations.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$noop(retries = 1)}
+    \preformatted{ImapCon$noop(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3143,7 +3245,7 @@ Default is \code{1}.}
   keep-alive.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$check(retries = 1)}
+    \preformatted{ImapCon$check(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3173,7 +3275,7 @@ con$check()
   List mail folders in a mailbox.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_mail_folders(retries = 1, detailed = FALSE)}
+    \preformatted{ImapCon$list_mail_folders(retries = NULL, detailed = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3215,7 +3317,7 @@ folders
   the user is subscribed to.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_subscribed_folders(retries = 1)}
+    \preformatted{ImapCon$list_subscribed_folders(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3250,7 +3352,7 @@ subscribed
   the server \code{LIST-STATUS} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_folders_status(items = c("MESSAGES", "UNSEEN"), retries = 1)}
+    \preformatted{ImapCon$list_folders_status(items = c("MESSAGES", "UNSEEN"), retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3292,7 +3394,7 @@ con$list_folders_status(items = c("MESSAGES", "UNSEEN", "UIDNEXT"))
   \code{\\Flagged}. Requires the server \code{SPECIAL-USE} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_special_use_folders(retries = 1)}
+    \preformatted{ImapCon$list_special_use_folders(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3322,7 +3424,7 @@ Default is \code{1}.}
   Select a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$select_folder(name, mute = FALSE, retries = 1, condstore = FALSE)}
+    \preformatted{ImapCon$select_folder(name, mute = NULL, retries = NULL, condstore = FALSE)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3366,7 +3468,7 @@ modification sequences in this session. The folder's
   extension must be enabled with no folder selected).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$resync_folder(name, uidvalidity, modseq, retries = 1)}
+    \preformatted{ImapCon$resync_folder(name, uidvalidity, modseq, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3412,7 +3514,7 @@ delta$vanished; delta$changed
   \code{QRESYNC} for \code{vanished = TRUE}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_changes(modseq, vanished = TRUE, retries = 1)}
+    \preformatted{ImapCon$fetch_changes(modseq, vanished = TRUE, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3452,7 +3554,7 @@ con$fetch_changes(modseq = last)
   no folder is selected.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$close_folder(retries = 1)}
+    \preformatted{ImapCon$close_folder(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3484,7 +3586,7 @@ con$close_folder()
   \code{UNSELECT} capability. After this, no folder is selected.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$unselect_folder(retries = 1)}
+    \preformatted{ImapCon$unselect_folder(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3514,7 +3616,7 @@ con$unselect_folder()
   Examine the number of messages in a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$examine_folder(name = NULL, retries = 1)}
+    \preformatted{ImapCon$examine_folder(name = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3556,7 +3658,7 @@ con$examine_folder("Sent")
     \preformatted{ImapCon$status(
   name = NULL,
   items = c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN"),
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -3599,7 +3701,7 @@ con$status(items = c("MESSAGES", "UNSEEN"))
   Create a new mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$create_folder(name, mute = FALSE, retries = 1, special_use = NULL)}
+    \preformatted{ImapCon$create_folder(name, mute = NULL, retries = NULL, special_use = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3640,8 +3742,8 @@ server capability).}
   name = NULL,
   new_name,
   reselect = TRUE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -3683,7 +3785,7 @@ con$rename_folder(name = "Folder A", new_name = "Folder B")
   Delete a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$delete_folder(name, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$delete_folder(name, mute = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3717,7 +3819,7 @@ Default is \code{1}.}
   to the set returned by \code{list_subscribed_folders()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$subscribe_folder(name, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$subscribe_folder(name, mute = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3751,7 +3853,7 @@ Default is \code{1}.}
   removing it from the set returned by \code{list_subscribed_folders()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$unsubscribe_folder(name, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$unsubscribe_folder(name, mute = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3784,7 +3886,7 @@ Default is \code{1}.}
   List flags in a selected mail folder
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_flags(retries = 1)}
+    \preformatted{ImapCon$list_flags(retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -3821,10 +3923,10 @@ con$list_flags()
   by = "DATE",
   reverse = FALSE,
   criteria = "ALL",
-  use_uid = FALSE,
+  use_uid = NULL,
   char_set = "UTF-8",
   return = NULL,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -3880,9 +3982,9 @@ con$sort(by = "DATE", reverse = TRUE)
     \preformatted{ImapCon$thread(
   algorithm = "REFERENCES",
   criteria = "ALL",
-  use_uid = FALSE,
+  use_uid = NULL,
   char_set = "UTF-8",
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -3925,10 +4027,10 @@ con$thread(algorithm = "REFERENCES")
     \preformatted{ImapCon$search(
   request,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   esearch = FALSE,
   save = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4004,10 +4106,10 @@ con$search(AND(smaller_than(size = "512000"),
     \preformatted{ImapCon$search_larger_than(
   size,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4064,10 +4166,10 @@ con$search_larger_than(size = 512000)
     \preformatted{ImapCon$search_smaller_than(
   size,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4125,10 +4227,10 @@ con$search_smaller_than(size = 512000)
     \preformatted{ImapCon$search_before(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4188,10 +4290,10 @@ con$search_before(date = "02-Jan-2020", use_uid = TRUE)
     \preformatted{ImapCon$search_since(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4251,10 +4353,10 @@ con$search_since(date = "02-Jan-2020", use_uid = TRUE)
     \preformatted{ImapCon$search_on(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4315,10 +4417,10 @@ con$search_on(date = "02-Jan-2020", use_uid = TRUE)
   since_date_char,
   before_date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4383,10 +4485,10 @@ con$search_period(since_date_char = "02-Jan-2020",
     \preformatted{ImapCon$search_sent_before(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4445,10 +4547,10 @@ con$search_sent_before(date = "02-Jan-2020", use_uid = TRUE)
     \preformatted{ImapCon$search_sent_since(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4507,10 +4609,10 @@ con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
     \preformatted{ImapCon$search_sent_on(
   date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4571,10 +4673,10 @@ con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
   since_date_char,
   before_date_char,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4639,9 +4741,9 @@ con$search_sent_period(since_date_char = "02-Jan-2020",
     \preformatted{ImapCon$search_flag(
   name,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4698,10 +4800,10 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
     \preformatted{ImapCon$search_older_than(
   seconds,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4759,10 +4861,10 @@ con$search_older_than(seconds = 3600, negate = TRUE)
     \preformatted{ImapCon$search_younger_than(
   seconds,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4821,10 +4923,10 @@ con$search_younger_than(seconds = 3600)
   expr,
   where,
   negate = FALSE,
-  use_uid = FALSE,
+  use_uid = NULL,
   flag = NULL,
   esearch = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4883,14 +4985,14 @@ con$search_string(expr = "@k-state.edu", where = "FROM")
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_body(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   mime_level = NULL,
   peek = TRUE,
   partial = NULL,
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -4956,15 +5058,15 @@ con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_header(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   fields = NULL,
   negate_fields = FALSE,
   peek = TRUE,
   partial = NULL,
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5032,12 +5134,12 @@ out <- con$fetch_header()
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_metadata(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   attribute = NULL,
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   changed_since = NULL
 )}
     \if{html}{\out{</div>}}
@@ -5107,7 +5209,7 @@ out <- con$fetch_metadata(msg = res)
   body. Requires the server \code{PREVIEW} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_preview(msg_id, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$fetch_preview(msg_id, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5145,7 +5247,7 @@ con$search_flag("UNSEEN") \%>\% con$fetch_preview()
   \code{\link{parse_envelope}}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_envelope(msg_id, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$fetch_envelope(msg_id, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5185,7 +5287,7 @@ con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
   size, and disposition. See \code{\link{parse_bodystructure}}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_bodystructure(msg_id, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$fetch_bodystructure(msg_id, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5222,14 +5324,14 @@ parts[parts$is_attachment, ]
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_text(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   peek = TRUE,
   partial = NULL,
   write_to_disk = FALSE,
   keep_in_mem = TRUE,
-  mute = FALSE,
+  mute = NULL,
   base64_decode = FALSE,
-  retries = 1
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5300,11 +5402,11 @@ con$fetch_text(msg = res,
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$copy_msg(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   to_folder,
   reselect = TRUE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5362,11 +5464,11 @@ con$copy(msg = res, to_folder = "Sent")
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$move_msg(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   to_folder,
   reselect = TRUE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5432,8 +5534,8 @@ con$move(msg = res, to_folder = "Sent")
   message,
   folder = NULL,
   flags = NULL,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5479,7 +5581,7 @@ con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
   folder (depends on ESEARCH capability)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$esearch_count(flag, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$esearch_count(flag, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5522,7 +5624,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
   Delete message(s) in the selected mail folder
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$delete_msg(msg_id, use_uid = FALSE, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$delete_msg(msg_id, use_uid = NULL, mute = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5563,7 +5665,7 @@ con$delete_msg(msg_id = 70:73)
   Permanently removes all or specific messages marked as deleted from the selected folder
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$expunge(msg_uid = NULL, mute = FALSE, retries = 1)}
+    \preformatted{ImapCon$expunge(msg_uid = NULL, mute = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5603,7 +5705,7 @@ con$expunge(msg_uid = 71)
   (depends on ESEARCH capability)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$esearch_min_id(flag, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$esearch_min_id(flag, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5647,7 +5749,7 @@ con$esearch_min_id(flag = "Answered")
   (depends on ESEARCH capability)
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$esearch_max_id(flag, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$esearch_max_id(flag, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5692,10 +5794,10 @@ con$esearch_max_id(flag = "Seen")
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$add_flags(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   flags_to_set,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
@@ -5750,10 +5852,10 @@ con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$replace_flags(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   flags_to_set,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
@@ -5809,10 +5911,10 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$remove_flags(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   flags_to_unset,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   unchanged_since = NULL
 )}
     \if{html}{\out{</div>}}
@@ -5859,6 +5961,110 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 }
 
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-attachments"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-attachments}{}}}
+\subsection{\code{ImapCon$attachments()}}{
+  Download the attachments of messages, guided by each
+  message's \code{BODYSTRUCTURE}: exact MIME part numbers, nested
+  multiparts included, one \code{BODY.PEEK[part]} fetch per
+  attachment, decoded according to the declared transfer encoding.
+  This is the canonical attachment path since the 2026 refactoring;
+  it replaces \code{fetch_attachments()} and
+  \code{fetch_attachment_parts()}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$attachments(
+  msg_id,
+  use_uid = NULL,
+  parts = NULL,
+  content_disposition = "both",
+  dest = ".",
+  override = FALSE,
+  as_is = FALSE,
+  mute = NULL,
+  retries = NULL
+)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the operation
+uses the \code{"UID"} (unique identifier), stable during the life
+cycle of a message, instead of message sequence numbers.}
+      \item{\code{parts}}{\code{NULL} (default) to fetch every attachment part, or
+a \code{character/numeric vector} of MIME part numbers (e.g.
+\code{c("2", "3.1")}) to fetch specific ones.}
+      \item{\code{content_disposition}}{One of \code{"both"} (default),
+\code{"attachment"}, or \code{"inline"}.}
+      \item{\code{dest}}{\code{NULL} to keep the decoded payloads in memory (in the
+returned data.frame), or a directory path to write one folder per
+message with its attachment files.}
+      \item{\code{override}}{A \code{logical}. If \code{TRUE}, overrides existing
+files with the same name. Default is \code{FALSE}.}
+      \item{\code{as_is}}{If \code{TRUE}, writes the payloads without decoding the
+transfer encoding. Default is \code{FALSE}.}
+      \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
+message. Default is \code{FALSE}.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{data.frame} with one row per attachment: \code{id}
+  (or \code{uid}), \code{part}, \code{filename}, \code{type},
+  \code{size} (bytes), and \code{path} (or \code{content}).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
+manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-ImapCon-attachments_manifest"></a>}}
+\if{latex}{\out{\hypertarget{method-ImapCon-attachments_manifest}{}}}
+\subsection{\code{ImapCon$attachments_manifest()}}{
+  List the attachments of messages without downloading
+  them: one server round trip over the \code{BODYSTRUCTURE} metadata.
+  Replaces \code{fetch_attachments_list()}.
+  \subsection{Usage}{
+    \if{html}{\out{<div class="r">}}
+    \preformatted{ImapCon$attachments_manifest(msg_id, use_uid = NULL, retries = NULL)}
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Arguments}{
+    \if{html}{\out{<div class="arguments">}}
+    \describe{
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
+      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the operation
+uses the \code{"UID"} (unique identifier) instead of message
+sequence numbers.}
+      \item{\code{retries}}{Number of attempts to connect and execute the command.
+Default is \code{1}.}
+    }
+    \if{html}{\out{</div>}}
+  }
+  \subsection{Returns}{
+    A \code{list} with one \code{data.frame} per message
+  (filename, type, encoding, size).
+  }
+  \subsection{Examples}{
+    \if{html}{\out{<div class="r example copy">}}
+    \preformatted{con$select_folder(name = "INBOX")
+con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
+}
+    \if{html}{\out{</div>}}
+  }
+}
+
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-ImapCon-get_attachments"></a>}}
 \if{latex}{\out{\hypertarget{method-ImapCon-get_attachments}{}}}
 \subsection{\code{ImapCon$get_attachments()}}{
@@ -5869,7 +6075,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
   msg_list,
   content_disposition = "both",
   override = FALSE,
-  mute = FALSE,
+  mute = NULL,
   as_is = FALSE,
   local_dir = "."
 )}
@@ -5926,7 +6132,7 @@ con$get_attachments(msg_list = out)
   Fetch attachments' list
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$fetch_attachments_list(msg_id, use_uid = FALSE, retries = 1)}
+    \preformatted{ImapCon$fetch_attachments_list(msg_id, use_uid = NULL, retries = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
@@ -5981,13 +6187,13 @@ out
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_attachment_parts(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   parts = NULL,
   content_disposition = "both",
   local_dir = ".",
   override = FALSE,
-  mute = FALSE,
-  retries = 1
+  mute = NULL,
+  retries = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -6045,11 +6251,11 @@ con$search_string(expr = "report", where = "SUBJECT") \%>\%
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$fetch_attachments(
   msg_id,
-  use_uid = FALSE,
+  use_uid = NULL,
   content_disposition = "both",
   override = FALSE,
-  mute = FALSE,
-  retries = 1,
+  mute = NULL,
+  retries = NULL,
   as_is = FALSE,
   local_dir = "."
 )}

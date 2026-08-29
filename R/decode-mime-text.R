@@ -23,8 +23,9 @@
 #'   slight modifications.
 #' @param charset A \code{character} string with the charset declared in the
 #'   MIME \code{Content-Type}. When supplied it is honored (via
-#'   \code{\link{apply_charset}}) instead of the legacy heuristic detection.
-#' @noRd
+#'   \code{apply_charset()}) instead of the legacy heuristic detection.
+#' @family decoders
+#' @export
 decode_mime_text <- function(string, charset = NULL) {
 
   # check if it is a character vector

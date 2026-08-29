@@ -23,6 +23,7 @@
 #' @export
 #'
 list_attachments <- function(msg_list) {
+  lifecycle::deprecate_warn("3.0.0", "list_attachments()", "extract_attachments()")
 
   check_args(msg_list = msg_list)
 

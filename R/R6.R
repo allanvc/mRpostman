@@ -71,6 +71,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
     #'   re-execution of a command. Default is 0, which means that no timeout limit is
     #'   set.
+    #' @param use_uid Connection-level default for the \code{use_uid}
+    #'   argument of the methods; each call can still override it. Default
+    #'   is \code{FALSE}.
+    #' @param mute Connection-level default for the \code{mute} argument of
+    #'   the methods; each call can still override it. Default is \code{FALSE}.
+    #' @param retries Connection-level default for the \code{retries}
+    #'   argument of the methods; each call can still override it. Default
+    #'   is \code{1}.
     #' @param ... Further curl parameters (see \code{curl::curl_options}) that
     #'   can be used with the IMAP protocol. Only for advanced users.
     #' @note \href{#method-new}{\code{ImapCon$new()}}: The \code{\link{configure_imap}}
@@ -85,7 +93,14 @@ ImapCon <- R6::R6Class("ImapCon",
                           verbose = FALSE,
                           buffersize = 16000,
                           timeout_ms = 0,
+                          use_uid = FALSE,
+                          mute = FALSE,
+                          retries = 1,
                           ...) {
+
+      assertthat::assert_that(is.logical(use_uid), is.logical(mute),
+                              is.numeric(retries), retries >= 0,
+                              msg = '"use_uid" and "mute" must be logicals and "retries" a non-negative number.')
 
       out <- config_con_handle_and_params(url = url, username = username,
                                    password = password, xoauth2_bearer = xoauth2_bearer,
@@ -103,6 +118,9 @@ ImapCon <- R6::R6Class("ImapCon",
                            oauth_mechanism = toupper(oauth_mechanism)[1])
 
       self$con_params$folder <- NA
+      self$con_params$use_uid <- use_uid
+      self$con_params$mute <- mute
+      self$con_params$retries <- retries
 
 
 
@@ -229,6 +247,40 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$disconnect()
     #' }
+    #' @description Print a compact summary of the connection: server,
+    #'   user, TLS, the selected folder, and whether the session has been
+    #'   used. Credentials are never printed.
+    #' @param ... Ignored (matches the generic).
+    print = function(...) {
+      p <- self$con_params
+      cat("<ImapCon> ", p$url, "\n", sep = "")
+      cat("  user:   ", p$username, "\n", sep = "")
+      cat("  tls:    ", if (isTRUE(p$use_ssl)) "on" else "off", "\n", sep = "")
+      cat("  folder: ", if (is.na(p$folder)) "(none selected)" else p$folder,
+          "\n", sep = "")
+      if (!is.null(self$server_capabilities)) {
+        cat("  capabilities: ", length(self$server_capabilities),
+            " advertised (see list_server_capabilities())\n", sep = "")
+      }
+      invisible(self)
+    },
+
+    #' @description Check whether the server advertises one capability.
+    #' @param cap The capability token, case-insensitive (e.g. \code{"ESEARCH"},
+    #'   \code{"THREAD=REFERENCES"}).
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{logical}.
+    #' @examples
+    #' \dontrun{
+    #' if (con$has_capability("ESEARCH")) ids <- con$search_since("01-Jan-2020", esearch = TRUE)
+    #' }
+    has_capability = function(cap, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
+      caps <- toupper(get_server_capabilities(self, retries = retries))
+      toupper(cap) %in% caps
+    },
+
     disconnect = function() {
       self$con_handle <- NULL
       self$con_params$folder <- NA
@@ -315,7 +367,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                  callback = function(ev) !any(ev$type == "STATUS"))
     #' }
     notify = function(mailboxes = "personal", events = c("MessageNew", "MessageExpunge"),
-                      timeout = 300, callback = NULL, compress = FALSE, retries = 1) {
+                      timeout = 300, callback = NULL, compress = FALSE, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- notify_int(self, private$auth, mailboxes, events, timeout, callback,
                         compress, retries)
       return(out)
@@ -345,8 +398,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' pdf <- con$fetch_binary(msg_id = 3, part = parts$part[parts$is_attachment][1])
     #' writeBin(pdf[[1]], "attachment.pdf")
     #' }
-    fetch_binary = function(msg_id, part, use_uid = FALSE, folder = NULL,
-                            compress = FALSE, retries = 1) {
+    fetch_binary = function(msg_id, part, use_uid = NULL, folder = NULL,
+                            compress = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_binary_int(self, private$auth, msg_id, part, use_uid, folder,
                               compress, retries)
       return(out)
@@ -380,7 +435,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   imap_url("INBOX", uid = 12, section = "TEXT")), folder = "Archive")
     #' }
     append_catenate = function(parts, folder = NULL, flags = NULL, compress = FALSE,
-                               retries = 1) {
+                               retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- append_catenate_int(self, private$auth, folder, parts, flags, compress, retries)
       invisible(out)
     },
@@ -412,8 +468,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' msgs <- vapply(1:3, function(i) paste0("Subject: m", i, "\r\n\r\nbody\r\n"), "")
     #' con$append_msgs(msgs, folder = "Archive", flags = "Seen")
     #' }
-    append_msgs = function(messages, folder = NULL, flags = NULL, mute = FALSE,
-                           retries = 1, compress = FALSE) {
+    append_msgs = function(messages, folder = NULL, flags = NULL, mute = NULL,
+                           retries = NULL, compress = FALSE) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- append_msgs_int(self, private$auth, messages, folder, flags, mute, retries,
                              compress = compress)
       invisible(out)
@@ -441,8 +499,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # the fifty most recent matches only
     #' con$esearch_partial(range = "-1:-50", criteria = "UNSEEN", use_uid = TRUE)
     #' }
-    esearch_partial = function(range, criteria = "ALL", use_uid = FALSE,
-                               retries = 1) {
+    esearch_partial = function(range, criteria = "ALL", use_uid = NULL,
+                               retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_partial_int(self, range, criteria, use_uid, retries)
       return(out)
     },
@@ -477,8 +537,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$esort_partial(range = "1:20", by = "SIZE", reverse = TRUE)
     #' }
     esort_partial = function(range, by = "DATE", reverse = FALSE,
-                             criteria = "ALL", use_uid = FALSE,
-                             char_set = "UTF-8", retries = 1) {
+                             criteria = "ALL", use_uid = NULL,
+                             char_set = "UTF-8", retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esort_partial_int(self, range, by, reverse, criteria, use_uid,
                                char_set, retries)
       return(out)
@@ -517,8 +579,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                 flags = c("Seen", "Draft"), use_uid = TRUE)
     #' }
     replace_msg = function(msg_id, message, folder = NULL, flags = NULL,
-                           use_uid = FALSE, mute = FALSE, compress = FALSE,
-                           retries = 1) {
+                           use_uid = NULL, mute = NULL, compress = FALSE,
+                           retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- replace_msg_int(self, private$auth, msg_id, message, folder,
                              flags, use_uid, mute, compress, retries)
       invisible(out)
@@ -544,7 +609,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$fetch_objectid(msg_id = 1:5)
     #' }
-    fetch_objectid = function(msg_id, use_uid = FALSE, retries = 1) {
+    fetch_objectid = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_objectid_int(self, msg_id, use_uid, retries)
       return(out)
     },
@@ -567,7 +634,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' batches <- con$uid_batches(batch_size = 500)
     #' }
-    uid_batches = function(batch_size, retries = 1) {
+    uid_batches = function(batch_size, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- uid_batches_int(self, batch_size, retries)
       return(out)
     },
@@ -596,7 +664,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$esearch_multi(mailboxes = "personal", criteria = "UNSEEN")
     #' }
     esearch_multi = function(mailboxes = "personal", criteria = "ALL",
-                             compress = FALSE, retries = 1) {
+                             compress = FALSE, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_multi_int(self, private$auth, mailboxes, criteria,
                                compress, retries)
       return(out)
@@ -619,7 +688,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$unauthenticate()
     #' }
-    unauthenticate = function(retries = 1) {
+    unauthenticate = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- unauthenticate_int(self, retries)
       invisible(out)
     },
@@ -642,7 +712,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$language()
     #' con$language("pt-BR")
     #' }
-    language = function(language = NULL, retries = 1) {
+    language = function(language = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- language_int(self, language, retries)
       return(out)
     },
@@ -663,7 +734,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$comparator()
     #' }
-    comparator = function(order = NULL, retries = 1) {
+    comparator = function(order = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- comparator_int(self, order, retries)
       return(out)
     },
@@ -693,7 +765,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                access = "submit+fred")
     #' }
     genurlauth = function(url, access = "anonymous", mechanism = "INTERNAL",
-                          expire = NULL, retries = 1) {
+                          expire = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- genurlauth_int(self, url, access, mechanism, expire, retries)
       return(out)
     },
@@ -717,7 +790,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' u <- con$genurlauth(imap_url("INBOX", uid = 20), access = "anonymous")
     #' con$urlfetch(u)
     #' }
-    urlfetch = function(urls, compress = FALSE, retries = 1) {
+    urlfetch = function(urls, compress = FALSE, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- urlfetch_int(self, private$auth, urls, compress, retries)
       return(out)
     },
@@ -751,8 +825,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                          part = "3")
     #' }
     fetch_convert = function(msg_id, mimetype, part = "1", params = NULL,
-                             use_uid = FALSE, folder = NULL, compress = FALSE,
-                             retries = 1) {
+                             use_uid = NULL, folder = NULL, compress = FALSE,
+                             retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_convert_int(self, private$auth, msg_id, mimetype, part,
                                params, use_uid, folder, compress, retries)
       return(out)
@@ -783,7 +859,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$fetch_annotation(msg_id = 1)
     #' }
     fetch_annotation = function(msg_id, entries = "/*", attributes = "value",
-                                use_uid = FALSE, retries = 1) {
+                                use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_annotation_int(self, msg_id, entries, attributes, use_uid,
                                   retries)
       return(out)
@@ -812,8 +890,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$store_annotation(msg_id = 1, entry = "/comment",
     #'                      values = c("value.priv" = "check this one"))
     #' }
-    store_annotation = function(msg_id, entry, values, use_uid = FALSE,
-                                mute = FALSE, retries = 1) {
+    store_annotation = function(msg_id, entry, values, use_uid = NULL,
+                                mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- store_annotation_int(self, msg_id, entry, values, use_uid, mute,
                                   retries)
       invisible(out)
@@ -881,8 +962,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
     #' con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")
     #' }
-    query = function(expr, negate = FALSE, use_uid = FALSE, esearch = FALSE,
-                     save = FALSE, retries = 1) {
+    query = function(expr, negate = FALSE, use_uid = NULL, esearch = FALSE,
+                     save = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       request <- translate_query_(substitute(expr), parent.frame())
       out <- search_int(self, request, negate, use_uid, esearch, retries,
                         save = save)
@@ -909,7 +992,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' cap <- con$list_server_capabilities()
     #' cap
     #' }
-    list_server_capabilities = function(retries = 1) {
+    list_server_capabilities = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_server_capabilities_int(self, retries)
       return(out)
     },
@@ -931,7 +1015,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$enable("CONDSTORE")
     #' }
-    enable = function(capabilities, retries = 1) {
+    enable = function(capabilities, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- enable_int(self, capabilities, retries)
       return(out)
     },
@@ -950,7 +1035,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$namespace()
     #' }
-    namespace = function(retries = 1) {
+    namespace = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- namespace_int(self, retries)
       return(out)
     },
@@ -971,7 +1057,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$id()
     #' con$id(fields = c(name = "mRpostman", version = "1.2.1"))
     #' }
-    id = function(fields = NULL, retries = 1) {
+    id = function(fields = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- id_int(self, fields, retries)
       return(out)
     },
@@ -990,7 +1077,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$get_quota_root(name = "INBOX")
     #' }
-    get_quota_root = function(name = NULL, retries = 1) {
+    get_quota_root = function(name = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- get_quota_root_int(self, name, retries)
       return(out)
     },
@@ -1008,7 +1096,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$get_quota(quota_root = "")
     #' }
-    get_quota = function(quota_root = "", retries = 1) {
+    get_quota = function(quota_root = "", retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- get_quota_int(self, quota_root, retries)
       return(out)
     },
@@ -1032,7 +1121,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$set_quota(quota_root = "User quota", storage = 2 * 1024^2)
     #' }
     set_quota = function(quota_root, storage = NULL, message = NULL,
-                         retries = 1) {
+                         retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- set_quota_int(self, quota_root, storage, message, retries)
       return(out)
     },
@@ -1059,7 +1149,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$get_metadata(name = NULL, entries = "/shared/comment")
     #' }
     get_metadata = function(name = NULL, entries, depth = NULL, max_size = NULL,
-                            retries = 1) {
+                            retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- get_metadata_int(self, name, entries, depth, max_size, retries)
       return(out)
     },
@@ -1080,7 +1171,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
     #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
     #' }
-    set_metadata = function(name = NULL, entries, retries = 1) {
+    set_metadata = function(name = NULL, entries, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(set_metadata_int(self, name, entries, retries))
     },
 
@@ -1098,7 +1190,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$get_acl(name = "INBOX")
     #' }
-    get_acl = function(name = NULL, retries = 1) {
+    get_acl = function(name = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- get_acl_int(self, name, retries)
       return(out)
     },
@@ -1122,7 +1215,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$set_acl(name = "Shared", identifier = "anyone", rights = "lrs")
     #' con$set_acl(name = "Shared", identifier = "anyone", rights = "+w")
     #' }
-    set_acl = function(name = NULL, identifier, rights, retries = 1) {
+    set_acl = function(name = NULL, identifier, rights, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(set_acl_int(self, name, identifier, rights, retries))
     },
 
@@ -1140,7 +1234,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$delete_acl(name = "Shared", identifier = "anyone")
     #' }
-    delete_acl = function(name = NULL, identifier, retries = 1) {
+    delete_acl = function(name = NULL, identifier, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(delete_acl_int(self, name, identifier, retries))
     },
 
@@ -1160,7 +1255,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$list_rights(name = "INBOX", identifier = "anyone")
     #' }
-    list_rights = function(name = NULL, identifier, retries = 1) {
+    list_rights = function(name = NULL, identifier, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_rights_int(self, name, identifier, retries)
       return(out)
     },
@@ -1177,7 +1273,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$my_rights(name = "INBOX")
     #' }
-    my_rights = function(name = NULL, retries = 1) {
+    my_rights = function(name = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- my_rights_int(self, name, retries)
       return(out)
     },
@@ -1193,7 +1290,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$noop()
     #' }
-    noop = function(retries = 1) {
+    noop = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(noop_int(self, retries))
     },
 
@@ -1210,7 +1308,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder(name = "INBOX")
     #' con$check()
     #' }
-    check = function(retries = 1) {
+    check = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(check_int(self, retries))
     },
 
@@ -1233,7 +1332,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' folders <- con$list_mail_folders()
     #' folders
     #' }
-    list_mail_folders = function(retries = 1, detailed = FALSE) {
+    list_mail_folders = function(retries = NULL, detailed = FALSE) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_mail_folders_int(self, retries, detailed = detailed)
       return(out)
     },
@@ -1251,7 +1351,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' subscribed <- con$list_subscribed_folders()
     #' subscribed
     #' }
-    list_subscribed_folders = function(retries = 1) {
+    list_subscribed_folders = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_subscribed_folders_int(self, retries)
       return(out)
     },
@@ -1277,7 +1378,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$list_folders_status()
     #' con$list_folders_status(items = c("MESSAGES", "UNSEEN", "UIDNEXT"))
     #' }
-    list_folders_status = function(items = c("MESSAGES", "UNSEEN"), retries = 1) {
+    list_folders_status = function(items = c("MESSAGES", "UNSEEN"), retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_folders_status_int(self, items, retries)
       return(out)
     },
@@ -1295,7 +1397,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$list_special_use_folders()
     #' }
-    list_special_use_folders = function(retries = 1) {
+    list_special_use_folders = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_special_use_folders_int(self, retries)
       return(out)
     },
@@ -1318,7 +1421,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$select_folder(name = "INBOX")
     #' }
-    select_folder = function(name, mute = FALSE, retries = 1, condstore = FALSE) {
+    select_folder = function(name, mute = NULL, retries = NULL, condstore = FALSE) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       self$con_params$folder <- select_folder_int(self, name, mute, retries,
                                                   condstore = condstore)
       invisible(TRUE)
@@ -1350,7 +1455,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                            modseq = st[["HIGHESTMODSEQ"]])
     #' delta$vanished; delta$changed
     #' }
-    resync_folder = function(name, uidvalidity, modseq, retries = 1) {
+    resync_folder = function(name, uidvalidity, modseq, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- resync_folder_int(self, name, uidvalidity, modseq, retries)
       return(out)
     },
@@ -1376,7 +1482,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # ... later in the session:
     #' con$fetch_changes(modseq = last)
     #' }
-    fetch_changes = function(modseq, vanished = TRUE, retries = 1) {
+    fetch_changes = function(modseq, vanished = TRUE, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_changes_int(self, modseq, vanished, retries)
       return(out)
     },
@@ -1392,7 +1499,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder("INBOX")
     #' con$close_folder()
     #' }
-    close_folder = function(retries = 1) {
+    close_folder = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       close_folder_int(self, retries)
       self$con_params$folder <- NA
       invisible(TRUE)
@@ -1409,7 +1517,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder("INBOX")
     #' con$unselect_folder()
     #' }
-    unselect_folder = function(retries = 1) {
+    unselect_folder = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       unselect_folder_int(self, retries)
       self$con_params$folder <- NA
       invisible(TRUE)
@@ -1431,7 +1540,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # or directly:
     #' con$examine_folder("Sent")
     #' }
-    examine_folder = function(name = NULL, retries = 1) {
+    examine_folder = function(name = NULL, retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- examine_folder_int(self, name, retries)
       return(out)
     },
@@ -1461,7 +1571,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     status = function(name = NULL, items = c("MESSAGES", "RECENT", "UIDNEXT",
                                              "UIDVALIDITY", "UNSEEN"),
-                      retries = 1) {
+                      retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- status_int(self, name, items, retries)
       return(out)
     },
@@ -1482,7 +1593,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$create_folder(name = "New Folder Name")
     #' }
-    create_folder = function(name, mute = FALSE, retries = 1, special_use = NULL) {
+    create_folder = function(name, mute = NULL, retries = NULL, special_use = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(create_folder_int(self, name, mute, retries, special_use = special_use))
     },
 
@@ -1507,7 +1620,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$rename_folder(name = "Folder A", new_name = "Folder B")
     #' }
     rename_folder = function(name = NULL, new_name, reselect = TRUE,
-                             mute = FALSE, retries = 1) {
+                             mute = NULL, retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       self$con_params$folder <- rename_folder_int(self, name, new_name, reselect, mute,
                                        retries)
       invisible(TRUE)
@@ -1525,7 +1640,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$delete_folder(name = "Folder to remove")
     #' }
-    delete_folder = function(name, mute = FALSE, retries = 1) {
+    delete_folder = function(name, mute = NULL, retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(delete_folder_int(self, name, mute, retries))
     },
 
@@ -1542,7 +1659,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$subscribe_folder(name = "INBOX")
     #' }
-    subscribe_folder = function(name, mute = FALSE, retries = 1) {
+    subscribe_folder = function(name, mute = NULL, retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(subscribe_folder_int(self, name, mute, retries))
     },
 
@@ -1559,7 +1678,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$unsubscribe_folder(name = "INBOX")
     #' }
-    unsubscribe_folder = function(name, mute = FALSE, retries = 1) {
+    unsubscribe_folder = function(name, mute = NULL, retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(unsubscribe_folder_int(self, name, mute, retries))
     },
 
@@ -1572,7 +1693,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder(name = "INBOX")
     #' con$list_flags()
     #' }
-    list_flags = function(retries = 1) {
+    list_flags = function(retries = NULL) {
+      retries <- conn_default(retries, self, "retries", 1)
       out <- list_flags_int(self, retries)
       return(out)
     },
@@ -1610,8 +1732,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$sort(by = "DATE", reverse = TRUE)
     #' }
     sort = function(by = "DATE", reverse = FALSE, criteria = "ALL",
-                    use_uid = FALSE, char_set = "UTF-8", return = NULL,
-                    retries = 1) {
+                    use_uid = NULL, char_set = "UTF-8", return = NULL,
+                    retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries,
                       return = return)
       return(out)
@@ -1639,7 +1763,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$thread(algorithm = "REFERENCES")
     #' }
     thread = function(algorithm = "REFERENCES", criteria = "ALL",
-                      use_uid = FALSE, char_set = "UTF-8", retries = 1) {
+                      use_uid = NULL, char_set = "UTF-8", retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- thread_int(self, algorithm, criteria, use_uid, char_set, retries)
       return(out)
     },
@@ -1706,8 +1832,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                string(expr = "John", where = "FROM"),
     #'                string(expr = "@ksu.edu", where = "CC")))
     #' }
-    search = function(request, negate = FALSE, use_uid = FALSE,
-                      esearch = FALSE, save = FALSE, retries = 1) {
+    search = function(request, negate = FALSE, use_uid = NULL,
+                      esearch = FALSE, save = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- search_int(self, request, negate, use_uid, esearch, retries,
                         save = save)
       if (isTRUE(save)) {
@@ -1753,8 +1881,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # search for messages with size larger than 512Kb
     #' con$search_larger_than(size = 512000)
     #' }
-    search_larger_than = function(size, negate = FALSE, use_uid = FALSE,
-                                  flag = NULL, esearch = FALSE, retries = 1) {
+    search_larger_than = function(size, negate = FALSE, use_uid = NULL,
+                                  flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_larger_than()", "ImapCon$query()")
       out <- search_larger_than_int(self, size, negate, use_uid, flag, esearch,
                                     retries)
       return(out)
@@ -1794,8 +1925,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # search for messages with size smaller than 512Kb
     #' con$search_smaller_than(size = 512000)
     #' }
-    search_smaller_than = function(size, negate = FALSE, use_uid = FALSE,
-                                  flag = NULL, esearch = FALSE, retries = 1) {
+    search_smaller_than = function(size, negate = FALSE, use_uid = NULL,
+                                  flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_smaller_than()", "ImapCon$query()")
       out <- search_smaller_than_int(self, size, negate, use_uid, flag, esearch,
                                      retries)
       return(out)
@@ -1838,8 +1972,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # .. results as unique identifiers (UID)
     #' con$search_before(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_before = function(date_char, negate = FALSE, use_uid = FALSE,
-                             flag = NULL, esearch = FALSE, retries = 1) {
+    search_before = function(date_char, negate = FALSE, use_uid = NULL,
+                             flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_before()", "ImapCon$query()")
       out <- search_before_int(self, date_char, negate, use_uid,
                                      flag, esearch, retries)
       return(out)
@@ -1881,8 +2018,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # .. results as unique identifiers (UID)
     #' con$search_since(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_since = function(date_char, negate = FALSE, use_uid = FALSE,
-                            flag = NULL, esearch = FALSE, retries = 1) {
+    search_since = function(date_char, negate = FALSE, use_uid = NULL,
+                            flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_since()", "ImapCon$query()")
       out <- search_since_int(self, date_char, negate, use_uid,
                               flag, esearch, retries)
       return(out)
@@ -1924,8 +2064,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' #... results as unique identifiers (UID)
     #' con$search_on(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_on = function(date_char, negate = FALSE, use_uid = FALSE,
-                             flag = NULL, esearch = FALSE, retries = 1) {
+    search_on = function(date_char, negate = FALSE, use_uid = NULL,
+                             flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_on()", "ImapCon$query()")
       out <- search_on_int(self, date_char, negate, use_uid,
                                flag, esearch, retries)
       return(out)
@@ -1973,8 +2116,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                   negate = TRUE)
     #' }
     search_period = function(since_date_char, before_date_char, negate = FALSE,
-                             use_uid = FALSE, flag = NULL, esearch = FALSE,
-                             retries = 1) {
+                             use_uid = NULL, flag = NULL, esearch = FALSE,
+                             retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_period()", "ImapCon$query()")
       out <- search_period_int(self, since_date_char, before_date_char, negate,
                                use_uid, flag, esearch, retries)
       return(out)
@@ -2023,8 +2169,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # .. results as unique identifiers (UID)
     #' con$search_sent_before(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_sent_before = function(date_char, negate = FALSE, use_uid = FALSE,
-                                  flag = NULL, esearch = FALSE, retries = 1) {
+    search_sent_before = function(date_char, negate = FALSE, use_uid = NULL,
+                                  flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_before()", "ImapCon$query()")
       out <- search_sent_before_int(self, date_char, negate, use_uid,
                                flag, esearch, retries)
       return(out)
@@ -2073,8 +2222,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # .. results as unique identifiers (UID)
     #' con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_sent_since = function(date_char, negate = FALSE, use_uid = FALSE,
-                                 flag = NULL, esearch = FALSE, retries = 1) {
+    search_sent_since = function(date_char, negate = FALSE, use_uid = NULL,
+                                 flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_since()", "ImapCon$query()")
       out <- search_sent_since_int(self, date_char, negate, use_uid,
                                    flag, esearch, retries)
       return(out)
@@ -2124,8 +2276,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' #... results as unique identifiers (UID)
     #' con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
     #' }
-    search_sent_on = function(date_char, negate = FALSE, use_uid = FALSE,
-                              flag = NULL, esearch = FALSE, retries = 1) {
+    search_sent_on = function(date_char, negate = FALSE, use_uid = NULL,
+                              flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_on()", "ImapCon$query()")
       out <- search_sent_on_int(self, date_char, negate, use_uid,
                                 flag, esearch, retries)
       return(out)
@@ -2181,8 +2336,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                   negate = TRUE)
     #' }
     search_sent_period = function(since_date_char, before_date_char, negate = FALSE,
-                                  use_uid = FALSE, flag = NULL, esearch = FALSE,
-                                  retries = 1) {
+                                  use_uid = NULL, flag = NULL, esearch = FALSE,
+                                  retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_period()", "ImapCon$query()")
       out <- search_sent_period_int(self, since_date_char, before_date_char,
                                     negate, use_uid, flag, esearch, retries)
       return(out)
@@ -2224,8 +2382,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' #.. "ANSWERED"
     #' con$search_flag(name = c("SEEN", "ANSWERED"))
     #' }
-    search_flag = function(name, negate = FALSE, use_uid = FALSE, esearch = FALSE,
-                           retries = 1) {
+    search_flag = function(name, negate = FALSE, use_uid = NULL, esearch = FALSE,
+                           retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_flag()", "ImapCon$query()")
       out <- search_flag_int(self, name, negate, use_uid, esearch, retries)
       return(out)
     },
@@ -2270,8 +2431,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # search for all messages received in the last hour (not older than 3600 seconds)
     #' con$search_older_than(seconds = 3600, negate = TRUE)
     #' }
-    search_older_than = function(seconds, negate = FALSE, use_uid = FALSE,
-                                 flag = NULL, esearch = FALSE, retries = 1) {
+    search_older_than = function(seconds, negate = FALSE, use_uid = NULL,
+                                 flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_older_than()", "ImapCon$query()")
       out <- search_older_than_int(self, seconds, negate, use_uid, flag,
                                    esearch, retries)
       return(out)
@@ -2315,8 +2479,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # search for all messages received in the last hour (younger than 3600 seconds)
     #' con$search_younger_than(seconds = 3600)
     #' }
-    search_younger_than = function(seconds, negate = FALSE, use_uid = FALSE,
-                                   flag = NULL, esearch = FALSE, retries = 1) {
+    search_younger_than = function(seconds, negate = FALSE, use_uid = NULL,
+                                   flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_younger_than()", "ImapCon$query()")
       out <- search_younger_than_int(self, seconds, negate, use_uid, flag,
                                    esearch, retries)
       return(out)
@@ -2368,8 +2535,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # search for messages with "@k-state.edu" in the FROM field
     #' con$search_string(expr = "@k-state.edu", where = "FROM")
     #' }
-    search_string = function(expr, where, negate = FALSE, use_uid = FALSE,
-                             flag = NULL, esearch = FALSE, retries = 1) {
+    search_string = function(expr, where, negate = FALSE, use_uid = NULL,
+                             flag = NULL, esearch = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$search_string()", "ImapCon$query()")
       out <- search_string_int(self, expr, where, negate, use_uid, flag, esearch,
                                retries)
       return(out)
@@ -2421,9 +2591,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
     #'
     #' }
-    fetch_body = function(msg_id, use_uid = FALSE, mime_level = NULL, peek = TRUE,
+    fetch_body = function(msg_id, use_uid = NULL, mime_level = NULL, peek = TRUE,
                           partial = NULL, write_to_disk = FALSE,
-                          keep_in_mem = TRUE, mute = FALSE, retries = 1) {
+                          keep_in_mem = TRUE, mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_body_int(self, msg_id, use_uid, mime_level, peek, partial, write_to_disk,
                             keep_in_mem, mute, retries)
 
@@ -2481,10 +2654,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' out <- con$fetch_header()
     #'
     #' }
-    fetch_header = function(msg_id, use_uid = FALSE, fields = NULL,
+    fetch_header = function(msg_id, use_uid = NULL, fields = NULL,
                             negate_fields = FALSE, peek = TRUE, partial = NULL,
                             write_to_disk = FALSE, keep_in_mem = TRUE,
-                            mute = FALSE, retries = 1) {
+                            mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_header_int(self, msg_id, use_uid, fields, negate_fields, peek,
                               partial, write_to_disk, keep_in_mem, mute, retries)
 
@@ -2542,9 +2718,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' out <- con$fetch_metadata(msg = res)
     #'
     #' }
-    fetch_metadata = function(msg_id, use_uid = FALSE, attribute = NULL,
+    fetch_metadata = function(msg_id, use_uid = NULL, attribute = NULL,
                               write_to_disk = FALSE, keep_in_mem = TRUE,
-                              mute = FALSE, retries = 1, changed_since = NULL) {
+                              mute = NULL, retries = NULL, changed_since = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_metadata_int(self, msg_id, use_uid, attribute, write_to_disk,
                                 keep_in_mem, mute, retries,
                                 changed_since = changed_since)
@@ -2574,7 +2753,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder(name = "INBOX")
     #' con$search_flag("UNSEEN") %>% con$fetch_preview()
     #' }
-    fetch_preview = function(msg_id, use_uid = FALSE, retries = 1) {
+    fetch_preview = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_preview_int(self, msg_id, use_uid, retries)
       return(out)
     },
@@ -2598,7 +2779,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder(name = "INBOX")
     #' con$search_since(date_char = "01-Jan-2026") %>% con$fetch_envelope()
     #' }
-    fetch_envelope = function(msg_id, use_uid = FALSE, retries = 1) {
+    fetch_envelope = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_envelope_int(self, msg_id, use_uid, retries)
       return(out)
     },
@@ -2620,7 +2803,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' parts <- con$fetch_bodystructure(msg_id = 1:10)
     #' parts[parts$is_attachment, ]
     #' }
-    fetch_bodystructure = function(msg_id, use_uid = FALSE, retries = 1) {
+    fetch_bodystructure = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_bodystructure_int(self, msg_id, use_uid, retries)
       return(out)
     },
@@ -2674,9 +2859,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                keep_in_mem = FALSE)
     #'
     #' }
-    fetch_text = function(msg_id, use_uid = FALSE, peek = TRUE, partial = NULL,
-                          write_to_disk = FALSE, keep_in_mem = TRUE, mute = FALSE,
-                          base64_decode = FALSE, retries = 1) {
+    fetch_text = function(msg_id, use_uid = NULL, peek = TRUE, partial = NULL,
+                          write_to_disk = FALSE, keep_in_mem = TRUE, mute = NULL,
+                          base64_decode = FALSE, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_text_int(self, msg_id, use_uid, peek, partial, write_to_disk,
                             keep_in_mem, mute, base64_decode, retries)
 
@@ -2726,8 +2914,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$copy(msg = res, to_folder = "Sent")
     #'
     #' }
-    copy_msg = function(msg_id, use_uid = FALSE, to_folder, reselect = TRUE,
-                        mute = FALSE, retries = 1) {
+    copy_msg = function(msg_id, use_uid = NULL, to_folder, reselect = TRUE,
+                        mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- copy_msg_int(self, msg_id, use_uid, to_folder, reselect, mute, retries)
 
       if (!is.null(out$folder)) {
@@ -2778,8 +2969,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$move(msg = res, to_folder = "Sent")
     #'
     #' }
-    move_msg = function(msg_id, use_uid = FALSE, to_folder, reselect = TRUE,
-                        mute = FALSE, retries = 1) {
+    move_msg = function(msg_id, use_uid = NULL, to_folder, reselect = TRUE,
+                        mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- move_msg_int(self, msg_id, use_uid, to_folder, reselect, mute, retries)
 
       if (!is.null(out$folder)) {
@@ -2823,8 +3017,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #'              "Subject: Hi", "", "Message body.", sep = "\r\n")
     #' con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
     #' }
-    append_msg = function(message, folder = NULL, flags = NULL, mute = FALSE,
-                          retries = 1) {
+    append_msg = function(message, folder = NULL, flags = NULL, mute = NULL,
+                          retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       invisible(append_int(self, message, folder, flags, mute, retries))
     },
 
@@ -2854,7 +3050,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # count the number of messages marked as "Flagged" and "Answered"
     #' con$esearch_count(flag = c("Flagged", "Answered"))
     #' }
-    esearch_count = function(flag, use_uid = FALSE, retries = 1) {
+    esearch_count = function(flag, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_count_int(self, flag, use_uid, retries)
 
       return(out)
@@ -2882,7 +3080,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # delete messages 70 to 73
     #' con$delete_msg(msg_id = 70:73)
     #' }
-    delete_msg = function(msg_id, use_uid = FALSE, mute = FALSE, retries = 1) {
+    delete_msg = function(msg_id, use_uid = NULL, mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- delete_msg_int(self, msg_id, use_uid, mute, retries)
 
       invisible(out)
@@ -2909,7 +3110,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # or only a specific one (UIDPLUS servers)
     #' con$expunge(msg_uid = 71)
     #' }
-    expunge = function(msg_uid = NULL, mute = FALSE, retries = 1) {
+    expunge = function(msg_uid = NULL, mute = NULL, retries = NULL) {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- expunge_int(self, msg_uid, mute, retries)
 
       invisible(out)
@@ -2942,7 +3145,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # Search the minimum id of messages marked as "Answered"
     #' con$esearch_min_id(flag = "Answered")
     #' }
-    esearch_min_id = function(flag, use_uid = FALSE, retries = 1) {
+    esearch_min_id = function(flag, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_min_id_int(self, flag, use_uid, retries)
 
       return(out)
@@ -2975,7 +3180,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #' # Search the minimum id of messages marked as "Seen"
     #' con$esearch_max_id(flag = "Seen")
     #' }
-    esearch_max_id = function(flag, use_uid = FALSE, retries = 1) {
+    esearch_max_id = function(flag, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_max_id_int(self, flag, use_uid, retries)
 
       return(out)
@@ -3022,8 +3229,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$search_younger_than(seconds = 3600) %>% # depends on the WITHIN extension
     #'   con$add_flags(flags_to_set = "\\Seen")
     #' }
-    add_flags = function(msg_id, use_uid = FALSE, flags_to_set, mute = FALSE,
-                         retries = 1, unchanged_since = NULL) {
+    add_flags = function(msg_id, use_uid = NULL, flags_to_set, mute = NULL,
+                         retries = NULL, unchanged_since = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- add_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
                       unchanged_since = unchanged_since)
 
@@ -3070,8 +3280,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$search_since(date_char = "20-Aug-2020") %>%
     #'   con$replace_flags(flags_to_set = c("\\UNSEEN", "\\Flagged"))
     #' }
-    replace_flags = function(msg_id, use_uid = FALSE, flags_to_set, mute = FALSE,
-                             retries = 1, unchanged_since = NULL) {
+    replace_flags = function(msg_id, use_uid = NULL, flags_to_set, mute = NULL,
+                             retries = NULL, unchanged_since = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- replace_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
                       unchanged_since = unchanged_since)
 
@@ -3117,8 +3330,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$search_since(date_char = "20-Aug-2020") %>%
     #'   con$remove_flags(flags_to_unset = "\\UNSEEN")
     #' }
-    remove_flags = function(msg_id, use_uid = FALSE, flags_to_unset, mute = FALSE,
-                            retries = 1, unchanged_since = NULL) {
+    remove_flags = function(msg_id, use_uid = NULL, flags_to_unset, mute = NULL,
+                            retries = NULL, unchanged_since = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
       out <- remove_flags_int(self, msg_id, use_uid, flags_to_unset, mute, retries,
                       unchanged_since = unchanged_since)
 
@@ -3128,6 +3344,87 @@ ImapCon <- R6::R6Class("ImapCon",
 
     ## ATTACHMENTS
 
+
+    #' @description Download the attachments of messages, guided by each
+    #'   message's \code{BODYSTRUCTURE}: exact MIME part numbers, nested
+    #'   multiparts included, one \code{BODY.PEEK[part]} fetch per
+    #'   attachment, decoded according to the declared transfer encoding.
+    #'   This is the canonical attachment path since the 2026 refactoring;
+    #'   it replaces \code{fetch_attachments()} and
+    #'   \code{fetch_attachment_parts()}.
+    #' @param msg_id A \code{numeric vector} containing one or more message ids.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the operation
+    #'   uses the \code{"UID"} (unique identifier), stable during the life
+    #'   cycle of a message, instead of message sequence numbers.
+    #' @param parts \code{NULL} (default) to fetch every attachment part, or
+    #'   a \code{character/numeric vector} of MIME part numbers (e.g.
+    #'   \code{c("2", "3.1")}) to fetch specific ones.
+    #' @param content_disposition One of \code{"both"} (default),
+    #'   \code{"attachment"}, or \code{"inline"}.
+    #' @param dest \code{NULL} to keep the decoded payloads in memory (in the
+    #'   returned data.frame), or a directory path to write one folder per
+    #'   message with its attachment files.
+    #' @param override A \code{logical}. If \code{TRUE}, overrides existing
+    #'   files with the same name. Default is \code{FALSE}.
+    #' @param as_is If \code{TRUE}, writes the payloads without decoding the
+    #'   transfer encoding. Default is \code{FALSE}.
+    #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
+    #'   message. Default is \code{FALSE}.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{data.frame} with one row per attachment: \code{id}
+    #'   (or \code{uid}), \code{part}, \code{filename}, \code{type},
+    #'   \code{size} (bytes), and \code{path} (or \code{content}).
+    #' @family attachments
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
+    #' manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
+    #' }
+    attachments = function(msg_id, use_uid = NULL, parts = NULL,
+                           content_disposition = "both", dest = ".",
+                           override = FALSE, as_is = FALSE, mute = NULL,
+                           retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      out <- fetch_attachment_parts_int(self, msg_id, use_uid, parts,
+                                        local_dir = dest,
+                                        override = override, mute = mute,
+                                        retries = retries,
+                                        content_disposition = content_disposition,
+                                        as_is = as_is)
+      return(out)
+    },
+
+    #' @description List the attachments of messages without downloading
+    #'   them: one server round trip over the \code{BODYSTRUCTURE} metadata.
+    #'   Replaces \code{fetch_attachments_list()}.
+    #' @param msg_id A \code{numeric vector} containing one or more message ids.
+    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the operation
+    #'   uses the \code{"UID"} (unique identifier) instead of message
+    #'   sequence numbers.
+    #' @param retries Number of attempts to connect and execute the command.
+    #'   Default is \code{1}.
+    #' @return A \code{list} with one \code{data.frame} per message
+    #'   (filename, type, encoding, size).
+    #' @family attachments
+    #' @examples
+    #' \dontrun{
+    #' con$select_folder(name = "INBOX")
+    #' con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
+    #' }
+    attachments_manifest = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      out <- fetch_attachments_list_int(self, msg_id, use_uid, retries)
+      # a message without attachments is an empty manifest, never NA
+      lapply(out, function(x) {
+        if (is.data.frame(x)) x else data.frame(filename = character(0),
+                                                stringsAsFactors = FALSE)
+      })
+    },
     #' @description Extract attached file(s) from fetched message(s)
     #' @param msg_list A \code{list} with the body or text content of the messages
     #'   fetched with \href{#method-fetch_body}{\code{ImapCon$fetch_body()}} or
@@ -3195,8 +3492,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$get_attachments(msg_list = out)
     #' }
     get_attachments = function(msg_list, content_disposition = "both",
-                               override = FALSE, mute = FALSE, as_is = FALSE,
+                               override = FALSE, mute = NULL, as_is = FALSE,
                                local_dir = ".") {
+      mute <- conn_default(mute, self, "mute", FALSE)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$get_attachments()", "extract_attachments()")
       out <- get_attachments_int(self, msg_list, content_disposition, override,
                                  mute, as_is, local_dir)
 
@@ -3236,7 +3535,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' out
     #'
     #' }
-    fetch_attachments_list = function(msg_id, use_uid = FALSE, retries = 1) {
+    fetch_attachments_list = function(msg_id, use_uid = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachments_list()", "ImapCon$attachments_manifest()")
       out <- fetch_attachments_list_int(self, msg_id, use_uid, retries)
 
       return(out)
@@ -3284,10 +3586,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$search_string(expr = "report", where = "SUBJECT") %>%
     #'   con$fetch_attachment_parts(local_dir = "~/attachments")
     #' }
-    fetch_attachment_parts = function(msg_id, use_uid = FALSE, parts = NULL,
+    fetch_attachment_parts = function(msg_id, use_uid = NULL, parts = NULL,
                                       content_disposition = "both",
                                       local_dir = ".", override = FALSE,
-                                      mute = FALSE, retries = 1) {
+                                      mute = NULL, retries = NULL) {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachment_parts()", "ImapCon$attachments()")
       out <- fetch_attachment_parts_int(self, msg_id, use_uid, parts, local_dir,
                                         override, mute, retries,
                                         content_disposition = content_disposition)
@@ -3358,9 +3664,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$fetch_attachments(msg = res)
     #'
     #' }
-    fetch_attachments = function(msg_id, use_uid = FALSE, content_disposition = "both",
-                                 override = FALSE, mute = FALSE, retries = 1,
+    fetch_attachments = function(msg_id, use_uid = NULL, content_disposition = "both",
+                                 override = FALSE, mute = NULL, retries = NULL,
                                  as_is = FALSE, local_dir = ".") {
+      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      mute <- conn_default(mute, self, "mute", FALSE)
+      retries <- conn_default(retries, self, "retries", 1)
+      lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachments()", "ImapCon$attachments()")
       out <- fetch_attachments_int(self, msg_id, use_uid, content_disposition,
                                    override, mute, retries, as_is, local_dir)
 

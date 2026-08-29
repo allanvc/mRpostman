@@ -38,6 +38,7 @@ att_list <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
 }
 \seealso{
 Other attachments:
-\code{\link{ImapCon}}
+\code{\link{ImapCon}},
+\code{\link[=extract_attachments]{extract_attachments()}}
 }
 \concept{attachments}

@@ -54,6 +54,9 @@
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffersize <span class="op">=</span> <span class="fl">16000</span>,</span>
 <span>  timeout_ms <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  mute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  retries <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -109,6 +112,26 @@ as a request, not an order.</p></dd>
 <dd><p>Time in milliseconds (ms) to wait for the execution or
 re-execution of a command. Default is 0, which means that no timeout limit is
 set.</p></dd>
+
+
+<dt id="arg-use-uid">use_uid<a class="anchor" aria-label="anchor" href="#arg-use-uid"></a></dt>
+<dd><p>Connection-level default for the <code>use_uid</code> argument
+of the methods: if <code>TRUE</code>, operations use the <code>"UID"</code>
+(unique identifier), stable during the life cycle of a message, instead
+of message sequence numbers. Each call can still override it. Default is
+<code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-mute">mute<a class="anchor" aria-label="anchor" href="#arg-mute"></a></dt>
+<dd><p>Connection-level default for the <code>mute</code> argument of the
+methods: if <code>TRUE</code>, confirmation messages are suppressed. Each
+call can still override it. Default is <code>FALSE</code>.</p></dd>
+
+
+<dt id="arg-retries">retries<a class="anchor" aria-label="anchor" href="#arg-retries"></a></dt>
+<dd><p>Connection-level default for the <code>retries</code> argument
+of the methods (number of attempts to connect and execute a command).
+Each call can still override it. Default is <code>1</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

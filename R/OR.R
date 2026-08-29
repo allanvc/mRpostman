@@ -11,6 +11,8 @@
 #' @export
 #'
 OR <- function(..., negate = FALSE) {
+  lifecycle::deprecate_warn("3.0.0", "OR()",
+    details = "Combine criteria with R's own operators instead: crit1 | crit2.")
 
   # ... must be 2+ args
   argg <- list(...)

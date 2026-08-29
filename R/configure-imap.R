@@ -22,6 +22,17 @@
 #' @param timeout_ms Time in milliseconds (ms) to wait for the execution or
 #'   re-execution of a command. Default is 0, which means that no timeout limit is
 #'   set.
+#' @param use_uid Connection-level default for the \code{use_uid} argument
+#'   of the methods: if \code{TRUE}, operations use the \code{"UID"}
+#'   (unique identifier), stable during the life cycle of a message, instead
+#'   of message sequence numbers. Each call can still override it. Default is
+#'   \code{FALSE}.
+#' @param mute Connection-level default for the \code{mute} argument of the
+#'   methods: if \code{TRUE}, confirmation messages are suppressed. Each
+#'   call can still override it. Default is \code{FALSE}.
+#' @param retries Connection-level default for the \code{retries} argument
+#'   of the methods (number of attempts to connect and execute a command).
+#'   Each call can still override it. Default is \code{1}.
 #' @param ... Further curl parameters (see \code{curl::curl_options}) that
 #'   can be used with the IMAP protocol. Only for advanced users.
 #' @return A new `ImapCon` object.
@@ -51,6 +62,9 @@ configure_imap <- function(url,
                            verbose = FALSE,
                            buffersize = 16000,
                            timeout_ms = 0,
+                           use_uid = FALSE,
+                           mute = FALSE,
+                           retries = 1,
                            ...) {
 
   con <- ImapCon$new(url,
@@ -62,6 +76,9 @@ configure_imap <- function(url,
                      verbose = verbose,
                      buffersize = buffersize,
                      timeout_ms = timeout_ms,
+                     use_uid = use_uid,
+                     mute = mute,
+                     retries = retries,
                      ...)
 
   # fresh_connect is not supported anymore because the same handle is used during an

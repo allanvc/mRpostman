@@ -21,6 +21,7 @@ Description: A session-based IMAP client that implements the full command sets o
 License: GPL-3
 Encoding: UTF-8
 Imports: curl,
+    lifecycle,
     R6,
     stringr,
     stringi,

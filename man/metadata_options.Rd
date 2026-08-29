@@ -13,8 +13,10 @@ A \code{vector} containing message metadata fields.
 List Metadata fields used in messages.
 }
 \note{
-This function lists message metadata used by
-    IMAP servers, according to the RFC 2060 (Crispin, 1996).
+This function lists the message attributes that
+    \href{#method-fetch_metadata}{\code{ImapCon$fetch_metadata()}} accepts.
+    The last three (\code{PREVIEW}, \code{SAVEDATE}, \code{MODSEQ}) are
+    capability-gated extensions, only sent when the server advertises them.
 }
 \examples{
 \dontrun{
