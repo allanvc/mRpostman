@@ -227,6 +227,7 @@
 <code><a href="filter_stored.html">filter_stored()</a></code>,
 <code><a href="flag.html">flag()</a></code>,
 <code><a href="fuzzy.html">fuzzy()</a></code>,
+<code><a href="imap_raw.html">imap_raw()</a></code>,
 <code><a href="larger_than.html">larger_than()</a></code>,
 <code><a href="modseq.html">modseq()</a></code>,
 <code><a href="older_than.html">older_than()</a></code>,
@@ -1555,7 +1556,10 @@ Default is <code>1</code>.</p></dd>
   <code>saved</code>, and <code>header("Name")</code>. Comparisons combine
   with <code>&amp;</code>, <code>|</code>, <code>!</code>, <code>%in%</code>, and
   parentheses; other calls and variables are evaluated in the
-  caller's environment.</p><div class="section">
+  caller's environment. Raw protocol fragments outside the field
+  table (vendor extensions such as Gmail's <code>X-GM-RAW</code>,
+  sequence sets, <code>FUZZY</code>) can be embedded verbatim with
+  <code><a href="imap_raw.html">imap_raw()</a></code>.</p><div class="section">
 <h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span></span>
 <span>  <span class="va">expr</span>,</span>
@@ -1614,7 +1618,8 @@ command. Default is <code>1</code>.</p></dd>
 <h4 id="examples-20">Examples<a class="anchor" aria-label="anchor" href="#examples-20"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"budget"</span> <span class="op">|</span> <span class="st">"budget 3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">sent</span> <span class="op">&gt;=</span> <span class="st">"2001-10-01"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">5e6</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><p></p></div>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">sent</span> <span class="op">&gt;=</span> <span class="st">"2001-10-01"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">5e6</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="fu"><a href="../reference/imap_raw.html">imap_raw</a></span><span class="op">(</span><span class="st">'X-GM-RAW "has:attachment"'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span></span></code></pre></div><p></p></div>
 </div>
 
 </div>
@@ -5417,6 +5422,7 @@ Default is <code>"."</code> (the current working directory).</p></dd>
 <span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"budget"</span> <span class="op">|</span> <span class="st">"budget 3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">sent</span> <span class="op">&gt;=</span> <span class="st">"2001-10-01"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">5e6</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="fu"><a href="imap_raw.html">imap_raw</a></span><span class="op">(</span><span class="st">'X-GM-RAW "has:attachment"'</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## ------------------------------------------------</span></span></span>

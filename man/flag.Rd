@@ -34,6 +34,7 @@ Other custom search:
 \code{\link[=before]{before()}},
 \code{\link[=filter_stored]{filter_stored()}},
 \code{\link[=fuzzy]{fuzzy()}},
+\code{\link[=imap_raw]{imap_raw()}},
 \code{\link[=larger_than]{larger_than()}},
 \code{\link[=modseq]{modseq()}},
 \code{\link[=older_than]{older_than()}},
