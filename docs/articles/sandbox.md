@@ -1,0 +1,305 @@
+# A reproducible IMAP sandbox with Docker
+
+## Introduction
+
+Trying an IMAP client requires a mail server and a populated mailbox —
+which usually means real credentials, a provider’s rate limits, and
+results that cannot be reproduced anywhere else. This vignette shows how
+to run `mRpostman` against a **disposable local IMAP server** (Dovecot,
+in a Docker container) whose mailbox is populated **deterministically by
+the package itself**: `populate_sandbox()` uploads a fixed synthetic
+corpus with the package’s own `APPEND` implementation, so any user, on
+any machine, obtains exactly the same messages — and therefore exactly
+the same search, fetch, and decoding results shown here.
+
+This is useful for:
+
+  - trying every feature of the package without a real mail account (no
+    OAuth2 setup, no “less secure apps” hurdles);
+  - teaching and demonstrations, with reproducible outputs;
+  - testing code that uses `mRpostman` against a fast, offline,
+    rate-limit-free server.
+
+None of the code chunks in this vignette are evaluated when the package
+is built (there is no Docker server on CRAN’s machines); copy and paste
+them into your session.
+
+**NOTE**: the sandbox server is for local experimentation only — it uses
+plaintext authentication, no TLS, and a static password.
+
+## Starting the server
+
+You will need [Docker](https://docs.docker.com/get-docker/). The
+`Dockerfile` and the Dovecot configuration ship with the package; find
+them with:
+
+``` r
+system.file("docker", package = "mRpostman")
+```
+
+From that folder, build the image and start a container, exposing the
+IMAP port as `1430` on the host:
+
+``` sh
+docker build -t mrpostman-sandbox .
+docker run -d --name mrpostman-sandbox -p 1430:143 mrpostman-sandbox
+```
+
+The server accepts **any username** with the password `sandbox`, and
+each username gets its own empty mailbox.
+
+## Connecting
+
+``` r
+library(mRpostman)
+
+con <- configure_imap(url = "imap://localhost:1430",
+                      username = "testuser",
+                      password = "sandbox",
+                      use_ssl = FALSE)
+
+con$list_server_capabilities()
+```
+
+Note the `use_ssl = FALSE` and the `imap://` (not `imaps://`) scheme:
+the sandbox has no TLS. Dovecot advertises, among others, the `ESEARCH`,
+`SORT`, `THREAD`, `MOVE`, `UNSELECT`, and `SPECIAL-USE` capabilities, so
+the package’s extension-based methods can be exercised too.
+
+## Populating the mailbox
+
+`populate_sandbox()` generates the synthetic corpus of
+`sandbox_corpus()` — 200 RFC 822 messages by default, driven by a fixed
+RNG seed — and stores it using the package’s own IMAP operations
+(`APPEND`, `CREATE`, `STORE`):
+
+``` r
+info <- populate_sandbox(con, n = 200)
+#> Appending 200 synthetic messages to INBOX at imap://localhost:1430 ...
+#>   50/200
+#>   100/200
+#>   150/200
+#>   200/200
+#>
+#> Done. INBOX now reports:
+#> $EXISTS
+#> [1] 200
+#> ...
+```
+
+The returned (invisible) `info` data.frame describes what was embedded
+in each message, so every result below can be checked against it:
+
+``` r
+head(info)
+#>   id                     from                  subject ...
+#> 1  1 felipe.duarte@example.com     Meeting minutes     ...
+```
+
+The corpus is designed so that each feature of the package has matching
+messages to act upon:
+
+  - `Date:` headers spread over the year **2020**, for the `SENT*` date
+    searches;
+  - a subset of large bodies, for size searches;
+  - accented subjects in MIME encoded-words and quoted-printable bodies,
+    for the decoding helpers;
+  - CSV, PNG, and one-page PDF attachments (some with repeated
+    filenames), for the attachment methods, binary base64 decoding, and
+    filename deduplication — see `info$attachment_type`;
+  - reply chains (`In-Reply-To`/`References`), for `SORT` and `THREAD`;
+  - `\Seen`, `\Flagged`, and `\Answered` flags, adjusted after the
+    upload, for flag searches. (`append_msg()` stores the messages
+    without flags on libcurl \>= 8.13, while earlier libcurl versions
+    hardcode `\Seen` in `APPEND`, so `populate_sandbox()` sets the
+    planned `\Seen` state explicitly, adding it to the read messages and
+    removing it from the rest, which exercises `STORE` in both
+    directions.)
+
+For use from the shell, the wrapper script
+`inst/docker/populate_mailbox.R` does the same: `Rscript
+populate_mailbox.R 200`.
+
+### A note on dates
+
+`APPEND` stores messages with the *current* internal date. Searches on
+the **internal date** (the `date` and `age` fields of `query()`)
+therefore relate to the moment you populated the mailbox. Searches on
+the **`Date:` header** (the `sent` field) act on the fixed 2020 dates of
+the corpus and always return the same results.
+
+## Ingesting real data: maildirs and the Enron corpus
+
+The synthetic corpus is not the only way to fill the sandbox.
+`ingest_maildir()` uploads any local maildir-style directory (one RFC
+5322 message per file) to a server folder via `APPEND` — mail server
+backups, exported archives, or public corpora:
+
+``` r
+manifest <- ingest_maildir(con, path = "~/backup/maildir/archive2020",
+                           folder = "archive2020")
+table(manifest$appended)
+```
+
+Built on top of it, `enron_sandbox()` turns the sandbox into a real-data
+laboratory: it downloads the public Enron e-mail corpus once (\~423 MB,
+with your consent, cached under `tools::R_user_dir("mRpostman",
+"cache")`), selects a subset by custodian, folder-name pattern, and
+`Date:` header window, and ingests it — one server folder per custodian:
+
+``` r
+con2 <- configure_imap(url = "imap://localhost:1430",
+                       username = "enron", password = "sandbox",
+                       use_ssl = FALSE)
+manifest <- enron_sandbox(con2,
+                          custodians  = c("kaminski-v", "lay-k", "skilling-j"),
+                          sent_since  = "2000-01-01",
+                          sent_before = "2002-07-01")
+table(manifest$custodian, manifest$appended)
+```
+
+After the ingestion, everything shown in the guided tour below works on
+real data too — e.g. `con2$query(text == "SEC")` on a custodian’s
+folder. The same internal-date caveat applies: query ingested corpora by
+date through the `sent` field, which reads the `Date:` header.
+
+## A guided tour
+
+### Mailbox structure
+
+``` r
+con$list_mail_folders()
+con$examine_folder("INBOX")
+con$select_folder("INBOX")
+```
+
+Besides `INBOX`, `populate_sandbox()` creates a `ProjectAtlas` folder
+with a small subset of the corpus, for folder, `copy_msg()`, and
+`move_msg()` demonstrations.
+
+### Searching
+
+Single-criterion searches:
+
+``` r
+# messages "sent" in the first quarter of 2020 (Date: header)
+ids_q1 <- con$query(sent >= "2020-01-01" & sent < "2020-07-01")
+
+# large messages
+ids_large <- con$query(size > 8000)
+
+# flagged messages
+ids_flagged <- con$query(flag == "FLAGGED")
+```
+
+Composable custom searches:
+
+``` r
+ids <- con$query(subject == "sales" | "marketing")
+                                      where = "FROM")))
+```
+
+The `ESEARCH` extension can condense results server-side:
+
+``` r
+con$esearch_count(flag = "SEEN")
+con$esearch_min_id(flag = "FLAGGED")
+```
+
+### Fetching and decoding
+
+``` r
+meta <- ids_q1[1:5] %>%
+  con$fetch_metadata(attribute = c("INTERNALDATE", "RFC822.SIZE"))
+
+texts <- ids_q1[1:5] %>%
+  con$fetch_text()
+```
+
+The corpus includes quoted-printable bodies and MIME encoded-word
+subjects with accented characters — fetch one of the messages flagged as
+`is_utf8_body` in `info` and decode it with `clean_msg_text()`:
+
+``` r
+utf8_ids <- info$id[info$is_utf8_body]
+raw_text <- con$fetch_text(msg_id = utf8_ids[1])
+clean_msg_text(raw_text)
+#> [[1]]
+#> [1] "Segue em anexo o relatório com os números consolidados. ..."
+```
+
+### Attachments
+
+``` r
+att_ids <- info$id[info$has_attachment]
+
+# list attachment filenames without downloading
+con$attachments_manifest(msg_id = att_ids[1:5])
+
+# download them (note the automatic deduplication of repeated filenames)
+con$attachments(msg_id = att_ids[1:5])
+```
+
+### Server-side sorting and threading
+
+Dovecot implements the `SORT` and `THREAD` extensions (which, for
+instance, Gmail does not), so the sandbox is a convenient place to try
+them:
+
+``` r
+con$sort(by = "SUBJECT", use_uid = TRUE)
+con$thread(algorithm = "REFERENCES")
+```
+
+### Flags and mailbox management
+
+``` r
+con$copy_msg(msg_id = ids_flagged[1], folder = "ProjectAtlas")
+con$add_flags(msg_id = ids_flagged[1], flags_to_set = "\\Deleted")
+con$expunge()
+```
+
+### Protocol extensions
+
+Dovecot advertises most of the optional extensions the package
+implements (`UIDPLUS`, `LIST-STATUS`, `LIST-EXTENDED`, `SEARCHRES`,
+`ESORT`, `PREVIEW`, `SAVEDATE`, `CONDSTORE`, `STATUS=SIZE`), and the
+sandbox configuration also enables the `acl` and `quota` plugins, so the
+`ACL` and `QUOTA` methods can be exercised locally:
+
+``` r
+con$list_folders_status(items = c("MESSAGES", "UNSEEN", "SIZE"))
+con$search(request = flag("FLAGGED"), save = TRUE)
+con$fetch_preview(msg_id = "$")
+con$sort(by = "SIZE", reverse = TRUE, return = c("COUNT", "MAX"))
+con$my_rights("INBOX")
+con$get_quota_root("INBOX")
+```
+
+## Resetting and tearing down
+
+Since the server accepts **any username** — and each one gets its own
+independent mailbox — the quickest way to start over is to simply
+connect with a new username, with no need to touch the container:
+
+``` r
+con2 <- configure_imap(url = "imap://localhost:1430",
+                       username = "testuser2", # any new name = pristine mailbox
+                       password = "sandbox",
+                       use_ssl = FALSE)
+populate_sandbox(con2, n = 200)
+```
+
+This is also handy for keeping several corpora side by side (e.g. one
+mailbox per experiment or per `seed`).
+
+Alternatively, the mailboxes live inside the container, so recreating it
+resets everything at once:
+
+``` sh
+docker rm -f mrpostman-sandbox
+docker run -d --name mrpostman-sandbox -p 1430:143 mrpostman-sandbox
+```
+
+Either way, a new `populate_sandbox()` call recreates the exact same
+corpus.

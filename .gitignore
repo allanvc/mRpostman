@@ -2,7 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-docs
 .httr-oauth
 src/Makevars
 src/*.o
