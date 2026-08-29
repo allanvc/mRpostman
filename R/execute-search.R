@@ -25,6 +25,15 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
                       rfc = "RFC 4731", retries = retries)
   }
 
+  # the capability gate above may have fetched CAPABILITY on this same
+  # handle (first call of a session), overwriting the customrequest that
+  # the caller set; re-set it so the SEARCH itself is what goes out
+  tryCatch({
+    curl::handle_setopt(handle, customrequest = customrequest)
+  }, error = function(e) {
+    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
+  })
+
   # searching
   # REQUEST
   response <- tryCatch({
