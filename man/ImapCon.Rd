@@ -5877,8 +5877,8 @@ attachment") and  inline attachments ("Content-Disposition: inline").}
 command is successfully executed. Default is \code{FALSE}.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
-      \item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
-decoding. Default is \code{FALSE}.}
+      \item{\code{as_is}}{If \code{TRUE}, writes the attachments out without
+reversing the transfer encoding. Default is \code{FALSE}.}
       \item{\code{local_dir}}{A \code{character} string with the base directory where the
 attachments will be saved. A subfolder tree
 \code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.
@@ -6065,8 +6065,8 @@ command is successfully executed. Default is \code{FALSE}.}
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command. Default
 is \code{1}.}
-      \item{\code{as_is}}{If \code{TRUE} then write out attachments without base64
-decoding. Default is \code{FALSE}.}
+      \item{\code{as_is}}{If \code{TRUE}, writes the attachments out without
+reversing the transfer encoding. Default is \code{FALSE}.}
       \item{\code{local_dir}}{A \code{character} string with the base directory where the
 attachments will be saved. A subfolder tree
 \code{<local_dir>/<username>/<mail folder>/<msg id>} is created inside it.

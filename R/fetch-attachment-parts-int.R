@@ -38,7 +38,8 @@ decode_part_raw <- function(txt, encoding) {
 #' @noRd
 fetch_attachment_parts_int <- function(self, msg_id, use_uid, parts, local_dir,
                                        override, mute, retries,
-                                       content_disposition = "both") {
+                                       content_disposition = "both",
+                                       as_is = FALSE) {
 
   check_args(msg_id = msg_id, use_uid = use_uid, override = override,
              mute = mute, retries = retries)
@@ -90,7 +91,8 @@ fetch_attachment_parts_int <- function(self, msg_id, use_uid, parts, local_dir,
                                    use_uid = use_uid, write_to_disk = FALSE,
                                    keep_in_mem = FALSE, retries = retries,
                                    fetch_type = "part")
-    payload <- decode_part_raw(msg_list[[1]], bs$encoding[i])
+    payload <- if (isTRUE(as_is)) charToRaw(msg_list[[1]]) else
+      decode_part_raw(msg_list[[1]], bs$encoding[i])
     sizes[i] <- length(payload)
     filename <- bs$filename[i]
     if (is.na(filename) || !nzchar(filename)) {
@@ -99,8 +101,9 @@ fetch_attachment_parts_int <- function(self, msg_id, use_uid, parts, local_dir,
     }
     filename <- gsub(forbidden_chars, "_", filename)
     if (!is.null(local_dir)) {
+      id_folder <- if (isTRUE(use_uid)) paste0("UID", id) else id
       complete_path <- paste0(sub("/+$", "", local_dir), "/", user_folder, "/",
-                              folder_clean, "/", id)
+                              folder_clean, "/", id_folder)
       dir.create(complete_path, showWarnings = FALSE, recursive = TRUE)
       path <- if (isTRUE(override)) paste0(complete_path, "/", filename) else
         serialize_filename(sufix = filename, complete_path = complete_path)
