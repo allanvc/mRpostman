@@ -1547,7 +1547,7 @@ Default is <code>1</code>.</p></dd>
 <p>Search with an ordinary R expression (the query
   language). The expression is captured unevaluated, translated
   into an RFC 3501 search string by the pure function
-  <code><a href="imap_query.html">imap_query</a></code>, and executed exactly like
+  <code><a href="translate_query.html">translate_query</a></code>, and executed exactly like
   <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>. Fields: <code>subject</code>, <code>from</code>, <code>to</code>,
   <code>cc</code>, <code>bcc</code>, <code>body</code>, <code>text</code> (with <code>==</code>
   meaning contains), <code>flag</code>, <code>size</code> (bytes), <code>age</code>
@@ -1555,7 +1555,8 @@ Default is <code>1</code>.</p></dd>
   <code>saved</code>, and <code>header("Name")</code>. Comparisons combine
   with <code>&amp;</code>, <code>|</code>, <code>!</code>, <code>%in%</code>, and
   parentheses; other calls and variables are evaluated in the
-  caller's environment.</p><div class="section">
+  caller's environment. The complete field table is in
+  <code><a href="translate_query.html">?translate_query</a></code>.</p><div class="section">
 <h4 id="usage-29">Usage<a class="anchor" aria-label="anchor" href="#usage-29"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span></span>
 <span>  <span class="va">expr</span>,</span>
