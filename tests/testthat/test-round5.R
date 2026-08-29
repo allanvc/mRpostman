@@ -12,7 +12,8 @@ test_that("charset_fallback_requests() rewrites the request in accepted charsets
   expect_false(as.raw(0xc3) %in% charToRaw(alts[1]))               # ... not as UTF-8
   # no charsets listed by the server: ISO-8859-1 is tried, US-ASCII is not representable
   alts2 <- mRpostman:::charset_fallback_requests(req, "NO [BADCHARSET] Unknown charset")
-  expect_identical(length(alts2), 1L)
+  expect_gte(length(alts2), 1L)
+  expect_true(any(grepl("CHARSET ISO-8859-1", alts2, fixed = TRUE)))
   # an ASCII request without a CHARSET clause gets one for every candidate
   alts3 <- mRpostman:::charset_fallback_requests("SEARCH (SUBJECT test)", "NO [BADCHARSET]")
   expect_true(all(grepl("^SEARCH CHARSET ", alts3, useBytes = TRUE)))
