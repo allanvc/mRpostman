@@ -6,14 +6,14 @@ test_that("charset_fallback_requests() rewrites the request in accepted charsets
   # how many candidate charsets survive depends on the platform's iconv
   # (glibc refuses non-ASCII -> US-ASCII; win_iconv may accept it)
   expect_gte(length(alts), 1L)
-  expect_true(any(grepl("CHARSET ISO-8859-1", alts, fixed = TRUE)))                               # only ISO-8859-1 can hold "ã"
+  expect_true(any(grepl("CHARSET ISO-8859-1", alts, fixed = TRUE, useBytes = TRUE)))                               # only ISO-8859-1 can hold "ã"
   expect_true(grepl("^SEARCH CHARSET ISO-8859-1 ", alts[1], useBytes = TRUE))
   expect_true(as.raw(0xe3) %in% charToRaw(alts[1]))                # "ã" as its single Latin-1 byte
   expect_false(as.raw(0xc3) %in% charToRaw(alts[1]))               # ... not as UTF-8
   # no charsets listed by the server: ISO-8859-1 is tried, US-ASCII is not representable
   alts2 <- mRpostman:::charset_fallback_requests(req, "NO [BADCHARSET] Unknown charset")
   expect_gte(length(alts2), 1L)
-  expect_true(any(grepl("CHARSET ISO-8859-1", alts2, fixed = TRUE)))
+  expect_true(any(grepl("CHARSET ISO-8859-1", alts2, fixed = TRUE, useBytes = TRUE)))
   # an ASCII request without a CHARSET clause gets one for every candidate
   alts3 <- mRpostman:::charset_fallback_requests("SEARCH (SUBJECT test)", "NO [BADCHARSET]")
   expect_true(all(grepl("^SEARCH CHARSET ", alts3, useBytes = TRUE)))
