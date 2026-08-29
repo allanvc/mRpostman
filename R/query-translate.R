@@ -34,7 +34,7 @@
 #' a criterion constructor like \code{string()}, is evaluated in the
 #' caller's environment and used as is. Raw protocol fragments outside the
 #' field table (vendor extensions such as Gmail's \code{X-GM-RAW}, sequence
-#' sets, \code{FUZZY}) can be embedded verbatim with \code{imap_raw()}.
+#' sets, \code{FUZZY}) can be embedded with \code{verbatim()}.
 #'
 #' @details The full field reference:
 #' \tabular{lll}{

@@ -42,7 +42,6 @@ Other custom search:
 \code{\link[=filter_stored]{filter_stored()}},
 \code{\link[=flag]{flag()}},
 \code{\link[=fuzzy]{fuzzy()}},
-\code{\link[=imap_raw]{imap_raw()}},
 \code{\link[=larger_than]{larger_than()}},
 \code{\link[=older_than]{older_than()}},
 \code{\link[=on]{on()}},
@@ -53,6 +52,7 @@ Other custom search:
 \code{\link[=since]{since()}},
 \code{\link[=smaller_than]{smaller_than()}},
 \code{\link[=string]{string()}},
+\code{\link[=verbatim]{verbatim()}},
 \code{\link[=younger_than]{younger_than()}}
 }
 \concept{custom search}

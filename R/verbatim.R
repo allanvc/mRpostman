@@ -14,17 +14,17 @@
 #' @examples
 #' \dontrun{
 #' # a vendor extension combined with a regular field
-#' res <- con$query(imap_raw('X-GM-RAW "has:attachment smaller:25M"') &
+#' res <- con$query(verbatim('X-GM-RAW "has:attachment smaller:25M"') &
 #'                    flag != "SEEN")
 #' # a UID range in a classic custom search
-#' res <- con$search(request = AND(imap_raw("UID 100:200"),
+#' res <- con$search(request = AND(verbatim("UID 100:200"),
 #'                                 string(expr = "@@gmail.com", where = "FROM")),
 #'                   use_uid = TRUE)
 #' }
 #'
 #' @export
 #'
-imap_raw <- function(request) {
+verbatim <- function(request) {
 
   assertthat::assert_that(
     is.character(request), length(request) == 1, !is.na(request),

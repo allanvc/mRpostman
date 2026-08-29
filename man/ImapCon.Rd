@@ -380,7 +380,7 @@ con$store_annotation(msg_id = 1, entry = "/comment",
 con$select_folder("INBOX")
 con$query((subject == "budget" | "budget 3") & flag != "SEEN")
 con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
-con$query(imap_raw('X-GM-RAW "has:attachment"') & flag != "SEEN")
+con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")
 }
 
 ## ------------------------------------------------
@@ -1172,7 +1172,6 @@ Other custom search:
 \code{\link[=filter_stored]{filter_stored()}},
 \code{\link[=flag]{flag()}},
 \code{\link[=fuzzy]{fuzzy()}},
-\code{\link[=imap_raw]{imap_raw()}},
 \code{\link[=larger_than]{larger_than()}},
 \code{\link[=modseq]{modseq()}},
 \code{\link[=older_than]{older_than()}},
@@ -1184,6 +1183,7 @@ Other custom search:
 \code{\link[=since]{since()}},
 \code{\link[=smaller_than]{smaller_than()}},
 \code{\link[=string]{string()}},
+\code{\link[=verbatim]{verbatim()}},
 \code{\link[=younger_than]{younger_than()}}
 
 Other attachments:
@@ -2507,7 +2507,7 @@ Default is \code{1}.}
   caller's environment. Raw protocol fragments outside the field
   table (vendor extensions such as Gmail's \code{X-GM-RAW},
   sequence sets, \code{FUZZY}) can be embedded verbatim with
-  \code{imap_raw()}.
+  \code{verbatim()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$query(
@@ -2575,7 +2575,7 @@ Dates accept \code{"YYYY-MM-DD"}, \code{"DD-Mon-YYYY"}, or
     \preformatted{con$select_folder("INBOX")
 con$query((subject == "budget" | "budget 3") & flag != "SEEN")
 con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
-con$query(imap_raw('X-GM-RAW "has:attachment"') & flag != "SEEN")
+con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")
 }
     \if{html}{\out{</div>}}
   }

@@ -127,42 +127,42 @@ test_that("query() returns the same ids as the classic search on the sandbox", {
   con$disconnect()
 })
 
-# ---- imap_raw(): verbatim fragments inside the query language -----------
+# ---- verbatim(): verbatim fragments inside the query language -----------
 
-test_that("imap_raw() wraps fragments and composes with the language", {
-  expect_s3_class(imap_raw("UID 100:200"), "imap_search")
-  expect_identical(unclass(imap_raw("UID 100:200")), "(UID 100:200)")
+test_that("verbatim() wraps fragments and composes with the language", {
+  expect_s3_class(verbatim("UID 100:200"), "imap_search")
+  expect_identical(unclass(verbatim("UID 100:200")), "(UID 100:200)")
   # already-parenthesized fragments are kept as is
-  expect_identical(unclass(imap_raw('(X-GM-RAW "has:attachment")')),
+  expect_identical(unclass(verbatim('(X-GM-RAW "has:attachment")')),
                    '(X-GM-RAW "has:attachment")')
   # two adjacent groups are not a single group: wrapped
-  expect_identical(unclass(imap_raw("(SEEN) (DRAFT)")), "((SEEN) (DRAFT))")
+  expect_identical(unclass(verbatim("(SEEN) (DRAFT)")), "((SEEN) (DRAFT))")
   # a quoted parenthesis must not fool the balance check
-  expect_identical(unclass(imap_raw('HEADER X-Note "a)b"')),
+  expect_identical(unclass(verbatim('HEADER X-Note "a)b"')),
                    '(HEADER X-Note "a)b")')
   translate_query <- mRpostman:::translate_query
   expect_identical(
-    unclass(translate_query(imap_raw("UID 1:10") & flag != "SEEN")),
+    unclass(translate_query(verbatim("UID 1:10") & flag != "SEEN")),
     "((UID 1:10) (UNSEEN))")
-  expect_error(imap_raw(c("a", "b")))
-  expect_error(imap_raw("   "))
-  expect_error(imap_raw(NA_character_))
+  expect_error(verbatim(c("a", "b")))
+  expect_error(verbatim("   "))
+  expect_error(verbatim(NA_character_))
 })
 
-test_that("query(imap_raw()) matches the classic custom search on the sandbox", {
+test_that("query(verbatim()) matches the classic custom search on the sandbox", {
   skip_if_not(rare_sandbox_up2(), "Docker sandbox not reachable on localhost:1430")
   con <- configure_imap(url = "imap://localhost:1430",
                         username = paste0("qr", format(Sys.time(), "%H%M%S")),
                         password = "sandbox", use_ssl = FALSE)
   invisible(populate_sandbox(con, n = 50, seed = 3501, mute = TRUE))
   con$select_folder("INBOX", mute = TRUE)
-  a <- con$query(imap_raw("LARGER 8000"), use_uid = TRUE)
+  a <- con$query(verbatim("LARGER 8000"), use_uid = TRUE)
   b <- con$search(request = "(LARGER 8000)", use_uid = TRUE)
   expect_identical(sort(a), sort(b))
   # a raw sequence set combined with a translated field
   uids <- sort(con$search_larger_than(1, use_uid = TRUE))
   rng <- paste0("UID ", min(uids), ":", max(uids))
-  d <- con$query(imap_raw(rng) & size > 8000, use_uid = TRUE)
+  d <- con$query(verbatim(rng) & size > 8000, use_uid = TRUE)
   expect_identical(sort(d), sort(b))
   con$disconnect()
 })

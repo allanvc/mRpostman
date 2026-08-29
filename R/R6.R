@@ -829,7 +829,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   caller's environment. Raw protocol fragments outside the field
     #'   table (vendor extensions such as Gmail's \code{X-GM-RAW},
     #'   sequence sets, \code{FUZZY}) can be embedded verbatim with
-    #'   \code{imap_raw()}.
+    #'   \code{verbatim()}.
     #' @details The full field reference:
     #' \tabular{lll}{
     #'   \strong{field} \tab \strong{compares with} \tab \strong{protocol key} \cr
@@ -875,7 +875,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$select_folder("INBOX")
     #' con$query((subject == "budget" | "budget 3") & flag != "SEEN")
     #' con$query(sent >= "2001-10-01" & size > 5e6, use_uid = TRUE)
-    #' con$query(imap_raw('X-GM-RAW "has:attachment"') & flag != "SEEN")
+    #' con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")
     #' }
     query = function(expr, negate = FALSE, use_uid = FALSE, esearch = FALSE,
                      save = FALSE, retries = 1) {
