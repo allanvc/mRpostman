@@ -2502,7 +2502,8 @@ Default is \code{1}.}
   \code{saved}, and \code{header("Name")}. Comparisons combine
   with \code{&}, \code{|}, \code{!}, \code{\%in\%}, and
   parentheses; other calls and variables are evaluated in the
-  caller's environment.
+  caller's environment. The complete field table is in
+  \code{?translate_query}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$query(

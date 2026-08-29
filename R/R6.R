@@ -826,7 +826,8 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{saved}, and \code{header("Name")}. Comparisons combine
     #'   with \code{&}, \code{|}, \code{!}, \code{\%in\%}, and
     #'   parentheses; other calls and variables are evaluated in the
-    #'   caller's environment.
+    #'   caller's environment. The complete field table is in
+    #'   \code{?translate_query}.
     #' @param expr An unquoted expression, e.g.
     #'   \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.
     #' @param negate If \code{TRUE}, negates the whole search. Default is

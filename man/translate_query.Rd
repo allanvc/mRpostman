@@ -32,6 +32,37 @@ inherits the field of the preceding comparison. Any other call, such as
 a criterion constructor like \code{string()}, is evaluated in the
 caller's environment and used as is.
 }
+\details{
+The full field reference:
+\tabular{lll}{
+  \strong{field} \tab \strong{compares with} \tab \strong{protocol key} \cr
+  \code{subject}, \code{from}, \code{to}, \code{cc}, \code{bcc},
+    \code{body}, \code{text} \tab \code{==} (contains), \code{!=}
+    \tab \code{SUBJECT}, \code{FROM}, ... \cr
+  \code{header("Name")} \tab \code{==}, \code{!=} \tab \code{HEADER Name} \cr
+  \code{flag} \tab \code{==}, \code{!=} \tab \code{SEEN}/\code{UNSEEN}, ...;
+    custom keywords as \code{KEYWORD}/\code{UNKEYWORD} \cr
+  \code{size} (bytes) \tab \code{>}, \code{>=}, \code{<}, \code{<=},
+    \code{==} \tab \code{LARGER}, \code{SMALLER} \cr
+  \code{age} (seconds) \tab \code{<}, \code{<=}, \code{>}, \code{>=}
+    \tab \code{YOUNGER}, \code{OLDER} (WITHIN servers) \cr
+  \code{sent} (the \code{Date:} header) \tab \code{>=}, \code{>},
+    \code{<}, \code{<=}, \code{==} \tab \code{SENTSINCE},
+    \code{SENTBEFORE}, \code{SENTON} \cr
+  \code{date} (the internal date) \tab idem \tab \code{SINCE},
+    \code{BEFORE}, \code{ON} \cr
+  \code{saved} \tab idem \tab \code{SAVEDSINCE}, ... (SAVEDATE servers) \cr
+  \code{modseq} \tab \code{>=}, \code{>}, \code{<} \tab \code{MODSEQ}
+    (CONDSTORE servers) \cr
+}
+Dates accept \code{"YYYY-MM-DD"}, \code{"DD-Mon-YYYY"}, or \code{Date}
+values, exact at the protocol's day granularity (\code{>} becomes
+\code{SINCE} of the following day). Comparisons combine with \code{&},
+\code{|}, \code{!}, \code{\%in\%} (one field over several values), and
+parentheses; a bare string next to \code{|} or \code{&} inherits the
+field of the preceding comparison; any other call or variable is
+evaluated in the caller's environment.
+}
 \examples{
 translate_query((subject == "budget" | "budget 3") & flag != "SEEN")
 translate_query(sent >= "2001-10-01" & size > 5e6)
