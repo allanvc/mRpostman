@@ -2502,8 +2502,7 @@ Default is \code{1}.}
   \code{saved}, and \code{header("Name")}. Comparisons combine
   with \code{&}, \code{|}, \code{!}, \code{\%in\%}, and
   parentheses; other calls and variables are evaluated in the
-  caller's environment. The complete field table is in
-  \code{?translate_query}.
+  caller's environment.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$query(
@@ -2535,6 +2534,32 @@ presented as UIDs.}
 command. Default is \code{1}.}
     }
     \if{html}{\out{</div>}}
+  }
+  \subsection{Details}{
+    The full field reference:
+\tabular{lll}{
+  \strong{field} \tab \strong{compares with} \tab \strong{protocol key} \cr
+  \code{subject}, \code{from}, \code{to}, \code{cc}, \code{bcc},
+    \code{body}, \code{text} \tab \code{==} (contains), \code{!=}
+    \tab \code{SUBJECT}, \code{FROM}, ... \cr
+  \code{header("Name")} \tab \code{==}, \code{!=} \tab \code{HEADER Name} \cr
+  \code{flag} \tab \code{==}, \code{!=} \tab \code{SEEN}/\code{UNSEEN}, ...;
+    custom keywords as \code{KEYWORD}/\code{UNKEYWORD} \cr
+  \code{size} (bytes) \tab \code{>}, \code{>=}, \code{<}, \code{<=},
+    \code{==} \tab \code{LARGER}, \code{SMALLER} \cr
+  \code{age} (seconds) \tab \code{<}, \code{<=}, \code{>}, \code{>=}
+    \tab \code{YOUNGER}, \code{OLDER} (WITHIN servers) \cr
+  \code{sent} (the \code{Date:} header) \tab \code{>=}, \code{>},
+    \code{<}, \code{<=}, \code{==} \tab \code{SENTSINCE},
+    \code{SENTBEFORE}, \code{SENTON} \cr
+  \code{date} (the internal date) \tab idem \tab \code{SINCE},
+    \code{BEFORE}, \code{ON} \cr
+  \code{saved} \tab idem \tab \code{SAVEDSINCE}, ... (SAVEDATE servers) \cr
+  \code{modseq} \tab \code{>=}, \code{>}, \code{<} \tab \code{MODSEQ}
+    (CONDSTORE servers) \cr
+}
+Dates accept \code{"YYYY-MM-DD"}, \code{"DD-Mon-YYYY"}, or
+\code{Date} values, exact at the protocol's day granularity.
   }
   \subsection{Returns}{
     A \code{numeric vector} with the matching message ids, as
