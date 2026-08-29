@@ -1,4 +1,4 @@
-## mRpostman 2.3.0 (2026-08-28 feature update)
+## mRpostman 3.0.0 (2026-08-29 major release: the 2026 refactoring)
 
 ### New features
 

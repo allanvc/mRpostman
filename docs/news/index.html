@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,10 +38,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.3.0" id="mrpostman-230-2026-08-28-feature-update">mRpostman 2.3.0 (2026-08-28 feature update)<a class="anchor" aria-label="anchor" href="#mrpostman-230-2026-08-28-feature-update"></a></h2>
-<div class="section level3"><h3 id="new-features-2-3-0">New features<a class="anchor" aria-label="anchor" href="#new-features-2-3-0"></a></h3></div>
+<h2 class="pkg-version" data-toc-text="3.0.0" id="mrpostman-300-2026-08-29-major-release-the-2026-refactoring">mRpostman 3.0.0 (2026-08-29 major release: the 2026 refactoring)<a class="anchor" aria-label="anchor" href="#mrpostman-300-2026-08-29-major-release-the-2026-refactoring"></a></h2>
+<div class="section level3"><h3 id="new-features-3-0-0">New features<a class="anchor" aria-label="anchor" href="#new-features-3-0-0"></a></h3></div>
 <div class="section level3">
-<h3 id="api-modernization-the-refactoring-2-3-0">API modernization (the 2026 refactoring)<a class="anchor" aria-label="anchor" href="#api-modernization-the-refactoring-2-3-0"></a></h3>
+<h3 id="api-modernization-the-refactoring-3-0-0">API modernization (the 2026 refactoring)<a class="anchor" aria-label="anchor" href="#api-modernization-the-refactoring-3-0-0"></a></h3>
 <ul><li><p><strong>Connection-level defaults</strong>: <code>use_uid</code>, <code>mute</code>, and <code>retries</code> can now be set once in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> and apply to every method; any call can still override them. No more threading <code>use_uid = TRUE</code> through every call of a script.</p></li>
 <li><p><strong>The attachment family, 5 entry points -&gt; 2 (+1 offline)</strong>: <code>ImapCon$attachments()</code> downloads (BODYSTRUCTURE-guided, with <code>parts =</code> for specific MIME parts and <code>dest =</code> for the destination), <code>ImapCon$attachments_manifest()</code> lists without downloading, and the exported <code><a href="../reference/extract_attachments.html">extract_attachments()</a></code> reports or writes attachments from already-fetched bodies (returning zero-row data frames, never <code>NA</code>, for messages without attachments). <code>fetch_attachments()</code>, <code>fetch_attachment_parts()</code>, <code>fetch_attachments_list()</code>, <code>get_attachments()</code>, and <code><a href="../reference/list_attachments.html">list_attachments()</a></code> keep working but are soft-deprecated.</p></li>
 <li><p><strong>Deprecations with <code>lifecycle</code></strong>: the 15 <code>search_*()</code> methods (every one has a direct <code>query()</code> spelling) and <code><a href="../reference/AND.html">AND()</a></code>/<code><a href="../reference/OR.html">OR()</a></code> (criteria combine with R’s own <code>&amp;</code>, <code>|</code>, <code>!</code>) now signal a once-per-session deprecation warning. Nothing was removed.</p></li>
@@ -56,7 +56,7 @@
 <li><p><strong>Native operators on criteria</strong>: the criterion constructors (<code><a href="../reference/string.html">string()</a></code>, <code><a href="../reference/flag.html">flag()</a></code>, <code><a href="../reference/sent_since.html">sent_since()</a></code>, …) now return classed objects that combine with <code>&amp;</code>, <code>|</code>, and <code>!</code> directly, e.g. <code>con$search(string("budget", where = "SUBJECT") &amp; !flag("SEEN"))</code>. <code><a href="../reference/AND.html">AND()</a></code> and <code><a href="../reference/OR.html">OR()</a></code> keep working unchanged.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-and-internal-hardening-2-3-0">Bug fixes and internal hardening<a class="anchor" aria-label="anchor" href="#bug-fixes-and-internal-hardening-2-3-0"></a></h3>
+<h3 id="bug-fixes-and-internal-hardening-3-0-0">Bug fixes and internal hardening<a class="anchor" aria-label="anchor" href="#bug-fixes-and-internal-hardening-3-0-0"></a></h3>
 <ul><li><p><strong>One execution choke point</strong>: the libcurl transport now goes through a single internal engine (<code>imap_exec()</code>) that sets the command on the shared handle and fetches back to back, with nothing in between, so a capability check or state fetch can no longer overwrite a pending command (the bug class behind several historical fixes). The retry policy lives there once: on a retryable failure the session state - <code>ENABLE</code>d extensions and the selected folder - is restored before the command is replayed.</p></li>
 <li><p><strong>Classed error conditions</strong>: every failure is now signaled as an <code>mRpostman_error</code> with a specific subclass (<code>mRpostman_connection_error</code>, <code>mRpostman_state_error</code>, <code>mRpostman_capability_error</code>, <code>mRpostman_server_error</code> - carrying the server’s reason in <code>$server_reply</code> -, <code>mRpostman_response_too_large</code>), so callers can <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> on failure kinds instead of matching message text.</p></li>
 <li><p><strong>Offline tests for the command layer</strong>: the transport is now mockable (<code>testthat &gt;= 3.1.7</code>), with canned-response tests covering request assembly, the retry contract, and each error class; the four copies of the sandbox probe in the test suite were consolidated into one helper.</p></li>

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,8 @@
 <p><code>mRpostman</code> is an easy-to-use IMAP client that provides tools for message searching, selective fetching of message attributes, mailbox management, attachment extraction, and several other IMAP features, paving the way for email data analysis in R. To do so, this package makes extensive use of the {curl} package and the libcurl C library.</p>
 <p>In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.</p>
 <p><strong>IMPORTANT</strong>:</p>
-<ol style="list-style-type: decimal">
+<ol start="0" style="list-style-type: decimal">
+<li><p>In 2026 the package went through a deep refactoring, released as version <code>3.0.0</code>. Everything written for 1.x/2.x keeps working, but four things changed for the better: (i) <code>query()</code> is now the canonical way to search - every <code>search_*()</code> method and the <code><a href="../reference/AND.html">AND()</a></code>/<code><a href="../reference/OR.html">OR()</a></code> combinators keep working as soft-deprecated spellings (they warn once per session); (ii) attachments have a consolidated API - <code>attachments()</code>, <code>attachments_manifest()</code>, and <code><a href="../reference/extract_attachments.html">extract_attachments()</a></code>; (iii) <code>use_uid</code>, <code>mute</code>, and <code>retries</code> can be set once, in <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, as connection-level defaults; (iv) failures are classed conditions (e.g. <code>mRpostman_server_error</code>) that <code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">tryCatch()</a></code> can handle by kind.</p></li>
 <li><p>In version <code>0.9.0.0</code>, <code>mRpostman</code> went through substantial changes, including ones that have no backward compatibility with versions <code>&lt;= 0.3.1</code>. If you have code written with the deprecated syntax of versions <code>&lt;= 0.3.1</code>, please refer to the package’s <code>NEWS.md</code> file for an overview of the changes introduced in <code>0.9.0.0</code>.</p></li>
 <li><p>Old versions of the libcurl C library ({curl}’s main engine) will cause malfunctioning of this package. If your libcurl’s version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl &gt;= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
 <li><p>Most mail providers discontinued less secure apps access. If it is still available and you are comfortable with this type of access you can enable this option for your account on your mail provider. Some providers, such as Yahoo Mail, also offer the option to generate a password to be used by third-party apps such as mRpostman. The other option, as mentioned above, is to set up OAuth2 (two-factor authentication) in order to access your mailbox. Please also refer to the <a href="https://allanvc.github.io/mRpostman/articles/xoauth2.0.html"><em>“Using IMAP OAuth2.0 authentication in mRpostman”</em></a> vignette.</p></li>
@@ -146,26 +147,23 @@
 <p>The package is now implemented under an OO framework, using an R6 class. The main functionalities of <code>mRpostman</code> are implemented as methods of the R6 class called <code>ImapCon</code>. There are also a few independent functions. All methods and functions are described below:</p>
 <ul>
 <li>
-<strong>configuration methods</strong>: <code><a href="../reference/configure_imap.html">configure_imap()</a></code>, <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
+<strong>configuration methods</strong>: <code><a href="../reference/configure_imap.html">configure_imap()</a></code> (including the connection-level defaults <code>use_uid</code>, <code>mute</code>, and <code>retries</code>), <code>reset_url()</code>, <code>reset_username()</code>, <code>reset_password()</code>, <code>reset_verbose()</code>, <code>reset_buffersize()</code>, <code>reset_timeout_ms()</code>, <code>reset_xoauth2_bearer()</code>;</li>
 <li>
-<strong>server-capabilities method</strong>: <code>list_server_capabilities()</code>;</li>
+<strong>server-capabilities methods</strong>: <code>list_server_capabilities()</code>, <code>has_capability()</code>;</li>
 <li>
 <strong>mailbox-operations methods</strong>: <code>list_mail_folders()</code>, <code>select_folder()</code>, <code>examine_folder()</code>, <code>rename_folder()</code>, <code>create_folder()</code>, <code>list_flags()</code>;</li>
 <li>
-<strong>single-search methods</strong>: <code>search_before()</code>, <code>search_since()</code>, <code>search_period()</code>, <code>search_on()</code>, <code>search_sent_before()</code>,<code>search_sent_since()</code>, <code>search_sent_period()</code>, <code>search_sent_on()</code>, <code>search_string()</code>, <code>search_flag()</code>, <code>search_smaller_than()</code>, <code>search_larger_than()</code>, <code>search_younger_than()</code>, <code>search_older_than()</code>;</li>
+<strong>the search method</strong>: <code>query()</code> - an ordinary R expression, e.g. <code>con$query((subject == "budget" | "budget 3") &amp; flag != "SEEN")</code>;</li>
 <li>
-<strong>the custom-search method and its helper functions</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>;
-<ul>
-<li>relational operators functions: <code><a href="../reference/AND.html">AND()</a></code>, <code><a href="../reference/OR.html">OR()</a></code>;</li>
-<li>criteria definition functions: <code><a href="../reference/before.html">before()</a></code>, <code><a href="../reference/since.html">since()</a></code>, <code><a href="../reference/on.html">on()</a></code>, <code><a href="../reference/sent_before.html">sent_before()</a></code>, <code><a href="../reference/sent_since.html">sent_since()</a></code>, <code><a href="../reference/sent_on.html">sent_on()</a></code>, <code><a href="../reference/string.html">string()</a></code>, <code><a href="../reference/flag.html">flag()</a></code>, <code><a href="../reference/smaller_than.html">smaller_than()</a></code>, <code><a href="../reference/larger_than.html">larger_than()</a></code>, <code><a href="../reference/younger_than.html">younger_than()</a></code>, <code><a href="../reference/older_than.html">older_than()</a></code>;</li>
-</ul>
-</li>
+<strong>the custom-search method</strong>: <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>, with the criteria constructors <code><a href="../reference/before.html">before()</a></code>, <code><a href="../reference/since.html">since()</a></code>, <code><a href="../reference/on.html">on()</a></code>, <code><a href="../reference/sent_before.html">sent_before()</a></code>, <code><a href="../reference/sent_since.html">sent_since()</a></code>, <code><a href="../reference/sent_on.html">sent_on()</a></code>, <code><a href="../reference/string.html">string()</a></code>, <code><a href="../reference/flag.html">flag()</a></code>, <code><a href="../reference/smaller_than.html">smaller_than()</a></code>, <code><a href="../reference/larger_than.html">larger_than()</a></code>, <code><a href="../reference/younger_than.html">younger_than()</a></code>, <code><a href="../reference/older_than.html">older_than()</a></code>, <code><a href="../reference/verbatim.html">verbatim()</a></code>, combined with R’s own <code>&amp;</code>, <code>|</code>, and <code>!</code>;</li>
 <li>
-<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+<strong>deprecated search spellings</strong> (they keep working, warning once per session): the <code>search_*()</code> single-criterion methods and the <code><a href="../reference/AND.html">AND()</a></code>/<code><a href="../reference/OR.html">OR()</a></code> combinators;</li>
 <li>
-<strong>attachments methods</strong>: <code><a href="../reference/list_attachments.html">list_attachments()</a></code>, <code>get_attachments()</code>, <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>;</li>
+<strong>fetch methods</strong>: <code>fetch_body()</code>, <code>fetch_header()</code>, <code>fetch_text()</code>, <code>fetch_metadata()</code>;</li>
 <li>
-<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count_msg()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
+<strong>attachments</strong>: <code>attachments_manifest()</code> (list without downloading), <code>attachments()</code> (download, guided by the <code>BODYSTRUCTURE</code>), and the exported <code><a href="../reference/extract_attachments.html">extract_attachments()</a></code> (from already-fetched bodies); the pre-3.0.0 names remain as deprecated aliases;</li>
+<li>
+<strong>complementary methods</strong>: <code>copy_msg()</code>, <code>move_msg()</code>, <code>esearch_min_id()</code>, <code>esearch_max_id()</code>, <code>esearch_count()</code>, <code>delete_msg()</code>, <code>expunge()</code>, <code>add_flags()</code>, <code>remove_flags()</code>, <code>replace_flags()</code>.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -224,6 +222,7 @@
 <p>Since version <code>0.9.0.0</code>, this package provides more flexibility to the user in the sense that you can modify the connection parameters for specific commands or parts of a script, using the <code>reset_*()</code> methods. This prevents users from having to call <code><a href="../reference/configure_imap.html">configure_imap()</a></code> multiple times during a session or in a script. It is particularly useful when the user is going to perform some fetch operation, for example. In this case, it is recommended to increase the <code>timeout_ms</code> and set <code>verbose = FALSE</code>.</p>
 <p>The <code>con</code> object that we created in the example above has the <code>ImapCon</code> R6 class. Now, almost 99% of the other IMAP commands to be performed on the server will be called following the structure: <code>con$method()</code>. The exceptions are the <code><a href="../reference/list_attachments.html">list_attachments()</a></code> function and the helper functions of the custom-search group.</p>
 <p>As you will see, the R6 framework combined with {curl} will make this package work like a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.</p>
+<p>Since 3.0.0, three arguments that used to be repeated on every call can be set once, as connection-level defaults: <code>configure_imap(..., use_uid = TRUE, mute = TRUE, retries = 2)</code> makes every method use UIDs, stay quiet, and retry twice, unless a specific call overrides it.</p>
 </div>
 <div class="section level2">
 <h2 id="server-capabilities">2) Server capabilities<a class="anchor" aria-label="anchor" href="#server-capabilities"></a>
@@ -373,8 +372,9 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="single-search">4) Single-search<a class="anchor" aria-label="anchor" href="#single-search"></a>
+<h2 id="single-search-deprecated-spellings">4) Single-search (deprecated spellings)<a class="anchor" aria-label="anchor" href="#single-search-deprecated-spellings"></a>
 </h2>
+<p><strong>NOTE (3.0.0):</strong> every search in this section has a direct spelling in the canonical <code>query()</code> interface of <a href="#the-query-language-canonical-since-300">Section 9</a> - e.g. <code>con$search_before(date_char = "02-Jan-2020")</code> is <code>con$query(date &lt; "2020-01-02")</code>. The methods below keep working, but signal a deprecation warning once per session.</p>
 <p>All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also <strong>NEGATE</strong> all search expressions by setting <code>negate = TRUE</code>.</p>
 <p>If your server supports <strong>ESEARCH</strong>, we recommend you to use it. It will prevent your results from being truncated when there are too many message ids and you didn’t set a high <code>buffersize</code> in <code><a href="../reference/configure_imap.html">configure_imap()</a></code><a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;This is a known bug of the libcurl library. Please, refer to this &lt;a href="https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon" class="external-link"&gt;LINK&lt;/a&gt;&lt;/p&gt;'><sup>1</sup></a>. With “ESEARCH”, the results will be condensed to groups of sequences similar to what does. For instance, if your search returns 10000 results, it is better to have condensed groups such as <code>1:10, 12, 23:27, ...</code> instead of a sequence of <code>1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...</code>. If you can’t use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in <code><a href="../reference/configure_imap.html">configure_imap()</a></code> to avoid this.</p>
 <div class="section level3">
@@ -580,7 +580,7 @@
 <p>The <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code> method and its <strong>helper functions</strong> enable users to create a vast number of complex and customized search requests by combining different criteria, using all the types of searches previously presented in this document.</p>
 <p>These are the helper functions you can use inside <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>:</p>
 <ol style="list-style-type: decimal">
-<li>Relational operators: <code><a href="../reference/AND.html">AND()</a></code>, and <code><a href="../reference/OR.html">OR()</a></code>;</li>
+<li>Relational operators: R’s own <code>&amp;</code>, <code>|</code>, and <code>!</code> (the <code><a href="../reference/AND.html">AND()</a></code> and <code><a href="../reference/OR.html">OR()</a></code> helpers keep working, but are deprecated since 3.0.0);</li>
 <li>Criteria definition: <code><a href="../reference/before.html">before()</a></code>, <code><a href="../reference/since.html">since()</a></code>, <code><a href="../reference/on.html">on()</a></code>, <code><a href="../reference/sent_before.html">sent_before()</a></code>, <code><a href="../reference/sent_since.html">sent_since()</a></code>, <code><a href="../reference/sent_on.html">sent_on()</a></code>, <code><a href="../reference/string.html">string()</a></code>, <code><a href="../reference/flag.html">flag()</a></code>, <code><a href="../reference/smaller_than.html">smaller_than()</a></code>, <code><a href="../reference/larger_than.html">larger_than()</a></code>, <code><a href="../reference/younger_than.html">younger_than()</a></code>, and <code><a href="../reference/older_than.html">older_than()</a></code>.</li>
 </ol>
 <p><strong>NOTE</strong>: IMAP queries follow Polish notation, i.e. operators such as <code>OR</code> come before arguments, e.g. “OR argument1 argument2”. Therefore, the relational operators functions in this package should be used like the following examples: <code>OR(before(date_char = "17-Apr-2015"), string(expr = "Jimmy", where = "FROM"))</code>. Even though there is no “AND” operator in the IMAP protocol, this package adds a helper function <code><a href="../reference/AND.html">AND()</a></code> to indicate multiple arguments that must be searched together, e.g. <code>AND(since(date_char = "01-Jul-2018"), larger_than(size = 16000))</code>.</p>
@@ -676,70 +676,32 @@
 <div class="section level2">
 <h2 id="attachments">7) Attachments<a class="anchor" aria-label="anchor" href="#attachments"></a>
 </h2>
-<p>Previously, <code>mRpostman</code> had two attachment-related functions: <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and <code>get_attachments()</code>. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented since version <code>0.9.0.0</code>: <code>fetch_attachments_list()</code> and <code>fetch_attachments()</code>. These methods are not contingent on a previous fetch operation, since they are a proper fetch operation.</p>
-<p>Let’s take a look at the first two attachments functionalities available in <code>mRpostman</code>.</p>
+<p>Since 3.0.0 the attachment family has three entry points: two methods that talk to the server, and one exported function that works offline on messages you already fetched. (The pre-3.0.0 names - <code>fetch_attachments_list()</code>, <code>fetch_attachments()</code>, <code>fetch_attachment_parts()</code>, <code>get_attachments()</code>, and <code><a href="../reference/list_attachments.html">list_attachments()</a></code> - keep working as deprecated aliases.)</p>
 <div class="section level3">
-<h3 id="dependent-attachment-operations">7.1) Dependent attachment operations<a class="anchor" aria-label="anchor" href="#dependent-attachment-operations"></a>
+<h3 id="listing-attachments-without-downloading">7.1) Listing attachments without downloading<a class="anchor" aria-label="anchor" href="#listing-attachments-without-downloading"></a>
 </h3>
-<p>The dependent operations are comprised of a function <code><a href="../reference/list_attachments.html">list_attachments()</a></code> and an R6 method <code>get_attachments()</code>. We call them dependent operations because they depend on a previous fetch operation with <code>fetch_body()</code> or <code>fetch_text()</code>.</p>
-<p><strong>IMPORTANT:</strong> Since these are fetch-dependent operations, you <strong>cannot</strong> set <code>keep_in_mem = FALSE</code> in the <code>fetch_body()</code>/<code>fetch_text()</code> step if you intend to list or get attachments after fetching your messages.</p>
-<div class="section level4">
-<h4 id="listing-attachments">7.1.1) Listing attachments<a class="anchor" aria-label="anchor" href="#listing-attachments"></a>
-</h4>
-<p>This will list your attachments file names for each fetched message.</p>
+<p><code>attachments_manifest()</code> reads each message’s <code>BODYSTRUCTURE</code> metadata - one round trip, no payload - and returns one data frame per message (zero rows when a message has no attachments):</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># using fetch_body()</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/list_attachments.html">list_attachments</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># don't need to specify the connection object here</span></span>
-<span></span>
-<span><span class="co"># ------------------</span></span>
-<span></span>
-<span><span class="co"># using fetch_text()</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="../reference/list_attachments.html">list_attachments</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># don't need to specify the connection object here</span></span></code></pre></div>
-<p>In both examples, the whole message body(ies) or text will be saved to the disk, but a copy will be kept in the R session. This copy is passed forward to <code><a href="../reference/list_attachments.html">list_attachments()</a></code>, which, by its turn, finds and extracts the filenames and the type of the “Content-Disposition” for the part where the attachment was found.</p>
-</div>
-<div class="section level4">
-<h4 id="extracting-attachments">7.1.2) Extracting Attachments<a class="anchor" aria-label="anchor" href="#extracting-attachments"></a>
-</h4>
-<p><code>get_attachments()</code> will try to decode base64 text inside your message to the appropriate file extension. This will create a folder inside the structure <code>working directory &gt; username &gt; mail folder &gt; msg_id</code>. The attachment(s) will be inside their respective message folder.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># using fetch_body()</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># ------------------</span></span>
-<span></span>
-<span><span class="co"># using fetch_text()</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_text</span><span class="op">(</span>write_to_disk <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">get_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>The results in your local folder will be like this:</p>
-<p><img src="figures/basics/attach1.png" style="width:80.0%"><img src="figures/basics/attach2.png" style="width:80.0%"></p>
-</div>
+<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">attachments_manifest</span><span class="op">(</span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">1e6</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="direct-attachment-fetch-operations">7.2) Direct attachment fetch operations<a class="anchor" aria-label="anchor" href="#direct-attachment-fetch-operations"></a>
+<h3 id="downloading-attachments">7.2) Downloading attachments<a class="anchor" aria-label="anchor" href="#downloading-attachments"></a>
 </h3>
-<p>As we stated before, the following two methods are not contingent on a previous fetch step because they execute their own fetching operation. Hence, they consist of an alternative for attachments listing and downloading.</p>
-<p><strong>IMPORTANT</strong>: The same recommendations for the other fetch methods hold in this case: set <code>verbose = FALSE</code> and a high <code>timeout_ms</code>.</p>
-<div class="section level4">
-<h4 id="fetch-attachments-list">7.2.1) Fetch attachments list<a class="anchor" aria-label="anchor" href="#fetch-attachments-list"></a>
-</h4>
+<p><code>attachments()</code> downloads guided by the same <code>BODYSTRUCTURE</code>: exact MIME part numbers, nested multiparts included, one <code>BODY.PEEK[part]</code> fetch per attachment, decoded according to the declared transfer encoding. <code>dest</code> sets the destination directory (one folder per message), and <code>parts</code> restricts the download to specific MIME parts:</p>
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">manifest</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"report"</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="va">con</span><span class="op">$</span><span class="fu">attachments</span><span class="op">(</span>dest <span class="op">=</span> <span class="st">"~/attachments"</span><span class="op">)</span></span>
+<span><span class="va">manifest</span> <span class="co"># one row per file: id, part, filename, type, size, path</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="extracting-from-already-fetched-messages-offline">7.3) Extracting from already-fetched messages (offline)<a class="anchor" aria-label="anchor" href="#extracting-from-already-fetched-messages-offline"></a>
+</h3>
+<p>If the full messages are already in your session (fetched with <code>fetch_body()</code>), <code><a href="../reference/extract_attachments.html">extract_attachments()</a></code> walks the MIME multipart tree locally, with no further server round trip. With <code>dest = NULL</code> (default) it only reports; with a path it also writes the files:</p>
 <div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level4">
-<h4 id="fetch-attachments">7.2.2) Fetch attachments<a class="anchor" aria-label="anchor" href="#fetch-attachments"></a>
-</h4>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"23-Sep-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-</div>
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">1e6</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_body</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/extract_attachments.html">extract_attachments</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>                        <span class="co"># report only</span></span>
+<span><span class="fu"><a href="../reference/extract_attachments.html">extract_attachments</a></span><span class="op">(</span><span class="va">out</span>, dest <span class="op">=</span> <span class="st">"~/attachments"</span><span class="op">)</span>  <span class="co"># write the files</span></span></code></pre></div>
+<p><strong>IMPORTANT:</strong> <code><a href="../reference/extract_attachments.html">extract_attachments()</a></code> needs the <em>full</em> message (<code>fetch_body()</code>), whose headers declare the MIME boundaries; a text-only fetch is not enough. And since it is fetch-dependent, do not set <code>keep_in_mem = FALSE</code> in the fetch step.</p>
 </div>
 </div>
 <div class="section level2">
@@ -750,7 +712,7 @@
 <h3 id="copy-messages">8.1) Copy message(s)<a class="anchor" aria-label="anchor" href="#copy-messages"></a>
 </h3>
 <p>Copying search results from “INBOX” to “K-State” folder:</p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"10-may-2019"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -761,41 +723,41 @@
 <h3 id="get-minimum-message-id">8.2) Get minimum message id<a class="anchor" aria-label="anchor" href="#get-minimum-message-id"></a>
 </h3>
 <p>This operation depends on the ESEARCH capability. It will retrieve the <strong>minimum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="get-maximum-message-id">8.3) Get maximum message id<a class="anchor" aria-label="anchor" href="#get-maximum-message-id"></a>
 </h3>
 <p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>maximum</strong> message id containing a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_min_id</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="count-messages">8.4) Count messages<a class="anchor" aria-label="anchor" href="#count-messages"></a>
 </h3>
 <p>This operation also depends on the ESEARCH capability. It will retrieve the <strong>number</strong> of messages with a specific flag(s) in the selected mail folder.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span>flag <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Answered"</span>, <span class="st">"Seen"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="delete-messages">8.5) Delete message(s)<a class="anchor" aria-label="anchor" href="#delete-messages"></a>
 </h3>
 <p>This method marks one or more messages with the “\Deleted” system flag. Some servers automatically delete messages marked with this flag, and others require the <code>EXPUNGE</code> command to permanently delete the e-mail.</p>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Trash"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_before</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"10-may-2012"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Deleting an specific “msg_id” without a previous search:</p>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">delete_msg</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">66128</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="expunge">8.6) Expunge<a class="anchor" aria-label="anchor" href="#expunge"></a>
 </h3>
 <p>Expunges message(s) marked with the “DELETED” flag in a mailbox or a specific message using the <code>msg_uid</code> argument. Please, note that this requires the unique id, not sequence numbers. Therefore, we set <code>use_uid = TRUE</code></p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># expunge the entire mail folder</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">expunge</span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -811,7 +773,7 @@
 <div class="section level4">
 <h4 id="add-flags">8.7.1) Add flags<a class="anchor" aria-label="anchor" href="#add-flags"></a>
 </h4>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">search_since</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Sep-2020"</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -821,26 +783,26 @@
 <h4 id="replace-flags">8.7.2) Replace flags<a class="anchor" aria-label="anchor" href="#replace-flags"></a>
 </h4>
 <p>Replaces the existent flags by the one(s) specified in the method.</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">replace_flags</span>(<span class="dt">flags_to_set =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">replace_flags</span>(<span class="dt">flags_to_set =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="remove-flags">8.7.3) Remove flags<a class="anchor" aria-label="anchor" href="#remove-flags"></a>
 </h4>
 <p>Now we have the <code>flags_to_UNset</code> argument.</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true"></a>con<span class="op">$</span><span class="kw">search_since</span>(<span class="dt">date_char =</span> <span class="st">"01-Sep-2020"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true"></a><span class="st">  </span>con<span class="op">$</span><span class="kw">remobe_flags</span>(<span class="dt">flags_to_unset =</span> <span class="kw">c</span>(<span class="st">"</span><span class="ch">\\</span><span class="st">Seen"</span>, <span class="st">"</span><span class="ch">\\</span><span class="st">Flagged"</span>, <span class="dt">use_uid =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
 <h3 id="move-messages">8.8) Move message(s)<a class="anchor" aria-label="anchor" href="#move-messages"></a>
 </h3>
 <p><code>move_msg()</code> uses IMAP “MOVE” EXTENSION. Check if your server supports the “MOVE” capability with <code>list_server_capabilities()</code>.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">move_msg</span><span class="op">(</span>to_folder <span class="op">=</span> <span class="st">"K-State"</span><span class="op">)</span></span></code></pre></div>
 <p>If your server does not provide “MOVE” capability, the same result can be achieved with a combination of <code>copy_msg</code>, <code>add_flags()</code> and <code>expunge()</code>:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search_on</span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"07-Sep-2020"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">copy_msg</span><span class="op">(</span>to_folder <span class="op">=</span> <span class="st">"K-State"</span>, reselect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">add_flags</span><span class="op">(</span>flags_to_set <span class="op">=</span> <span class="st">"\\Deleted"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
@@ -850,7 +812,7 @@
 <h3 id="keep-alive-noop">8.9) Keep-alive (NOOP)<a class="anchor" aria-label="anchor" href="#keep-alive-noop"></a>
 </h3>
 <p><code>noop()</code> issues the IMAP “NOOP” command. It does nothing on the server other than resetting the inactivity autologout timer, which makes it useful as a keep-alive during long idle periods.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">noop</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Note on IDLE:</strong> the IMAP “IDLE” command (RFC 2177) — which lets a client wait for the server to <em>push</em> notifications of new messages in real time — is <strong>not supported</strong> by <code>mRpostman</code>. IDLE is a long-lived command that holds the connection open until the client sends “DONE”, which does not fit the one-shot request/response model of the underlying <code>libcurl</code> library. To detect new messages, poll periodically instead: call <code>noop()</code> (to refresh the connection) followed by <code>examine_folder()</code> or <code>status()</code> and compare the counts.</p>
 </div>
@@ -858,7 +820,7 @@
 <h3 id="appending-a-message">8.10) Appending a message<a class="anchor" aria-label="anchor" href="#appending-a-message"></a>
 </h3>
 <p><code>append_msg()</code> uploads a full RFC 822 message to a folder (IMAP “APPEND”), which is handy to save a message to <code>Drafts</code> or <code>Sent</code>. The message is stored with the server’s default flags.</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"From: me@example.com"</span>,</span>
 <span>             <span class="st">"To: you@example.com"</span>,</span>
 <span>             <span class="st">"Subject: Hi"</span>,</span>
@@ -870,14 +832,14 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="the-query-language-since-2-3-0">9) The query language (since 2.3.0)<a class="anchor" aria-label="anchor" href="#the-query-language-since-2-3-0"></a>
+<h2 id="the-query-language-canonical-since-3-0-0">9) The query language (canonical since 3.0.0)<a class="anchor" aria-label="anchor" href="#the-query-language-canonical-since-3-0-0"></a>
 </h2>
 <p>Since 2.3.0 a search can be written as an ordinary R expression. <code>query()</code> captures the expression unevaluated, translates it internally, through a pure function, into the same RFC 3501 search string, and executes it exactly like <code><a href="https://rdrr.io/r/base/search.html" class="external-link">search()</a></code>:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="op">(</span><span class="va">subject</span> <span class="op">==</span> <span class="st">"budget"</span> <span class="op">|</span> <span class="st">"budget 3"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">flag</span> <span class="op">!=</span> <span class="st">"SEEN"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">sent</span> <span class="op">&gt;=</span> <span class="st">"2001-10-01"</span> <span class="op">&amp;</span> <span class="va">sent</span> <span class="op">&lt;</span> <span class="st">"2002-01-01"</span> <span class="op">&amp;</span> <span class="va">size</span> <span class="op">&gt;</span> <span class="fl">5e6</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">subject</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"budget"</span>, <span class="st">"forecast"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">age</span> <span class="op">&lt;</span> <span class="fl">7</span> <span class="op">*</span> <span class="fl">86400</span><span class="op">)</span></span></code></pre></div>
-<p>Fields: <code>subject</code>, <code>from</code>, <code>to</code>, <code>cc</code>, <code>bcc</code>, <code>body</code>, <code>text</code> (where <code>==</code> means contains, as the protocol defines), <code>flag</code> (system flags and custom keywords), <code>size</code> in bytes, <code>age</code> in seconds, the date fields <code>sent</code>, <code>date</code> (internal date), and <code>saved</code> (on SAVEDATE servers), and <code>header("Name")</code>. Comparisons combine with <code>&amp;</code>, <code>|</code>, <code>!</code>, <code>%in%</code>, and parentheses, with R’s usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to <code>|</code> or <code>&amp;</code> inherits the field of the preceding comparison, which is what makes <code>subject == "budget" | "budget 3"</code> work. The criterion constructors of the previous section also gained the native operators: <code>string("budget", where = "SUBJECT") &amp; !flag("SEEN")</code> is equivalent to <code>AND(string("budget", where = "SUBJECT"), flag("SEEN", negate = TRUE))</code>.</p>
+<p>Fields: <code>subject</code>, <code>from</code>, <code>to</code>, <code>cc</code>, <code>bcc</code>, <code>body</code>, <code>text</code> (where <code>==</code> means contains, as the protocol defines), <code>flag</code> (system flags and custom keywords), <code>size</code> in bytes, <code>age</code> in seconds, the date fields <code>sent</code>, <code>date</code> (internal date), and <code>saved</code> (on SAVEDATE servers), and <code>header("Name")</code>. Comparisons combine with <code>&amp;</code>, <code>|</code>, <code>!</code>, <code>%in%</code>, and parentheses, with R’s usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to <code>|</code> or <code>&amp;</code> inherits the field of the preceding comparison, which is what makes <code>subject == "budget" | "budget 3"</code> work. The criterion constructors of the previous section also gained the native operators: <code>string("budget", where = "SUBJECT") &amp; !flag("SEEN")</code> is the current spelling of what <code><a href="../reference/AND.html">AND()</a></code> and <code>negate = TRUE</code> used to write. Since 3.0.0 this interface is the canonical one: the single-criterion <code>search_*()</code> methods and the <code><a href="../reference/AND.html">AND()</a></code>/<code><a href="../reference/OR.html">OR()</a></code> combinators remain available as deprecated spellings. Raw protocol fragments with no field of their own (Gmail’s <code>X-GM-RAW</code>, sequence sets, <code>FUZZY</code>) enter the language verbatim through <code><a href="../reference/verbatim.html">verbatim()</a></code>.</p>
 </div>
 <div class="section level2">
 <h2 id="protocol-extensions-since-1-5-0">10) Protocol extensions (since 1.5.0)<a class="anchor" aria-label="anchor" href="#protocol-extensions-since-1-5-0"></a>
@@ -887,7 +849,7 @@
 <h3 id="uidplus-uids-of-appended-and-copied-messages">10.1) UIDPLUS: UIDs of appended and copied messages<a class="anchor" aria-label="anchor" href="#uidplus-uids-of-appended-and-copied-messages"></a>
 </h3>
 <p>With <code>UIDPLUS</code> (RFC 4315), <code>append_msg()</code> returns the UID the server assigned to the message, and <code>copy_msg()</code>/<code>move_msg()</code> attach the source-to-destination UID mapping as the <code>"copyuid"</code> attribute of their result. <code>append_msg()</code> also gained a <code>flags</code> argument.</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uid</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">append_msg</span><span class="op">(</span>message <span class="op">=</span> <span class="va">msg</span>, folder <span class="op">=</span> <span class="st">"Drafts"</span>, flags <span class="op">=</span> <span class="st">"Draft"</span><span class="op">)</span></span>
 <span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">copy_msg</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">15</span><span class="op">)</span>, use_uid <span class="op">=</span> <span class="cn">TRUE</span>, to_folder <span class="op">=</span> <span class="st">"Archive"</span>,</span>
 <span>                    reselect <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -897,7 +859,7 @@
 <h3 id="folder-listings-in-one-round-trip">10.2) Folder listings in one round trip<a class="anchor" aria-label="anchor" href="#folder-listings-in-one-round-trip"></a>
 </h3>
 <p><code>list_folders_status()</code> (<code>LIST-STATUS</code>, RFC 5819) returns every selectable folder with its counters, and <code>list_mail_folders(detailed = TRUE)</code> (<code>LIST-EXTENDED</code>, RFC 5258) returns the folder attributes. <code>status()</code> accepts the <code>SIZE</code> (<code>STATUS=SIZE</code>, RFC 8438) and <code>HIGHESTMODSEQ</code> (<code>CONDSTORE</code>, RFC 7162) items.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">list_folders_status</span><span class="op">(</span>items <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"MESSAGES"</span>, <span class="st">"UNSEEN"</span>, <span class="st">"SIZE"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">list_mail_folders</span><span class="op">(</span>detailed <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -905,7 +867,7 @@
 <h3 id="saved-search-results-searchres">10.3) Saved search results (SEARCHRES)<a class="anchor" aria-label="anchor" href="#saved-search-results-searchres"></a>
 </h3>
 <p>With <code>search(save = TRUE)</code> (RFC 5182) the result stays on the server and the method returns the <code>"$"</code> reference, which the fetch, flag, copy, move, and delete methods accept as <code>msg_id</code>. No message id crosses the wire.</p>
-<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/AND.html">AND</a></span><span class="op">(</span><span class="fu"><a href="../reference/flag.html">flag</a></span><span class="op">(</span><span class="st">"UNSEEN"</span><span class="op">)</span>, <span class="fu"><a href="../reference/sent_since.html">sent_since</a></span><span class="op">(</span>date_char <span class="op">=</span> <span class="st">"01-Jan-2026"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>           save <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">previews</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_preview</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="st">"$"</span><span class="op">)</span>   <span class="co"># PREVIEW, RFC 8970</span></span>
@@ -915,7 +877,7 @@
 <h3 id="server-side-previews-saved-dates-and-change-tracking">10.4) Server-side previews, saved dates, and change tracking<a class="anchor" aria-label="anchor" href="#server-side-previews-saved-dates-and-change-tracking"></a>
 </h3>
 <p><code>fetch_preview()</code> returns the short snippet the server generates for each message (<code>PREVIEW</code>, RFC 8970), without transferring the body. <code>fetch_metadata()</code> accepts the <code>PREVIEW</code>, <code>SAVEDATE</code> (RFC 8514), and <code>MODSEQ</code> (RFC 7162) attributes, and the criteria <code><a href="../reference/saved_before.html">saved_before()</a></code>, <code><a href="../reference/saved_before.html">saved_since()</a></code>, <code><a href="../reference/saved_before.html">saved_on()</a></code>, and <code><a href="../reference/modseq.html">modseq()</a></code> extend the custom search. The last one, together with <code>status(items = "HIGHESTMODSEQ")</code>, answers “what changed since the last run”:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">last</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">status</span><span class="op">(</span>items <span class="op">=</span> <span class="st">"HIGHESTMODSEQ"</span><span class="op">)</span><span class="op">[[</span><span class="st">"HIGHESTMODSEQ"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="co"># ... in a later session:</span></span>
 <span><span class="va">changed</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/modseq.html">modseq</a></span><span class="op">(</span><span class="va">last</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -924,14 +886,14 @@
 <h3 id="sorting-with-server-side-aggregates-esort">10.5) Sorting with server-side aggregates (ESORT)<a class="anchor" aria-label="anchor" href="#sorting-with-server-side-aggregates-esort"></a>
 </h3>
 <p><code>sort(return = ...)</code> (RFC 5267) asks the server for the <code>COUNT</code>, <code>MIN</code>, <code>MAX</code>, or <code>ALL</code> items of the sorted set instead of the full id vector:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">sort</span><span class="op">(</span>by <span class="op">=</span> <span class="st">"SIZE"</span>, reverse <span class="op">=</span> <span class="cn">TRUE</span>, return <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"COUNT"</span>, <span class="st">"MAX"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="access-control-lists-and-quota-limits">10.6) Access control lists and quota limits<a class="anchor" aria-label="anchor" href="#access-control-lists-and-quota-limits"></a>
 </h3>
 <p><code>get_acl()</code>, <code>set_acl()</code>, <code>delete_acl()</code>, <code>list_rights()</code>, and <code>my_rights()</code> implement the <code>ACL</code> extension (RFC 4314); <code>set_quota()</code> implements <code>SETQUOTA</code> (RFC 9208), which most servers restrict to administrators. <code>enable()</code> (RFC 5161) enables extensions that require it.</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">my_rights</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">set_acl</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Shared"</span>, identifier <span class="op">=</span> <span class="st">"user=bob"</span>, rights <span class="op">=</span> <span class="st">"lrs"</span><span class="op">)</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">get_acl</span><span class="op">(</span>name <span class="op">=</span> <span class="st">"Shared"</span><span class="op">)</span></span></code></pre></div>
@@ -942,18 +904,18 @@
 </h2>
 <p>Two operations cannot be expressed as one libcurl request: <code>IDLE</code> (RFC 2177), which parks the connection while the server pushes notifications, and commands that carry several literals, such as <code>MULTIAPPEND</code> (RFC 3502). For them, <code>mRpostman</code> opens a second, dedicated connection through libcurl’s <code>CONNECT_ONLY</code> mode (libcurl still performs the TLS handshake and certificate verification) and speaks IMAP directly on that socket. The main connection stays free.</p>
 <p><code>idle()</code> waits until something happens in the folder, or until <code>timeout</code> seconds elapse, and returns the events the server announced. A callback can stop the wait early, and the main connection can then fetch what arrived:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>
 <span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">idle</span><span class="op">(</span>timeout <span class="op">=</span> <span class="fl">600</span>, callback <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">ev</span><span class="op">)</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">type</span> <span class="op">==</span> <span class="st">"EXISTS"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html" class="external-link">any</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">type</span> <span class="op">==</span> <span class="st">"EXISTS"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">con</span><span class="op">$</span><span class="fu">fetch_envelope</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="va">ev</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="va">ev</span><span class="op">$</span><span class="va">type</span> <span class="op">==</span> <span class="st">"EXISTS"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p><code>append_msgs()</code> uploads several messages in one command when the server advertises <code>MULTIAPPEND</code>, and one <code>append_msg()</code> at a time otherwise:</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">msgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Subject: m"</span>, <span class="va">i</span>, <span class="st">"\r\n\r\nbody "</span>, <span class="va">i</span>, <span class="st">"\r\n"</span><span class="op">)</span>, <span class="st">""</span><span class="op">)</span></span>
 <span><span class="va">uids</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">append_msgs</span><span class="op">(</span><span class="va">msgs</span>, folder <span class="op">=</span> <span class="st">"Archive"</span>, flags <span class="op">=</span> <span class="st">"Seen"</span><span class="op">)</span></span></code></pre></div>
 <p>Since 2.1.0 the same layer serves <code>notify()</code> (RFC 5465: events for several folders at once), <code>fetch_binary()</code> (RFC 3516: attachments decoded by the server), <code>append_catenate()</code> (RFC 4469: a message assembled on the server from <code><a href="../reference/imap_url.html">imap_url()</a></code> parts and new text), and, on every one of them, <code>compress = TRUE</code> (RFC 4978):</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ev</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">notify</span><span class="op">(</span>mailboxes <span class="op">=</span> <span class="st">"personal"</span>, timeout <span class="op">=</span> <span class="fl">600</span><span class="op">)</span>      <span class="co"># STATUS lines for any folder that changes</span></span>
 <span><span class="va">pdf</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">fetch_binary</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="fl">3</span>, part <span class="op">=</span> <span class="st">"2"</span><span class="op">)</span>              <span class="co"># bytes, already decoded by the server</span></span>
 <span><span class="va">con</span><span class="op">$</span><span class="fu">append_catenate</span><span class="op">(</span>parts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="st">"Subject: Fwd\r\n\r\n"</span>, <span class="fu"><a href="../reference/imap_url.html">imap_url</a></span><span class="op">(</span><span class="st">"INBOX"</span>, uid <span class="op">=</span> <span class="fl">12</span>, section <span class="op">=</span> <span class="st">"TEXT"</span><span class="op">)</span><span class="op">)</span>,</span>

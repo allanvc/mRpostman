@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -144,7 +144,7 @@
 <div class="section level3">
 <h3 id="a-note-on-dates">A note on dates<a class="anchor" aria-label="anchor" href="#a-note-on-dates"></a>
 </h3>
-<p><code>APPEND</code> stores messages with the <em>current</em> internal date. Searches on the <strong>internal date</strong> (<code>search_before()</code>, <code>search_since()</code>, <code>search_on()</code>, <code>search_older_than()</code>, <code>search_younger_than()</code>) therefore relate to the moment you populated the mailbox. Searches on the <strong><code>Date:</code> header</strong> (<code>search_sent_before()</code>, <code>search_sent_since()</code>, <code>search_sent_on()</code>, <code>search_sent_period()</code>) act on the fixed 2020 dates of the corpus and always return the same results.</p>
+<p><code>APPEND</code> stores messages with the <em>current</em> internal date. Searches on the <strong>internal date</strong> (the <code>date</code> and <code>age</code> fields of <code>query()</code>) therefore relate to the moment you populated the mailbox. Searches on the <strong><code>Date:</code> header</strong> (the <code>sent</code> field) act on the fixed 2020 dates of the corpus and always return the same results.</p>
 </div>
 </div>
 <div class="section level2">
@@ -165,7 +165,7 @@
 <span>                          sent_since  <span class="op">=</span> <span class="st">"2000-01-01"</span>,</span>
 <span>                          sent_before <span class="op">=</span> <span class="st">"2002-07-01"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">manifest</span><span class="op">$</span><span class="va">custodian</span>, <span class="va">manifest</span><span class="op">$</span><span class="va">appended</span><span class="op">)</span></span></code></pre></div>
-<p>After the ingestion, everything shown in the guided tour below works on real data too — e.g. <code>con2$search_string(expr = "SEC", where = "TEXT")</code> on a custodian’s folder. The same internal-date caveat applies: query ingested corpora by date through the <code>SENT*</code> searches, which read the <code>Date:</code> header.</p>
+<p>After the ingestion, everything shown in the guided tour below works on real data too — e.g. <code>con2$query(text == "SEC")</code> on a custodian’s folder. The same internal-date caveat applies: query ingested corpora by date through the <code>sent</code> field, which reads the <code>Date:</code> header.</p>
 </div>
 <div class="section level2">
 <h2 id="a-guided-tour">A guided tour<a class="anchor" aria-label="anchor" href="#a-guided-tour"></a>
@@ -185,19 +185,16 @@
 <p>Single-criterion searches:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># messages "sent" in the first quarter of 2020 (Date: header)</span></span>
-<span><span class="va">ids_q1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_sent_period</span><span class="op">(</span>since_date_char <span class="op">=</span> <span class="st">"01-Jan-2020"</span>,</span>
-<span>                                 before_date_char <span class="op">=</span> <span class="st">"01-Apr-2020"</span><span class="op">)</span></span>
+<span><span class="va">ids_q1</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">sent</span> <span class="op">&gt;=</span> <span class="st">"2020-01-01"</span> <span class="op">&amp;</span> <span class="va">sent</span> <span class="op">&lt;</span> <span class="st">"2020-07-01"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># large messages</span></span>
-<span><span class="va">ids_large</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_larger_than</span><span class="op">(</span>size <span class="op">=</span> <span class="fl">8000</span><span class="op">)</span></span>
+<span><span class="va">ids_large</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">size</span> <span class="op">&gt;</span> <span class="fl">8000</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># flagged messages</span></span>
-<span><span class="va">ids_flagged</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search_flag</span><span class="op">(</span><span class="st">"FLAGGED"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">ids_flagged</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">query</span><span class="op">(</span><span class="va">flag</span> <span class="op">==</span> <span class="st">"FLAGGED"</span><span class="op">)</span></span></code></pre></div>
 <p>Composable custom searches:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ids</span> <span class="op">&lt;-</span> <span class="va">con</span><span class="op">$</span><span class="fu">search</span><span class="op">(</span>request <span class="op">=</span> <span class="fu"><a href="../reference/OR.html">OR</a></span><span class="op">(</span><span class="fu"><a href="../reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"sales"</span>, where <span class="op">=</span> <span class="st">"SUBJECT"</span><span class="op">)</span>,</span>
-<span>                               <span class="fu"><a href="../reference/string.html">string</a></span><span class="op">(</span>expr <span class="op">=</span> <span class="st">"alice.fontes@example.com"</span>,</span>
-<span>                                      where <span class="op">=</span> <span class="st">"FROM"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>ids &lt;-<span class="st"> </span>con<span class="op">$</span><span class="kw">query</span>(subject <span class="op">==</span><span class="st"> "sales"</span> <span class="op">|</span><span class="st"> "marketing"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>                                      where =<span class="st"> "FROM"</span><span class="er">)))</span></span></code></pre></div>
 <p>The <code>ESEARCH</code> extension can condense results server-side:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">con</span><span class="op">$</span><span class="fu">esearch_count</span><span class="op">(</span>flag <span class="op">=</span> <span class="st">"SEEN"</span><span class="op">)</span></span>
@@ -227,10 +224,10 @@
 <code class="sourceCode R"><span><span class="va">att_ids</span> <span class="op">&lt;-</span> <span class="va">info</span><span class="op">$</span><span class="va">id</span><span class="op">[</span><span class="va">info</span><span class="op">$</span><span class="va">has_attachment</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># list attachment filenames without downloading</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments_list</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">att_ids</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">attachments_manifest</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">att_ids</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># download them (note the automatic deduplication of repeated filenames)</span></span>
-<span><span class="va">con</span><span class="op">$</span><span class="fu">fetch_attachments</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">att_ids</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">con</span><span class="op">$</span><span class="fu">attachments</span><span class="op">(</span>msg_id <span class="op">=</span> <span class="va">att_ids</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="server-side-sorting-and-threading">Server-side sorting and threading<a class="anchor" aria-label="anchor" href="#server-side-sorting-and-threading"></a>

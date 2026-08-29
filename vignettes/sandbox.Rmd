@@ -98,7 +98,7 @@ For use from the shell, the wrapper script `inst/docker/populate_mailbox.R` does
 
 ### A note on dates
 
-`APPEND` stores messages with the *current* internal date. Searches on the **internal date** (`search_before()`, `search_since()`, `search_on()`, `search_older_than()`, `search_younger_than()`) therefore relate to the moment you populated the mailbox. Searches on the **`Date:` header** (`search_sent_before()`, `search_sent_since()`, `search_sent_on()`, `search_sent_period()`) act on the fixed 2020 dates of the corpus and always return the same results.
+`APPEND` stores messages with the *current* internal date. Searches on the **internal date** (the `date` and `age` fields of `query()`) therefore relate to the moment you populated the mailbox. Searches on the **`Date:` header** (the `sent` field) act on the fixed 2020 dates of the corpus and always return the same results.
 
 ## Ingesting real data: maildirs and the Enron corpus
 
@@ -123,7 +123,7 @@ manifest <- enron_sandbox(con2,
 table(manifest$custodian, manifest$appended)
 ```
 
-After the ingestion, everything shown in the guided tour below works on real data too — e.g. `con2$search_string(expr = "SEC", where = "TEXT")` on a custodian's folder. The same internal-date caveat applies: query ingested corpora by date through the `SENT*` searches, which read the `Date:` header.
+After the ingestion, everything shown in the guided tour below works on real data too — e.g. `con2$query(text == "SEC")` on a custodian's folder. The same internal-date caveat applies: query ingested corpora by date through the `sent` field, which reads the `Date:` header.
 
 ## A guided tour
 
@@ -143,21 +143,19 @@ Single-criterion searches:
 
 ```{r}
 # messages "sent" in the first quarter of 2020 (Date: header)
-ids_q1 <- con$search_sent_period(since_date_char = "01-Jan-2020",
-                                 before_date_char = "01-Apr-2020")
+ids_q1 <- con$query(sent >= "2020-01-01" & sent < "2020-07-01")
 
 # large messages
-ids_large <- con$search_larger_than(size = 8000)
+ids_large <- con$query(size > 8000)
 
 # flagged messages
-ids_flagged <- con$search_flag("FLAGGED")
+ids_flagged <- con$query(flag == "FLAGGED")
 ```
 
 Composable custom searches:
 
 ```{r}
-ids <- con$search(request = OR(string(expr = "sales", where = "SUBJECT"),
-                               string(expr = "alice.fontes@example.com",
+ids <- con$query(subject == "sales" | "marketing")
                                       where = "FROM")))
 ```
 
@@ -194,10 +192,10 @@ clean_msg_text(raw_text)
 att_ids <- info$id[info$has_attachment]
 
 # list attachment filenames without downloading
-con$fetch_attachments_list(msg_id = att_ids[1:5])
+con$attachments_manifest(msg_id = att_ids[1:5])
 
 # download them (note the automatic deduplication of repeated filenames)
-con$fetch_attachments(msg_id = att_ids[1:5])
+con$attachments(msg_id = att_ids[1:5])
 ```
 
 ### Server-side sorting and threading

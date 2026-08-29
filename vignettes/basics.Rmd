@@ -17,6 +17,8 @@ In this vignette, we present all available methods and functions of this package
 
 **IMPORTANT**: 
 
+0. In 2026 the package went through a deep refactoring, released as version `3.0.0`. Everything written for 1.x/2.x keeps working, but four things changed for the better: (i) `query()` is now the canonical way to search - every `search_*()` method and the `AND()`/`OR()` combinators keep working as soft-deprecated spellings (they warn once per session); (ii) attachments have a consolidated API - `attachments()`, `attachments_manifest()`, and `extract_attachments()`; (iii) `use_uid`, `mute`, and `retries` can be set once, in `configure_imap()`, as connection-level defaults; (iv) failures are classed conditions (e.g. `mRpostman_server_error`) that `tryCatch()` can handle by kind.
+
 1. In version `0.9.0.0`, `mRpostman` went through substantial changes, including ones that have no backward compatibility with versions `<= 0.3.1`. If you have code written with the deprecated syntax of versions `<= 0.3.1`, please refer to the package's `NEWS.md` file for an overview of the changes introduced in `0.9.0.0`.
 
 2. Old versions of the libcurl C library ({curl}'s main engine) will cause malfunctioning of this package. If your libcurl's version is above 7.58.0, you should be fine. If you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To know more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
@@ -48,23 +50,18 @@ In this vignette, we present all available methods and functions of this package
 The package is now implemented under an OO framework, using an R6 class. The main functionalities of `mRpostman` are implemented as methods of the R6 class called `ImapCon`. There are also a few independent functions. All methods and functions are described below:
 
 
-* **configuration methods**: `configure_imap()`, `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
-* **server-capabilities method**: `list_server_capabilities()`; 
+* **configuration methods**: `configure_imap()` (including the connection-level defaults `use_uid`, `mute`, and `retries`), `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
+* **server-capabilities methods**: `list_server_capabilities()`, `has_capability()`;
 * **mailbox-operations methods**: `list_mail_folders()`, `select_folder()`, `examine_folder()`,
 `rename_folder()`, `create_folder()`, `list_flags()`;
-* **single-search methods**: `search_before()`, `search_since()`, `search_period()`, `search_on()`, 
-`search_sent_before()`,`search_sent_since()`, `search_sent_period()`, `search_sent_on()`,
-`search_string()`, `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
-`search_younger_than()`, `search_older_than()`;
-* **the custom-search method and its helper functions**: `search()`;
-  + relational operators functions: `AND()`, `OR()`;
-  + criteria definition functions: `before()`, `since()`, `on()`, `sent_before()`,
+* **the search method**: `query()` - an ordinary R expression, e.g. `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`;
+* **the custom-search method**: `search()`, with the criteria constructors `before()`, `since()`, `on()`, `sent_before()`,
   `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
-  `larger_than()`, `younger_than()`, `older_than()`;
-* **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`, 
-`fetch_metadata()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* **attachments methods**: `list_attachments()`, `get_attachments()`, `fetch_attachments_list()`, `fetch_attachments()`;
-* **complementary methods**: `copy_msg()`, `move_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count_msg()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`.
+  `larger_than()`, `younger_than()`, `older_than()`, `verbatim()`, combined with R's own `&`, `|`, and `!`;
+* **deprecated search spellings** (they keep working, warning once per session): the `search_*()` single-criterion methods and the `AND()`/`OR()` combinators;
+* **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`;
+* **attachments**: `attachments_manifest()` (list without downloading), `attachments()` (download, guided by the `BODYSTRUCTURE`), and the exported `extract_attachments()` (from already-fetched bodies); the pre-3.0.0 names remain as deprecated aliases;
+* **complementary methods**: `copy_msg()`, `move_msg()`, `esearch_min_id()`, `esearch_max_id()`, `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`, `remove_flags()`, `replace_flags()`.
 
 
 
@@ -131,6 +128,8 @@ Since version `0.9.0.0`, this package provides more flexibility to the user in t
 The `con` object that we created in the example above has the `ImapCon` R6 class. Now, almost 99\% of the other IMAP commands to be performed on the server will be called following the structure: `con$method()`. The exceptions are the `list_attachments()` function and the helper functions of the custom-search group.
 
 As you will see, the R6 framework combined with {curl} will make this package work like a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
+
+Since 3.0.0, three arguments that used to be repeated on every call can be set once, as connection-level defaults: `configure_imap(..., use_uid = TRUE, mute = TRUE, retries = 2)` makes every method use UIDs, stay quiet, and retry twice, unless a specific call overrides it.
 
 ## 2) Server capabilities
 
@@ -317,7 +316,9 @@ con$id()
 con$id(fields = c(name = "mRpostman", version = "1.2.1"))
 ```
 
-## 4) Single-search
+## 4) Single-search (deprecated spellings)
+
+**NOTE (3.0.0):** every search in this section has a direct spelling in the canonical `query()` interface of [Section 9](#the-query-language-canonical-since-300) - e.g. `con$search_before(date_char = "02-Jan-2020")` is `con$query(date < "2020-01-02")`. The methods below keep working, but signal a deprecation warning once per session.
 
 All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
 
@@ -585,7 +586,7 @@ The `search()` method and its **helper functions** enable users to create a vast
 
 These are the helper functions you can use inside `search()`:
 
-1) Relational operators: `AND()`, and `OR()`;
+1) Relational operators: R's own `&`, `|`, and `!` (the `AND()` and `OR()` helpers keep working, but are deprecated since 3.0.0);
 2) Criteria definition: `before()`, `since()`, `on()`, `sent_before()`, `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`, and `older_than()`.
 
 **NOTE**: IMAP queries follow Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". Therefore, the relational operators functions in this package should be used like the following examples: `OR(before(date_char = "17-Apr-2015"), string(expr = "Jimmy", where = "FROM"))`. Even though there is no "AND" operator in the IMAP protocol, this package adds a helper function `AND()` to indicate multiple arguments that must be searched together, e.g. `AND(since(date_char = "01-Jul-2018"), larger_than(size = 16000))`.
@@ -702,81 +703,37 @@ There are two more fetch methods, but they are going to be presented in the next
 
 ## 7) Attachments
 
-Previously, `mRpostman` had two attachment-related functions: `list_attachments()` and `get_attachments()`. Both were to be used after a fetching operation because they would use the content fetched in a previous step to parse the attachments list and/or decode the content to files. These methods are still available in the current version of the package. However, two more methods were implemented since version `0.9.0.0`: `fetch_attachments_list()` and `fetch_attachments()`. These methods are not contingent on a previous fetch operation, since they are a proper fetch operation.
+Since 3.0.0 the attachment family has three entry points: two methods that talk to the server, and one exported function that works offline on messages you already fetched. (The pre-3.0.0 names - `fetch_attachments_list()`, `fetch_attachments()`, `fetch_attachment_parts()`, `get_attachments()`, and `list_attachments()` - keep working as deprecated aliases.)
 
-Let's take a look at the first two attachments functionalities available in `mRpostman`.
+### 7.1) Listing attachments without downloading
 
-### 7.1) Dependent attachment operations
-
-The dependent operations are comprised of a function `list_attachments()` and an R6 method `get_attachments()`. We call them dependent operations because they depend on a previous fetch operation with `fetch_body()` or `fetch_text()`.
-
-**IMPORTANT:** Since these are fetch-dependent operations, you **cannot** set `keep_in_mem = FALSE` in the `fetch_body()`/`fetch_text()` step if you intend to list or get attachments after fetching your messages.
-
-#### 7.1.1) Listing attachments
-
-This will list your attachments file names for each fetched message.
+`attachments_manifest()` reads each message's `BODYSTRUCTURE` metadata - one round trip, no payload - and returns one data frame per message (zero rows when a message has no attachments):
 
 ```{r, message = FALSE, eval = FALSE}
-
-# using fetch_body()
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_body(write_to_disk = TRUE) %>%
-  list_attachments() # don't need to specify the connection object here
-
-# ------------------
-
-# using fetch_text()
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_text(write_to_disk = TRUE) %>%
-  list_attachments() # don't need to specify the connection object here
+con$attachments_manifest(con$query(size > 1e6))
 ```
 
-In both examples, the whole message body(ies) or text will be saved to the disk, but a copy will be kept in the R session. This copy is passed forward to `list_attachments()`, which, by its turn, finds and extracts the filenames and the type of the "Content-Disposition" for the part where the attachment was found.
+### 7.2) Downloading attachments
 
-#### 7.1.2) Extracting Attachments
-
-`get_attachments()` will try to decode base64 text inside your message to the appropriate file extension. This will create a folder inside the structure `working directory > username > mail folder > msg_id`. The attachment(s) will be inside their respective message folder.
-
+`attachments()` downloads guided by the same `BODYSTRUCTURE`: exact MIME part numbers, nested multiparts included, one `BODY.PEEK[part]` fetch per attachment, decoded according to the declared transfer encoding. `dest` sets the destination directory (one folder per message), and `parts` restricts the download to specific MIME parts:
 
 ```{r, message = FALSE, eval = FALSE}
-# using fetch_body()
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_body(write_to_disk = TRUE) %>%
-  con$get_attachments()
-
-# ------------------
-
-# using fetch_text()
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_text(write_to_disk = TRUE) %>%
-  con$get_attachments()
+manifest <- con$query(subject == "report" & flag != "SEEN") %>%
+  con$attachments(dest = "~/attachments")
+manifest # one row per file: id, part, filename, type, size, path
 ```
 
-The results in your local folder will be like this:
+### 7.3) Extracting from already-fetched messages (offline)
 
-![](figures/basics/attach1.png){width=80%}
-![](figures/basics/attach2.png){width=80%}
-
-### 7.2) Direct attachment fetch operations
-
-As we stated before, the following two methods are not contingent on a previous fetch step because they execute their own fetching operation. Hence, they consist of an alternative for attachments listing and downloading.
-
-**IMPORTANT**: The same recommendations for the other fetch methods hold in this case: set `verbose = FALSE` and a high `timeout_ms`.
-
-#### 7.2.1) Fetch attachments list
+If the full messages are already in your session (fetched with `fetch_body()`), `extract_attachments()` walks the MIME multipart tree locally, with no further server round trip. With `dest = NULL` (default) it only reports; with a path it also writes the files:
 
 ```{r, message = FALSE, eval = FALSE}
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_attachments_list()
+out <- con$query(size > 1e6) %>% con$fetch_body()
+extract_attachments(out)                        # report only
+extract_attachments(out, dest = "~/attachments")  # write the files
 ```
 
-#### 7.2.2) Fetch attachments
-
-```{r, message = FALSE, eval = FALSE}
-con$search_since(date_char = "23-Sep-2019") %>%
-  con$fetch_attachments()
-```
-
+**IMPORTANT:** `extract_attachments()` needs the *full* message (`fetch_body()`), whose headers declare the MIME boundaries; a text-only fetch is not enough. And since it is fetch-dependent, do not set `keep_in_mem = FALSE` in the fetch step.
 
 ## 8) Complementary operations
 
@@ -941,7 +898,7 @@ con$append_msg(message = msg, folder = "Drafts")
 
 ```
 
-## 9) The query language (since 2.3.0)
+## 9) The query language (canonical since 3.0.0)
 
 Since 2.3.0 a search can be written as an ordinary R expression. `query()` captures the expression unevaluated, translates it internally, through a pure function, into the same RFC 3501 search string, and executes it exactly like `search()`:
 
@@ -951,7 +908,7 @@ con$query(sent >= "2001-10-01" & sent < "2002-01-01" & size > 5e6, use_uid = TRU
 con$query(subject %in% c("budget", "forecast") & age < 7 * 86400)
 ```
 
-Fields: `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` (where `==` means contains, as the protocol defines), `flag` (system flags and custom keywords), `size` in bytes, `age` in seconds, the date fields `sent`, `date` (internal date), and `saved` (on SAVEDATE servers), and `header("Name")`. Comparisons combine with `&`, `|`, `!`, `%in%`, and parentheses, with R's usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to `|` or `&` inherits the field of the preceding comparison, which is what makes `subject == "budget" | "budget 3"` work. The criterion constructors of the previous section also gained the native operators: `string("budget", where = "SUBJECT") & !flag("SEEN")` is equivalent to `AND(string("budget", where = "SUBJECT"), flag("SEEN", negate = TRUE))`.
+Fields: `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` (where `==` means contains, as the protocol defines), `flag` (system flags and custom keywords), `size` in bytes, `age` in seconds, the date fields `sent`, `date` (internal date), and `saved` (on SAVEDATE servers), and `header("Name")`. Comparisons combine with `&`, `|`, `!`, `%in%`, and parentheses, with R's usual precedence; anything else, variables included, is evaluated in your environment. A bare string next to `|` or `&` inherits the field of the preceding comparison, which is what makes `subject == "budget" | "budget 3"` work. The criterion constructors of the previous section also gained the native operators: `string("budget", where = "SUBJECT") & !flag("SEEN")` is the current spelling of what `AND()` and `negate = TRUE` used to write. Since 3.0.0 this interface is the canonical one: the single-criterion `search_*()` methods and the `AND()`/`OR()` combinators remain available as deprecated spellings. Raw protocol fragments with no field of their own (Gmail's `X-GM-RAW`, sequence sets, `FUZZY`) enter the language verbatim through `verbatim()`.
 
 ## 10) Protocol extensions (since 1.5.0)
 
