@@ -1,8 +1,18 @@
-# Rtools ships a static libcurl (no DLL): CURL_STATICLIB stops the libcurl
-# headers from declaring functions __declspec(dllimport), which would make
-# the linker look for __imp_ symbols that a static archive does not provide
+# Link against the static libcurl that Rtools (4.2+) ships. CURL_STATICLIB
+# stops the libcurl headers from declaring functions __declspec(dllimport),
+# which would make the linker look for __imp_ symbols that a static archive
+# does not provide.
 PKG_CPPFLAGS = -DCURL_STATICLIB
 
-# Rtools ships a static libcurl (as used by the 'curl' package); link it with
-# the libraries it depends on
-PKG_LIBS = -lcurl -lnormaliz -lssh2 -lgcrypt -lgpg-error -lidn2 -lunistring -liconv -lssl -lcrypto -lgdi32 -lwldap32 -lz -lws2_32 -lwsock32 -lcrypt32 -lbcrypt -lzstd -lbrotlidec -lbrotlicommon
+# Rtools ships pkg-config with a libcurl.pc whose --static output carries the
+# full closure of libcurl's private dependencies (nghttp2, libpsl, secur32,
+# ...), which varies across Rtools builds; a hand-written list is kept only
+# as a fallback for toolchains without pkg-config.
+CURL_LIBS := $(shell pkg-config --libs --static libcurl 2>/dev/null)
+ifeq ($(strip $(CURL_LIBS)),)
+CURL_LIBS = -lcurl -lnghttp2 -lpsl -lidn2 -lunistring -lssh2 -lgcrypt \
+  -lgpg-error -liconv -lssl -lcrypto -lgdi32 -lwldap32 -lz -lws2_32 \
+  -lwsock32 -lcrypt32 -lbcrypt -lzstd -lbrotlidec -lbrotlicommon \
+  -lsecur32 -lnormaliz
+endif
+PKG_LIBS = $(CURL_LIBS)
