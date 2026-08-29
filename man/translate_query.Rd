@@ -4,7 +4,7 @@
 \alias{translate_query}
 \title{Translate a query expression into an IMAP search string}
 \usage{
-translate_query(expr, env)
+translate_query(expr)
 }
 \arguments{
 \item{expr}{An unquoted expression, e.g.

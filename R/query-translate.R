@@ -47,7 +47,7 @@ translate_query <- function(expr) {
 }
 
 #' @noRd
-translate_query <- function(expr, env) {
+translate_query_ <- function(expr, env) {
   st <- new.env(parent = emptyenv())
   as_imap_search(tq(expr, env, st))
 }
