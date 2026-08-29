@@ -15,7 +15,7 @@ expunge_int <- function(self, msg_uid, mute, retries) {
   # "UID EXPUNGE" is part of the UIDPLUS extension (RFC 4315); a plain EXPUNGE
   # is core IMAP4rev1 and needs no capability
   if (!is.null(msg_uid)) {
-    assert_capability(self, "UIDPLUS", command = "expunge(msg_uid = ...)",
+    assert_capability(self, "UIDPLUS", command = "expunge(msg_id = ...)",
                       rfc = "RFC 4315", retries = retries)
   }
 

@@ -32,7 +32,7 @@ advertise the \code{SAVEDATE} capability.
 }
 \examples{
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # messages saved into the folder during the last ingestion day
 res <- con$search(request = saved_since(date_char = "27-Aug-2026"))
 }

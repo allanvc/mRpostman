@@ -17,7 +17,7 @@ In this vignette, we present all available methods and functions of this package
 
 **IMPORTANT**: 
 
-0. In 2026 the package went through a deep refactoring, released as version `3.0.0`. Everything written for 1.x/2.x keeps working, but four things changed for the better: (i) `query()` is now the canonical way to search - every `search_*()` method and the `AND()`/`OR()` combinators keep working as soft-deprecated spellings (they warn once per session); (ii) attachments have a consolidated API - `attachments()`, `attachments_manifest()`, and `extract_attachments()`; (iii) `use_uid`, `mute`, and `retries` can be set once, in `configure_imap()`, as connection-level defaults; (iv) failures are classed conditions (e.g. `mRpostman_server_error`) that `tryCatch()` can handle by kind.
+0. In 2026 the package went through a deep refactoring, released as version `3.0.0`. Everything written for 1.x/2.x keeps working, but four things changed for the better: (i) `query()` is now the canonical way to search - every `search_*()` method and the `AND()`/`OR()` combinators keep working as soft-deprecated spellings (they warn once per session); (ii) attachments have a consolidated API - `attachments()`, `attachments_manifest()`, and `extract_attachments()`; (iii) `use_uid`, `mute`, and `retries` can be set once, in `configure_imap()`, as connection-level defaults - and **`use_uid` now defaults to `TRUE`** (UIDs are stable; sequence numbers renumber on expunge; set `use_uid = FALSE` to restore the old behavior); (iv) failures are classed conditions (e.g. `mRpostman_server_error`) that `tryCatch()` can handle by kind.
 
 1. In version `0.9.0.0`, `mRpostman` went through substantial changes, including ones that have no backward compatibility with versions `<= 0.3.1`. If you have code written with the deprecated syntax of versions `<= 0.3.1`, please refer to the package's `NEWS.md` file for an overview of the changes introduced in `0.9.0.0`.
 
@@ -129,7 +129,7 @@ The `con` object that we created in the example above has the `ImapCon` R6 class
 
 As you will see, the R6 framework combined with {curl} will make this package work like a session-based IMAP client. Besides this, for some commands, users will be able to use the tidy approach with pipes. All this together provides an elegant way of accessing your IMAP provider, searching and fetching emails, and managing your mailbox as well.
 
-Since 3.0.0, three arguments that used to be repeated on every call can be set once, as connection-level defaults: `configure_imap(..., use_uid = TRUE, mute = TRUE, retries = 2)` makes every method use UIDs, stay quiet, and retry twice, unless a specific call overrides it.
+Since 3.0.0, three arguments that used to be repeated on every call can be set once, as connection-level defaults: `configure_imap(..., mute = TRUE, retries = 2)` makes every method stay quiet and retry twice, unless a specific call overrides it. `use_uid` is one of them and now **defaults to `TRUE`**: UIDs are stable for the lifetime of a message, while sequence numbers renumber whenever messages are expunged; pass `use_uid = FALSE` (per connection or per call) if you need sequence numbers.
 
 ## 2) Server capabilities
 
@@ -153,7 +153,7 @@ con$list_mail_folders()
 ### 3.2) Creating a new folder
 
 ```{r, message = FALSE, eval=FALSE}
-con$create_folder(name = "New Folder")
+con$create_folder(folder = "New Folder")
 ```
 
 Except for `examine_folder()` and `rename_folder()`, from now on, you will have to select a folder to issue further commands.
@@ -161,7 +161,7 @@ Except for `examine_folder()` and `rename_folder()`, from now on, you will have 
 ### 3.3) Selecting a folder
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 ```
 
 Probably, the main folder in your mailbox will be the `"INBOX"`. You can select it without having to worry about the case of the letters. However, all the other folders in a mailbox are case sensitive.
@@ -171,7 +171,7 @@ Probably, the main folder in your mailbox will be the `"INBOX"`. You can select 
 Count the number of existent and recent messages in the previously selected folder.
 
 ```{r, message = FALSE, eval=FALSE}
-con$select_folder(name = "Inbox")
+con$select_folder(folder = "Inbox")
 
 con$examine_folder()
 
@@ -182,7 +182,7 @@ If you want to examine a folder that is not the currently selected one (`INBOX`)
 
 ```{r, message = FALSE, eval=FALSE}
 
-con$examine_folder(name = "Sent")
+con$examine_folder(folder = "Sent")
 
 ```
 
@@ -192,7 +192,7 @@ The following will rename the selected folder.
 
 ```{r, message = FALSE, eval=FALSE}
 
-con$select_folder(name = "CRAN Messages")
+con$select_folder(folder = "CRAN Messages")
 
 con$rename_folder(new_name = "CRAN")
 
@@ -204,7 +204,7 @@ If you want to rename a folder that is different from the currently selected one
 
 ```{r, message = FALSE, eval=FALSE}
 
-con$rename_folder(name = "Sent", new_name = "Sent2")
+con$rename_folder(folder = "Sent", new_name = "Sent2")
 
 ```
 
@@ -227,7 +227,7 @@ con$list_flags()
 The following deletes a mail folder (IMAP "DELETE"). The folder name must be provided explicitly (there is no implicit deletion of the currently selected folder).
 
 ```{r, message = FALSE, eval=FALSE}
-con$delete_folder(name = "Old Folder")
+con$delete_folder(folder = "Old Folder")
 ```
 
 ### 3.8) Subscribing to a folder
@@ -235,7 +235,7 @@ con$delete_folder(name = "Old Folder")
 `subscribe_folder()` adds a folder to the set of subscribed (active) folders (IMAP "SUBSCRIBE").
 
 ```{r, message = FALSE, eval=FALSE}
-con$subscribe_folder(name = "INBOX")
+con$subscribe_folder(folder = "INBOX")
 ```
 
 ### 3.9) Unsubscribing from a folder
@@ -243,7 +243,7 @@ con$subscribe_folder(name = "INBOX")
 `unsubscribe_folder()` removes a folder from the subscribed set (IMAP "UNSUBSCRIBE").
 
 ```{r, message = FALSE, eval=FALSE}
-con$unsubscribe_folder(name = "INBOX")
+con$unsubscribe_folder(folder = "INBOX")
 ```
 
 ### 3.10) Listing subscribed folders
@@ -259,7 +259,7 @@ con$list_subscribed_folders()
 `status()` returns a folder's counters via IMAP "STATUS" **without selecting it** (unlike `examine_folder()`). You can request any subset of `MESSAGES`, `RECENT`, `UIDNEXT`, `UIDVALIDITY`, and `UNSEEN`.
 
 ```{r, message = FALSE, eval=FALSE}
-con$status(name = "INBOX")
+con$status(folder = "INBOX")
 
 # or only some items, for the currently selected folder:
 con$select_folder("INBOX")
@@ -337,7 +337,7 @@ delivery system" (Resnick, 2008). Dates in both methods must be the same most of
 #### 4.1.1.1) Before a date
 
 ```{r, message = FALSE, eval=FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 res <- con$search_before(date_char = "07-Sep-2020")
 
@@ -472,7 +472,7 @@ For the next examples, we are going to select a different mail folder.
 Searching in the "TO" header field:
 
 ```{r, message = FALSE, eval=FALSE}
-con$select_folder(name = "K-State")
+con$select_folder(folder = "K-State")
 
 con$search_string(expr = "xpto@k-state.com", where = "TO")
 
@@ -561,7 +561,7 @@ con$search_older_than(seconds = 3600) # msgs received more than one hour ago (36
 Servers advertising the "SORT" capability (RFC 5256) can order the results on the server side. `sort()` returns the message ids in the server-provided order (it does **not** re-sort them locally). Check the capability with `list_server_capabilities()`.
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 # most recent first:
 con$sort(by = "DATE", reverse = TRUE)
@@ -575,7 +575,7 @@ con$sort(by = "FROM", criteria = "SINCE 01-Jan-2020")
 Servers advertising a "THREAD=" capability (RFC 5256) can group messages into threads. `thread()` returns a list of integer vectors, one per top-level thread (nested parent/child ids are flattened into their thread).
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 con$thread(algorithm = "REFERENCES")
 ```
@@ -594,7 +594,7 @@ These are the helper functions you can use inside `search()`:
 **Example 1**: Searching for messages (in "INBOX") containing the string "Kansas State University" in the "SUBJECT" header field **AND** that were received before "02-Jan-2020".
 
 ```{r, message = FALSE, eval=FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 
 res <- con$search(request = AND(string(expr = "Kansas State University", where = "SUBJECT"),
@@ -744,10 +744,10 @@ Here we present other functions to perform very useful complementary IMAP operat
 Copying search results from "INBOX" to "K-State" folder:
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 con$search_since(date_char = "10-may-2019") %>%
-  con$copy_msg(to_folder = "K-State")
+  con$copy_msg(folder = "K-State")
 
 ```
 
@@ -782,7 +782,7 @@ con$esearch_count(flag = c("Answered", "Seen"))
 This method marks one or more messages with the "\\Deleted" system flag. Some servers automatically delete messages marked with this flag, and others require the `EXPUNGE` command to permanently delete the e-mail.
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "Trash")
+con$select_folder(folder = "Trash")
 
 con$search_before(date_char = "10-may-2012") %>%
   con$delete_msg()
@@ -820,7 +820,7 @@ Adding, removing and replacing one or more flags to messages.
 #### 8.7.1) Add flags
 
 ```{r, message = FALSE, eval = FALSE}
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 
 con$search_since(date_char = "01-Sep-2020", use_uid = TRUE) %>%
   con$add_flags(flags_to_set = "\\Answered", use_uid = TRUE)
@@ -854,7 +854,7 @@ con$search_since(date_char = "01-Sep-2020", use_uid = TRUE) %>%
 ```{r, message = FALSE, eval = FALSE}
 
 con$search_on(date_char = "07-Sep-2020") %>%
-  con$move_msg(to_folder = "K-State")
+  con$move_msg(folder = "K-State")
 
 ```
 
@@ -863,7 +863,7 @@ If your server does not provide "MOVE" capability, the same result can be achiev
 ```{r, message = FALSE, eval = FALSE}
 
 con$search_on(date_char = "07-Sep-2020") %>%
-  con$copy_msg(to_folder = "K-State", reselect = FALSE) %>%
+  con$copy_msg(folder = "K-State", reselect = FALSE) %>%
   con$add_flags(flags_to_set = "\\Deleted") %>%
   con$expunge()
 
@@ -920,7 +920,7 @@ With `UIDPLUS` (RFC 4315), `append_msg()` returns the UID the server assigned to
 
 ```{r, eval = FALSE}
 uid <- con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
-ids <- con$copy_msg(msg_id = c(12, 15), use_uid = TRUE, to_folder = "Archive",
+ids <- con$copy_msg(msg_id = c(12, 15), use_uid = TRUE, folder = "Archive",
                     reselect = FALSE)
 attr(ids, "copyuid")
 ```
@@ -968,9 +968,9 @@ con$sort(by = "SIZE", reverse = TRUE, return = c("COUNT", "MAX"))
 `get_acl()`, `set_acl()`, `delete_acl()`, `list_rights()`, and `my_rights()` implement the `ACL` extension (RFC 4314); `set_quota()` implements `SETQUOTA` (RFC 9208), which most servers restrict to administrators. `enable()` (RFC 5161) enables extensions that require it.
 
 ```{r, eval = FALSE}
-con$my_rights(name = "INBOX")
+con$my_rights(folder = "INBOX")
 con$set_acl(name = "Shared", identifier = "user=bob", rights = "lrs")
-con$get_acl(name = "Shared")
+con$get_acl(folder = "Shared")
 ```
 
 ## 11) A second connection for IDLE and MULTIAPPEND (since 2.0.0)

@@ -3,7 +3,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages SINCE "17-Apr-2019" AND SMALLER than 512KB.
 #' res <- con$search(request = AND(since(date_char = "17-Apr-2019"),
 #'                                 smaller_than(size = 512000)))

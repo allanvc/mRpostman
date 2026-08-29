@@ -35,60 +35,13 @@ create_folder_int <- function(self, name, mute, retries, special_use = NULL) {
   # isolating the handle
   h <- self$con_handle
 
-  tryCatch({
-    curl::handle_setopt(h, customrequest = paste0('CREATE ', name2, use_string))
-  }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with ImapCon$new().")
-  })
+  response <- imap_exec(self, customrequest = paste0('CREATE ', name2, use_string),
+                        retries = retries)$response
 
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = h)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
-  })
-
-  if(is.null(response)){
-
-    count_retries = 0 #the first try doesnt count
-
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE) # parece que nao precisa, mas vamos deixar
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = h)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self) # returns NULL for operation timeout: try reconnection
-      })
-
-    }
-
-    if (is.null(response)) {
-
-      stop('Request error: the server returned an error.')
-
-    } else { # v0.3.2
-      if (!mute) {
-
-
-        cat(paste0("\n::mRpostman: folder ", '"', name, '"', " created.\n")) # v0.3.2
-
-      }
-
-    }
-
-  } else {
-    if (!mute) {
-
-
-      cat(paste0("\n::mRpostman: folder ", '"', name, '"', " created.\n")) # v0.3.2
-
-    }
+  if (!mute) {
+    cat(paste0("\n::mRpostman: folder ", '"', name, '"', " created.\n")) # v0.3.2
   }
+
 
   invisible(TRUE)
 

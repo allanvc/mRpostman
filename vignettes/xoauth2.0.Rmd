@@ -22,12 +22,12 @@ other providers (Outlook/Office 365, Yahoo, AOL, ...) by swapping the
 authorization endpoints and scope. The reference for Google's flow is
 <https://developers.google.com/identity/protocols/oauth2>.
 
-We use the [`httr`](https://cran.r-project.org/package=httr) package to run the
+We use the [`httr2`](https://cran.r-project.org/package=httr2) package to run the
 OAuth2.0 flow and [`jsonlite`](https://cran.r-project.org/package=jsonlite) to
 read the credentials file, so install them first if needed:
 
 ```{r, eval = FALSE}
-install.packages(c("httr", "jsonlite"))
+install.packages(c("httr2", "jsonlite"))
 ```
 
 __IMPORTANT — libcurl version.__ The libcurl feature that transmits the bearer
@@ -123,26 +123,29 @@ web server (common inside RStudio, or on headless/remote machines).
 Both request `access_type = "offline"` so that a **refresh token** is also
 returned (see Step 6).
 
-### Option A - `httr`'s built-in flow (recommended)
+### Option A - `httr2`'s built-in flow (recommended)
 
-`httr::oauth2.0_token()` opens your browser, runs a local callback server, and
-caches the token in a `.httr-oauth` file.
+`httr2::oauth_flow_auth_code()` opens your browser, runs a local callback
+server, and returns the token. (`httr2` is the successor of `httr`, which is
+in maintenance mode; the old `httr::oauth2.0_token()` flow keeps working if
+you prefer it.)
 
 ```{r, eval = FALSE}
-library(httr)
+library(httr2)
 
-gmail_app <- oauth_app("mRpostman",
-                       key    = cred$client_id,
-                       secret = cred$client_secret)
+client <- oauth_client(
+  id        = cred$client_id,
+  secret    = cred$client_secret,
+  token_url = "https://oauth2.googleapis.com/token",
+  name      = "mRpostman")
 
-token_obj <- oauth2.0_token(
-  endpoint = oauth_endpoints("google"),
-  app      = gmail_app,
-  scope    = "https://mail.google.com/",
-  cache    = TRUE
-)
+tok <- oauth_flow_auth_code(
+  client,
+  auth_url    = "https://accounts.google.com/o/oauth2/auth",
+  scope       = "https://mail.google.com/",
+  auth_params = list(access_type = "offline", prompt = "consent"))
 
-token <- token_obj$credentials$access_token
+token <- tok$access_token
 ```
 
 When the browser shows *"Google hasn't verified this app"*, click
@@ -155,12 +158,12 @@ This avoids the local callback server entirely: you open the authorization URL,
 approve access, and paste back the `code` shown in the browser's address bar.
 
 ```{r, eval = FALSE}
-library(httr)
+library(httr2)
 
 redirect_uri <- "http://localhost"
 scope        <- "https://mail.google.com/"
 
-auth_url <- modify_url("https://accounts.google.com/o/oauth2/auth",
+auth_url <- url_modify("https://accounts.google.com/o/oauth2/auth",
   query = list(client_id     = cred$client_id,
                redirect_uri  = redirect_uri,
                response_type = "code",
@@ -180,20 +183,22 @@ expire in minutes, so exchange it right away):
 ```{r, eval = FALSE}
 code_in <- "PASTE_THE_CODE_HERE"
 
-resp <- POST("https://oauth2.googleapis.com/token", encode = "form",
-  body = list(code          = code_in,
-              client_id     = cred$client_id,
-              client_secret = cred$client_secret,
-              redirect_uri  = redirect_uri,
-              grant_type    = "authorization_code"))
+resp <- request("https://oauth2.googleapis.com/token") |>
+  req_body_form(code          = code_in,
+                client_id     = cred$client_id,
+                client_secret = cred$client_secret,
+                redirect_uri  = redirect_uri,
+                grant_type    = "authorization_code") |>
+  req_perform()
 
-token_data <- content(resp)
+token_data <- resp_body_json(resp)
 token      <- token_data$access_token
 ```
 
 Your `token` should be a long string starting with `"ya29."`. If `token` is
 `NULL`, inspect `content(resp)` --- an `invalid_grant` error means the code was
 already used or expired, so re-run `browseURL(auth_url)` to get a fresh one.
+(On an `httr2` error, read the body with `resp_body_json(last_response())`.)
 
 ## Step 5 - Open the IMAP connection
 
@@ -222,23 +227,24 @@ Access tokens are short-lived (about 1 hour). The **refresh token** returned in
 Step 4 (thanks to `access_type = "offline"`) lets you mint a new access token
 without going through the browser again.
 
-If you used **Option A**, `httr` refreshes automatically; you can also force it:
+If you used **Option A**, mint a new access token from the refresh token:
 
 ```{r, eval = FALSE}
-token_obj$refresh()
-token <- token_obj$credentials$access_token
+tok   <- oauth_flow_refresh(client, refresh_token = tok$refresh_token)
+token <- tok$access_token
 ```
 
 If you used **Option B**, exchange the stored refresh token directly:
 
 ```{r, eval = FALSE}
-refresh <- POST("https://oauth2.googleapis.com/token", encode = "form",
-  body = list(client_id     = cred$client_id,
-              client_secret = cred$client_secret,
-              grant_type    = "refresh_token",
-              refresh_token = token_data$refresh_token))
+refresh <- request("https://oauth2.googleapis.com/token") |>
+  req_body_form(client_id     = cred$client_id,
+                client_secret = cred$client_secret,
+                grant_type    = "refresh_token",
+                refresh_token = token_data$refresh_token) |>
+  req_perform()
 
-token <- content(refresh)$access_token
+token <- resp_body_json(refresh)$access_token
 ```
 
 Then reopen (or update) the connection with the new `token`. To swap the token

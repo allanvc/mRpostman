@@ -27,7 +27,7 @@ advertise the \code{CONDSTORE} capability.
 }
 \examples{
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 last <- con$status(items = "HIGHESTMODSEQ")[["HIGHESTMODSEQ"]]
 # ... later, in another run:
 changed <- con$search(request = modseq(last + 1))

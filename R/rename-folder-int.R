@@ -4,7 +4,7 @@
 #'   previously selected mail folder name.
 #' @param new_name A string containing the new name to be assigned.
 #' @param reselect A logical. If \code{TRUE}, calls
-#'   \code{select_folder(name = to_folder)} under the hood before returning
+#'   \code{select_folder(folder = to_folder)} under the hood before returning
 #'   the output. Default is \code{TRUE}.
 #' @param mute A \code{logical}. Provides a confirmation message if the
 #'   command is successfully executed. Default is \code{FALSE}.
@@ -63,116 +63,44 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
   # isolating the handle
   h <- self$con_handle
 
-  tryCatch({
-    # adding the RENAME folder customrequest parameter
-    curl::handle_setopt(handle = h, customrequest = paste0("RENAME ",
-                                                           folder, " ",
-                                                           new_name2))
-  }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-  })
+  response <- imap_exec(self,
+                        customrequest = paste0("RENAME ", folder, " ", new_name2),
+                        retries = retries)$response
 
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = h)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self)
-  })
-
-  if (is.null(response)) {
-    # it is not necessary to select again
-    count_retries = 0 #the first try doesnt count
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = h)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-    }
-
-    if (is.null(response)) {
-
-      stop('Request error: the server returned an error.')
-
-    } else { # v0.3.2
-
-      # reselecting
-      if (isTRUE(reselect)) {
-        # imapconf$folder = new_name
-        out <- select_folder_int(self, name = new_name, mute = TRUE, retries = 1)
-        # need mute = TRUE now in order to not make a messy print when verbose is TRUE
-      } else {
-        out <- new_name
-      }
-
-      if (!mute) {
-
-
-        if (is.null(name)) {
-
-          cat(paste0("::mRpostman: ", '"', self$con_params$folder, '"',
-                     " renamed to ", '"', new_name, '".')) # v0.3.2
-          if (reselect) {
-            cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
-            # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
-          }
-
-        } else {
-
-          cat(paste0("::mRpostman: ", '"', name, '"',
-                     " renamed to ", '"', new_name, '".')) # v0.3.2
-          if (reselect) {
-            cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
-            # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
-          }
-        }
-
-
-
-      }
-
-    }
-
+  # reselecting
+  if (isTRUE(reselect)) {
+    # imapconf$folder = new_name
+    out <- select_folder_int(self, name = new_name, mute = TRUE, retries = 1)
   } else {
+    out <- new_name
+  }
 
-    # reselecting
-    if (isTRUE(reselect)) {
-      # imapconf$folder = new_name
-      out <- select_folder_int(self, name = new_name, mute = TRUE, retries = 1)
-    } else {
-      out <- new_name
-    }
-
-    if (!mute) {
+  if (!mute) {
 
 
-      if (is.null(name)) {
+    if (is.null(name)) {
 
-        cat(paste0("::mRpostman: ", '"', self$con_params$folder, '"',
-                   " renamed to ", '"', new_name, '".')) # v0.3.2
-        if (reselect) {
-          cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
-          # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
-        }
-
-      } else {
-
-        cat(paste0("::mRpostman: ", '"', name, '"',
-                   " renamed to ", '"', new_name, '".')) # v0.3.2
-        if (reselect) {
-          cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
-          # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
-        }
+      cat(paste0("::mRpostman: ", '"', self$con_params$folder, '"',
+                 " renamed to ", '"', new_name, '".')) # v0.3.2
+      if (reselect) {
+        cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+        # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
       }
 
+    } else {
+
+      cat(paste0("::mRpostman: ", '"', name, '"',
+                 " renamed to ", '"', new_name, '".')) # v0.3.2
+      if (reselect) {
+        cat(paste0("\n::mRpostman: ", '"', new_name, '"', " selected.\n"))
+        # hacky solution to not do a messy print when verbose = TRUE, mute = FALSE, reselect = TRUE
+      }
     }
 
   }
+
+  
+
 
   # handle sanitizing
 

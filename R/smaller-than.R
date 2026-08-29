@@ -7,7 +7,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages containing the string "XYZ@@k-state.edu" in the
 #' # "FROM" field OR those that are SMALLER than 512KB.
 #' res <- con$search(request = OR(string(expr = "XYZ@@k-state.edu",

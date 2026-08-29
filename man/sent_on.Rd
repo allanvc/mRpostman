@@ -24,7 +24,7 @@ Criterion constructor function to be combined in a custom search statement
 \examples{
 \dontrun{
 # select folder & search
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages SINCE "30-Aug-2019" OR LARGER than 512KB.
 res <- con$search(request = OR(sent_since(date_char = "30-Jun-2020"),
                                larger_than(size = 512000)))

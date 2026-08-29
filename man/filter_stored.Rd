@@ -25,7 +25,7 @@ against a live server.
 }
 \examples{
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 res <- con$search(request = AND(filter_stored("on-the-road"),
                                 string(expr = "boss@example.com", where = "FROM")))
 }

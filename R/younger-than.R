@@ -5,7 +5,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages containing the string "XYZ@@k-state.edu" in the
 #' #   "FROM" field AND those that are YOUNGER than 3600 seconds (1 hour).
 #' res <- con$search(request = AND(string(expr = "XYZ@@k-state.edu",

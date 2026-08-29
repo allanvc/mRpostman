@@ -75,9 +75,9 @@
 </h2>
 <p>Most major mail providers have moved to OAuth2.0 as their preferred (and, in many cases, only) authentication method for IMAP. Instead of sending your password, you send a short-lived <strong>access token</strong> that authorizes a specific scope of access to your mailbox.</p>
 <p>This vignette shows the exact steps and R code to obtain, use, and refresh an OAuth2.0 access token for the <strong>Gmail</strong> IMAP server. The same logic applies to other providers (Outlook/Office 365, Yahoo, AOL, …) by swapping the authorization endpoints and scope. The reference for Google’s flow is <a href="https://developers.google.com/identity/protocols/oauth2" class="external-link uri">https://developers.google.com/identity/protocols/oauth2</a>.</p>
-<p>We use the <a href="https://cran.r-project.org/package=httr" class="external-link"><code>httr</code></a> package to run the OAuth2.0 flow and <a href="https://cran.r-project.org/package=jsonlite" class="external-link"><code>jsonlite</code></a> to read the credentials file, so install them first if needed:</p>
+<p>We use the <a href="https://cran.r-project.org/package=httr2" class="external-link"><code>httr2</code></a> package to run the OAuth2.0 flow and <a href="https://cran.r-project.org/package=jsonlite" class="external-link"><code>jsonlite</code></a> to read the credentials file, so install them first if needed:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"httr"</span>, <span class="st">"jsonlite"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"httr2"</span>, <span class="st">"jsonlite"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>IMPORTANT — libcurl version.</strong> The libcurl feature that transmits the bearer token is only reliable on libcurl &gt;= 7.65.0 (released 2019-05-22). Check the version the <code>curl</code> R package is linked against:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">curl</span><span class="fu">::</span><span class="fu"><a href="https://jeroen.r-universe.dev/curl/reference/curl_options.html" class="external-link">curl_version</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">version</span></span></code></pre></div>
@@ -145,24 +145,25 @@
 <p>Below are two ways to get a token. <strong>Option A</strong> is the shortest and works out of the box on most desktops. Use <strong>Option B</strong> if Option A fails to start its local web server (common inside RStudio, or on headless/remote machines).</p>
 <p>Both request <code>access_type = "offline"</code> so that a <strong>refresh token</strong> is also returned (see Step 6).</p>
 <div class="section level3">
-<h3 id="option-a---httrs-built-in-flow-recommended">Option A - <code>httr</code>’s built-in flow (recommended)<a class="anchor" aria-label="anchor" href="#option-a---httrs-built-in-flow-recommended"></a>
+<h3 id="option-a---httr2s-built-in-flow-recommended">Option A - <code>httr2</code>’s built-in flow (recommended)<a class="anchor" aria-label="anchor" href="#option-a---httr2s-built-in-flow-recommended"></a>
 </h3>
-<p><code><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">httr::oauth2.0_token()</a></code> opens your browser, runs a local callback server, and caches the token in a <code>.httr-oauth</code> file.</p>
+<p><code><a href="https://httr2.r-lib.org/reference/req_oauth_auth_code.html" class="external-link">httr2::oauth_flow_auth_code()</a></code> opens your browser, runs a local callback server, and returns the token. (<code>httr2</code> is the successor of <code>httr</code>, which is in maintenance mode; the old <code><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">httr::oauth2.0_token()</a></code> flow keeps working if you prefer it.)</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/" class="external-link">httr</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">gmail_app</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth_app.html" class="external-link">oauth_app</a></span><span class="op">(</span><span class="st">"mRpostman"</span>,</span>
-<span>                       key    <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
-<span>                       secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span><span class="op">)</span></span>
+<span><span class="va">client</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/oauth_client.html" class="external-link">oauth_client</a></span><span class="op">(</span></span>
+<span>  id        <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>  secret    <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
+<span>  token_url <span class="op">=</span> <span class="st">"https://oauth2.googleapis.com/token"</span>,</span>
+<span>  name      <span class="op">=</span> <span class="st">"mRpostman"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">token_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth2.0_token.html" class="external-link">oauth2.0_token</a></span><span class="op">(</span></span>
-<span>  endpoint <span class="op">=</span> <span class="fu"><a href="https://httr.r-lib.org/reference/oauth_endpoints.html" class="external-link">oauth_endpoints</a></span><span class="op">(</span><span class="st">"google"</span><span class="op">)</span>,</span>
-<span>  app      <span class="op">=</span> <span class="va">gmail_app</span>,</span>
-<span>  scope    <span class="op">=</span> <span class="st">"https://mail.google.com/"</span>,</span>
-<span>  cache    <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
+<span><span class="va">tok</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_oauth_auth_code.html" class="external-link">oauth_flow_auth_code</a></span><span class="op">(</span></span>
+<span>  <span class="va">client</span>,</span>
+<span>  auth_url    <span class="op">=</span> <span class="st">"https://accounts.google.com/o/oauth2/auth"</span>,</span>
+<span>  scope       <span class="op">=</span> <span class="st">"https://mail.google.com/"</span>,</span>
+<span>  auth_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>access_type <span class="op">=</span> <span class="st">"offline"</span>, prompt <span class="op">=</span> <span class="st">"consent"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">token_obj</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">tok</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>When the browser shows <em>“Google hasn’t verified this app”</em>, click <strong>Advanced &gt; Go to &lt;your app&gt; (unsafe)</strong> — this is expected while the app is in Testing mode — then <strong>Allow</strong>.</p>
 </div>
 <div class="section level3">
@@ -170,12 +171,12 @@
 </h3>
 <p>This avoids the local callback server entirely: you open the authorization URL, approve access, and paste back the <code>code</code> shown in the browser’s address bar.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/" class="external-link">httr</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://httr2.r-lib.org" class="external-link">httr2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">redirect_uri</span> <span class="op">&lt;-</span> <span class="st">"http://localhost"</span></span>
 <span><span class="va">scope</span>        <span class="op">&lt;-</span> <span class="st">"https://mail.google.com/"</span></span>
 <span></span>
-<span><span class="va">auth_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/modify_url.html" class="external-link">modify_url</a></span><span class="op">(</span><span class="st">"https://accounts.google.com/o/oauth2/auth"</span>,</span>
+<span><span class="va">auth_url</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/url_modify.html" class="external-link">url_modify</a></span><span class="op">(</span><span class="st">"https://accounts.google.com/o/oauth2/auth"</span>,</span>
 <span>  query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
 <span>               redirect_uri  <span class="op">=</span> <span class="va">redirect_uri</span>,</span>
 <span>               response_type <span class="op">=</span> <span class="st">"code"</span>,</span>
@@ -188,16 +189,17 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">code_in</span> <span class="op">&lt;-</span> <span class="st">"PASTE_THE_CODE_HERE"</span></span>
 <span></span>
-<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span>, encode <span class="op">=</span> <span class="st">"form"</span>,</span>
-<span>  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>code          <span class="op">=</span> <span class="va">code_in</span>,</span>
-<span>              client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
-<span>              client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
-<span>              redirect_uri  <span class="op">=</span> <span class="va">redirect_uri</span>,</span>
-<span>              grant_type    <span class="op">=</span> <span class="st">"authorization_code"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">resp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_form</a></span><span class="op">(</span>code          <span class="op">=</span> <span class="va">code_in</span>,</span>
+<span>                client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>                client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
+<span>                redirect_uri  <span class="op">=</span> <span class="va">redirect_uri</span>,</span>
+<span>                grant_type    <span class="op">=</span> <span class="st">"authorization_code"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">token_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html" class="external-link">content</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
+<span><span class="va">token_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="va">resp</span><span class="op">)</span></span>
 <span><span class="va">token</span>      <span class="op">&lt;-</span> <span class="va">token_data</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
-<p>Your <code>token</code> should be a long string starting with <code>"ya29."</code>. If <code>token</code> is <code>NULL</code>, inspect <code>content(resp)</code> — an <code>invalid_grant</code> error means the code was already used or expired, so re-run <code>browseURL(auth_url)</code> to get a fresh one.</p>
+<p>Your <code>token</code> should be a long string starting with <code>"ya29."</code>. If <code>token</code> is <code>NULL</code>, inspect <code>content(resp)</code> — an <code>invalid_grant</code> error means the code was already used or expired, so re-run <code>browseURL(auth_url)</code> to get a fresh one. (On an <code>httr2</code> error, read the body with <code>resp_body_json(last_response())</code>.)</p>
 </div>
 </div>
 <div class="section level2">
@@ -221,19 +223,20 @@
 <h2 id="step-6---refresh-the-token">Step 6 - Refresh the token<a class="anchor" aria-label="anchor" href="#step-6---refresh-the-token"></a>
 </h2>
 <p>Access tokens are short-lived (about 1 hour). The <strong>refresh token</strong> returned in Step 4 (thanks to <code>access_type = "offline"</code>) lets you mint a new access token without going through the browser again.</p>
-<p>If you used <strong>Option A</strong>, <code>httr</code> refreshes automatically; you can also force it:</p>
+<p>If you used <strong>Option A</strong>, mint a new access token from the refresh token:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">token_obj</span><span class="op">$</span><span class="fu">refresh</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">token_obj</span><span class="op">$</span><span class="va">credentials</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">tok</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/req_oauth_refresh.html" class="external-link">oauth_flow_refresh</a></span><span class="op">(</span><span class="va">client</span>, refresh_token <span class="op">=</span> <span class="va">tok</span><span class="op">$</span><span class="va">refresh_token</span><span class="op">)</span></span>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="va">tok</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>If you used <strong>Option B</strong>, exchange the stored refresh token directly:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">refresh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/POST.html" class="external-link">POST</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span>, encode <span class="op">=</span> <span class="st">"form"</span>,</span>
-<span>  body <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
-<span>              client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
-<span>              grant_type    <span class="op">=</span> <span class="st">"refresh_token"</span>,</span>
-<span>              refresh_token <span class="op">=</span> <span class="va">token_data</span><span class="op">$</span><span class="va">refresh_token</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">refresh</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/request.html" class="external-link">request</a></span><span class="op">(</span><span class="st">"https://oauth2.googleapis.com/token"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/req_body.html" class="external-link">req_body_form</a></span><span class="op">(</span>client_id     <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_id</span>,</span>
+<span>                client_secret <span class="op">=</span> <span class="va">cred</span><span class="op">$</span><span class="va">client_secret</span>,</span>
+<span>                grant_type    <span class="op">=</span> <span class="st">"refresh_token"</span>,</span>
+<span>                refresh_token <span class="op">=</span> <span class="va">token_data</span><span class="op">$</span><span class="va">refresh_token</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://httr2.r-lib.org/reference/req_perform.html" class="external-link">req_perform</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html" class="external-link">content</a></span><span class="op">(</span><span class="va">refresh</span><span class="op">)</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
+<span><span class="va">token</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://httr2.r-lib.org/reference/resp_body_raw.html" class="external-link">resp_body_json</a></span><span class="op">(</span><span class="va">refresh</span><span class="op">)</span><span class="op">$</span><span class="va">access_token</span></span></code></pre></div>
 <p>Then reopen (or update) the connection with the new <code>token</code>. To swap the token on an existing connection object, use <code>con$reset_xoauth2_bearer(token)</code>.</p>
 </div>
 <div class="section level2">

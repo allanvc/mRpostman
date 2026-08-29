@@ -21,101 +21,36 @@ list_flags_int <- function(self, retries) {
   # isolating the handle
   h <- self$con_handle
 
-  tryCatch({
-    # adding the SELECT mbox customrequest parameter to handle -- will exhibit the flags
-    curl::handle_setopt(handle = h, customrequest = paste0("SELECT ", folder))
-  }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-  })
+  response <- imap_exec(self, customrequest = paste0("SELECT ", folder),
+                        retries = retries)$response
 
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = h)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self)
-  })
+  pattern = "(?<=FLAGS \\().+?(?=\\))" # using look operators
+  # gets * FLAGS (...) and [PERMANENTFLAGS (...)]
+  flags <- unlist(regmatches(rawToChar(response$headers),
+                                gregexpr(pattern,
+                                         rawToChar(response$headers),
+                                         perl=TRUE)))
 
-  if (!is.null(response)) {
-    pattern = "(?<=FLAGS \\().+?(?=\\))" # using look operators
-    # gets * FLAGS (...) and [PERMANENTFLAGS (...)]
-    flags <- unlist(regmatches(rawToChar(response$headers),
-                                  gregexpr(pattern,
-                                           rawToChar(response$headers),
-                                           perl=TRUE)))
+  # check if custom flags are allowed: v0.9.0
+  custom_flags_check <- any(grepl(pattern = "\\\\\\*", flags))
 
-    # check if custom flags are allowed: v0.9.0
-    custom_flags_check <- any(grepl(pattern = "\\\\\\*", flags))
+  flags <- gsub("\\\\\\*", "", flags) # backslashes are symbols of system flags in IMAP
+  # we cannot eliminate them
+  # R uses \\
 
-    flags <- gsub("\\\\\\*", "", flags) # backslashes are symbols of system flags in IMAP
-    # we cannot eliminate them
-    # R uses \\
+  if (length(flags) == 2) {
+    all_flags <- flags[[1]]
+    permanent_flags <- flags[[2]]
+    custom_flags_allowed <- custom_flags_check #v0.9.0
 
-    if (length(flags) == 2) {
-      all_flags <- flags[[1]]
-      permanent_flags <- flags[[2]]
-      custom_flags_allowed <- custom_flags_check #v0.9.0
-
-    } else { # for Sun iPlanet Messaging Server 5.2
-      all_flags <- ""
-      permanent_flags <- flags[[1]]
-      custom_flags_allowed <- custom_flags_check #v0.9.0
-    }
-
-  } else {
-
-    count_retries = 1 #the first try was already counted
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = h)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-
-    }
-
-    if (!is.null(response)) {
-
-      pattern = "(?<=FLAGS \\().+?(?=\\))" # using look operators
-      # gets * FLAGS (...) and [PERMANENTFLAGS (...)]
-      flags <- unlist(regmatches(
-        rawToChar(response$headers),
-        gregexpr(pattern,
-                 rawToChar(response$headers),
-                 perl = TRUE)))
-
-
-      # check if custom flags are allowed: v0.9.0
-      custom_flags_check <- any(grepl(pattern = "\\\\\\*", flags))
-
-      # flags <- gsub("\\\\", "", flags) # backslashes are symbols of system flags in IMAP
-      # we cannot eliminate them
-      # R uses \\
-      flags <- gsub("\\\\\\*", "", flags) # backslashes are symbols of system flags in IMAP
-
-      if (length(flags) == 2) {
-        all_flags <- flags[[1]]
-        permanent_flags <- flags[[2]]
-        custom_flags_allowed <- custom_flags_check #v0.9.0
-
-      } else { # for Sun iPlanet Messaging Server 5.2
-        all_flags <- ""
-        permanent_flags <- flags[[1]]
-        custom_flags_allowed <- custom_flags_check #v0.9.0
-      }
-
-
-    } else {
-
-      stop('Request error: the server returned an error.')
-
-    }
+  } else { # for Sun iPlanet Messaging Server 5.2
+    all_flags <- ""
+    permanent_flags <- flags[[1]]
+    custom_flags_allowed <- custom_flags_check #v0.9.0
   }
+
+  
+
 
   flags_out <- list()
   flags_out$flags  <- unlist(strsplit(x = all_flags, split = " "))

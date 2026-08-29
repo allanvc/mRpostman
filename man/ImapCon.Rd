@@ -460,8 +460,8 @@ con$set_quota(quota_root = "User quota", storage = 2 * 1024^2)
 ## ------------------------------------------------
 
 \dontrun{
-con$get_metadata(name = "INBOX", entries = "/private/comment")
-con$get_metadata(name = NULL, entries = "/shared/comment")
+con$get_metadata(folder = "INBOX", entries = "/private/comment")
+con$get_metadata(folder = NULL, entries = "/shared/comment")
 }
 
 ## ------------------------------------------------
@@ -469,8 +469,8 @@ con$get_metadata(name = NULL, entries = "/shared/comment")
 ## ------------------------------------------------
 
 \dontrun{
-con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
-con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+con$set_metadata(folder = "INBOX", entries = c("/private/comment" = "reviewed"))
+con$set_metadata(folder = "INBOX", entries = c("/private/comment" = NA))
 }
 
 ## ------------------------------------------------
@@ -478,7 +478,7 @@ con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
 ## ------------------------------------------------
 
 \dontrun{
-con$get_acl(name = "INBOX")
+con$get_acl(folder = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -511,7 +511,7 @@ con$list_rights(name = "INBOX", identifier = "anyone")
 ## ------------------------------------------------
 
 \dontrun{
-con$my_rights(name = "INBOX")
+con$my_rights(folder = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -527,7 +527,7 @@ con$noop()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$check()
 }
 
@@ -571,7 +571,7 @@ con$list_special_use_folders()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -620,7 +620,7 @@ con$unselect_folder()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$examine_folder()
 
 # or directly:
@@ -632,7 +632,7 @@ con$examine_folder("Sent")
 ## ------------------------------------------------
 
 \dontrun{
-con$status(name = "INBOX")
+con$status(folder = "INBOX")
 
 # or, for the selected folder and specific items only:
 con$select_folder("INBOX")
@@ -644,7 +644,7 @@ con$status(items = c("MESSAGES", "UNSEEN"))
 ## ------------------------------------------------
 
 \dontrun{
-con$create_folder(name = "New Folder Name")
+con$create_folder(folder = "New Folder Name")
 }
 
 ## ------------------------------------------------
@@ -652,10 +652,10 @@ con$create_folder(name = "New Folder Name")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "Folder A")
+con$select_folder(folder = "Folder A")
 con$rename_folder(new_name = "Folder B")
 # or directly:
-con$rename_folder(name = "Folder A", new_name = "Folder B")
+con$rename_folder(folder = "Folder A", new_name = "Folder B")
 }
 
 ## ------------------------------------------------
@@ -663,7 +663,7 @@ con$rename_folder(name = "Folder A", new_name = "Folder B")
 ## ------------------------------------------------
 
 \dontrun{
-con$delete_folder(name = "Folder to remove")
+con$delete_folder(folder = "Folder to remove")
 }
 
 ## ------------------------------------------------
@@ -671,7 +671,7 @@ con$delete_folder(name = "Folder to remove")
 ## ------------------------------------------------
 
 \dontrun{
-con$subscribe_folder(name = "INBOX")
+con$subscribe_folder(folder = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -679,7 +679,7 @@ con$subscribe_folder(name = "INBOX")
 ## ------------------------------------------------
 
 \dontrun{
-con$unsubscribe_folder(name = "INBOX")
+con$unsubscribe_folder(folder = "INBOX")
 }
 
 ## ------------------------------------------------
@@ -687,7 +687,7 @@ con$unsubscribe_folder(name = "INBOX")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$list_flags()
 }
 
@@ -714,7 +714,7 @@ con$thread(algorithm = "REFERENCES")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # ex1
 con$search(OR(before(date_char = "17-Apr-2015"),
               string(expr = "John", where = "FROM")))
@@ -739,7 +739,7 @@ con$search_larger_than(size = 512000)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages with size smaller than 512Kb
 con$search_smaller_than(size = 512000)
 }
@@ -749,7 +749,7 @@ con$search_smaller_than(size = 512000)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages with date before "02-Jan-2020", presenting the
 # .. results as unique identifiers (UID)
 con$search_before(date = "02-Jan-2020", use_uid = TRUE)
@@ -760,7 +760,7 @@ con$search_before(date = "02-Jan-2020", use_uid = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages with date since "02-Jan-2020", presenting the
 # .. results as unique identifiers (UID)
 con$search_since(date = "02-Jan-2020", use_uid = TRUE)
@@ -771,7 +771,7 @@ con$search_since(date = "02-Jan-2020", use_uid = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages received on date "02-Jan-2020", presenting the
 #... results as unique identifiers (UID)
 con$search_on(date = "02-Jan-2020", use_uid = TRUE)
@@ -782,7 +782,7 @@ con$search_on(date = "02-Jan-2020", use_uid = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_period(since_date_char = "02-Jan-2020",
@@ -815,7 +815,7 @@ con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages received on date "02-Jan-2020", presenting the
 #... results as unique identifiers (UID)
 con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
@@ -826,7 +826,7 @@ con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_sent_period(since_date_char = "02-Jan-2020",
@@ -839,7 +839,7 @@ con$search_sent_period(since_date_char = "02-Jan-2020",
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder that are marked as "SEEN" AND
 #.. "ANSWERED"
 con$search_flag(name = c("SEEN", "ANSWERED"))
@@ -850,7 +850,7 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for all messages received in the last hour (not older than 3600 seconds)
 con$search_older_than(seconds = 3600, negate = TRUE)
 }
@@ -860,7 +860,7 @@ con$search_older_than(seconds = 3600, negate = TRUE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for all messages received in the last hour (younger than 3600 seconds)
 con$search_younger_than(seconds = 3600)
 }
@@ -870,7 +870,7 @@ con$search_younger_than(seconds = 3600)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # search for messages with "@k-state.edu" in the FROM field
 con$search_string(expr = "@k-state.edu", where = "FROM")
 }
@@ -880,7 +880,7 @@ con$search_string(expr = "@k-state.edu", where = "FROM")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and fetch the results (saving to disk) using the pipe
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_body(write_to_disk = TRUE, keep_in_mem = FALSE)
@@ -897,7 +897,7 @@ con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and fetch the results (also saving to disk) using the pipe
 out <- con$search_string(expr = "@k-state.edu", where = "CC") \%>\%
   con$fetch_header()
@@ -913,7 +913,7 @@ out <- con$fetch_header()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and fetch the results using the pipe
 out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_metadata()
@@ -929,7 +929,7 @@ out <- con$fetch_metadata(msg = res)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$search_flag("UNSEEN") \%>\% con$fetch_preview()
 }
 
@@ -938,7 +938,7 @@ con$search_flag("UNSEEN") \%>\% con$fetch_preview()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
 }
 
@@ -947,7 +947,7 @@ con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 parts <- con$fetch_bodystructure(msg_id = 1:10)
 parts[parts$is_attachment, ]
 }
@@ -957,7 +957,7 @@ parts[parts$is_attachment, ]
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and partially fetch the results using the pipe
 # first 200 characters, writing to disk, silence results in the console
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
@@ -979,14 +979,14 @@ con$fetch_text(msg = res,
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and copy the results to another folder
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
-  con$copy(to_folder = "Sent")
+  con$copy(folder = "Sent")
 
 # or using a traditional approach
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-con$copy(msg = res, to_folder = "Sent")
+con$copy(msg = res, folder = "Sent")
 
 }
 
@@ -995,14 +995,14 @@ con$copy(msg = res, to_folder = "Sent")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and copy the results to another folder
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
-  con$move(to_folder = "Sent")
+  con$move(folder = "Sent")
 
 # or using a traditional approach
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-con$move(msg = res, to_folder = "Sent")
+con$move(msg = res, folder = "Sent")
 
 }
 
@@ -1021,7 +1021,7 @@ con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # count the number of messages marked as "Flagged" and "Answered"
 con$esearch_count(flag = c("Flagged", "Answered"))
 }
@@ -1031,7 +1031,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # delete messages 70 to 73
 con$delete_msg(msg_id = 70:73)
 }
@@ -1041,11 +1041,11 @@ con$delete_msg(msg_id = 70:73)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # remove every message marked as deleted
 con$expunge()
 # or only a specific one (UIDPLUS servers)
-con$expunge(msg_uid = 71)
+con$expunge(msg_id = 71)
 }
 
 ## ------------------------------------------------
@@ -1053,7 +1053,7 @@ con$expunge(msg_uid = 71)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # Search the minimum id of messages marked as "Answered"
 con$esearch_min_id(flag = "Answered")
 }
@@ -1063,7 +1063,7 @@ con$esearch_min_id(flag = "Answered")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # Search the minimum id of messages marked as "Seen"
 con$esearch_max_id(flag = "Seen")
 }
@@ -1073,7 +1073,7 @@ con$esearch_max_id(flag = "Seen")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # Add the "\\Seen" permanent flag to the messages received in the last hour
 con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
   con$add_flags(flags_to_set = "\\\\Seen")
@@ -1084,7 +1084,7 @@ con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # Replace the current flags of the messages in the search results for the
 #.. flags "\\UNSEEN" and "\\Flagged"
 con$search_since(date_char = "20-Aug-2020") \%>\%
@@ -1096,7 +1096,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # Remove the "\\SEEN" flag from the messages in the search result
 con$search_since(date_char = "20-Aug-2020") \%>\%
   con$remove_flags(flags_to_unset = "\\\\UNSEEN")
@@ -1107,7 +1107,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
 manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
 }
@@ -1117,7 +1117,7 @@ manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
 }
 
@@ -1127,7 +1127,7 @@ con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
 
 \dontrun{
 # example 1
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$search_string(expr = "@gmail", where = "CC") \%>\%
   con$fetch_text(write_to_disk = TRUE) \%>\% # saving the message's content as txt files
   con$get_attachments()
@@ -1143,7 +1143,7 @@ con$get_attachments(msg_list = out)
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and fetch the attachments' list of the messages
 out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments_list()
@@ -1161,7 +1161,7 @@ out
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$search_string(expr = "report", where = "SUBJECT") \%>\%
   con$fetch_attachment_parts(local_dir = "~/attachments")
 }
@@ -1171,7 +1171,7 @@ con$search_string(expr = "report", where = "SUBJECT") \%>\%
 ## ------------------------------------------------
 
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 # do a search and fetch the attachments' list of the messages
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments() # the attachments will be downloaded to disk
@@ -1363,7 +1363,7 @@ Other attachments:
   verbose = FALSE,
   buffersize = 16000,
   timeout_ms = 0,
-  use_uid = FALSE,
+  use_uid = TRUE,
   mute = FALSE,
   retries = 1,
   ...
@@ -1394,8 +1394,9 @@ as a request, not an order.}
 re-execution of a command. Default is 0, which means that no timeout limit is
 set.}
       \item{\code{use_uid}}{Connection-level default for the \code{use_uid}
-argument of the methods; each call can still override it. Default
-is \code{FALSE}.}
+argument of the methods; each call can still override it. Since
+3.0.0 the default is \code{TRUE} (UIDs are stable; sequence
+numbers renumber on expunge).}
       \item{\code{mute}}{Connection-level default for the \code{mute} argument of
 the methods; each call can still override it. Default is \code{FALSE}.}
       \item{\code{retries}}{Connection-level default for the \code{retries}
@@ -1804,7 +1805,7 @@ ev <- con$notify(mailboxes = "personal", timeout = 600,
 ids.}
       \item{\code{part}}{A \code{character} string with the section number, as
 reported by \code{fetch_bodystructure()} (e.g. \code{"2"}).}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.}
       \item{\code{folder}}{The folder to read from. If \code{NULL} (default), the
 currently selected folder.}
       \item{\code{compress}}{A \code{logical}. If \code{TRUE}, the second connection
@@ -1965,7 +1966,7 @@ of the first and the last result wanted, e.g. \code{"1:100"}, or
 \code{"-1:-100"} for the hundred most recent matches.}
       \item{\code{criteria}}{A string with the search criteria. Default is
 \code{"ALL"}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs and results are presented as UIDs.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -2021,7 +2022,7 @@ of the first and the last result wanted, e.g. \code{"1:100"}.}
 descending order. Default is \code{FALSE}.}
       \item{\code{criteria}}{A string with the search criteria restricting the set
 to be sorted. Default is \code{"ALL"}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs and results are presented as UIDs.}
       \item{\code{char_set}}{A string with the charset of the search criteria.
 Default is \code{"UTF-8"}.}
@@ -2080,7 +2081,7 @@ full RFC 822 message that takes the place of message \code{msg_id}.}
 (default), the currently selected folder.}
       \item{\code{flags}}{\code{NULL} (default) or a \code{character} vector of
 flags stored with the new version.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE},
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE},
 \code{msg_id} is a UID.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
 message. Default is \code{FALSE}.}
@@ -2127,7 +2128,7 @@ Default is \code{1}.}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
 ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
     }
@@ -2473,7 +2474,7 @@ con$urlfetch(u)
 part to convert. Default is \code{"1"}.}
       \item{\code{params}}{\code{NULL} (default) or a named \code{list}/vector of
 conversion parameters (e.g. \code{c("pix-x" = "320")}).}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE},
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE},
 \code{msg_id} is a UID.}
       \item{\code{folder}}{The folder to read from. If \code{NULL} (default), the
 currently selected folder.}
@@ -2530,7 +2531,7 @@ Default is \code{"/*"} (every entry); \code{"/comment"} and
 \code{"value"} (default; both private and shared),
 \code{"value.priv"}, \code{"value.shared"}, or the corresponding
 \code{"size"} forms.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
     }
@@ -2579,7 +2580,7 @@ ids.}
       \item{\code{values}}{A named \code{character} vector whose names are
 \code{"value.priv"} and/or \code{"value.shared"}; use \code{NA} as
 a value to delete that annotation.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.}
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation
 message. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
@@ -2637,7 +2638,7 @@ Default is \code{1}.}
 \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.}
       \item{\code{negate}}{If \code{TRUE}, negates the whole search. Default is
 \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, results are
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, results are
 presented as UIDs.}
       \item{\code{esearch}}{A logical. If \code{TRUE} and the server advertises
 \code{ESEARCH}, condenses the result transmission. Default is
@@ -2840,16 +2841,17 @@ con$id(fields = c(name = "mRpostman", version = "1.2.1"))
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$get_quota_root(name = NULL, retries = NULL)}
+    \preformatted{ImapCon$get_quota_root(folder = NULL, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -2949,18 +2951,19 @@ Default is \code{1}.}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$get_metadata(
-  name = NULL,
+  folder = NULL,
   entries,
   depth = NULL,
   max_size = NULL,
-  retries = NULL
+  retries = NULL,
+  name = NULL
 )}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name, or
+      \item{\code{folder}}{A \code{character} string with the mail folder name, or
 \code{NULL} for server-level entries.}
       \item{\code{entries}}{A \code{character} vector of entry names, e.g.
 \code{"/private/comment"} or \code{"/shared/vendor/..."}.}
@@ -2970,6 +2973,7 @@ Default is \code{1}.}
 a value to return.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -2979,8 +2983,8 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$get_metadata(name = "INBOX", entries = "/private/comment")
-con$get_metadata(name = NULL, entries = "/shared/comment")
+    \preformatted{con$get_metadata(folder = "INBOX", entries = "/private/comment")
+con$get_metadata(folder = NULL, entries = "/shared/comment")
 }
     \if{html}{\out{</div>}}
   }
@@ -2995,19 +2999,20 @@ con$get_metadata(name = NULL, entries = "/shared/comment")
   \code{METADATA} (or \code{METADATA-SERVER}) capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$set_metadata(name = NULL, entries, retries = NULL)}
+    \preformatted{ImapCon$set_metadata(folder = NULL, entries, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name, or
+      \item{\code{folder}}{A \code{character} string with the mail folder name, or
 \code{NULL} for server-level entries.}
       \item{\code{entries}}{A named \code{character} vector: the names are the
 entries, the values the new values; \code{NA} removes an entry.
 Values cannot contain line breaks.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3016,8 +3021,8 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
-con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+    \preformatted{con$set_metadata(folder = "INBOX", entries = c("/private/comment" = "reviewed"))
+con$set_metadata(folder = "INBOX", entries = c("/private/comment" = NA))
 }
     \if{html}{\out{</div>}}
   }
@@ -3031,16 +3036,17 @@ con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
   \code{GETACL}, RFC 4314). Requires the server \code{ACL} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$get_acl(name = NULL, retries = NULL)}
+    \preformatted{ImapCon$get_acl(folder = NULL, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3051,7 +3057,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$get_acl(name = "INBOX")
+    \preformatted{con$get_acl(folder = "INBOX")
 }
     \if{html}{\out{</div>}}
   }
@@ -3066,13 +3072,13 @@ Default is \code{1}.}
   capability and the \code{a} (administer) right on the folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$set_acl(name = NULL, identifier, rights, retries = NULL)}
+    \preformatted{ImapCon$set_acl(folder = NULL, identifier, rights, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{identifier}}{A \code{character} string with the user name (or
 group, e.g. \code{"anyone"}) whose rights are set.}
@@ -3082,6 +3088,7 @@ with \code{"+"} or \code{"-"} it adds or removes rights (e.g.
 \code{"+w"}, \code{"-d"}).}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3106,18 +3113,19 @@ con$set_acl(name = "Shared", identifier = "anyone", rights = "+w")
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$delete_acl(name = NULL, identifier, retries = NULL)}
+    \preformatted{ImapCon$delete_acl(folder = NULL, identifier, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{identifier}}{A \code{character} string with the user name (or
 group) whose rights are removed.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3141,18 +3149,19 @@ Default is \code{1}.}
   \code{ACL} capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$list_rights(name = NULL, identifier, retries = NULL)}
+    \preformatted{ImapCon$list_rights(folder = NULL, identifier, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{identifier}}{A \code{character} string with the user name (or
 group).}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3178,16 +3187,17 @@ Default is \code{1}.}
   capability.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$my_rights(name = NULL, retries = NULL)}
+    \preformatted{ImapCon$my_rights(folder = NULL, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name. If no
+      \item{\code{folder}}{A \code{character} string with the mail folder name. If no
 name is passed, the command uses the previously selected folder.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3196,7 +3206,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$my_rights(name = "INBOX")
+    \preformatted{con$my_rights(folder = "INBOX")
 }
     \if{html}{\out{</div>}}
   }
@@ -3261,7 +3271,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$check()
 }
     \if{html}{\out{</div>}}
@@ -3424,13 +3434,19 @@ Default is \code{1}.}
   Select a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$select_folder(name, mute = NULL, retries = NULL, condstore = FALSE)}
+    \preformatted{ImapCon$select_folder(
+  folder = NULL,
+  mute = NULL,
+  retries = NULL,
+  condstore = FALSE,
+  name = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of an existing mail folder on the
+      \item{\code{folder}}{A string containing the name of an existing mail folder on the
 user's mailbox.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
@@ -3441,6 +3457,7 @@ Default is \code{1}.}
 modification sequences in this session. The folder's
 \code{HIGHESTMODSEQ}, when reported, is kept in
 \code{con$con_params$highestmodseq}. Default is \code{FALSE}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3450,7 +3467,7 @@ modification sequences in this session. The folder's
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 }
     \if{html}{\out{</div>}}
   }
@@ -3468,19 +3485,26 @@ modification sequences in this session. The folder's
   extension must be enabled with no folder selected).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$resync_folder(name, uidvalidity, modseq, retries = NULL)}
+    \preformatted{ImapCon$resync_folder(
+  folder = NULL,
+  uidvalidity,
+  modseq,
+  retries = NULL,
+  name = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string with the mail folder name.}
+      \item{\code{folder}}{A \code{character} string with the mail folder name.}
       \item{\code{uidvalidity}}{The folder's \code{UIDVALIDITY} at the time of the
 known state (from \code{status()} or a previous \code{resync_folder()}).}
       \item{\code{modseq}}{The modification sequence of the known state (e.g. the
 \code{HIGHESTMODSEQ} recorded then).}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3616,17 +3640,18 @@ con$unselect_folder()
   Examine the number of messages in a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$examine_folder(name = NULL, retries = NULL)}
+    \preformatted{ImapCon$examine_folder(folder = NULL, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string containing the name of an existing
+      \item{\code{folder}}{A \code{character} string containing the name of an existing
 mail folder on the user's mailbox. If no name is passed, the command
 will be executed using the previously selected mail folder name.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3636,7 +3661,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$examine_folder()
 
 # or directly:
@@ -3656,16 +3681,17 @@ con$examine_folder("Sent")
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$status(
-  name = NULL,
+  folder = NULL,
   items = c("MESSAGES", "RECENT", "UIDNEXT", "UIDVALIDITY", "UNSEEN"),
-  retries = NULL
+  retries = NULL,
+  name = NULL
 )}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A \code{character} string containing the name of an existing
+      \item{\code{folder}}{A \code{character} string containing the name of an existing
 mail folder on the user's mailbox. If no name is passed, the command
 will be executed using the previously selected mail folder name.}
       \item{\code{items}}{A \code{character} vector with the status data items to
@@ -3676,6 +3702,7 @@ request. Must be a subset of \code{"MESSAGES"}, \code{"RECENT"},
 all of them.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3684,7 +3711,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$status(name = "INBOX")
+    \preformatted{con$status(folder = "INBOX")
 
 # or, for the selected folder and specific items only:
 con$select_folder("INBOX")
@@ -3701,13 +3728,19 @@ con$status(items = c("MESSAGES", "UNSEEN"))
   Create a new mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$create_folder(name, mute = NULL, retries = NULL, special_use = NULL)}
+    \preformatted{ImapCon$create_folder(
+  folder = NULL,
+  mute = NULL,
+  retries = NULL,
+  special_use = NULL,
+  name = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of the new mail folder to be
+      \item{\code{folder}}{A string containing the name of the new mail folder to be
 created.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
@@ -3717,6 +3750,7 @@ Default is \code{1}.}
 special-use attributes to assign to the new folder, e.g.
 \code{"\\Archive"} (CREATE-SPECIAL-USE, RFC 6154; requires that
 server capability).}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3725,7 +3759,7 @@ server capability).}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$create_folder(name = "New Folder Name")
+    \preformatted{con$create_folder(folder = "New Folder Name")
 }
     \if{html}{\out{</div>}}
   }
@@ -3739,28 +3773,30 @@ server capability).}
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{ImapCon$rename_folder(
-  name = NULL,
+  folder = NULL,
   new_name,
   reselect = TRUE,
   mute = NULL,
-  retries = NULL
+  retries = NULL,
+  name = NULL
 )}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of the mail folder to be
+      \item{\code{folder}}{A string containing the name of the mail folder to be
 renamed. If no name is passed, the command will be executed using the
 previously selected mail folder name.}
       \item{\code{new_name}}{A string containing the new name to be assigned.}
       \item{\code{reselect}}{A logical. If \code{TRUE}, calls
-\code{select_folder(name = to_folder)} under the hood before returning
+\code{select_folder(folder = to_folder)} under the hood before returning
 the output. Default is \code{TRUE}.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3769,10 +3805,10 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "Folder A")
+    \preformatted{con$select_folder(folder = "Folder A")
 con$rename_folder(new_name = "Folder B")
 # or directly:
-con$rename_folder(name = "Folder A", new_name = "Folder B")
+con$rename_folder(folder = "Folder A", new_name = "Folder B")
 }
     \if{html}{\out{</div>}}
   }
@@ -3785,18 +3821,19 @@ con$rename_folder(name = "Folder A", new_name = "Folder B")
   Delete a mail folder.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$delete_folder(name, mute = NULL, retries = NULL)}
+    \preformatted{ImapCon$delete_folder(folder = NULL, mute = NULL, retries = NULL, name = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of the mail folder to be
+      \item{\code{folder}}{A string containing the name of the mail folder to be
 deleted.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3805,7 +3842,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$delete_folder(name = "Folder to remove")
+    \preformatted{con$delete_folder(folder = "Folder to remove")
 }
     \if{html}{\out{</div>}}
   }
@@ -3819,18 +3856,24 @@ Default is \code{1}.}
   to the set returned by \code{list_subscribed_folders()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$subscribe_folder(name, mute = NULL, retries = NULL)}
+    \preformatted{ImapCon$subscribe_folder(
+  folder = NULL,
+  mute = NULL,
+  retries = NULL,
+  name = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of the mail folder to subscribe
+      \item{\code{folder}}{A string containing the name of the mail folder to subscribe
 to.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3839,7 +3882,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$subscribe_folder(name = "INBOX")
+    \preformatted{con$subscribe_folder(folder = "INBOX")
 }
     \if{html}{\out{</div>}}
   }
@@ -3853,18 +3896,24 @@ Default is \code{1}.}
   removing it from the set returned by \code{list_subscribed_folders()}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$unsubscribe_folder(name, mute = NULL, retries = NULL)}
+    \preformatted{ImapCon$unsubscribe_folder(
+  folder = NULL,
+  mute = NULL,
+  retries = NULL,
+  name = NULL
+)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{name}}{A string containing the name of the mail folder to
+      \item{\code{folder}}{A string containing the name of the mail folder to
 unsubscribe from.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{name}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -3873,7 +3922,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$unsubscribe_folder(name = "INBOX")
+    \preformatted{con$unsubscribe_folder(folder = "INBOX")
 }
     \if{html}{\out{</div>}}
   }
@@ -3902,7 +3951,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$list_flags()
 }
     \if{html}{\out{</div>}}
@@ -4047,7 +4096,7 @@ and \code{\link{AND}}, and criteria helper functions such as
 \code{\link{older_than}}.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERIA". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4082,7 +4131,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # ex1
 con$search(OR(before(date_char = "17-Apr-2015"),
               string(expr = "John", where = "FROM")))
@@ -4120,7 +4169,7 @@ con$search(AND(smaller_than(size = "512000"),
 search criterion.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4180,7 +4229,7 @@ con$search_larger_than(size = 512000)
 search criterion.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4209,7 +4258,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages with size smaller than 512Kb
 con$search_smaller_than(size = 512000)
 }
@@ -4242,7 +4291,7 @@ con$search_smaller_than(size = 512000)
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4271,7 +4320,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages with date before "02-Jan-2020", presenting the
 # .. results as unique identifiers (UID)
 con$search_before(date = "02-Jan-2020", use_uid = TRUE)
@@ -4305,7 +4354,7 @@ con$search_before(date = "02-Jan-2020", use_uid = TRUE)
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4334,7 +4383,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages with date since "02-Jan-2020", presenting the
 # .. results as unique identifiers (UID)
 con$search_since(date = "02-Jan-2020", use_uid = TRUE)
@@ -4368,7 +4417,7 @@ con$search_since(date = "02-Jan-2020", use_uid = TRUE)
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4397,7 +4446,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages received on date "02-Jan-2020", presenting the
 #... results as unique identifiers (UID)
 con$search_on(date = "02-Jan-2020", use_uid = TRUE)
@@ -4435,7 +4484,7 @@ objects, since IMAP servers use this uncommon date format.}
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4464,7 +4513,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_period(since_date_char = "02-Jan-2020",
@@ -4500,7 +4549,7 @@ con$search_period(since_date_char = "02-Jan-2020",
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4562,7 +4611,7 @@ con$search_sent_before(date = "02-Jan-2020", use_uid = TRUE)
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4624,7 +4673,7 @@ con$search_sent_since(date = "02-Jan-2020", use_uid = TRUE)
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4653,7 +4702,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages received on date "02-Jan-2020", presenting the
 #... results as unique identifiers (UID)
 con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
@@ -4691,7 +4740,7 @@ objects, since IMAP servers use this uncommon date format.}
 objects, since IMAP servers use this uncommon date format.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4720,7 +4769,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
 #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
 con$search_sent_period(since_date_char = "02-Jan-2020",
@@ -4755,7 +4804,7 @@ con$search_sent_period(since_date_char = "02-Jan-2020",
 in a selected mail folder.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4781,7 +4830,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for all messages in the mail folder that are marked as "SEEN" AND
 #.. "ANSWERED"
 con$search_flag(name = c("SEEN", "ANSWERED"))
@@ -4814,7 +4863,7 @@ con$search_flag(name = c("SEEN", "ANSWERED"))
 the search criterion.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4843,7 +4892,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for all messages received in the last hour (not older than 3600 seconds)
 con$search_older_than(seconds = 3600, negate = TRUE)
 }
@@ -4875,7 +4924,7 @@ con$search_older_than(seconds = 3600, negate = TRUE)
 the search criterion.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4904,7 +4953,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for all messages received in the last hour (younger than 3600 seconds)
 con$search_younger_than(seconds = 3600)
 }
@@ -4939,7 +4988,7 @@ for in messages.}
 message's Section or Header Field to search for the provided string.}
       \item{\code{negate}}{If \code{TRUE}, negates the search and seeks for "NOT SEARCH
 CRITERION". Default is \code{FALSE}.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -4968,7 +5017,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # search for messages with "@k-state.edu" in the FROM field
 con$search_string(expr = "@k-state.edu", where = "FROM")
 }
@@ -5000,7 +5049,7 @@ con$search_string(expr = "@k-state.edu", where = "FROM")
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5035,7 +5084,7 @@ is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and fetch the results (saving to disk) using the pipe
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_body(write_to_disk = TRUE, keep_in_mem = FALSE)
@@ -5074,7 +5123,7 @@ con$fetch_body(msg = res, write_to_disk = TRUE, keep_in_mem = FALSE)
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5112,7 +5161,7 @@ is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and fetch the results (also saving to disk) using the pipe
 out <- con$search_string(expr = "@k-state.edu", where = "CC") \%>\%
   con$fetch_header()
@@ -5148,7 +5197,7 @@ out <- con$fetch_header()
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5186,7 +5235,7 @@ with it only the messages modified after that sequence are returned
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and fetch the results using the pipe
 out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_metadata()
@@ -5217,7 +5266,7 @@ out <- con$fetch_metadata(msg = res)
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
 ids, or the \code{"$"} reference of a saved search.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs and the result is named by UID.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -5230,7 +5279,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$search_flag("UNSEEN") \%>\% con$fetch_preview()
 }
     \if{html}{\out{</div>}}
@@ -5255,7 +5304,7 @@ con$search_flag("UNSEEN") \%>\% con$fetch_preview()
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
 ids, or the \code{"$"} reference of a saved search.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs and the first column is \code{uid}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -5270,7 +5319,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
 }
     \if{html}{\out{</div>}}
@@ -5295,7 +5344,7 @@ con$search_since(date_char = "01-Jan-2026") \%>\% con$fetch_envelope()
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
 ids, or the \code{"$"} reference of a saved search.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs and the first column is \code{uid}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
@@ -5307,7 +5356,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 parts <- con$fetch_bodystructure(msg_id = 1:10)
 parts[parts$is_attachment, ]
 }
@@ -5339,7 +5388,7 @@ parts[parts$is_attachment, ]
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5374,7 +5423,7 @@ is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and partially fetch the results using the pipe
 # first 200 characters, writing to disk, silence results in the console
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
@@ -5403,10 +5452,11 @@ con$fetch_text(msg = res,
     \preformatted{ImapCon$copy_msg(
   msg_id,
   use_uid = NULL,
-  to_folder,
+  folder = NULL,
   reselect = TRUE,
   mute = NULL,
-  retries = NULL
+  retries = NULL,
+  to_folder = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5414,22 +5464,23 @@ con$fetch_text(msg = res,
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
-      \item{\code{to_folder}}{A \code{character} string specifying the folder to which
+      \item{\code{folder}}{A \code{character} string specifying the folder to which
 the messages will be copied.}
       \item{\code{reselect}}{A logical. If \code{TRUE}, calls
-\href{#method-select_folder}{\code{ImapCon$select_folder(name = to_folder)}}
+\href{#method-select_folder}{\code{ImapCon$select_folder(folder = to_folder)}}
 under the hood before returning the output. Default is \code{TRUE}.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{to_folder}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -5442,14 +5493,14 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and copy the results to another folder
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
-  con$copy(to_folder = "Sent")
+  con$copy(folder = "Sent")
 
 # or using a traditional approach
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-con$copy(msg = res, to_folder = "Sent")
+con$copy(msg = res, folder = "Sent")
 }
     \if{html}{\out{</div>}}
   }
@@ -5465,10 +5516,11 @@ con$copy(msg = res, to_folder = "Sent")
     \preformatted{ImapCon$move_msg(
   msg_id,
   use_uid = NULL,
-  to_folder,
+  folder = NULL,
   reselect = TRUE,
   mute = NULL,
-  retries = NULL
+  retries = NULL,
+  to_folder = NULL
 )}
     \if{html}{\out{</div>}}
   }
@@ -5476,22 +5528,23 @@ con$copy(msg = res, to_folder = "Sent")
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
 sequence numbers are reordered to fill the gap. If \code{TRUE}, the
 command will be performed using the \code{"UID"} or unique identifier.
 UIDs are always the same during the life cycle of a message in a mail folder.}
-      \item{\code{to_folder}}{A \code{character} string specifying the folder to which
+      \item{\code{folder}}{A \code{character} string specifying the folder to which
 the messages will be copied.}
       \item{\code{reselect}}{A logical. If \code{TRUE}, calls
-\href{#method-select_folder}{\code{ImapCon$select_folder(name = to_folder)}}
+\href{#method-select_folder}{\code{ImapCon$select_folder(folder = to_folder)}}
 under the hood before returning the output. Default is \code{TRUE}.}
       \item{\code{mute}}{A \code{logical}. If \code{TRUE}, mutes the confirmation message
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{to_folder}}{Deprecated alias of \code{folder}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -5504,14 +5557,14 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and copy the results to another folder
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
-  con$move(to_folder = "Sent")
+  con$move(folder = "Sent")
 
 # or using a traditional approach
 res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-con$move(msg = res, to_folder = "Sent")
+con$move(msg = res, folder = "Sent")
 }
     \if{html}{\out{</div>}}
   }
@@ -5590,7 +5643,7 @@ con$append_msg(message = msg, folder = "Drafts", flags = "Draft")
       \item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -5609,7 +5662,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # count the number of messages marked as "Flagged" and "Answered"
 con$esearch_count(flag = c("Flagged", "Answered"))
 }
@@ -5631,7 +5684,7 @@ con$esearch_count(flag = c("Flagged", "Answered"))
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5650,7 +5703,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # delete messages 70 to 73
 con$delete_msg(msg_id = 70:73)
 }
@@ -5665,13 +5718,13 @@ con$delete_msg(msg_id = 70:73)
   Permanently removes all or specific messages marked as deleted from the selected folder
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{ImapCon$expunge(msg_uid = NULL, mute = NULL, retries = NULL)}
+    \preformatted{ImapCon$expunge(msg_id = NULL, mute = NULL, retries = NULL, msg_uid = NULL)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{msg_uid}}{A \code{numeric vector} containing one or more messages UIDs.
+      \item{\code{msg_id}}{A \code{numeric vector} containing one or more messages UIDs.
 Only UIDs are allowed in this operation (note the "u" in msg_\emph{u}id).
 Expunging specific messages (\code{UID EXPUNGE}) requires the server
 \code{UIDPLUS} capability (RFC 4315); a plain expunge does not.}
@@ -5679,6 +5732,7 @@ Expunging specific messages (\code{UID EXPUNGE}) requires the server
 when the command is successfully executed. Default is \code{FALSE}.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
 Default is \code{1}.}
+      \item{\code{msg_uid}}{Deprecated alias of \code{msg_id}.}
     }
     \if{html}{\out{</div>}}
   }
@@ -5687,11 +5741,11 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # remove every message marked as deleted
 con$expunge()
 # or only a specific one (UIDPLUS servers)
-con$expunge(msg_uid = 71)
+con$expunge(msg_id = 71)
 }
     \if{html}{\out{</div>}}
   }
@@ -5714,7 +5768,7 @@ con$expunge(msg_uid = 71)
       \item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -5733,7 +5787,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # Search the minimum id of messages marked as "Answered"
 con$esearch_min_id(flag = "Answered")
 }
@@ -5758,7 +5812,7 @@ con$esearch_min_id(flag = "Answered")
       \item{\code{flag}}{A mandatory parameter that specifies one or more flags as a
 filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
 to list the flags in a selected mail folder.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, results will be
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
 presented as message sequence numbers. A message sequence number is a
 message's relative position to the oldest message in a mail folder. It may
 change after deleting or moving messages. If a message is deleted,
@@ -5777,7 +5831,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # Search the minimum id of messages marked as "Seen"
 con$esearch_max_id(flag = "Seen")
 }
@@ -5806,7 +5860,7 @@ con$esearch_max_id(flag = "Seen")
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5834,7 +5888,7 @@ sequence are updated; the ids the server refused are returned in the
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # Add the "\\Seen" permanent flag to the messages received in the last hour
 con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
   con$add_flags(flags_to_set = "\\\\Seen")
@@ -5864,7 +5918,7 @@ con$search_younger_than(seconds = 3600) \%>\% # depends on the WITHIN extension
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5892,7 +5946,7 @@ sequence are updated; the ids the server refused are returned in the
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # Replace the current flags of the messages in the search results for the
 #.. flags "\\UNSEEN" and "\\Flagged"
 con$search_since(date_char = "20-Aug-2020") \%>\%
@@ -5923,7 +5977,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -5951,7 +6005,7 @@ sequence are updated; the ids the server refused are returned in the
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # Remove the "\\SEEN" flag from the messages in the search result
 con$search_since(date_char = "20-Aug-2020") \%>\%
   con$remove_flags(flags_to_unset = "\\\\UNSEEN")
@@ -5990,7 +6044,7 @@ con$search_since(date_char = "20-Aug-2020") \%>\%
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the operation
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the operation
 uses the \code{"UID"} (unique identifier), stable during the life
 cycle of a message, instead of message sequence numbers.}
       \item{\code{parts}}{\code{NULL} (default) to fetch every attachment part, or
@@ -6019,7 +6073,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
 manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
 }
@@ -6043,7 +6097,7 @@ manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the operation
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the operation
 uses the \code{"UID"} (unique identifier) instead of message
 sequence numbers.}
       \item{\code{retries}}{Number of attempts to connect and execute the command.
@@ -6057,7 +6111,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
 }
     \if{html}{\out{</div>}}
@@ -6111,7 +6165,7 @@ locally.
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
     \preformatted{# example 1
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 con$search_string(expr = "@gmail", where = "CC") \%>\%
   con$fetch_text(write_to_disk = TRUE) \%>\% # saving the message's content as txt files
   con$get_attachments()
@@ -6139,7 +6193,7 @@ con$get_attachments(msg_list = out)
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -6156,7 +6210,7 @@ is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and fetch the attachments' list of the messages
 out <- con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments_list()
@@ -6202,7 +6256,7 @@ out
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message
 ids, or the \code{"$"} reference of a saved search.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. If \code{TRUE}, the command is
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
 performed with UIDs.}
       \item{\code{parts}}{\code{NULL} (default: the parts selected by
 \code{content_disposition}) or a \code{character} vector of section
@@ -6234,7 +6288,7 @@ Default is \code{1}.}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 con$search_string(expr = "report", where = "SUBJECT") \%>\%
   con$fetch_attachment_parts(local_dir = "~/attachments")
 }
@@ -6265,7 +6319,7 @@ con$search_string(expr = "report", where = "SUBJECT") \%>\%
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{msg_id}}{A \code{numeric vector} containing one or more message ids.}
-      \item{\code{use_uid}}{Default is \code{FALSE}. In this case, the operation will
+      \item{\code{use_uid}}{Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
 be performed using message sequence numbers. A message sequence number
 is a message's relative position to the oldest message in a mail folder.
 It may change after deleting or moving messages. If a message is deleted,
@@ -6297,7 +6351,7 @@ Default is \code{"."} (the current working directory).}
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
-    \preformatted{con$select_folder(name = "INBOX")
+    \preformatted{con$select_folder(folder = "INBOX")
 # do a search and fetch the attachments' list of the messages
 con$search_string(expr = "@k-state.edu", where = "FROM") \%>\%
   con$fetch_attachments() # the attachments will be downloaded to disk

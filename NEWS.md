@@ -4,6 +4,11 @@
 
 ### API modernization (the 2026 refactoring)
 
+- **Unified argument names**: every method that takes a mailbox name now calls it `folder` (previously `name` in the folder/ACL/metadata/quota methods and `to_folder` in `copy_msg()`/`move_msg()`), and `expunge()` takes `msg_id` like every other message operation (previously `msg_uid`). The old argument names keep working as deprecated aliases. Positional calls are unaffected.
+- The last self-contained retry loops (folder listing/management, quota, capabilities, and the like - 21 internal files) were collapsed onto the single execution engine, so every libcurl command now shares the same retry, state-restoration, and error policy.
+- The OAuth 2.0 vignette now uses `httr2` (the successor of `httr`, which is in maintenance mode) for both token flows.
+- **BREAKING: `use_uid` now defaults to `TRUE`** (as a connection-level setting of `configure_imap()`). UIDs are stable for the lifetime of a message; sequence numbers renumber whenever messages are expunged, which made the old default a correctness trap in any script that searches, deletes, and fetches. Set `configure_imap(use_uid = FALSE)` (or per call) to restore the old behavior.
+
 - **Connection-level defaults**: `use_uid`, `mute`, and `retries` can now be set once in `configure_imap()` and apply to every method; any call can still override them. No more threading `use_uid = TRUE` through every call of a script.
 - **The attachment family, 5 entry points -> 2 (+1 offline)**: `ImapCon$attachments()` downloads (BODYSTRUCTURE-guided, with `parts =` for specific MIME parts and `dest =` for the destination), `ImapCon$attachments_manifest()` lists without downloading, and the exported `extract_attachments()` reports or writes attachments from already-fetched bodies (returning zero-row data frames, never `NA`, for messages without attachments). `fetch_attachments()`, `fetch_attachment_parts()`, `fetch_attachments_list()`, `get_attachments()`, and `list_attachments()` keep working but are soft-deprecated.
 - **Deprecations with `lifecycle`**: the 15 `search_*()` methods (every one has a direct `query()` spelling) and `AND()`/`OR()` (criteria combine with R's own `&`, `|`, `!`) now signal a once-per-session deprecation warning. Nothing was removed.

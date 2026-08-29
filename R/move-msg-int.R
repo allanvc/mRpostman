@@ -11,7 +11,7 @@
 #' @param to_folder A \code{character} string specifying the folder to which
 #'   the messages will be copied.
 #' @param reselect A logical. If \code{TRUE}, calls
-#'   \href{#method-select_folder}{\code{ImapCon$select_folder(name = to_folder)}}
+#'   \href{#method-select_folder}{\code{ImapCon$select_folder(folder = to_folder)}}
 #'   under the hood before returning the output. Default is \code{TRUE}.
 #' @param mute A \code{logical}. If \code{TRUE}, the function silently
 #'   executes the command without providing a confirmation message. Default is
@@ -21,7 +21,7 @@
 #' @noRd
 move_msg_int <- function(self, msg_id, use_uid, to_folder, reselect, mute, retries) {
 
-  check_args(msg_id = msg_id, use_uid = use_uid, to_folder = to_folder,
+  check_args(msg_id = msg_id, use_uid = use_uid, folder = to_folder,
              reselect = reselect, mute = mute, retries = retries)
 
   # MOVE is an optional extension (RFC 6851) -- fail early with a clear message
@@ -65,7 +65,7 @@ move_msg_int <- function(self, msg_id, use_uid, to_folder, reselect, mute, retri
   # reselecting
   if (isTRUE(reselect)) {
     # imapconf$folder = folder
-    # select_folder(name = to_folder)
+    # select_folder(folder = to_folder)
     reselected_folder <- select_folder_int(self, name = to_folder, mute = mute, retries = 0) # ok! v0.0.9
   } else {
     reselected_folder <- NULL

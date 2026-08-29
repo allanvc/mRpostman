@@ -54,7 +54,7 @@
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  buffersize <span class="op">=</span> <span class="fl">16000</span>,</span>
 <span>  timeout_ms <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  use_uid <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_uid <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mute <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  retries <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
@@ -118,8 +118,9 @@ set.</p></dd>
 <dd><p>Connection-level default for the <code>use_uid</code> argument
 of the methods: if <code>TRUE</code>, operations use the <code>"UID"</code>
 (unique identifier), stable during the life cycle of a message, instead
-of message sequence numbers. Each call can still override it. Default is
-<code>FALSE</code>.</p></dd>
+of message sequence numbers. Each call can still override it. Since
+3.0.0 the default is <code>TRUE</code>: UIDs are stable, sequence numbers
+renumber whenever messages are expunged.</p></dd>
 
 
 <dt id="arg-mute">mute<a class="anchor" aria-label="anchor" href="#arg-mute"></a></dt>

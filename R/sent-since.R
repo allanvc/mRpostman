@@ -3,7 +3,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages SENT SINCE "22-Mar-2020" OR containing the STRING
 #' #  "congratulations" in the subject.
 #' res <- con$search(request = AND(sent_since(date_char = "22-Mar-2020"),

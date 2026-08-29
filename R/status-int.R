@@ -76,40 +76,8 @@ status_int <- function(self, name, items, retries) {
   # isolating the handle
   h <- self$con_handle
 
-  tryCatch({
-    # adding the STATUS folder customrequest parameter
-    curl::handle_setopt(handle = h,
-                        customrequest = paste0("STATUS ", folder, " ", items_str))
-  }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-  })
-
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = h)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self)
-  })
-
-  if (is.null(response)) { # it is not necessary to select again
-    count_retries = 0 #the first try doesnt count
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = h)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-    }
-
-    if (is.null(response)) {
-      stop('Request error: the server returned an error.')
-    }
-
-  }
-
+  response <- imap_exec(self, customrequest = paste0("STATUS ", folder, " ", items_str),
+                        retries = retries)$response
   # the untagged "* STATUS" line may arrive via headers or content
   resp_char <- paste(rawToChar(response$headers), rawToChar(response$content))
   status_out <- parse_status_counts(resp_char)

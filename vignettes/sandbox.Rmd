@@ -210,7 +210,7 @@ con$thread(algorithm = "REFERENCES")
 ### Flags and mailbox management
 
 ```{r}
-con$copy_msg(msg_id = ids_flagged[1], to_folder = "ProjectAtlas")
+con$copy_msg(msg_id = ids_flagged[1], folder = "ProjectAtlas")
 con$add_flags(msg_id = ids_flagged[1], flags_to_set = "\\Deleted")
 con$expunge()
 ```

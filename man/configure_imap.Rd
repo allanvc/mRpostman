@@ -14,7 +14,7 @@ configure_imap(
   verbose = FALSE,
   buffersize = 16000,
   timeout_ms = 0,
-  use_uid = FALSE,
+  use_uid = TRUE,
   mute = FALSE,
   retries = 1,
   ...
@@ -55,8 +55,9 @@ set.}
 \item{use_uid}{Connection-level default for the \code{use_uid} argument
 of the methods: if \code{TRUE}, operations use the \code{"UID"}
 (unique identifier), stable during the life cycle of a message, instead
-of message sequence numbers. Each call can still override it. Default is
-\code{FALSE}.}
+of message sequence numbers. Each call can still override it. Since
+3.0.0 the default is \code{TRUE}: UIDs are stable, sequence numbers
+renumber whenever messages are expunged.}
 
 \item{mute}{Connection-level default for the \code{mute} argument of the
 methods: if \code{TRUE}, confirmation messages are suppressed. Each

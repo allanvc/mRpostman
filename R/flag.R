@@ -8,7 +8,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages with Flag "UNSEEN" AND NOT Smaller Than  512KB.
 #' res <- con$search(request = AND(flag("UNSEEN"),
 #'                                 smaller_than(size = 512000, negate = TRUE)))

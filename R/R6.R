@@ -72,8 +72,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   re-execution of a command. Default is 0, which means that no timeout limit is
     #'   set.
     #' @param use_uid Connection-level default for the \code{use_uid}
-    #'   argument of the methods; each call can still override it. Default
-    #'   is \code{FALSE}.
+    #'   argument of the methods; each call can still override it. Since
+    #'   3.0.0 the default is \code{TRUE} (UIDs are stable; sequence
+    #'   numbers renumber on expunge).
     #' @param mute Connection-level default for the \code{mute} argument of
     #'   the methods; each call can still override it. Default is \code{FALSE}.
     #' @param retries Connection-level default for the \code{retries}
@@ -93,7 +94,7 @@ ImapCon <- R6::R6Class("ImapCon",
                           verbose = FALSE,
                           buffersize = 16000,
                           timeout_ms = 0,
-                          use_uid = FALSE,
+                          use_uid = TRUE,
                           mute = FALSE,
                           retries = 1,
                           ...) {
@@ -383,7 +384,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   ids.
     #' @param part A \code{character} string with the section number, as
     #'   reported by \code{fetch_bodystructure()} (e.g. \code{"2"}).
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.
     #' @param folder The folder to read from. If \code{NULL} (default), the
     #'   currently selected folder.
     #' @param compress A \code{logical}. If \code{TRUE}, the second connection
@@ -400,7 +401,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     fetch_binary = function(msg_id, part, use_uid = NULL, folder = NULL,
                             compress = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_binary_int(self, private$auth, msg_id, part, use_uid, folder,
                               compress, retries)
@@ -488,7 +489,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{"-1:-100"} for the hundred most recent matches.
     #' @param criteria A string with the search criteria. Default is
     #'   \code{"ALL"}.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs and results are presented as UIDs.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -501,7 +502,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     esearch_partial = function(range, criteria = "ALL", use_uid = NULL,
                                retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_partial_int(self, range, criteria, use_uid, retries)
       return(out)
@@ -523,7 +524,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   descending order. Default is \code{FALSE}.
     #' @param criteria A string with the search criteria restricting the set
     #'   to be sorted. Default is \code{"ALL"}.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs and results are presented as UIDs.
     #' @param char_set A string with the charset of the search criteria.
     #'   Default is \code{"UTF-8"}.
@@ -539,7 +540,7 @@ ImapCon <- R6::R6Class("ImapCon",
     esort_partial = function(range, by = "DATE", reverse = FALSE,
                              criteria = "ALL", use_uid = NULL,
                              char_set = "UTF-8", retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- esort_partial_int(self, range, by, reverse, criteria, use_uid,
                                char_set, retries)
@@ -562,7 +563,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   (default), the currently selected folder.
     #' @param flags \code{NULL} (default) or a \code{character} vector of
     #'   flags stored with the new version.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE},
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE},
     #'   \code{msg_id} is a UID.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
     #'   message. Default is \code{FALSE}.
@@ -581,7 +582,7 @@ ImapCon <- R6::R6Class("ImapCon",
     replace_msg = function(msg_id, message, folder = NULL, flags = NULL,
                            use_uid = NULL, mute = NULL, compress = FALSE,
                            retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- replace_msg_int(self, private$auth, msg_id, message, folder,
@@ -599,7 +600,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   been exercised against a live server.
     #' @param msg_id A \code{numeric vector} containing one or more message
     #'   ids.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{data.frame} with the columns \code{id},
@@ -610,7 +611,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$fetch_objectid(msg_id = 1:5)
     #' }
     fetch_objectid = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_objectid_int(self, msg_id, use_uid, retries)
       return(out)
@@ -809,7 +810,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   part to convert. Default is \code{"1"}.
     #' @param params \code{NULL} (default) or a named \code{list}/vector of
     #'   conversion parameters (e.g. \code{c("pix-x" = "320")}).
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE},
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE},
     #'   \code{msg_id} is a UID.
     #' @param folder The folder to read from. If \code{NULL} (default), the
     #'   currently selected folder.
@@ -827,7 +828,7 @@ ImapCon <- R6::R6Class("ImapCon",
     fetch_convert = function(msg_id, mimetype, part = "1", params = NULL,
                              use_uid = NULL, folder = NULL, compress = FALSE,
                              retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_convert_int(self, private$auth, msg_id, mimetype, part,
                                params, use_uid, folder, compress, retries)
@@ -849,7 +850,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{"value"} (default; both private and shared),
     #'   \code{"value.priv"}, \code{"value.shared"}, or the corresponding
     #'   \code{"size"} forms.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{data.frame} with one row per annotation:
@@ -860,7 +861,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     fetch_annotation = function(msg_id, entries = "/*", attributes = "value",
                                 use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_annotation_int(self, msg_id, entries, attributes, use_uid,
                                   retries)
@@ -879,7 +880,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param values A named \code{character} vector whose names are
     #'   \code{"value.priv"} and/or \code{"value.shared"}; use \code{NA} as
     #'   a value to delete that annotation.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, ids are UIDs.
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, ids are UIDs.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation
     #'   message. Default is \code{FALSE}.
     #' @param retries Number of attempts to connect and execute the command.
@@ -892,7 +893,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     store_annotation = function(msg_id, entry, values, use_uid = NULL,
                                 mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- store_annotation_int(self, msg_id, entry, values, use_uid, mute,
@@ -943,7 +944,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{(subject == "budget" | "budget 3") & flag != "SEEN"}.
     #' @param negate If \code{TRUE}, negates the whole search. Default is
     #'   \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, results are
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, results are
     #'   presented as UIDs.
     #' @param esearch A logical. If \code{TRUE} and the server advertises
     #'   \code{ESEARCH}, condenses the result transmission. Default is
@@ -964,7 +965,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     query = function(expr, negate = FALSE, use_uid = NULL, esearch = FALSE,
                      save = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       request <- translate_query_(substitute(expr), parent.frame())
       out <- search_int(self, request, negate, use_uid, esearch, retries,
@@ -1066,7 +1067,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description Get the quota root(s) and quota usage/limits of a mail folder
     #'   (IMAP \code{GETQUOTAROOT}, RFC 9208). Requires the server \code{QUOTA}
     #'   capability.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -1077,9 +1078,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$get_quota_root(name = "INBOX")
     #' }
-    get_quota_root = function(name = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    get_quota_root = function(folder = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$get_quota_root(name)", "ImapCon$get_quota_root(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- get_quota_root_int(self, name, retries)
+      out <- get_quota_root_int(self, folder, retries)
       return(out)
     },
 
@@ -1131,7 +1137,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description Get metadata entries (annotations) of a mail folder or of
     #'   the server (IMAP \code{GETMETADATA}, RFC 5464). Requires the server
     #'   \code{METADATA} (or \code{METADATA-SERVER}) capability.
-    #' @param name A \code{character} string with the mail folder name, or
+    #' @param folder A \code{character} string with the mail folder name, or
     #'   \code{NULL} for server-level entries.
     #' @param entries A \code{character} vector of entry names, e.g.
     #'   \code{"/private/comment"} or \code{"/shared/vendor/..."}.
@@ -1145,20 +1151,25 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   and \code{value} (\code{NA} when the entry has no value).
     #' @examples
     #' \dontrun{
-    #' con$get_metadata(name = "INBOX", entries = "/private/comment")
-    #' con$get_metadata(name = NULL, entries = "/shared/comment")
+    #' con$get_metadata(folder = "INBOX", entries = "/private/comment")
+    #' con$get_metadata(folder = NULL, entries = "/shared/comment")
     #' }
-    get_metadata = function(name = NULL, entries, depth = NULL, max_size = NULL,
-                            retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    get_metadata = function(folder = NULL, entries, depth = NULL, max_size = NULL,
+                            retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$get_metadata(name)", "ImapCon$get_metadata(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- get_metadata_int(self, name, entries, depth, max_size, retries)
+      out <- get_metadata_int(self, folder, entries, depth, max_size, retries)
       return(out)
     },
 
     #' @description Set (or remove) metadata entries of a mail folder or of the
     #'   server (IMAP \code{SETMETADATA}, RFC 5464). Requires the server
     #'   \code{METADATA} (or \code{METADATA-SERVER}) capability.
-    #' @param name A \code{character} string with the mail folder name, or
+    #' @param folder A \code{character} string with the mail folder name, or
     #'   \code{NULL} for server-level entries.
     #' @param entries A named \code{character} vector: the names are the
     #'   entries, the values the new values; \code{NA} removes an entry.
@@ -1168,18 +1179,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = "reviewed"))
-    #' con$set_metadata(name = "INBOX", entries = c("/private/comment" = NA))
+    #' con$set_metadata(folder = "INBOX", entries = c("/private/comment" = "reviewed"))
+    #' con$set_metadata(folder = "INBOX", entries = c("/private/comment" = NA))
     #' }
-    set_metadata = function(name = NULL, entries, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    set_metadata = function(folder = NULL, entries, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$set_metadata(name)", "ImapCon$set_metadata(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(set_metadata_int(self, name, entries, retries))
+      invisible(set_metadata_int(self, folder, entries, retries))
     },
 
     ## ACL (RFC 4314)
     #' @description Get the access control list of a mail folder (IMAP
     #'   \code{GETACL}, RFC 4314). Requires the server \code{ACL} capability.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -1188,18 +1204,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   of right letters, e.g. \code{"lrwstipekxa"}).
     #' @examples
     #' \dontrun{
-    #' con$get_acl(name = "INBOX")
+    #' con$get_acl(folder = "INBOX")
     #' }
-    get_acl = function(name = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    get_acl = function(folder = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$get_acl(name)", "ImapCon$get_acl(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- get_acl_int(self, name, retries)
+      out <- get_acl_int(self, folder, retries)
       return(out)
     },
 
     #' @description Set or modify the rights of an identifier on a mail folder
     #'   (IMAP \code{SETACL}, RFC 4314). Requires the server \code{ACL}
     #'   capability and the \code{a} (administer) right on the folder.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param identifier A \code{character} string with the user name (or
     #'   group, e.g. \code{"anyone"}) whose rights are set.
@@ -1215,15 +1236,20 @@ ImapCon <- R6::R6Class("ImapCon",
     #' con$set_acl(name = "Shared", identifier = "anyone", rights = "lrs")
     #' con$set_acl(name = "Shared", identifier = "anyone", rights = "+w")
     #' }
-    set_acl = function(name = NULL, identifier, rights, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    set_acl = function(folder = NULL, identifier, rights, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$set_acl(name)", "ImapCon$set_acl(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(set_acl_int(self, name, identifier, rights, retries))
+      invisible(set_acl_int(self, folder, identifier, rights, retries))
     },
 
     #' @description Remove all rights of an identifier on a mail folder (IMAP
     #'   \code{DELETEACL}, RFC 4314). Requires the server \code{ACL}
     #'   capability.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param identifier A \code{character} string with the user name (or
     #'   group) whose rights are removed.
@@ -1234,15 +1260,20 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$delete_acl(name = "Shared", identifier = "anyone")
     #' }
-    delete_acl = function(name = NULL, identifier, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    delete_acl = function(folder = NULL, identifier, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$delete_acl(name)", "ImapCon$delete_acl(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(delete_acl_int(self, name, identifier, retries))
+      invisible(delete_acl_int(self, folder, identifier, retries))
     },
 
     #' @description List the rights that may be granted to an identifier on a
     #'   mail folder (IMAP \code{LISTRIGHTS}, RFC 4314). Requires the server
     #'   \code{ACL} capability.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param identifier A \code{character} string with the user name (or
     #'   group).
@@ -1255,27 +1286,37 @@ ImapCon <- R6::R6Class("ImapCon",
     #' \dontrun{
     #' con$list_rights(name = "INBOX", identifier = "anyone")
     #' }
-    list_rights = function(name = NULL, identifier, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    list_rights = function(folder = NULL, identifier, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$list_rights(name)", "ImapCon$list_rights(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- list_rights_int(self, name, identifier, retries)
+      out <- list_rights_int(self, folder, identifier, retries)
       return(out)
     },
 
     #' @description Get the rights of the current user on a mail folder (IMAP
     #'   \code{MYRIGHTS}, RFC 4314). Requires the server \code{ACL}
     #'   capability.
-    #' @param name A \code{character} string with the mail folder name. If no
+    #' @param folder A \code{character} string with the mail folder name. If no
     #'   name is passed, the command uses the previously selected folder.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{character} string of right letters.
     #' @examples
     #' \dontrun{
-    #' con$my_rights(name = "INBOX")
+    #' con$my_rights(folder = "INBOX")
     #' }
-    my_rights = function(name = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    my_rights = function(folder = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$my_rights(name)", "ImapCon$my_rights(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- my_rights_int(self, name, retries)
+      out <- my_rights_int(self, folder, retries)
       return(out)
     },
 
@@ -1305,7 +1346,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$check()
     #' }
     check = function(retries = NULL) {
@@ -1404,7 +1445,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Select a mail folder.
-    #' @param name A string containing the name of an existing mail folder on the
+    #' @param folder A string containing the name of an existing mail folder on the
     #'   user's mailbox.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1419,12 +1460,18 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   structure.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' }
-    select_folder = function(name, mute = NULL, retries = NULL, condstore = FALSE) {
+    #' @param name Deprecated alias of \code{folder}.
+    select_folder = function(folder = NULL, mute = NULL, retries = NULL, condstore = FALSE, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$select_folder(name)", "ImapCon$select_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      self$con_params$folder <- select_folder_int(self, name, mute, retries,
+      self$con_params$folder <- select_folder_int(self, folder, mute, retries,
                                                   condstore = condstore)
       invisible(TRUE)
     },
@@ -1435,7 +1482,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   modified since then. Requires the server \code{QRESYNC} capability
     #'   (and \code{UNSELECT} if a folder is currently selected, since the
     #'   extension must be enabled with no folder selected).
-    #' @param name A \code{character} string with the mail folder name.
+    #' @param folder A \code{character} string with the mail folder name.
     #' @param uidvalidity The folder's \code{UIDVALIDITY} at the time of the
     #'   known state (from \code{status()} or a previous \code{resync_folder()}).
     #' @param modseq The modification sequence of the known state (e.g. the
@@ -1455,9 +1502,15 @@ ImapCon <- R6::R6Class("ImapCon",
     #'                            modseq = st[["HIGHESTMODSEQ"]])
     #' delta$vanished; delta$changed
     #' }
-    resync_folder = function(name, uidvalidity, modseq, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    resync_folder = function(folder = NULL, uidvalidity, modseq, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$resync_folder(name)", "ImapCon$resync_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       retries <- conn_default(retries, self, "retries", 1)
-      out <- resync_folder_int(self, name, uidvalidity, modseq, retries)
+      out <- resync_folder_int(self, folder, uidvalidity, modseq, retries)
       return(out)
     },
 
@@ -1525,7 +1578,7 @@ ImapCon <- R6::R6Class("ImapCon",
     },
 
     #' @description Examine the number of messages in a mail folder.
-    #' @param name A \code{character} string containing the name of an existing
+    #' @param folder A \code{character} string containing the name of an existing
     #'   mail folder on the user's mailbox. If no name is passed, the command
     #'   will be executed using the previously selected mail folder name.
     #' @param retries Number of attempts to connect and execute the command.
@@ -1534,22 +1587,27 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   containing the number of messages in each category.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$examine_folder()
     #'
     #' # or directly:
     #' con$examine_folder("Sent")
     #' }
-    examine_folder = function(name = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    examine_folder = function(folder = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$examine_folder(name)", "ImapCon$examine_folder(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- examine_folder_int(self, name, retries)
+      out <- examine_folder_int(self, folder, retries)
       return(out)
     },
 
     #' @description Request the status of a mail folder without selecting it.
     #'   Unlike \code{examine_folder()}, this does not change the currently
     #'   selected folder.
-    #' @param name A \code{character} string containing the name of an existing
+    #' @param folder A \code{character} string containing the name of an existing
     #'   mail folder on the user's mailbox. If no name is passed, the command
     #'   will be executed using the previously selected mail folder name.
     #' @param items A \code{character} vector with the status data items to
@@ -1563,22 +1621,27 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return A named \code{numeric} vector with the requested status counts.
     #' @examples
     #' \dontrun{
-    #' con$status(name = "INBOX")
+    #' con$status(folder = "INBOX")
     #'
     #' # or, for the selected folder and specific items only:
     #' con$select_folder("INBOX")
     #' con$status(items = c("MESSAGES", "UNSEEN"))
     #' }
-    status = function(name = NULL, items = c("MESSAGES", "RECENT", "UIDNEXT",
+    #' @param name Deprecated alias of \code{folder}.
+    status = function(folder = NULL, items = c("MESSAGES", "RECENT", "UIDNEXT",
                                              "UIDVALIDITY", "UNSEEN"),
-                      retries = NULL) {
+                      retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$status(name)", "ImapCon$status(folder)")
+        folder <- name
+      }
       retries <- conn_default(retries, self, "retries", 1)
-      out <- status_int(self, name, items, retries)
+      out <- status_int(self, folder, items, retries)
       return(out)
     },
 
     #' @description Create a new mail folder.
-    #' @param name A string containing the name of the new mail folder to be
+    #' @param folder A string containing the name of the new mail folder to be
     #'   created.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1591,21 +1654,27 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$create_folder(name = "New Folder Name")
+    #' con$create_folder(folder = "New Folder Name")
     #' }
-    create_folder = function(name, mute = NULL, retries = NULL, special_use = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    create_folder = function(folder = NULL, mute = NULL, retries = NULL, special_use = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$create_folder(name)", "ImapCon$create_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(create_folder_int(self, name, mute, retries, special_use = special_use))
+      invisible(create_folder_int(self, folder, mute, retries, special_use = special_use))
     },
 
     #' @description Rename a mail folder.
-    #' @param name A string containing the name of the mail folder to be
+    #' @param folder A string containing the name of the mail folder to be
     #'   renamed. If no name is passed, the command will be executed using the
     #'   previously selected mail folder name.
     #' @param new_name A string containing the new name to be assigned.
     #' @param reselect A logical. If \code{TRUE}, calls
-    #'   \code{select_folder(name = to_folder)} under the hood before returning
+    #'   \code{select_folder(folder = to_folder)} under the hood before returning
     #'   the output. Default is \code{TRUE}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1614,22 +1683,27 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "Folder A")
+    #' con$select_folder(folder = "Folder A")
     #' con$rename_folder(new_name = "Folder B")
     #' # or directly:
-    #' con$rename_folder(name = "Folder A", new_name = "Folder B")
+    #' con$rename_folder(folder = "Folder A", new_name = "Folder B")
     #' }
-    rename_folder = function(name = NULL, new_name, reselect = TRUE,
-                             mute = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    rename_folder = function(folder = NULL, new_name, reselect = TRUE,
+                             mute = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$rename_folder(name)", "ImapCon$rename_folder(folder)")
+        folder <- name
+      }
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      self$con_params$folder <- rename_folder_int(self, name, new_name, reselect, mute,
+      self$con_params$folder <- rename_folder_int(self, folder, new_name, reselect, mute,
                                        retries)
       invisible(TRUE)
     },
 
     #' @description Delete a mail folder.
-    #' @param name A string containing the name of the mail folder to be
+    #' @param folder A string containing the name of the mail folder to be
     #'   deleted.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1638,17 +1712,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$delete_folder(name = "Folder to remove")
+    #' con$delete_folder(folder = "Folder to remove")
     #' }
-    delete_folder = function(name, mute = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    delete_folder = function(folder = NULL, mute = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$delete_folder(name)", "ImapCon$delete_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(delete_folder_int(self, name, mute, retries))
+      invisible(delete_folder_int(self, folder, mute, retries))
     },
 
     #' @description Subscribe to a mail folder (IMAP \code{SUBSCRIBE}), adding it
     #'   to the set returned by \code{list_subscribed_folders()}.
-    #' @param name A string containing the name of the mail folder to subscribe
+    #' @param folder A string containing the name of the mail folder to subscribe
     #'   to.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1657,17 +1737,23 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$subscribe_folder(name = "INBOX")
+    #' con$subscribe_folder(folder = "INBOX")
     #' }
-    subscribe_folder = function(name, mute = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    subscribe_folder = function(folder = NULL, mute = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$subscribe_folder(name)", "ImapCon$subscribe_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(subscribe_folder_int(self, name, mute, retries))
+      invisible(subscribe_folder_int(self, folder, mute, retries))
     },
 
     #' @description Unsubscribe from a mail folder (IMAP \code{UNSUBSCRIBE}),
     #'   removing it from the set returned by \code{list_subscribed_folders()}.
-    #' @param name A string containing the name of the mail folder to
+    #' @param folder A string containing the name of the mail folder to
     #'   unsubscribe from.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -1676,12 +1762,18 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$unsubscribe_folder(name = "INBOX")
+    #' con$unsubscribe_folder(folder = "INBOX")
     #' }
-    unsubscribe_folder = function(name, mute = NULL, retries = NULL) {
+    #' @param name Deprecated alias of \code{folder}.
+    unsubscribe_folder = function(folder = NULL, mute = NULL, retries = NULL, name = NULL) {
+      if (is.null(folder) && !is.null(name)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$unsubscribe_folder(name)", "ImapCon$unsubscribe_folder(folder)")
+        folder <- name
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      invisible(unsubscribe_folder_int(self, name, mute, retries))
+      invisible(unsubscribe_folder_int(self, folder, mute, retries))
     },
 
     #' @description List flags in a selected mail folder
@@ -1690,7 +1782,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @return \code{TRUE} in case the operation is successful.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$list_flags()
     #' }
     list_flags = function(retries = NULL) {
@@ -1734,7 +1826,7 @@ ImapCon <- R6::R6Class("ImapCon",
     sort = function(by = "DATE", reverse = FALSE, criteria = "ALL",
                     use_uid = NULL, char_set = "UTF-8", return = NULL,
                     retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries,
                       return = return)
@@ -1764,7 +1856,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     thread = function(algorithm = "REFERENCES", criteria = "ALL",
                       use_uid = NULL, char_set = "UTF-8", retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- thread_int(self, algorithm, criteria, use_uid, char_set, retries)
       return(out)
@@ -1783,7 +1875,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{\link{older_than}}.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERIA". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -1822,7 +1914,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family custom search
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # ex1
     #' con$search(OR(before(date_char = "17-Apr-2015"),
     #'               string(expr = "John", where = "FROM")))
@@ -1834,7 +1926,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     search = function(request, negate = FALSE, use_uid = NULL,
                       esearch = FALSE, save = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- search_int(self, request, negate, use_uid, esearch, retries,
                         save = save)
@@ -1853,7 +1945,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -1883,7 +1975,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     search_larger_than = function(size, negate = FALSE, use_uid = NULL,
                                   flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_larger_than()", "ImapCon$query()")
       out <- search_larger_than_int(self, size, negate, use_uid, flag, esearch,
@@ -1896,7 +1988,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -1921,13 +2013,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by size
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages with size smaller than 512Kb
     #' con$search_smaller_than(size = 512000)
     #' }
     search_smaller_than = function(size, negate = FALSE, use_uid = NULL,
                                   flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_smaller_than()", "ImapCon$query()")
       out <- search_smaller_than_int(self, size, negate, use_uid, flag, esearch,
@@ -1942,7 +2034,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -1967,14 +2059,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages with date before "02-Jan-2020", presenting the
     #' # .. results as unique identifiers (UID)
     #' con$search_before(date = "02-Jan-2020", use_uid = TRUE)
     #' }
     search_before = function(date_char, negate = FALSE, use_uid = NULL,
                              flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_before()", "ImapCon$query()")
       out <- search_before_int(self, date_char, negate, use_uid,
@@ -1988,7 +2080,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2013,14 +2105,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages with date since "02-Jan-2020", presenting the
     #' # .. results as unique identifiers (UID)
     #' con$search_since(date = "02-Jan-2020", use_uid = TRUE)
     #' }
     search_since = function(date_char, negate = FALSE, use_uid = NULL,
                             flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_since()", "ImapCon$query()")
       out <- search_since_int(self, date_char, negate, use_uid,
@@ -2034,7 +2126,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2059,14 +2151,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages received on date "02-Jan-2020", presenting the
     #' #... results as unique identifiers (UID)
     #' con$search_on(date = "02-Jan-2020", use_uid = TRUE)
     #' }
     search_on = function(date_char, negate = FALSE, use_uid = NULL,
                              flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_on()", "ImapCon$query()")
       out <- search_on_int(self, date_char, negate, use_uid,
@@ -2083,7 +2175,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2108,7 +2200,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
     #' #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
     #' con$search_period(since_date_char = "02-Jan-2020",
@@ -2118,7 +2210,7 @@ ImapCon <- R6::R6Class("ImapCon",
     search_period = function(since_date_char, before_date_char, negate = FALSE,
                              use_uid = NULL, flag = NULL, esearch = FALSE,
                              retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_period()", "ImapCon$query()")
       out <- search_period_int(self, since_date_char, before_date_char, negate,
@@ -2132,7 +2224,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2171,7 +2263,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     search_sent_before = function(date_char, negate = FALSE, use_uid = NULL,
                                   flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_before()", "ImapCon$query()")
       out <- search_sent_before_int(self, date_char, negate, use_uid,
@@ -2185,7 +2277,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2224,7 +2316,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     search_sent_since = function(date_char, negate = FALSE, use_uid = NULL,
                                  flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_since()", "ImapCon$query()")
       out <- search_sent_since_int(self, date_char, negate, use_uid,
@@ -2238,7 +2330,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2271,14 +2363,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages received on date "02-Jan-2020", presenting the
     #' #... results as unique identifiers (UID)
     #' con$search_sent_on(date = "02-Jan-2020", use_uid = TRUE)
     #' }
     search_sent_on = function(date_char, negate = FALSE, use_uid = NULL,
                               flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_on()", "ImapCon$query()")
       out <- search_sent_on_int(self, date_char, negate, use_uid,
@@ -2295,7 +2387,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   objects, since IMAP servers use this uncommon date format.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2328,7 +2420,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by date
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for all messages in the mail folder, EXCEPT (negate = TRUE) by
     #' #... those received between the dates "02-Jan-2020" and "22-Mar-2020"
     #' con$search_sent_period(since_date_char = "02-Jan-2020",
@@ -2338,7 +2430,7 @@ ImapCon <- R6::R6Class("ImapCon",
     search_sent_period = function(since_date_char, before_date_char, negate = FALSE,
                                   use_uid = NULL, flag = NULL, esearch = FALSE,
                                   retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_sent_period()", "ImapCon$query()")
       out <- search_sent_period_int(self, since_date_char, before_date_char,
@@ -2355,7 +2447,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   in a selected mail folder.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2377,14 +2469,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by flag
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for all messages in the mail folder that are marked as "SEEN" AND
     #' #.. "ANSWERED"
     #' con$search_flag(name = c("SEEN", "ANSWERED"))
     #' }
     search_flag = function(name, negate = FALSE, use_uid = NULL, esearch = FALSE,
                            retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_flag()", "ImapCon$query()")
       out <- search_flag_int(self, name, negate, use_uid, esearch, retries)
@@ -2398,7 +2490,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   the search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2427,13 +2519,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search within
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for all messages received in the last hour (not older than 3600 seconds)
     #' con$search_older_than(seconds = 3600, negate = TRUE)
     #' }
     search_older_than = function(seconds, negate = FALSE, use_uid = NULL,
                                  flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_older_than()", "ImapCon$query()")
       out <- search_older_than_int(self, seconds, negate, use_uid, flag,
@@ -2446,7 +2538,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   the search criterion.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2475,13 +2567,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search within
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for all messages received in the last hour (younger than 3600 seconds)
     #' con$search_younger_than(seconds = 3600)
     #' }
     search_younger_than = function(seconds, negate = FALSE, use_uid = NULL,
                                    flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_younger_than()", "ImapCon$query()")
       out <- search_younger_than_int(self, seconds, negate, use_uid, flag,
@@ -2497,7 +2589,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   message's Section or Header Field to search for the provided string.
     #' @param negate If \code{TRUE}, negates the search and seeks for "NOT SEARCH
     #'   CRITERION". Default is \code{FALSE}.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -2531,13 +2623,13 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family search by string
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # search for messages with "@k-state.edu" in the FROM field
     #' con$search_string(expr = "@k-state.edu", where = "FROM")
     #' }
     search_string = function(expr, where, negate = FALSE, use_uid = NULL,
                              flag = NULL, esearch = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$search_string()", "ImapCon$query()")
       out <- search_string_int(self, expr, where, negate, use_uid, flag, esearch,
@@ -2549,7 +2641,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch message body (message's full content)
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -2580,7 +2672,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and fetch the results (saving to disk) using the pipe
     #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_body(write_to_disk = TRUE, keep_in_mem = FALSE)
@@ -2594,7 +2686,7 @@ ImapCon <- R6::R6Class("ImapCon",
     fetch_body = function(msg_id, use_uid = NULL, mime_level = NULL, peek = TRUE,
                           partial = NULL, write_to_disk = FALSE,
                           keep_in_mem = TRUE, mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_body_int(self, msg_id, use_uid, mime_level, peek, partial, write_to_disk,
@@ -2610,7 +2702,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch message header
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -2644,7 +2736,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and fetch the results (also saving to disk) using the pipe
     #' out <- con$search_string(expr = "@k-state.edu", where = "CC") %>%
     #'   con$fetch_header()
@@ -2658,7 +2750,7 @@ ImapCon <- R6::R6Class("ImapCon",
                             negate_fields = FALSE, peek = TRUE, partial = NULL,
                             write_to_disk = FALSE, keep_in_mem = TRUE,
                             mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_header_int(self, msg_id, use_uid, fields, negate_fields, peek,
@@ -2674,7 +2766,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch message metadata
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -2708,7 +2800,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and fetch the results using the pipe
     #' out <- con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_metadata()
@@ -2721,7 +2813,7 @@ ImapCon <- R6::R6Class("ImapCon",
     fetch_metadata = function(msg_id, use_uid = NULL, attribute = NULL,
                               write_to_disk = FALSE, keep_in_mem = TRUE,
                               mute = NULL, retries = NULL, changed_since = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_metadata_int(self, msg_id, use_uid, attribute, write_to_disk,
@@ -2742,7 +2834,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   body. Requires the server \code{PREVIEW} capability.
     #' @param msg_id A \code{numeric vector} containing one or more message
     #'   ids, or the \code{"$"} reference of a saved search.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs and the result is named by UID.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -2750,11 +2842,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   (\code{NA} when the server has none).
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$search_flag("UNSEEN") %>% con$fetch_preview()
     #' }
     fetch_preview = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_preview_int(self, msg_id, use_uid, retries)
       return(out)
@@ -2766,7 +2858,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{\link{parse_envelope}}.
     #' @param msg_id A \code{numeric vector} containing one or more message
     #'   ids, or the \code{"$"} reference of a saved search.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs and the first column is \code{uid}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
@@ -2776,11 +2868,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{in_reply_to}, and \code{message_id}.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$search_since(date_char = "01-Jan-2026") %>% con$fetch_envelope()
     #' }
     fetch_envelope = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_envelope_int(self, msg_id, use_uid, retries)
       return(out)
@@ -2792,19 +2884,19 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   size, and disposition. See \code{\link{parse_bodystructure}}.
     #' @param msg_id A \code{numeric vector} containing one or more message
     #'   ids, or the \code{"$"} reference of a saved search.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs and the first column is \code{uid}.
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{data.frame} with one row per MIME part of each message.
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' parts <- con$fetch_bodystructure(msg_id = 1:10)
     #' parts[parts$is_attachment, ]
     #' }
     fetch_bodystructure = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_bodystructure_int(self, msg_id, use_uid, retries)
       return(out)
@@ -2812,7 +2904,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch message text
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -2843,7 +2935,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and partially fetch the results using the pipe
     #' # first 200 characters, writing to disk, silence results in the console
     #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
@@ -2862,7 +2954,7 @@ ImapCon <- R6::R6Class("ImapCon",
     fetch_text = function(msg_id, use_uid = NULL, peek = TRUE, partial = NULL,
                           write_to_disk = FALSE, keep_in_mem = TRUE, mute = NULL,
                           base64_decode = FALSE, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_text_int(self, msg_id, use_uid, peek, partial, write_to_disk,
@@ -2880,17 +2972,17 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Copy message(s) between the selected folder and another one
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
-    #' @param to_folder A \code{character} string specifying the folder to which
+    #' @param folder A \code{character} string specifying the folder to which
     #'   the messages will be copied.
     #' @param reselect A logical. If \code{TRUE}, calls
-    #'   \href{#method-select_folder}{\code{ImapCon$select_folder(name = to_folder)}}
+    #'   \href{#method-select_folder}{\code{ImapCon$select_folder(folder = to_folder)}}
     #'   under the hood before returning the output. Default is \code{TRUE}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -2904,22 +2996,28 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and copy the results to another folder
     #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
-    #'   con$copy(to_folder = "Sent")
+    #'   con$copy(folder = "Sent")
     #'
     #' # or using a traditional approach
     #' res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-    #' con$copy(msg = res, to_folder = "Sent")
+    #' con$copy(msg = res, folder = "Sent")
     #'
     #' }
-    copy_msg = function(msg_id, use_uid = NULL, to_folder, reselect = TRUE,
-                        mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+    #' @param to_folder Deprecated alias of \code{folder}.
+    copy_msg = function(msg_id, use_uid = NULL, folder = NULL, reselect = TRUE,
+                        mute = NULL, retries = NULL, to_folder = NULL) {
+      if (is.null(folder) && !is.null(to_folder)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$copy_msg(to_folder)", "ImapCon$copy_msg(folder)")
+        folder <- to_folder
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      out <- copy_msg_int(self, msg_id, use_uid, to_folder, reselect, mute, retries)
+      out <- copy_msg_int(self, msg_id, use_uid, folder, reselect, mute, retries)
 
       if (!is.null(out$folder)) {
         self$con_params$folder <- out$folder
@@ -2935,17 +3033,17 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Move message(s) between the selected folder and another one
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
     #'   sequence numbers are reordered to fill the gap. If \code{TRUE}, the
     #'   command will be performed using the \code{"UID"} or unique identifier.
     #'   UIDs are always the same during the life cycle of a message in a mail folder.
-    #' @param to_folder A \code{character} string specifying the folder to which
+    #' @param folder A \code{character} string specifying the folder to which
     #'   the messages will be copied.
     #' @param reselect A logical. If \code{TRUE}, calls
-    #'   \href{#method-select_folder}{\code{ImapCon$select_folder(name = to_folder)}}
+    #'   \href{#method-select_folder}{\code{ImapCon$select_folder(folder = to_folder)}}
     #'   under the hood before returning the output. Default is \code{TRUE}.
     #' @param mute A \code{logical}. If \code{TRUE}, mutes the confirmation message
     #'   when the command is successfully executed. Default is \code{FALSE}.
@@ -2959,22 +3057,28 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and copy the results to another folder
     #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
-    #'   con$move(to_folder = "Sent")
+    #'   con$move(folder = "Sent")
     #'
     #' # or using a traditional approach
     #' res <- con$search_string(expr = "@k-state.edu", where = "FROM")
-    #' con$move(msg = res, to_folder = "Sent")
+    #' con$move(msg = res, folder = "Sent")
     #'
     #' }
-    move_msg = function(msg_id, use_uid = NULL, to_folder, reselect = TRUE,
-                        mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+    #' @param to_folder Deprecated alias of \code{folder}.
+    move_msg = function(msg_id, use_uid = NULL, folder = NULL, reselect = TRUE,
+                        mute = NULL, retries = NULL, to_folder = NULL) {
+      if (is.null(folder) && !is.null(to_folder)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$move_msg(to_folder)", "ImapCon$move_msg(folder)")
+        folder <- to_folder
+      }
+      assertthat::assert_that(!is.null(folder), msg = '"folder" is required.')
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      out <- move_msg_int(self, msg_id, use_uid, to_folder, reselect, mute, retries)
+      out <- move_msg_int(self, msg_id, use_uid, folder, reselect, mute, retries)
 
       if (!is.null(out$folder)) {
         self$con_params$folder <- out$folder
@@ -3029,7 +3133,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the counting operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -3046,12 +3150,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # count the number of messages marked as "Flagged" and "Answered"
     #' con$esearch_count(flag = c("Flagged", "Answered"))
     #' }
     esearch_count = function(flag, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_count_int(self, flag, use_uid, retries)
 
@@ -3061,7 +3165,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Delete message(s) in the selected mail folder
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3076,12 +3180,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # delete messages 70 to 73
     #' con$delete_msg(msg_id = 70:73)
     #' }
     delete_msg = function(msg_id, use_uid = NULL, mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- delete_msg_int(self, msg_id, use_uid, mute, retries)
@@ -3092,7 +3196,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
 
     #' @description Permanently removes all or specific messages marked as deleted from the selected folder
-    #' @param msg_uid A \code{numeric vector} containing one or more messages UIDs.
+    #' @param msg_id A \code{numeric vector} containing one or more messages UIDs.
     #'   Only UIDs are allowed in this operation (note the "u" in msg_\emph{u}id).
     #'   Expunging specific messages (\code{UID EXPUNGE}) requires the server
     #'   \code{UIDPLUS} capability (RFC 4315); a plain expunge does not.
@@ -3104,16 +3208,21 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # remove every message marked as deleted
     #' con$expunge()
     #' # or only a specific one (UIDPLUS servers)
-    #' con$expunge(msg_uid = 71)
+    #' con$expunge(msg_id = 71)
     #' }
-    expunge = function(msg_uid = NULL, mute = NULL, retries = NULL) {
+    #' @param msg_uid Deprecated alias of \code{msg_id}.
+    expunge = function(msg_id = NULL, mute = NULL, retries = NULL, msg_uid = NULL) {
+      if (is.null(msg_id) && !is.null(msg_uid)) {
+        lifecycle::deprecate_warn("3.0.0", "ImapCon$expunge(msg_uid)", "ImapCon$expunge(msg_id)")
+        msg_id <- msg_uid
+      }
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
-      out <- expunge_int(self, msg_uid, mute, retries)
+      out <- expunge_int(self, msg_id, mute, retries)
 
       invisible(out)
 
@@ -3124,7 +3233,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -3141,12 +3250,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # Search the minimum id of messages marked as "Answered"
     #' con$esearch_min_id(flag = "Answered")
     #' }
     esearch_min_id = function(flag, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_min_id_int(self, flag, use_uid, retries)
 
@@ -3159,7 +3268,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param flag A mandatory parameter that specifies one or more flags as a
     #'   filter to the searching operation. Use \href{#method-list_flags}{\code{ImapCon$list_flags()}}
     #'   to list the flags in a selected mail folder.
-    #' @param use_uid Default is \code{FALSE}. In this case, results will be
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, results will be
     #'   presented as message sequence numbers. A message sequence number is a
     #'   message's relative position to the oldest message in a mail folder. It may
     #'   change after deleting or moving messages. If a message is deleted,
@@ -3176,12 +3285,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # Search the minimum id of messages marked as "Seen"
     #' con$esearch_max_id(flag = "Seen")
     #' }
     esearch_max_id = function(flag, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- esearch_max_id_int(self, flag, use_uid, retries)
 
@@ -3193,7 +3302,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Add flags to one or more messages
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3224,14 +3333,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # Add the "\\Seen" permanent flag to the messages received in the last hour
     #' con$search_younger_than(seconds = 3600) %>% # depends on the WITHIN extension
     #'   con$add_flags(flags_to_set = "\\Seen")
     #' }
     add_flags = function(msg_id, use_uid = NULL, flags_to_set, mute = NULL,
                          retries = NULL, unchanged_since = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- add_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
@@ -3243,7 +3352,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Replace the current flags of one or more messages
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3274,7 +3383,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # Replace the current flags of the messages in the search results for the
     #' #.. flags "\\UNSEEN" and "\\Flagged"
     #' con$search_since(date_char = "20-Aug-2020") %>%
@@ -3282,7 +3391,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' }
     replace_flags = function(msg_id, use_uid = NULL, flags_to_set, mute = NULL,
                              retries = NULL, unchanged_since = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- replace_flags_int(self, msg_id, use_uid, flags_to_set, mute, retries,
@@ -3294,7 +3403,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Remove flag(s) of one or more messages
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3325,14 +3434,14 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family complementary operations
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # Remove the "\\SEEN" flag from the messages in the search result
     #' con$search_since(date_char = "20-Aug-2020") %>%
     #'   con$remove_flags(flags_to_unset = "\\UNSEEN")
     #' }
     remove_flags = function(msg_id, use_uid = NULL, flags_to_unset, mute = NULL,
                             retries = NULL, unchanged_since = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- remove_flags_int(self, msg_id, use_uid, flags_to_unset, mute, retries,
@@ -3353,7 +3462,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   it replaces \code{fetch_attachments()} and
     #'   \code{fetch_attachment_parts()}.
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the operation
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the operation
     #'   uses the \code{"UID"} (unique identifier), stable during the life
     #'   cycle of a message, instead of message sequence numbers.
     #' @param parts \code{NULL} (default) to fetch every attachment part, or
@@ -3378,7 +3487,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family attachments
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' res <- con$query(subject == "report" & flag != "SEEN", use_uid = TRUE)
     #' manifest <- con$attachments(res, use_uid = TRUE, dest = "~/attachments")
     #' }
@@ -3386,7 +3495,7 @@ ImapCon <- R6::R6Class("ImapCon",
                            content_disposition = "both", dest = ".",
                            override = FALSE, as_is = FALSE, mute = NULL,
                            retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_attachment_parts_int(self, msg_id, use_uid, parts,
@@ -3402,7 +3511,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   them: one server round trip over the \code{BODYSTRUCTURE} metadata.
     #'   Replaces \code{fetch_attachments_list()}.
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the operation
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the operation
     #'   uses the \code{"UID"} (unique identifier) instead of message
     #'   sequence numbers.
     #' @param retries Number of attempts to connect and execute the command.
@@ -3412,11 +3521,11 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family attachments
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$attachments_manifest(con$query(size > 1e6, use_uid = TRUE), use_uid = TRUE)
     #' }
     attachments_manifest = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- fetch_attachments_list_int(self, msg_id, use_uid, retries)
       # a message without attachments is an empty manifest, never NA
@@ -3481,7 +3590,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @examples
     #' \dontrun{
     #' # example 1
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$search_string(expr = "@gmail", where = "CC") %>%
     #'   con$fetch_text(write_to_disk = TRUE) %>% # saving the message's content as txt files
     #'   con$get_attachments()
@@ -3510,7 +3619,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch attachments' list
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3523,7 +3632,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and fetch the attachments' list of the messages
     #' out <- con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_attachments_list()
@@ -3536,7 +3645,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'
     #' }
     fetch_attachments_list = function(msg_id, use_uid = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachments_list()", "ImapCon$attachments_manifest()")
       out <- fetch_attachments_list_int(self, msg_id, use_uid, retries)
@@ -3555,7 +3664,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   declared by the server and transfers nothing but the attachments.
     #' @param msg_id A \code{numeric vector} containing one or more message
     #'   ids, or the \code{"$"} reference of a saved search.
-    #' @param use_uid Default is \code{FALSE}. If \code{TRUE}, the command is
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). If \code{TRUE}, the command is
     #'   performed with UIDs.
     #' @param parts \code{NULL} (default: the parts selected by
     #'   \code{content_disposition}) or a \code{character} vector of section
@@ -3582,7 +3691,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   \code{size} (bytes), and \code{path} (or \code{content}).
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' con$search_string(expr = "report", where = "SUBJECT") %>%
     #'   con$fetch_attachment_parts(local_dir = "~/attachments")
     #' }
@@ -3590,7 +3699,7 @@ ImapCon <- R6::R6Class("ImapCon",
                                       content_disposition = "both",
                                       local_dir = ".", override = FALSE,
                                       mute = NULL, retries = NULL) {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachment_parts()", "ImapCon$attachments()")
@@ -3602,7 +3711,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     #' @description Fetch message attachments
     #' @param msg_id A \code{numeric vector} containing one or more message ids.
-    #' @param use_uid Default is \code{FALSE}. In this case, the operation will
+    #' @param use_uid Default is the connection-level setting of \code{configure_imap()} (\code{TRUE} since 3.0.0). In this case, the operation will
     #'   be performed using message sequence numbers. A message sequence number
     #'   is a message's relative position to the oldest message in a mail folder.
     #'   It may change after deleting or moving messages. If a message is deleted,
@@ -3653,7 +3762,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @family fetch
     #' @examples
     #' \dontrun{
-    #' con$select_folder(name = "INBOX")
+    #' con$select_folder(folder = "INBOX")
     #' # do a search and fetch the attachments' list of the messages
     #' con$search_string(expr = "@k-state.edu", where = "FROM") %>%
     #'   con$fetch_attachments() # the attachments will be downloaded to disk
@@ -3667,7 +3776,7 @@ ImapCon <- R6::R6Class("ImapCon",
     fetch_attachments = function(msg_id, use_uid = NULL, content_disposition = "both",
                                  override = FALSE, mute = NULL, retries = NULL,
                                  as_is = FALSE, local_dir = ".") {
-      use_uid <- conn_default(use_uid, self, "use_uid", FALSE)
+      use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       mute <- conn_default(mute, self, "mute", FALSE)
       retries <- conn_default(retries, self, "retries", 1)
       lifecycle::deprecate_warn("3.0.0", "ImapCon$fetch_attachments()", "ImapCon$attachments()")

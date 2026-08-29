@@ -25,7 +25,7 @@ RFC grammar but has not been exercised against a live server.
 }
 \examples{
 \dontrun{
-con$select_folder(name = "INBOX")
+con$select_folder(folder = "INBOX")
 res <- con$search(request = fuzzy(string(expr = "jump", where = "SUBJECT")))
 }
 

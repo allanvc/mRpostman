@@ -51,53 +51,13 @@ examine_folder_int <- function(self, name, retries) {
   # isolating the handle
   h <- self$con_handle
 
-  tryCatch({
-    # adding the EXAMINE folder customrequest parameter
-    curl::handle_setopt(handle = h, customrequest = paste0("EXAMINE ", folder))
-  }, error = function(e){
-    stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
-  })
+  response <- imap_exec(self, customrequest = paste0("EXAMINE ", folder),
+                        retries = retries)$response
 
-  response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = h)
-  }, error = function(e){
-    # print(e$message)
-    response_error_handling(e$message[1], self)
-  })
+  exam_out <- parse_examine_counts(rawToChar(response$headers))
 
-  if (!is.null(response)) {
+  
 
-    exam_out <- parse_examine_counts(rawToChar(response$headers))
-
-  } else { # it is not necessary to select again
-    count_retries = 0 #the first try doesnt count
-    # FORCE appending fresh_connect
-    # curl::handle_setopt(handle = h, fresh_connect = TRUE)
-
-    # reselect the folder:
-    # select_folder_int(self, name = self$folder, silent = TRUE) # try to recover the selected folder
-    # aqui nao eh necessario
-    # quando, for usar, extrair a lista e manipular
-
-    while (is.null(response) && count_retries < retries) {
-      count_retries = count_retries + 1
-      response <- tryCatch({
-        curl::curl_fetch_memory(url, handle = h)
-      }, error = function(e){
-        # print(e$message)
-        response_error_handling(e$message[1], self)
-      })
-    }
-
-    if (!is.null(response)) {
-
-      exam_out <- parse_examine_counts(rawToChar(response$headers))
-
-    } else {
-      stop('Request error: the server returned an error.')
-    }
-
-  }
 
   # handle sanitizing
   return(exam_out)

@@ -9,7 +9,7 @@
 #' @examples
 #' \dontrun{
 #' # select folder & search
-#' con$select_folder(name = "INBOX")
+#' con$select_folder(folder = "INBOX")
 #' # search for messages containing the string "XYZ@@k-state.edu" in the
 #' #   "FROM" AND the string "@@gmail.com" in the "CC" field.
 #' res <- con$search(request = AND(string(expr = "XYZ@@k-state.edu",
