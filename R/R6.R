@@ -818,7 +818,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @description Search with an ordinary R expression (the query
     #'   language). The expression is captured unevaluated, translated
     #'   into an RFC 3501 search string by the pure function
-    #'   \code{\link{translate_query}}, and executed exactly like
+    #'   \code{translate_query()}, and executed exactly like
     #'   \code{search()}. Fields: \code{subject}, \code{from}, \code{to},
     #'   \code{cc}, \code{bcc}, \code{body}, \code{text} (with \code{==}
     #'   meaning contains), \code{flag}, \code{size} (bytes), \code{age}
