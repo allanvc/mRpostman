@@ -1,0 +1,6 @@
+/* pkgdown drops the width attribute when it lifts the README logo into
+   <img class="logo">; without a rule the logo renders at natural size */
+img.logo {
+  width: 138px;
+  height: auto;
+}
