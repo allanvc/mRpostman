@@ -15,7 +15,8 @@
 <link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="IMAP OAuth2.0 authentication in mRpostman">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><link href="../extra.css" rel="stylesheet">
+<meta property="og:title" content="IMAP OAuth2.0 authentication in mRpostman">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -114,10 +115,9 @@
 <li>
 <p><strong>Scopes:</strong> click <strong>Add or remove scopes</strong>, then, in the <em>“manually add scopes”</em> box, paste:</p>
 <pre><code>https://mail.google.com/</code></pre>
-<p>Click <strong>Add to table</strong>, then <strong>Update</strong> and <strong>Save and continue</strong>. (This is a <em>restricted</em> scope; while your app stays in <strong>Testing</strong> mode it works for test users without Google verification.)</p>
 </li>
-<li><p><strong>Test users:</strong> add the e-mail address of the account you will log in with (e.g. <code>your_user@gmail.com</code>) and save.</p></li>
 </ol>
+<p>Click <strong>Add to table</strong>, then <strong>Update</strong> and <strong>Save and continue</strong>. (This is a <em>restricted</em> scope; while your app stays in <strong>Testing</strong> mode it works for test users without Google verification.) 4. <strong>Test users:</strong> add the e-mail address of the account you will log in with (e.g. <code>your_user@gmail.com</code>) and save.</p>
 <p>The account you authenticate with in Step 4 <strong>must</strong> be listed here as a test user, otherwise Google returns an <code>access_denied</code> error.</p>
 </div>
 <div class="section level2">
@@ -250,9 +250,11 @@
 <li>
 <strong><code>createTcpServer: address already in use</code> (Option A):</strong> the local callback port is busy — often a leftover server from a previous attempt in the same R session. Run <code><a href="https://rstudio.github.io/httpuv/reference/stopAllServers.html" class="external-link">httpuv::stopAllServers()</a></code> and retry; if that fails, fully quit and reopen RStudio (a mere “Restart R” does not release the port), or switch to <strong>Option B</strong>, which needs no local server.</li>
 <li>
+<strong>Work or institutional accounts (Microsoft 365, Google Workspace):</strong> organizational tenants commonly block third-party OAuth apps by default, so the login fails until the IT administrator approves the app (or the client you registered) for the tenant. This is a property of the tenant’s policy, not of this package — REST clients such as gmailr and Microsoft365R are subject to the same approval. Personal accounts are not affected.</li>
+<li>
 <strong><code>SASL</code> error during authentication:</strong> your libcurl is likely older than 7.65.0. Update it and reinstall the <code>curl</code> R package (see the <a href="#intro">Introduction</a>).</li>
 <li>
-<strong>Other providers:</strong> replace the authorization/token endpoints and the scope with the provider’s values (for Google, <code>oauth_endpoints("google")</code> already fills them in), and set <code>url</code> accordingly, e.g. <code>imaps://outlook.office365.com</code> for Office 365.</li>
+<strong>Other providers:</strong> replace the authorization/token endpoints and the scope with the provider’s values (for Google, <code>oauth_endpoints("google")</code> already fills them in), and set <code>url</code> accordingly, e.g. <code>imaps://outlook.office365.com</code> for Office 365.</li>
 </ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

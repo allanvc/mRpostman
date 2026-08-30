@@ -15,7 +15,7 @@ vignette: >
 
 In this vignette, we present all available methods and functions of this package, but not all the possibilities one can explore.
 
-**IMPORTANT**: 
+**IMPORTANT**:
 
 0. In 2026 the package went through a deep refactoring, released as version `3.0.0`. Everything written for 1.x/2.x keeps working, but four things changed for the better: (i) `query()` is now the canonical way to search - every `search_*()` method and the `AND()`/`OR()` combinators keep working as soft-deprecated spellings (they warn once per session); (ii) attachments have a consolidated API - `attachments()`, `attachments_manifest()`, and `extract_attachments()`; (iii) `use_uid`, `mute`, and `retries` can be set once, in `configure_imap()`, as connection-level defaults - and **`use_uid` now defaults to `TRUE`** (UIDs are stable; sequence numbers renumber on expunge; set `use_uid = FALSE` to restore the old behavior); (iv) failures are classed conditions (e.g. `mRpostman_server_error`) that `tryCatch()` can handle by kind.
 
@@ -52,12 +52,9 @@ The package is now implemented under an OO framework, using an R6 class. The mai
 
 * **configuration methods**: `configure_imap()` (including the connection-level defaults `use_uid`, `mute`, and `retries`), `reset_url()`, `reset_username()`, `reset_password()`, `reset_verbose()`, `reset_buffersize()`, `reset_timeout_ms()`, `reset_xoauth2_bearer()`;
 * **server-capabilities methods**: `list_server_capabilities()`, `has_capability()`;
-* **mailbox-operations methods**: `list_mail_folders()`, `select_folder()`, `examine_folder()`,
-`rename_folder()`, `create_folder()`, `list_flags()`;
+* **mailbox-operations methods**: `list_mail_folders()`, `select_folder()`, `examine_folder()`, `rename_folder()`, `create_folder()`, `list_flags()`;
 * **the search method**: `query()` - an ordinary R expression, e.g. `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`;
-* **the custom-search method**: `search()`, with the criteria constructors `before()`, `since()`, `on()`, `sent_before()`,
-  `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, 
-  `larger_than()`, `younger_than()`, `older_than()`, `verbatim()`, combined with R's own `&`, `|`, and `!`;
+* **the custom-search method**: `search()`, with the criteria constructors `before()`, `since()`, `on()`, `sent_before()`, `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`, `older_than()`, `verbatim()`, combined with R's own `&`, `|`, and `!`;
 * **deprecated search spellings** (they keep working, warning once per session): the `search_*()` single-criterion methods and the `AND()`/`OR()` combinators;
 * **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`;
 * **attachments**: `attachments_manifest()` (list without downloading), `attachments()` (download, guided by the `BODYSTRUCTURE`), and the exported `extract_attachments()` (from already-fetched bodies); the pre-3.0.0 names remain as deprecated aliases;
@@ -322,15 +319,12 @@ con$id(fields = c(name = "mRpostman", version = "1.2.1"))
 
 All search methods will return a numeric vector containing the results from the search. This allows users to chain fetch operations together with search one. You can also **NEGATE** all search expressions by setting `negate = TRUE`.
 
-If your server supports **ESEARCH**, we recommend you to use it. It will prevent your results from being
-truncated when there are too many message ids and you didn't set a high `buffersize` in `configure_imap()`^[This is a known bug of the libcurl library. Please, refer to this [LINK](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)]. With "ESEARCH", the results will be condensed to groups of sequences similar to what \R does. For instance, if your search returns 10000 results, it is better to have condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in `configure_imap()` to avoid this.
+If your server supports **ESEARCH**, we recommend you to use it. It will prevent your results from being truncated when there are too many message ids and you didn't set a high `buffersize` in `configure_imap()`^[This is a known bug of the libcurl library. Please, refer to this [LINK](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)]. With "ESEARCH", the results will be condensed to groups of sequences similar to what \R does. For instance, if your search returns 10000 results, it is better to have condensed groups such as `1:10, 12, 23:27, ...` instead of a sequence of `1, 2, 3, 4, 5, 6, ..., 10, 12, 23, 24, 25, ...`.   If you can't use ESEARCH, or if your results are being truncated even with ESEARCH, you can try to increase your buffersize in `configure_imap()` to avoid this.
 
 
 ### 4.1) Search by date
 
-`search_before()`, `search_since()`, `search_on()`, and `search_period()` use internal date, which reflects the moment when the message was received. `search_sent_before()`, `search_sent_since()`, `search_sent_on()`, and
-`search_sent_period()` use the RFC-2822 date header (origination date), which "specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail
-delivery system" (Resnick, 2008). Dates in both methods must be the same most of the time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder will point out to the date of the copy.  Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.
+`search_before()`, `search_since()`, `search_on()`, and `search_period()` use internal date, which reflects the moment when the message was received. `search_sent_before()`, `search_sent_since()`, `search_sent_on()`, and `search_sent_period()` use the RFC-2822 date header (origination date), which "specifies the date and time at which the creator of the message indicated that the message was complete and ready to enter the mail delivery system" (Resnick, 2008). Dates in both methods must be the same most of the time. The difference may occur when you copied or moved some messages between folders. In this case, the RFC-2822 date header of the copied/moved messages in the destination folder will point out to the date of the copy.  Another difference is that searching by the internal date will probably be faster because this information is kept in a database outside the message.
 
 #### 4.1.1) By internal date
 
@@ -463,9 +457,9 @@ con$search_sent_on(date_char = "30-Jun-2020")
 
 ### 4.2) Search by string
 
-You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive. 
+You can search for a simple string or compound expression either in the whole message, in a section, or in a specific header field. One important thing to know is that the SEARCH command in the IMAP server is not case sensitive.
 
-You can also **NEGATE** the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well. 
+You can also **NEGATE** the statement and search for messages (or a specific part of a message) not containing that string, and add additional flag filters as well.
 
 For the next examples, we are going to select a different mail folder.
 
@@ -586,8 +580,7 @@ The `search()` method and its **helper functions** enable users to create a vast
 
 These are the helper functions you can use inside `search()`:
 
-1) Relational operators: R's own `&`, `|`, and `!` (the `AND()` and `OR()` helpers keep working, but are deprecated since 3.0.0);
-2) Criteria definition: `before()`, `since()`, `on()`, `sent_before()`, `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`, and `older_than()`.
+1) Relational operators: R's own `&`, `|`, and `!` (the `AND()` and `OR()` helpers keep working, but are deprecated since 3.0.0); 2) Criteria definition: `before()`, `since()`, `on()`, `sent_before()`, `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`, and `older_than()`.
 
 **NOTE**: IMAP queries follow Polish notation, i.e. operators such as `OR` come before arguments, e.g. "OR argument1 argument2". Therefore, the relational operators functions in this package should be used like the following examples: `OR(before(date_char = "17-Apr-2015"), string(expr = "Jimmy", where = "FROM"))`. Even though there is no "AND" operator in the IMAP protocol, this package adds a helper function `AND()` to indicate multiple arguments that must be searched together, e.g. `AND(since(date_char = "01-Jul-2018"), larger_than(size = 16000))`.
 
@@ -651,7 +644,7 @@ res <- con$search_string(expr = "@k-state.edu", where = "FROM")
 con$fetch_body(msg_id = res, write_to_disk = TRUE, keep_in_mem = FALSE)
 ```
 
-Since the goal here is to write the fetch results to disk, it is recommended that we set `keep_in_mem = FALSE`. This will optimize the whole operation because `mRpostman` will clean the memory after fetching each message as we are not going to use the results in our R session. 
+Since the goal here is to write the fetch results to disk, it is recommended that we set `keep_in_mem = FALSE`. This will optimize the whole operation because `mRpostman` will clean the memory after fetching each message as we are not going to use the results in our R session.
 
 Our local folder will be populated with the `.txt` files of the fetched messages:
 

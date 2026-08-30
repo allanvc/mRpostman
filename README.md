@@ -13,58 +13,23 @@
 
 <!-- badges: start -->
 
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![Downloads from the RStudio CRAN
-mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![Downloads from the RStudio CRAN
-mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0)
-[![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml)
-<!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) -->
-<!-- badges: end -->
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman) [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0) [![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml) <!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) --> <!-- badges: end -->
 
 An IMAP Client for R
 
 ## Overview
 
-`mRpostman` is a session-based IMAP client that implements the full
-command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501)
-protocols, along with the optional extensions registered with IANA,
-allowing you to perform virtually all e-mail operations from within R.
-The aim of this package is to pave the way for email data analysis in R.
-To do so, `mRpostman` makes extensive use of the {curl} package and the
-libcurl C library. Since version 3.0.0, searches are written as plain R
-expressions through `query()`, and every method returns a value ready
-for the analysis stage.
+`mRpostman` is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, `mRpostman` makes extensive use of the {curl} package and the libcurl C library. Since version 3.0.0, searches are written as plain R expressions through `query()`, and every method returns a value ready for the analysis stage.
 
 `mRpostman`’s official website: <https://allanvc.github.io/mRpostman/>
 
-Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”,
-Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi:
-10.5334/jors.480. [http](https://doi.org/10.5334/jors.480). Refer to
-`citation("mRpostman")`.
+Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. [http](https://doi.org/10.5334/jors.480). Refer to `citation("mRpostman")`.
 
 **IMPORTANT**:
 
-1.  Old versions of the libcurl C library ({curl}’s main engine) will
-    cause the malfunction of this package. If your libcurl’s version is
-    above 7.58.0, you should be fine. In case you intend to use OAuth
-    2.0 authentication, then you will need libcurl \>= 7.65.0. To learn
-    more about the OAuth 2.0 authentication in this package, refer to
-    the [*“Using IMAP OAuth2.0 authentication in
-    mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
-    vignette.
+1.  Old versions of the libcurl C library ({curl}’s main engine) will cause the malfunction of this package. If your libcurl’s version is above 7.58.0, you should be fine. In case you intend to use OAuth 2.0 authentication, then you will need libcurl \>= 7.65.0. To learn more about the OAuth 2.0 authentication in this package, refer to the [*“Using IMAP OAuth2.0 authentication in mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
-2.  Most mail providers discontinued less secure apps access. If it is
-    still available and you are comfortable with this type of access you
-    can enable this option for your account on your mail provider. Some
-    providers, such as Yahoo Mail, also offer the option to generate a
-    password to be used by third-party apps such as mRpostman. The other
-    option, as mentioned above, is to set up OAuth2 (two-factor
-    authentication) in order to access your mailbox. Please also refer
-    to the [*“Using IMAP OAuth2.0 authentication in
-    mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html)
-    vignette.
+2.  Most mail providers discontinued less secure apps access. If it is still available and you are comfortable with this type of access you can enable this option for your account on your mail provider. Some providers, such as Yahoo Mail, also offer the option to generate a password to be used by third-party apps such as mRpostman. The other option, as mentioned above, is to set up OAuth2 (two-factor authentication) in order to access your mailbox. Please also refer to the [*“Using IMAP OAuth2.0 authentication in mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
 ## Providers and their IMAP urls
 
@@ -82,54 +47,24 @@ Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi:
 | Mail.com                           | `imap.mail.com`           |
 | FastMail                           | `imap.fastmail.com`       |
 
-\* For Office 365 accounts, the `username` should be set as
-`user@yourcompany.com` or `user@youruniversity.edu` for example.
+\* For Office 365 accounts, the `username` should be set as `user@yourcompany.com` or `user@youruniversity.edu` for example.
 
 ## Introduction
 
-From version 0.9.0.0 onward, `mRpostman` is implemented under the OO
-paradigm, based on an R6 class called `ImapCon`. Its derived methods,
-and a few independent functions enable the R user to perform a myriad of
-IMAP commands.
+From version 0.9.0.0 onward, `mRpostman` is implemented under the OO paradigm, based on an R6 class called `ImapCon`. Its derived methods, and a few independent functions enable the R user to perform a myriad of IMAP commands.
 
 The main groups, in the shape the package has since 3.0.0:
 
-- **connection**: `configure_imap()` (including the connection-level
-  defaults `use_uid`, `mute`, and `retries`), `disconnect()`, the
-  `reset_*()` setters;
-- **search**: `query()`, an ordinary R expression such as
-  `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`;
-  `search()` with the criteria constructors (`string()`, `before()`,
-  `flag()`, `verbatim()`, …) combined by the native `&`, `|`, and `!`;
-  the older `search_*()` methods and `AND()`/`OR()` keep working as
-  deprecated spellings;
-- **fetch and decoding**: `fetch_body()`, `fetch_header()`,
-  `fetch_text()`, `fetch_metadata()`, `fetch_envelope()`,
-  `fetch_bodystructure()`, and the decoders `clean_msg_text()` and
-  `decode_mime_header()`;
-- **attachments**: `attachments_manifest()` (list without downloading),
-  `attachments()` (download, guided by the `BODYSTRUCTURE`), and
-  `extract_attachments()` for already-fetched messages;
-- **mailbox management**: folder listing/creation/renaming/status,
-  flags, copy/move/delete, `append_msg()`/`append_msgs()`, expunge;
-- **server-side computation and events**: `sort()`, `thread()`, the
-  `esearch_*()` aggregates, `idle()` and `notify()` on a dedicated
-  raw-socket route, plus every capability extension registered with IANA
-  (quota, ACL, metadata, CONDSTORE/QRESYNC, and the rest).
+- **connection**: `configure_imap()` (including the connection-level defaults `use_uid`, `mute`, and `retries`), `disconnect()`, the `reset_*()` setters;
+- **search**: `query()`, an ordinary R expression such as `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`; `search()` with the criteria constructors (`string()`, `before()`, `flag()`, `verbatim()`, …) combined by the native `&`, `|`, and `!`; the older `search_*()` methods and `AND()`/`OR()` keep working as deprecated spellings;
+- **fetch and decoding**: `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, and the decoders `clean_msg_text()` and `decode_mime_header()`;
+- **attachments**: `attachments_manifest()` (list without downloading), `attachments()` (download, guided by the `BODYSTRUCTURE`), and `extract_attachments()` for already-fetched messages;
+- **mailbox management**: folder listing/creation/renaming/status, flags, copy/move/delete, `append_msg()`/`append_msgs()`, expunge;
+- **server-side computation and events**: `sort()`, `thread()`, the `esearch_*()` aggregates, `idle()` and `notify()` on a dedicated raw-socket route, plus every capability extension registered with IANA (quota, ACL, metadata, CONDSTORE/QRESYNC, and the rest).
 
 ## Supported IMAP commands and capabilities
 
-The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands
-defined in [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501),
-revised and consolidated by IMAP4rev2 in [RFC
-9051](https://datatracker.ietf.org/doc/html/rfc9051), which every
-compliant server must implement — plus a set of **optional extensions**,
-each advertised by the server in its `CAPABILITY` response. `mRpostman`
-covers both. For the extension-based methods, `mRpostman` checks the
-server’s advertised capabilities and, if the required one is missing,
-raises an informative error instead of letting the server reply with a
-cryptic `BAD Unknown command`. You can inspect what your server supports
-with `list_server_capabilities()`.
+The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in [RFC 3501](https://datatracker.ietf.org/doc/html/rfc3501), revised and consolidated by IMAP4rev2 in [RFC 9051](https://datatracker.ietf.org/doc/html/rfc9051), which every compliant server must implement — plus a set of **optional extensions**, each advertised by the server in its `CAPABILITY` response. `mRpostman` covers both. For the extension-based methods, `mRpostman` checks the server’s advertised capabilities and, if the required one is missing, raises an informative error instead of letting the server reply with a cryptic `BAD Unknown command`. You can inspect what your server supports with `list_server_capabilities()`.
 
 ### Core commands (RFC 3501 — always available)
 
@@ -206,25 +141,7 @@ with `list_server_capabilities()`.
 | `APPEND` size guard, `STATUS (APPENDLIMIT)` | automatic in `append_msg()`/`append_msgs()`; `status(items = "APPENDLIMIT")` | `APPENDLIMIT` | [7889](https://datatracker.ietf.org/doc/html/rfc7889) |
 | non-synchronizing literals | automatic on the raw-socket methods | `LITERAL+` / `LITERAL-` | [7888](https://datatracker.ietf.org/doc/html/rfc7888) |
 
-Every capability registered with IANA is covered. The methods marked
-with an asterisk (\*) are **experimental**: they follow the RFC
-grammars, but no widely deployed server advertises those capabilities
-(they are rare, brand new, or were never adopted), so they could not be
-exercised against a live server. Availability of the others varies by
-provider: Gmail, for instance, supports every non-experimental extension
-above **except `SORT` and `THREAD`**, which it has never implemented; to
-exercise `sort()` and `thread()` you need a server that advertises them
-(e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365).
-Announcement-only capabilities (`AUTH=`, `LOGINDISABLED`, `RIGHTS=`,
-`QUOTA=`, `APPENDLIMIT=n`, `MESSAGELIMIT=`/`SAVELIMIT=`, `IMAPSIEVE=`,
-`JMAPACCESS`, `INPROGRESS`, `CHILDREN`, `I18NLEVEL=1`, referrals)
-require no dedicated command and are honored where they matter (folder
-listings, appends, error reporting). `UIDONLY` (RFC 9586) responses
-(`UIDFETCH`) are understood after `enable("UIDONLY")`. The raw-socket
-methods (`idle()`, `notify()`, `append_msgs()`, `append_catenate()`,
-`fetch_binary()`, `replace_msg()`, `esearch_multi()`, `urlfetch()`,
-`fetch_convert()`) need an `imaps://` URL for TLS, since STARTTLS is not
-available on that connection.
+Every capability registered with IANA is covered. The methods marked with an asterisk (\*) are **experimental**: they follow the RFC grammars, but no widely deployed server advertises those capabilities (they are rare, brand new, or were never adopted), so they could not be exercised against a live server. Availability of the others varies by provider: Gmail, for instance, supports every non-experimental extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Announcement-only capabilities (`AUTH=`, `LOGINDISABLED`, `RIGHTS=`, `QUOTA=`, `APPENDLIMIT=n`, `MESSAGELIMIT=`/`SAVELIMIT=`, `IMAPSIEVE=`, `JMAPACCESS`, `INPROGRESS`, `CHILDREN`, `I18NLEVEL=1`, referrals) require no dedicated command and are honored where they matter (folder listings, appends, error reporting). `UIDONLY` (RFC 9586) responses (`UIDFETCH`) are understood after `enable("UIDONLY")`. The raw-socket methods (`idle()`, `notify()`, `append_msgs()`, `append_catenate()`, `fetch_binary()`, `replace_msg()`, `esearch_multi()`, `urlfetch()`, `fetch_convert()`) need an `imaps://` URL for TLS, since STARTTLS is not available on that connection.
 
 ## Installation
 
@@ -239,10 +156,7 @@ remotes::install_github("allanvc/mRpostman")
 
 ## Trying it without a mail account
 
-The package ships a disposable local IMAP server (Dovecot, in a Docker
-container) plus a deterministic synthetic corpus generator, so every
-feature can be exercised offline and reproducibly — no credentials,
-OAuth2 setup, or provider rate limits involved:
+The package ships a disposable local IMAP server (Dovecot, in a Docker container) plus a deterministic synthetic corpus generator, so every feature can be exercised offline and reproducibly — no credentials, OAuth2 setup, or provider rate limits involved:
 
 ``` r
 # after starting the container (see the "sandbox" vignette):
@@ -251,17 +165,9 @@ con <- configure_imap(url = "imap://localhost:1430", username = "testuser",
 populate_sandbox(con, n = 200) # uploads the corpus with the package's own APPEND
 ```
 
-Real data works too: `ingest_maildir()` uploads any local maildir-style
-directory to the server via `APPEND`, and `enron_sandbox()` builds on it
-to download (once, with consent, cached) the public Enron corpus and
-ingest a subset selected by custodian, folder, and date — turning the
-sandbox into a full e-mail data-analysis laboratory.
+Real data works too: `ingest_maildir()` uploads any local maildir-style directory to the server via `APPEND`, and `enron_sandbox()` builds on it to download (once, with consent, cached) the public Enron corpus and ingest a subset selected by custodian, folder, and date — turning the sandbox into a full e-mail data-analysis laboratory.
 
-See the [*“A reproducible IMAP sandbox with
-Docker”*](https://allanvc.github.io/mRpostman/articles/sandbox.html)
-vignette for the guided tour. The sandbox’s Dovecot server also
-advertises `SORT` and `THREAD`, making it a convenient place to try the
-extensions your provider may lack.
+See the [*“A reproducible IMAP sandbox with Docker”*](https://allanvc.github.io/mRpostman/articles/sandbox.html) vignette for the guided tour. The sandbox’s Dovecot server also advertises `SORT` and `THREAD`, making it a convenient place to try the extensions your provider may lack.
 
 ## Basic Usage
 
@@ -292,13 +198,7 @@ ids <- con$query((subject == "budget" | "budget 3") & flag != "SEEN")
 ids <- con$query(sent >= "2021-10-01" & sent < "2022-01-01" & size > 5e6)
 ```
 
-Fields cover `subject`, `from`, `to`, `body`, `text`, `flag`, `size`,
-`age`, the date families, `modseq`, and `header("Name")`; see `?query`
-for the full table. Raw protocol fragments enter through `verbatim()`,
-as in
-`con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")` on
-Gmail. The pre-3.0.0 `search_*()` methods keep working as deprecated
-spellings.
+Fields cover `subject`, `from`, `to`, `body`, `text`, `flag`, `size`, `age`, the date families, `modseq`, and `header("Name")`; see `?query` for the full table. Raw protocol fragments enter through `verbatim()`, as in `con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")` on Gmail. The pre-3.0.0 `search_*()` methods keep working as deprecated spellings.
 
 ### 3) Fetch the matches as analysis-ready text
 
@@ -317,19 +217,11 @@ con$attachments_manifest(ids)          # list without downloading
 con$attachments(ids, dest = "~/att")   # download, one folder per message
 ```
 
-`extract_attachments()` does the same extraction offline, from messages
-already fetched with `fetch_body()`.
+`extract_attachments()` does the same extraction offline, from messages already fetched with `fetch_body()`.
 
 ### More
 
-Server-side `sort()` and `thread()`, the `esearch_*()` aggregates,
-`idle()`/`notify()` push notifications, quota, ACL, and the other IANA
-extensions are all methods on the same object; the [basics
-vignette](https://allanvc.github.io/mRpostman/articles/basics.html)
-walks the full surface, and the [sandbox
-vignette](https://allanvc.github.io/mRpostman/articles/sandbox.html)
-lets you try everything against a local disposable server, no account
-needed.
+Server-side `sort()` and `thread()`, the `esearch_*()` aggregates, `idle()`/`notify()` push notifications, quota, ACL, and the other IANA extensions are all methods on the same object; the [basics vignette](https://allanvc.github.io/mRpostman/articles/basics.html) walks the full surface, and the [sandbox vignette](https://allanvc.github.io/mRpostman/articles/sandbox.html) lets you try everything against a local disposable server, no account needed.
 
 ## Future Improvements
 
@@ -339,38 +231,13 @@ needed.
 
 ## Known bugs
 
-- *search results truncation*: This is a [libcurl’s known
-  bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon)
-  which causes the search results to be truncated when there is a large
-  number of message ids returned. To circumvent this problem, you can
-  set a higher `buffersize` value, increasing the buffer capacity, and
-  `verbose = TRUE` for monitoring the server response for truncated
-  results when executing a search. When possible, `mRpostman` tries to
-  issue a warning for possible truncated values.
+- *search results truncation*: This is a [libcurl’s known bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumvent this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
 
-- *`verbose = TRUE` malfunction on Windows*: This seems to be related to
-  the [{curl} R package](https://github.com/jeroen/curl/issues/230).
-  When using the `verbose = TRUE` on Windows, the flow of information
-  between the IMAP server and the R session presents an intermittent
-  behavior, which causes it to not be shown on the console, or with a
-  considerable delay.
+- *`verbose = TRUE` malfunction on Windows*: This seems to be related to the [{curl} R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
 
-- *shared mailbox access not working*: This seems to be another
-  [libcurl’s bug](https://github.com/allanvc/mRpostman/issues/2),
-  although more tests need to be done to confirm it. It does not allow
-  the user to connect to a shared mailbox. To circumvent this, if the
-  shared mailbox has a password associated with it, you can try a direct
-  regular connection.
+- *shared mailbox access not working*: This seems to be another [libcurl’s bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumvent this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
 
-- *`xoauth2_bearer` SASL error*: This is related to [old libcurl’s
-  versions](https://curl.se/bug/?i=2487) which causes the access token
-  to not be properly passed to the server. This bug was fixed in libcurl
-  7.65.0. The problem is that many Linux distributions, such as Ubuntu
-  18.04, still provide libcurl 7.58.0 in their official distribution
-  (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu
-  20.04, you should be fine as the distributed libcurl’s version will be
-  above 7.65.0. Another alternative is to use plain authentication
-  instead of OAuth2.0.
+- *`xoauth2_bearer` SASL error*: This is related to [old libcurl’s versions](https://curl.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
 
 ## License
 
@@ -378,19 +245,12 @@ This package is licensed under the terms of the GPL-3 License.
 
 ## References
 
-Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*,
-RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
+Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
 
-Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a
-Mail Server with Courier and Cyrus*. No Starch Press. ISBN
-978-1-59327-177-0.
+Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a Mail Server with Courier and Cyrus*. No Starch Press. ISBN 978-1-59327-177-0.
 
-Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
-package version 4.3, [http](https://CRAN.R-project.org/package=curl).
+Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R package version 4.3, [http](https://CRAN.R-project.org/package=curl).
 
-Quadros, A. V. C. *mRpostman: An IMAP Client for R*, Journal of Open
-Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480.
-[http](https://doi.org/10.5334/jors.480).
+Quadros, A. V. C. *mRpostman: An IMAP Client for R*, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. [http](https://doi.org/10.5334/jors.480).
 
-Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*,
-[http](https://curl.se/libcurl/).
+Stenberg, D. *Libcurl - The Multiprotocol File Transfer Library*, [http](https://curl.se/libcurl/).

@@ -11,35 +11,23 @@ vignette: >
 
 ## Introduction {#intro}
 
-Most major mail providers have moved to OAuth2.0 as their preferred (and, in
-many cases, only) authentication method for IMAP. Instead of sending your
-password, you send a short-lived **access token** that authorizes a specific
-scope of access to your mailbox.
+Most major mail providers have moved to OAuth2.0 as their preferred (and, in many cases, only) authentication method for IMAP. Instead of sending your password, you send a short-lived **access token** that authorizes a specific scope of access to your mailbox.
 
-This vignette shows the exact steps and R code to obtain, use, and refresh an
-OAuth2.0 access token for the **Gmail** IMAP server. The same logic applies to
-other providers (Outlook/Office 365, Yahoo, AOL, ...) by swapping the
-authorization endpoints and scope. The reference for Google's flow is
-<https://developers.google.com/identity/protocols/oauth2>.
+This vignette shows the exact steps and R code to obtain, use, and refresh an OAuth2.0 access token for the **Gmail** IMAP server. The same logic applies to other providers (Outlook/Office 365, Yahoo, AOL, ...) by swapping the authorization endpoints and scope. The reference for Google's flow is <https://developers.google.com/identity/protocols/oauth2>.
 
-We use the [`httr2`](https://cran.r-project.org/package=httr2) package to run the
-OAuth2.0 flow and [`jsonlite`](https://cran.r-project.org/package=jsonlite) to
-read the credentials file, so install them first if needed:
+We use the [`httr2`](https://cran.r-project.org/package=httr2) package to run the OAuth2.0 flow and [`jsonlite`](https://cran.r-project.org/package=jsonlite) to read the credentials file, so install them first if needed:
 
 ```{r, eval = FALSE}
 install.packages(c("httr2", "jsonlite"))
 ```
 
-__IMPORTANT — libcurl version.__ The libcurl feature that transmits the bearer
-token is only reliable on libcurl >= 7.65.0 (released 2019-05-22). Check the
-version the `curl` R package is linked against:
+__IMPORTANT — libcurl version.__ The libcurl feature that transmits the bearer token is only reliable on libcurl >= 7.65.0 (released 2019-05-22). Check the version the `curl` R package is linked against:
 
 ```{r, message = FALSE}
 curl::curl_version()$version
 ```
 
-If it is older, update libcurl (and reinstall `curl`) before continuing,
-otherwise you may get a `SASL` error during authentication.
+If it is older, update libcurl (and reinstall `curl`) before continuing, otherwise you may get a `SASL` error during authentication.
 
 The whole process is:
 
@@ -54,50 +42,36 @@ Steps 1--3 are done once, in the browser; steps 4--6 are R code.
 
 ## Step 1 - Create a Google Cloud project
 
-1. Go to <https://console.cloud.google.com/> and sign in with the Google
-   account whose mailbox you want to access.
-2. In the project selector at the top, click **New Project**, give it a name
-   (e.g. `mRpostman`), and click **Create**.
+1. Go to <https://console.cloud.google.com/> and sign in with the Google account whose mailbox you want to access.
+2. In the project selector at the top, click **New Project**, give it a name (e.g. `mRpostman`), and click **Create**.
 3. Make sure this new project is the one selected in the top bar.
 
-You do **not** need to enable the Gmail API: IMAP access is granted by the
-OAuth scope `https://mail.google.com/`, not by the Gmail API. IMAP is enabled by
-default on Gmail accounts.
+You do **not** need to enable the Gmail API: IMAP access is granted by the OAuth scope `https://mail.google.com/`, not by the Gmail API. IMAP is enabled by default on Gmail accounts.
 
 ## Step 2 - Configure the OAuth consent screen
 
-Navigate to **APIs & Services > OAuth consent screen** (in the redesigned
-console this section is called **Google Auth Platform**).
+Navigate to **APIs & Services > OAuth consent screen** (in the redesigned console this section is called **Google Auth Platform**).
 
 1. **User type:** choose **External** and click **Create**.
-2. Fill in the required fields: **App name**, **User support email**, and, at
-   the bottom, a **Developer contact email**. Save and continue.
-3. **Scopes:** click **Add or remove scopes**, then, in the *"manually add
-   scopes"* box, paste:
+2. Fill in the required fields: **App name**, **User support email**, and, at the bottom, a **Developer contact email**. Save and continue.
+3. **Scopes:** click **Add or remove scopes**, then, in the *"manually add scopes"* box, paste:
 
    ```
    https://mail.google.com/
    ```
 
-   Click **Add to table**, then **Update** and **Save and continue**. (This is a
-   *restricted* scope; while your app stays in **Testing** mode it works for
-   test users without Google verification.)
-4. **Test users:** add the e-mail address of the account you will log in with
-   (e.g. `your_user@gmail.com`) and save.
+Click **Add to table**, then **Update** and **Save and continue**. (This is a *restricted* scope; while your app stays in **Testing** mode it works for test users without Google verification.)
+4. **Test users:** add the e-mail address of the account you will log in with (e.g. `your_user@gmail.com`) and save.
 
-The account you authenticate with in Step 4 **must** be listed here as a test
-user, otherwise Google returns an `access_denied` error.
+The account you authenticate with in Step 4 **must** be listed here as a test user, otherwise Google returns an `access_denied` error.
 
 ## Step 3 - Create the OAuth client credentials
 
 1. Go to **APIs & Services > Credentials**.
 2. Click **+ Create credentials > OAuth client ID**.
-3. For **Application type**, select **Desktop app** (this is important --- a
-   *Web application* client will fail with `redirect_uri_mismatch` in the flow
-   below).
+3. For **Application type**, select **Desktop app** (this is important --- a *Web application* client will fail with `redirect_uri_mismatch` in the flow below).
 4. Give it a name and click **Create**.
-5. Click **Download JSON** and save the file locally. Keep it private --- it
-   contains your client secret.
+5. Click **Download JSON** and save the file locally. Keep it private --- it contains your client secret.
 
 The downloaded file looks like this (an `"installed"` client):
 
@@ -116,19 +90,13 @@ cred <- jsonlite::fromJSON("path/to/client_secret_XXXX.json")$installed
 
 ## Step 4 - Obtain an access token
 
-Below are two ways to get a token. **Option A** is the shortest and works out of
-the box on most desktops. Use **Option B** if Option A fails to start its local
-web server (common inside RStudio, or on headless/remote machines).
+Below are two ways to get a token. **Option A** is the shortest and works out of the box on most desktops. Use **Option B** if Option A fails to start its local web server (common inside RStudio, or on headless/remote machines).
 
-Both request `access_type = "offline"` so that a **refresh token** is also
-returned (see Step 6).
+Both request `access_type = "offline"` so that a **refresh token** is also returned (see Step 6).
 
 ### Option A - `httr2`'s built-in flow (recommended)
 
-`httr2::oauth_flow_auth_code()` opens your browser, runs a local callback
-server, and returns the token. (`httr2` is the successor of `httr`, which is
-in maintenance mode; the old `httr::oauth2.0_token()` flow keeps working if
-you prefer it.)
+`httr2::oauth_flow_auth_code()` opens your browser, runs a local callback server, and returns the token. (`httr2` is the successor of `httr`, which is in maintenance mode; the old `httr::oauth2.0_token()` flow keeps working if you prefer it.)
 
 ```{r, eval = FALSE}
 library(httr2)
@@ -148,14 +116,11 @@ tok <- oauth_flow_auth_code(
 token <- tok$access_token
 ```
 
-When the browser shows *"Google hasn't verified this app"*, click
-**Advanced > Go to \<your app\> (unsafe)** --- this is expected while the app is
-in Testing mode --- then **Allow**.
+When the browser shows *"Google hasn't verified this app"*, click **Advanced > Go to \<your app\> (unsafe)** --- this is expected while the app is in Testing mode --- then **Allow**.
 
 ### Option B - Manual loopback flow (no local server)
 
-This avoids the local callback server entirely: you open the authorization URL,
-approve access, and paste back the `code` shown in the browser's address bar.
+This avoids the local callback server entirely: you open the authorization URL, approve access, and paste back the `code` shown in the browser's address bar.
 
 ```{r, eval = FALSE}
 library(httr2)
@@ -174,11 +139,7 @@ auth_url <- url_modify("https://accounts.google.com/o/oauth2/auth",
 browseURL(auth_url)
 ```
 
-After you approve, the browser is redirected to
-`http://localhost/?code=...&scope=...`. The page will fail to load ("unable to
-connect") --- that is fine. Copy the value between `code=` and `&scope` from the
-**address bar** and paste it below (authorization codes are single-use and
-expire in minutes, so exchange it right away):
+After you approve, the browser is redirected to `http://localhost/?code=...&scope=...`. The page will fail to load ("unable to connect") --- that is fine. Copy the value between `code=` and `&scope` from the **address bar** and paste it below (authorization codes are single-use and expire in minutes, so exchange it right away):
 
 ```{r, eval = FALSE}
 code_in <- "PASTE_THE_CODE_HERE"
@@ -195,15 +156,11 @@ token_data <- resp_body_json(resp)
 token      <- token_data$access_token
 ```
 
-Your `token` should be a long string starting with `"ya29."`. If `token` is
-`NULL`, inspect `content(resp)` --- an `invalid_grant` error means the code was
-already used or expired, so re-run `browseURL(auth_url)` to get a fresh one.
-(On an `httr2` error, read the body with `resp_body_json(last_response())`.)
+Your `token` should be a long string starting with `"ya29."`. If `token` is `NULL`, inspect `content(resp)` --- an `invalid_grant` error means the code was already used or expired, so re-run `browseURL(auth_url)` to get a fresh one. (On an `httr2` error, read the body with `resp_body_json(last_response())`.)
 
 ## Step 5 - Open the IMAP connection
 
-Pass the access token to `configure_imap()` via the `xoauth2_bearer` argument
-(no `password`):
+Pass the access token to `configure_imap()` via the `xoauth2_bearer` argument (no `password`):
 
 ```{r, eval = FALSE}
 library(mRpostman)
@@ -218,14 +175,11 @@ con <- configure_imap(
 con$list_server_capabilities()
 ```
 
-If this returns the server's capabilities, you are authenticated and can use any
-`mRpostman` method (`select_folder()`, `search_*()`, `fetch_*()`, ...).
+If this returns the server's capabilities, you are authenticated and can use any `mRpostman` method (`select_folder()`, `search_*()`, `fetch_*()`, ...).
 
 ## Step 6 - Refresh the token
 
-Access tokens are short-lived (about 1 hour). The **refresh token** returned in
-Step 4 (thanks to `access_type = "offline"`) lets you mint a new access token
-without going through the browser again.
+Access tokens are short-lived (about 1 hour). The **refresh token** returned in Step 4 (thanks to `access_type = "offline"`) lets you mint a new access token without going through the browser again.
 
 If you used **Option A**, mint a new access token from the refresh token:
 
@@ -247,32 +201,14 @@ refresh <- request("https://oauth2.googleapis.com/token") |>
 token <- resp_body_json(refresh)$access_token
 ```
 
-Then reopen (or update) the connection with the new `token`. To swap the token
-on an existing connection object, use `con$reset_xoauth2_bearer(token)`.
+Then reopen (or update) the connection with the new `token`. To swap the token on an existing connection object, use `con$reset_xoauth2_bearer(token)`.
 
 ## Troubleshooting
 
-- **`access_denied` / "hasn't been verified by Google":** the account you logged
-  in with is not in the consent screen's **Test users** list (Step 2.4), or it
-  is not the account that owns the project. Add it as a test user.
-- **`redirect_uri_mismatch`:** your OAuth client is a *Web application*, not a
-  *Desktop app*. Recreate it as a **Desktop app** (Step 3).
-- **`createTcpServer: address already in use` (Option A):** the local callback
-  port is busy --- often a leftover server from a previous attempt in the same
-  R session. Run `httpuv::stopAllServers()` and retry; if that fails, fully quit
-  and reopen RStudio (a mere "Restart R" does not release the port), or switch to
-  **Option B**, which needs no local server.
-- **Work or institutional accounts (Microsoft 365, Google Workspace):**
-  organizational tenants commonly block third-party OAuth apps by default,
-  so the login fails until the IT administrator approves the app (or the
-  client you registered) for the tenant. This is a property of the tenant's
-  policy, not of this package --- REST clients such as gmailr and
-  Microsoft365R are subject to the same approval. Personal accounts are not
-  affected.
+- **`access_denied` / "hasn't been verified by Google":** the account you logged in with is not in the consent screen's **Test users** list (Step 2.4), or it is not the account that owns the project. Add it as a test user.
+- **`redirect_uri_mismatch`:** your OAuth client is a *Web application*, not a *Desktop app*. Recreate it as a **Desktop app** (Step 3).
+- **`createTcpServer: address already in use` (Option A):** the local callback port is busy --- often a leftover server from a previous attempt in the same R session. Run `httpuv::stopAllServers()` and retry; if that fails, fully quit and reopen RStudio (a mere "Restart R" does not release the port), or switch to **Option B**, which needs no local server.
+- **Work or institutional accounts (Microsoft 365, Google Workspace):** organizational tenants commonly block third-party OAuth apps by default, so the login fails until the IT administrator approves the app (or the client you registered) for the tenant. This is a property of the tenant's policy, not of this package --- REST clients such as gmailr and Microsoft365R are subject to the same approval. Personal accounts are not affected.
 - **`SASL` error during authentication:** your libcurl is likely older than
-  7.65.0. Update it and reinstall the `curl` R package (see the
-  [Introduction](#intro)).
-- **Other providers:** replace the authorization/token endpoints and the scope
-  with the provider's values (for Google, `oauth_endpoints("google")` already
-  fills them in), and set `url` accordingly, e.g.
-  `imaps://outlook.office365.com` for Office 365.
+  7.65.0. Update it and reinstall the `curl` R package (see the [Introduction](#intro)).
+- **Other providers:** replace the authorization/token endpoints and the scope with the provider's values (for Google, `oauth_endpoints("google")` already fills them in), and set `url` accordingly, e.g. `imaps://outlook.office365.com` for Office 365.

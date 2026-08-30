@@ -1,5 +1,7 @@
 ---
-output: github_document
+output:
+  github_document:
+    pandoc_args: ["--wrap=none"]
 ---
 
 ```{r, include = FALSE}
@@ -21,11 +23,7 @@ knitr::opts_chunk$set(
 <!-- [![Travis-CI Build Status](https://travis-ci.org/allanvc/mRpostman.svg?branch=master)](https://travis-ci.org/allanvc/mRpostman)  -->
 
 <!-- badges: start -->
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman) 
-[![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman)
-[![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0) 
-[![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman) [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0) [![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml)
 <!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) -->
 <!-- badges: end -->
 
@@ -33,14 +31,13 @@ An IMAP Client for R
 
 ## Overview
 
-`mRpostman` is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, `mRpostman` makes extensive use of the {curl} package and the libcurl C library.
-Since version 3.0.0, searches are written as plain R expressions through `query()`, and every method returns a value ready for the analysis stage.
+`mRpostman` is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, `mRpostman` makes extensive use of the {curl} package and the libcurl C library. Since version 3.0.0, searches are written as plain R expressions through `query()`, and every method returns a value ready for the analysis stage.
 
 `mRpostman`'s official website: https://allanvc.github.io/mRpostman/
 
 Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. [http](https://doi.org/10.5334/jors.480). Refer to `citation("mRpostman")`.
 
-**IMPORTANT**: 
+**IMPORTANT**:
 
 1. Old versions of the libcurl C library ({curl}'s main engine) will cause the malfunction of this package. If your libcurl's version is above 7.58.0, you should be fine. In case you intend to use OAuth 2.0 authentication, then you will need libcurl >= 7.65.0. To learn more about the OAuth 2.0 authentication in this package, refer to the [_"Using IMAP OAuth2.0 authentication in mRpostman"_](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
 
