@@ -1809,18 +1809,19 @@ embedded verbatim with `verbatim()`.
 
 The full field reference:
 
-|                                                      |                            |                                                                |
-| ---------------------------------------------------- | -------------------------- | -------------------------------------------------------------- |
-| **field**                                            | **compares with**          | **protocol key**                                               |
-| `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` | `==` (contains), `!=`      | `SUBJECT`, `FROM`, ...                                         |
-| `header("Name")`                                     | `==`, `!=`                 | `HEADER Name`                                                  |
-| `flag`                                               | `==`, `!=`                 | `SEEN`/`UNSEEN`, ...; custom keywords as `KEYWORD`/`UNKEYWORD` |
-| `size` (bytes)                                       | `>`, `>=`, `<`, `<=`, `==` | `LARGER`, `SMALLER`                                            |
-| `age` (seconds)                                      | `<`, `<=`, `>`, `>=`       | `YOUNGER`, `OLDER` (WITHIN servers)                            |
-| `sent` (the `Date:` header)                          | `>=`, `>`, `<`, `<=`, `==` | `SENTSINCE`, `SENTBEFORE`, `SENTON`                            |
-| `date` (the internal date)                           | idem                       | `SINCE`, `BEFORE`, `ON`                                        |
-| `saved`                                              | idem                       | `SAVEDSINCE`, ... (SAVEDATE servers)                           |
-| `modseq`                                             | `>=`, `>`, `<`             | `MODSEQ` (CONDSTORE servers)                                   |
+|                                                      |                             |                                                                |
+| ---------------------------------------------------- | --------------------------- | -------------------------------------------------------------- |
+| **field**                                            | **compares with**           | **protocol key**                                               |
+| `subject`, `from`, `to`, `cc`, `bcc`, `body`, `text` | `==` (contains), `!=`       | `SUBJECT`, `FROM`, ...                                         |
+| `header("Name")`                                     | `==`, `!=`                  | `HEADER Name`                                                  |
+| `flag`                                               | `==`, `!=`                  | `SEEN`/`UNSEEN`, ...; custom keywords as `KEYWORD`/`UNKEYWORD` |
+| `size` (bytes)                                       | `>`, `>=`, `<`, `<=`, `==`  | `LARGER`, `SMALLER`                                            |
+| `age` (seconds)                                      | `<`, `<=`, `>`, `>=`        | `YOUNGER`, `OLDER` (WITHIN servers)                            |
+| `sent` (the `Date:` header)                          | `>=`, `>`, `<`, `<=`, `==`  | `SENTSINCE`, `SENTBEFORE`, `SENTON`                            |
+| `date` (the internal date)                           | idem                        | `SINCE`, `BEFORE`, `ON`                                        |
+| `saved`                                              | idem                        | `SAVEDSINCE`, ... (SAVEDATE servers)                           |
+| `modseq`                                             | `>=`, `>`, `<`              | `MODSEQ` (CONDSTORE servers)                                   |
+| any field, with `%in%`                               | `field %in% c(v1, v2, ...)` | an `OR` chain over the field's key                             |
 
 Dates accept `"YYYY-MM-DD"`, `"DD-Mon-YYYY"`, or `Date` values, exact at
 the protocol's day granularity.

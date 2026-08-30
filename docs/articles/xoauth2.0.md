@@ -76,13 +76,12 @@ redesigned console this section is called **Google Auth Platform**).
     add scopes”* box, paste:
     
         https://mail.google.com/
-    
-    Click **Add to table**, then **Update** and **Save and continue**.
-    (This is a *restricted* scope; while your app stays in **Testing**
-    mode it works for test users without Google verification.)
 
-4.  **Test users:** add the e-mail address of the account you will log
-    in with (e.g. `your_user@gmail.com`) and save.
+Click **Add to table**, then **Update** and **Save and continue**. (This
+is a *restricted* scope; while your app stays in **Testing** mode it
+works for test users without Google verification.) 4. **Test users:**
+add the e-mail address of the account you will log in with
+(e.g. `your_user@gmail.com`) and save.
 
 The account you authenticate with in Step 4 **must** be listed here as a
 test user, otherwise Google returns an `access_denied` error.
@@ -270,10 +269,17 @@ token on an existing connection object, use
     retry; if that fails, fully quit and reopen RStudio (a mere “Restart
     R” does not release the port), or switch to **Option B**, which
     needs no local server.
+  - **Work or institutional accounts (Microsoft 365, Google
+    Workspace):** organizational tenants commonly block third-party
+    OAuth apps by default, so the login fails until the IT administrator
+    approves the app (or the client you registered) for the tenant. This
+    is a property of the tenant’s policy, not of this package — REST
+    clients such as gmailr and Microsoft365R are subject to the same
+    approval. Personal accounts are not affected.
   - **`SASL` error during authentication:** your libcurl is likely older
     than 7.65.0. Update it and reinstall the `curl` R package (see the
     [Introduction](#intro)).
   - **Other providers:** replace the authorization/token endpoints and
     the scope with the provider’s values (for Google,
     `oauth_endpoints("google")` already fills them in), and set `url`
-    accordingly, e.g. `imaps://outlook.office365.com` for Office 365.
+    accordingly, e.g. `imaps://outlook.office365.com` for Office 365.

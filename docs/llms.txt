@@ -10,7 +10,9 @@ protocols, along with the optional extensions registered with IANA,
 allowing you to perform virtually all e-mail operations from within R.
 The aim of this package is to pave the way for email data analysis in R.
 To do so, `mRpostman` makes extensive use of the {curl} package and the
-libcurl C library.
+libcurl C library. Since version 3.0.0, searches are written as plain R
+expressions through `query()`, and every method returns a value ready
+for the analysis stage.
 
 `mRpostman`’s official website: <https://allanvc.github.io/mRpostman/>
 
@@ -67,60 +69,31 @@ paradigm, based on an R6 class called `ImapCon`. Its derived methods,
 and a few independent functions enable the R user to perform a myriad of
 IMAP commands.
 
-Below, we present all the available methods and functions, grouped by
-type of operation:
+The main groups, in the shape the package has since 3.0.0:
 
-  - **configuration and connection methods**: `configure_imap()`,
-    `disconnect()`, `noop()`, `reset_url()`, `reset_username()`,
-    `reset_password()`, `reset_verbose()`, `reset_use_ssl()`,
-    `reset_buffersize()`, `reset_timeout_ms()`,
-    `reset_xoauth2_bearer()`;
-  - **server information methods**: `list_server_capabilities()`,
-    `enable()`, `id()`, `namespace()`, `get_quota_root()`,
-    `get_quota()`, `set_quota()`, `get_metadata()`, `set_metadata()`;
-  - **mailbox operations methods**: `list_mail_folders()`,
-    `list_subscribed_folders()`, `list_folders_status()`,
-    `list_special_use_folders()`, `get_acl()`, `set_acl()`,
-    `delete_acl()`, `list_rights()`, `my_rights()`, `select_folder()`,
-    `resync_folder()`, `fetch_changes()`, `examine_folder()`,
-    `status()`, `create_folder()`, `rename_folder()`, `delete_folder()`,
-    `subscribe_folder()`, `unsubscribe_folder()`, `close_folder()`,
-    `unselect_folder()`, `check()`, `list_flags()`;
-  - **single-search methods**: `search_before()`, `search_since()`,
-    `search_period()`, `search_on()`,
-    `search_sent_before()`,`search_sent_since()`,
-    `search_sent_period()`, `search_sent_on()`, `search_string()`,
-    `search_flag()`, `search_smaller_than()`, `search_larger_than()`,
-    `search_younger_than()`, `search_older_than()`;
-  - **the custom-search method and its helper functions**: `search()`;
-      - relational operators functions: `AND()`, `OR()`;
-      - criteria definition functions: `before()`, `since()`, `on()`,
-        `sent_before()`, `sent_since()`, `sent_on()`, `string()`,
-        `flag()`, `smaller_than()`, `larger_than()`, `younger_than()`,
-        `older_than()`, `saved_before()`, `saved_since()`, `saved_on()`,
-        `modseq()`;
-  - **server-side sort and thread methods**: `sort()`, `thread()`;
-  - **fetch methods**: `fetch_body()`, `fetch_header()`, `fetch_text()`,
-    `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`,
-    `fetch_preview()`, `fetch_binary()`, `metadata_options()`,
-    `fetch_attachments_list()`, `fetch_attachments()`,
-    `fetch_attachment_parts()`;
-  - **attachments methods**: `list_attachments()`, `get_attachments()`,
-    `fetch_attachments_list()`, `fetch_attachments()`;
-  - **complementary methods**: `copy_msg()`, `move_msg()`,
-    `append_msg()`, `append_msgs()`, `append_catenate()`, `idle()`,
-    `notify()`, `esearch_min_id()`, `esearch_max_id()`,
-    `esearch_count()`, `delete_msg()`, `expunge()`, `add_flags()`,
-    `remove_flags()`, `replace_flags()`;
-  - **the query language (2.3.0)**: `query()` searches with plain R
-    expressions, e.g. `con$query((subject == "budget" | "budget 3") &
-    flag != "SEEN")`, translated to RFC 3501 search strings by a pure
-    internal function; criterion constructors also combine with the
-    native `&`, `|`, and `!`;
-  - **MIME-decoding and message-text helper functions**:
-    `decode_mime_header()`, `clean_msg_text()`, `parse_envelope()`,
-    `parse_bodystructure()`, `imap_utf7_encode()`, `imap_utf7_decode()`,
-    `imap_url()`.
+  - **connection**: `configure_imap()` (including the connection-level
+    defaults `use_uid`, `mute`, and `retries`), `disconnect()`, the
+    `reset_*()` setters;
+  - **search**: `query()`, an ordinary R expression such as
+    `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`;
+    `search()` with the criteria constructors (`string()`, `before()`,
+    `flag()`, `verbatim()`, …) combined by the native `&`, `|`, and `!`;
+    the older `search_*()` methods and `AND()`/`OR()` keep working as
+    deprecated spellings;
+  - **fetch and decoding**: `fetch_body()`, `fetch_header()`,
+    `fetch_text()`, `fetch_metadata()`, `fetch_envelope()`,
+    `fetch_bodystructure()`, and the decoders `clean_msg_text()` and
+    `decode_mime_header()`;
+  - **attachments**: `attachments_manifest()` (list without
+    downloading), `attachments()` (download, guided by the
+    `BODYSTRUCTURE`), and `extract_attachments()` for already-fetched
+    messages;
+  - **mailbox management**: folder listing/creation/renaming/status,
+    flags, copy/move/delete, `append_msg()`/`append_msgs()`, expunge;
+  - **server-side computation and events**: `sort()`, `thread()`, the
+    `esearch_*()` aggregates, `idle()` and `notify()` on a dedicated
+    raw-socket route, plus every capability extension registered with
+    IANA (quota, ACL, metadata, CONDSTORE/QRESYNC, and the rest).
 
 ## Supported IMAP commands and capabilities
 
@@ -270,128 +243,75 @@ extensions your provider may lack.
 
 ## Basic Usage
 
-### 1\) Configure an IMAP connection and list the server’s capabilities
+### 1\) Connect
 
 ``` r
-
 library(mRpostman)
 
-# Outlook - Office 365
-con <- configure_imap(url="imaps://outlook.office365.com",
-                      username="your_user@company.com",
-                      password=rstudioapi::askForPassword()
-)
-
-# other IMAP providers that were tested: Hotmail ("imaps://imap-mail.outlook.com"),
-#  Gmail (imaps://imap.gmail.com), Yahoo (imaps://imap.mail.yahoo.com/), 
-#  AOL (imaps://export.imap.aol.com/), Yandex (imaps://imap.yandex.com)
-
-# Other non-tested mail providers should work as well
+con <- configure_imap(url = "imaps://outlook.office365.com",
+                      username = "your_user@company.com",
+                      password = rstudioapi::askForPassword())
+# works with any provider from the table above (Gmail, Yahoo, Yandex, ...) and
+# with self-hosted servers; use_uid, mute, and retries can also be set here,
+# once, as connection-level defaults
 
 con$list_server_capabilities()
 ```
 
-### 2\) List mail folders and select “INBOX”
+### 2\) Search with plain R expressions
 
 ``` r
+con$select_folder("INBOX")
 
-# Listing
-con$list_mail_folders()
+# subject contains "budget" or "budget 3", and the message is unread
+ids <- con$query((subject == "budget" | "budget 3") & flag != "SEEN")
 
-# Selecting
-con$select_folder(name = "INBOX")
+# sent in Q4 2021 and larger than 5 MB
+ids <- con$query(sent >= "2021-10-01" & sent < "2022-01-01" & size > 5e6)
 ```
 
-### 3\) Search messages by date
+Fields cover `subject`, `from`, `to`, `body`, `text`, `flag`, `size`,
+`age`, the date families, `modseq`, and `header("Name")`; see `?query`
+for the full table. Raw protocol fragments enter through `verbatim()`,
+as in `con$query(verbatim('X-GM-RAW "has:attachment"') & flag !=
+"SEEN")` on Gmail. The pre-3.0.0 `search_*()` methods keep working as
+deprecated spellings.
+
+### 3\) Fetch the matches as analysis-ready text
 
 ``` r
-
-res1 <- con$search_on(date_char = "02-Jan-2020")
-
-res1
+texts <- con$query(subject == "invoice" & age < 30 * 86400) %>%
+  con$fetch_text() %>%
+  clean_msg_text() # transfer encoding and charset decoded, plain character vector
 ```
 
-### 4\) Customizing a search with multiple criteria
-
-Executing a search by string:
+### 4\) Attachments
 
 ``` r
+ids <- con$query(size > 1e6)
 
-# messages that contain either "@k-state.edu" OR "ksu.edu" in the "TO" header field
-res2 <- con$search(OR(
-  string(expr = "@k-state.edu", where = "TO"),
-  string(expr = "@ksu.edu", where = "TO")
-))
-
-res2
+con$attachments_manifest(ids)          # list without downloading
+con$attachments(ids, dest = "~/att")   # download, one folder per message
 ```
 
-### 5\) Fetch messages’ text using single-search results
+`extract_attachments()` does the same extraction offline, from messages
+already fetched with `fetch_body()`.
 
-``` r
+### More
 
-res3 <- con$search_string(expr = "Welcome!", where = "SUBJECT") %>%
-  con$fetch_text(write_to_disk = TRUE) # also writes results to disk
-
-res3
-```
-
-### 6\) Attachments
-
-You can list the attachments of one or more messages with:
-
-1.  the `list_attachments()` function:
-
-<!-- end list -->
-
-``` r
-
-con$search_since(date_char = "02-Jan-2020") %>%
-  con$fetch_text() %>% # or with fetch_body()
-  list_attachments() # does not depend on the 'con' object
-```
-
-… or more directly with:
-
-2.  `fetch_attachments_list()`
-
-<!-- end list -->
-
-``` r
-
-con$search_since(date_char = "02-Jan-2020") %>%
-  con$fetch_attachments_list()
-```
-
-If you want to download the attachments of one or more messages, there
-are also two ways of doing that.
-
-1.  Using the `get_attachments()` method:
-
-<!-- end list -->
-
-``` r
-
-con$search_since(date_char = "02-Jan-2020") %>%
-  con$fetch_text() %>% # or with fetch_body()
-  con$get_attachments()
-```
-
-… and more directly with the
-
-2.  `fetch_attachments()` method:
-
-<!-- end list -->
-
-``` r
-
-con$search_since(date_char = "02-Jan-2020") %>%
-  con$fetch_attachments()
-```
+Server-side `sort()` and `thread()`, the `esearch_*()` aggregates,
+`idle()`/`notify()` push notifications, quota, ACL, and the other IANA
+extensions are all methods on the same object; the [basics
+vignette](https://allanvc.github.io/mRpostman/articles/basics.html)
+walks the full surface, and the [sandbox
+vignette](https://allanvc.github.io/mRpostman/articles/sandbox.html)
+lets you try everything against a local disposable server, no account
+needed.
 
 ## Future Improvements
 
-  - add further IMAP features;
+  - a companion package with an interactive front-end for query
+    building;
   - eliminate the {stringr} dependency in REGEX;
   - implement a progress bar in fetch operations;
 

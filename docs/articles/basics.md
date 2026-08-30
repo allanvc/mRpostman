@@ -710,8 +710,8 @@ presented in this document.
 These are the helper functions you can use inside `search()`:
 
 1.  Relational operators: R’s own `&`, `|`, and `!` (the `AND()` and
-    `OR()` helpers keep working, but are deprecated since 3.0.0);
-2.  Criteria definition: `before()`, `since()`, `on()`, `sent_before()`,
+    `OR()` helpers keep working, but are deprecated since 3.0.0); 2)
+    Criteria definition: `before()`, `since()`, `on()`, `sent_before()`,
     `sent_since()`, `sent_on()`, `string()`, `flag()`, `smaller_than()`,
     `larger_than()`, `younger_than()`, and `older_than()`.
 
