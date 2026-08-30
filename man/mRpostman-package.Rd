@@ -2,7 +2,7 @@
 \name{mRpostman-package}
 \alias{mRpostman-package}
 \alias{mRpostman}
-\title{An IMAP4rev2 client for R}
+\title{An IMAP client for R}
 
 \description{
   \pkg{mRpostman} is a session-based IMAP client that implements the full

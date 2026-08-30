@@ -99,5 +99,5 @@ A disposable local server and reproducible corpora for tests and demos.
 
 <!-- end list -->
 
-  - `mRpostman-package` `mRpostman` : An IMAP4rev2 client for R
+  - `mRpostman-package` `mRpostman` : An IMAP client for R
   - `%>%` : Common Pipe operator

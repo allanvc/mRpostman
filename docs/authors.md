@@ -29,11 +29,11 @@ Research Software*, **12**(1), 4.
       doi = {10.5334/jors.480},
     }
 
-Quadros A (2026). *mRpostman: An IMAP4rev2 Client for R*. R package
-version 3.0.0, <https://allanvc.github.io/mRpostman/>.
+Quadros A (2026). *mRpostman: An IMAP Client for R*. R package version
+3.0.0, <https://allanvc.github.io/mRpostman/>.
 
     @Manual{,
-      title = {mRpostman: An IMAP4rev2 Client for R},
+      title = {mRpostman: An IMAP Client for R},
       author = {Allan Quadros},
       year = {2026},
       note = {R package version 3.0.0},

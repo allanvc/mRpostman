@@ -1,4 +1,4 @@
-# An IMAP4rev2 client for R
+# An IMAP client for R
 
 mRpostman is a session-based IMAP client that implements the full
 command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501)
