@@ -22,9 +22,15 @@ Suggests (vignette only).
 ## Test environments
 * local Ubuntu 22.04, R 4.4.1
 * Github Actions: macOS (release), Windows (release), Ubuntu (devel, release, oldrel-1)
+* win-builder: R-devel, R-release, R-oldrelease
 
 ## R CMD check results
-0 ERRORs, 0 WARNINGs, 0 NOTEs
+* local (`--as-cran`) and Github Actions (all 5 platforms): 0 ERRORs, 0 WARNINGs, 0 NOTEs
+* win-builder (R-devel): 0 ERRORs, 0 WARNINGs, 1 NOTE (CRAN incoming
+  feasibility). The only content of the NOTE is "Possibly misspelled
+  words in DESCRIPTION: IANA" -- IANA is the Internet Assigned Numbers
+  Authority, the registry of IMAP capability extensions the package
+  implements.
 
 ## Downstream dependencies
 There are no reverse dependencies on CRAN.
