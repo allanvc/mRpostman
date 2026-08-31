@@ -13,28 +13,35 @@
 
 <!-- badges: start -->
 
-[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman) [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0) [![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml) <!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) --> <!-- badges: end -->
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/mRpostman)](https://cran.r-project.org/package=mRpostman) [![Downloads from the RStudio CRAN mirror](https://cranlogs.r-pkg.org/badges/grand-total/mRpostman)](https://cran.r-project.org/package=mRpostman) [![CRAN/METACRAN](https://img.shields.io/cran/l/mRpostman)](https://opensource.org/license/gpl-3-0) [![R-CMD-check](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/allanvc/mRpostman/actions/workflows/R-CMD-check.yaml) <!-- [![Codecov test coverage](https://codecov.io/gh/allanvc/mRpostman/branch/master/graph/badge.svg)](https://app.codecov.io/gh/allanvc/mRpostman?branch=master) --> <!-- badges: end -->
 
 An IMAP Client for R
 
 ## Overview
 
-`mRpostman` is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with IANA, allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, `mRpostman` makes extensive use of the {curl} package and the libcurl C library. Since version 3.0.0, searches are written as plain R expressions through `query()`, and every method returns a value ready for the analysis stage.
+`mRpostman` is a session-based IMAP client that implements the full command sets of the IMAP4rev2 (RFC 9051) and IMAP4rev1 (RFC 3501) protocols, along with the optional extensions registered with the Internet Assigned Numbers Authority (IANA), allowing you to perform virtually all e-mail operations from within R. The aim of this package is to pave the way for email data analysis in R. To do so, `mRpostman` makes extensive use of the {curl} package and the libcurl C library. Since version 3.0.0, searches are written as plain R expressions through `query()`, and every method returns a value ready for the analysis stage.
 
 `mRpostman`’s official website: <https://allanvc.github.io/mRpostman/>
 
 Cite `mRpostman`: A. V. C. Quadros, “mRpostman: An IMAP Client for R”, Journal of Open Research Software, vol. 12, no. 1, p. 4, 2024, doi: 10.5334/jors.480. [http](https://doi.org/10.5334/jors.480). Refer to `citation("mRpostman")`.
 
-**IMPORTANT**:
+## Important changes in 3.0.0
 
-1.  Old versions of the libcurl C library ({curl}’s main engine) will cause the malfunction of this package. If your libcurl’s version is above 7.58.0, you should be fine. In case you intend to use OAuth 2.0 authentication, then you will need libcurl \>= 7.65.0. To learn more about the OAuth 2.0 authentication in this package, refer to the [*“Using IMAP OAuth2.0 authentication in mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
+Version 3.0.0 is the product of a deep refactoring of the package, and a few changes are **not backward compatible**:
 
-2.  Most mail providers discontinued less secure apps access. If it is still available and you are comfortable with this type of access you can enable this option for your account on your mail provider. Some providers, such as Yahoo Mail, also offer the option to generate a password to be used by third-party apps such as mRpostman. The other option, as mentioned above, is to set up OAuth2 (two-factor authentication) in order to access your mailbox. Please also refer to the [*“Using IMAP OAuth2.0 authentication in mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette.
+  - **`use_uid` now defaults to `TRUE`**: every method operates on message UIDs instead of sequence numbers by default. UIDs are stable identifiers (sequence numbers are renumbered whenever messages are expunged), so ids remain valid across sessions — but scripts that relied on sequence numbers under the old default must now pass `use_uid = FALSE` (once, at `configure_imap()`, if preferred).
+  - **R \>= 4.1.0 is now required.**
+  - The fourteen `search_*()` methods and the `AND()`/`OR()` helpers are **soft-deprecated**: searches are now written as plain R expressions through `query()`, or with the criteria constructors combined by the native `&`, `|`, and `!` operators.
+  - The old attachment entry points (`fetch_attachments()`, `fetch_attachments_list()`, `get_attachments()`, `list_attachments()`) are also **soft-deprecated**, replaced by `attachments()`, `attachments_manifest()`, and `extract_attachments()`.
+  - The `name`, `to_folder`, and `msg_uid` arguments were unified as `folder` and `msg_id` throughout the API; the old names still work but warn once per session.
+  - `use_uid`, `mute`, and `retries` can now be set once, in `configure_imap()`, as connection-level defaults.
+
+Nothing was removed: the deprecated spellings keep working and emit lifecycle warnings pointing to their replacements. See [NEWS.md](https://allanvc.github.io/mRpostman/news/index.html) for the complete list of changes.
 
 ## Providers and their IMAP urls
 
 | **Provider**                       | **IMAP Server**           |
-|------------------------------------|---------------------------|
+| ---------------------------------- | ------------------------- |
 | Gmail                              | `imap.gmail.com`          |
 | Office 365                         | `outlook.office365.com`\* |
 | Outlook.com (Hotmail and Live.com) | `imap-mail.outlook.com`   |
@@ -55,12 +62,12 @@ From version 0.9.0.0 onward, `mRpostman` is implemented under the OO paradigm, b
 
 The main groups, in the shape the package has since 3.0.0:
 
-- **connection**: `configure_imap()` (including the connection-level defaults `use_uid`, `mute`, and `retries`), `disconnect()`, the `reset_*()` setters;
-- **search**: `query()`, an ordinary R expression such as `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`; `search()` with the criteria constructors (`string()`, `before()`, `flag()`, `verbatim()`, …) combined by the native `&`, `|`, and `!`; the older `search_*()` methods and `AND()`/`OR()` keep working as deprecated spellings;
-- **fetch and decoding**: `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, and the decoders `clean_msg_text()` and `decode_mime_header()`;
-- **attachments**: `attachments_manifest()` (list without downloading), `attachments()` (download, guided by the `BODYSTRUCTURE`), and `extract_attachments()` for already-fetched messages;
-- **mailbox management**: folder listing/creation/renaming/status, flags, copy/move/delete, `append_msg()`/`append_msgs()`, expunge;
-- **server-side computation and events**: `sort()`, `thread()`, the `esearch_*()` aggregates, `idle()` and `notify()` on a dedicated raw-socket route, plus every capability extension registered with IANA (quota, ACL, metadata, CONDSTORE/QRESYNC, and the rest).
+  - **connection**: `configure_imap()` (including the connection-level defaults `use_uid`, `mute`, and `retries`), `disconnect()`, the `reset_*()` setters;
+  - **search**: `query()`, an ordinary R expression such as `con$query((subject == "budget" | "budget 3") & flag != "SEEN")`; `search()` with the criteria constructors (`string()`, `before()`, `flag()`, `verbatim()`, …) combined by the native `&`, `|`, and `!`; the older `search_*()` methods and `AND()`/`OR()` keep working as deprecated spellings;
+  - **fetch and decoding**: `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_envelope()`, `fetch_bodystructure()`, and the decoders `clean_msg_text()` and `decode_mime_header()`;
+  - **attachments**: `attachments_manifest()` (list without downloading), `attachments()` (download, guided by the `BODYSTRUCTURE`), and `extract_attachments()` for already-fetched messages;
+  - **mailbox management**: folder listing/creation/renaming/status, flags, copy/move/delete, `append_msg()`/`append_msgs()`, expunge;
+  - **server-side computation and events**: `sort()`, `thread()`, the `esearch_*()` aggregates, `idle()` and `notify()` on a dedicated raw-socket route, plus every capability extension registered with IANA (quota, ACL, metadata, CONDSTORE/QRESYNC, and the rest).
 
 ## Supported IMAP commands and capabilities
 
@@ -68,78 +75,78 @@ The IMAP protocol has a **mandatory core** — the IMAP4rev1 commands defined in
 
 ### Core commands (RFC 3501 — always available)
 
-| IMAP command | `mRpostman` method(s) |
-|----|----|
-| `CAPABILITY` | `list_server_capabilities()` |
-| `NOOP` | `noop()` |
-| `CHECK` | `check()` |
-| `LOGIN` / `AUTHENTICATE` | `configure_imap()` |
-| `LOGOUT` | `disconnect()` |
-| `SELECT` / `EXAMINE` | `select_folder()` / `examine_folder()` |
-| `CREATE` / `DELETE` / `RENAME` | `create_folder()` / `delete_folder()` / `rename_folder()` |
-| `SUBSCRIBE` / `UNSUBSCRIBE` | `subscribe_folder()` / `unsubscribe_folder()` |
-| `LIST` / `LSUB` | `list_mail_folders()` / `list_subscribed_folders()` |
-| `STATUS` | `status()` |
-| `APPEND` | `append_msg()` |
-| `SEARCH` | `search()`, `search_before()`, `search_since()`, `search_string()`, … (all `search_*`) |
-| `FETCH` | `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_attachments()` |
-| `STORE` | `add_flags()`, `remove_flags()`, `replace_flags()` |
-| `COPY` | `copy_msg()` |
-| `CLOSE` | `close_folder()` |
-| `EXPUNGE` | `expunge()`, `delete_msg()` |
+| IMAP command                   | `mRpostman` method(s)                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| `CAPABILITY`                   | `list_server_capabilities()`                                                                |
+| `NOOP`                         | `noop()`                                                                                    |
+| `CHECK`                        | `check()`                                                                                   |
+| `LOGIN` / `AUTHENTICATE`       | `configure_imap()`                                                                          |
+| `LOGOUT`                       | `disconnect()`                                                                              |
+| `SELECT` / `EXAMINE`           | `select_folder()` / `examine_folder()`                                                      |
+| `CREATE` / `DELETE` / `RENAME` | `create_folder()` / `delete_folder()` / `rename_folder()`                                   |
+| `SUBSCRIBE` / `UNSUBSCRIBE`    | `subscribe_folder()` / `unsubscribe_folder()`                                               |
+| `LIST` / `LSUB`                | `list_mail_folders()` / `list_subscribed_folders()`                                         |
+| `STATUS`                       | `status()`                                                                                  |
+| `APPEND`                       | `append_msg()`                                                                              |
+| `SEARCH`                       | `search()`, `search_before()`, `search_since()`, `search_string()`, … (all `search_*`)      |
+| `FETCH`                        | `fetch_body()`, `fetch_header()`, `fetch_text()`, `fetch_metadata()`, `fetch_attachments()` |
+| `STORE`                        | `add_flags()`, `remove_flags()`, `replace_flags()`                                          |
+| `COPY`                         | `copy_msg()`                                                                                |
+| `CLOSE`                        | `close_folder()`                                                                            |
+| `EXPUNGE`                      | `expunge()`, `delete_msg()`                                                                 |
 
 ### Optional extensions (server-dependent — capability-checked)
 
-| IMAP command | `mRpostman` method(s) | Capability | RFC |
-|----|----|----|----|
-| `SORT` | `sort()` | `SORT` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `THREAD` | `thread()` | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` / `THREAD=REFS` | [5256](https://datatracker.ietf.org/doc/html/rfc5256) |
-| `GETQUOTA` / `GETQUOTAROOT` | `get_quota()` / `get_quota_root()` | `QUOTA` | [9208](https://datatracker.ietf.org/doc/html/rfc9208) |
-| `NAMESPACE` | `namespace()` | `NAMESPACE` | [2342](https://datatracker.ietf.org/doc/html/rfc2342) |
-| `ID` | `id()` | `ID` | [2971](https://datatracker.ietf.org/doc/html/rfc2971) |
-| `UNSELECT` | `unselect_folder()` | `UNSELECT` | [3691](https://datatracker.ietf.org/doc/html/rfc3691) |
-| `LIST` (special-use) | `list_special_use_folders()` | `SPECIAL-USE` | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
-| `MOVE` | `move_msg()` | `MOVE` | [6851](https://datatracker.ietf.org/doc/html/rfc6851) |
-| `SEARCH RETURN` (ESEARCH) | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()` | `ESEARCH` | [4731](https://datatracker.ietf.org/doc/html/rfc4731) |
-| `UID EXPUNGE`, `APPENDUID` / `COPYUID` | `expunge(msg_uid = ...)`, `append_msg()` (returns the UID), `copy_msg()` / `move_msg()` (`"copyuid"` attribute) | `UIDPLUS` | [4315](https://datatracker.ietf.org/doc/html/rfc4315) |
-| `LIST ... RETURN (STATUS ...)` | `list_folders_status()` | `LIST-STATUS` | [5819](https://datatracker.ietf.org/doc/html/rfc5819) |
-| `SETQUOTA` | `set_quota()` | `QUOTA` | [9208](https://datatracker.ietf.org/doc/html/rfc9208) |
-| `GETACL` / `SETACL` / `DELETEACL` / `LISTRIGHTS` / `MYRIGHTS` | `get_acl()` / `set_acl()` / `delete_acl()` / `list_rights()` / `my_rights()` | `ACL` | [4314](https://datatracker.ietf.org/doc/html/rfc4314) |
-| `ENABLE` | `enable()` | `ENABLE` | [5161](https://datatracker.ietf.org/doc/html/rfc5161) |
-| `SEARCH RETURN (SAVE)` | `search(save = TRUE)`, then `msg_id = "$"` in fetch/flag/copy/move/delete methods | `SEARCHRES` | [5182](https://datatracker.ietf.org/doc/html/rfc5182) |
-| `SORT RETURN (...)` | `sort(return = ...)` | `ESORT` | [5267](https://datatracker.ietf.org/doc/html/rfc5267) |
-| `LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)` | `list_mail_folders(detailed = TRUE)` | `LIST-EXTENDED` | [5258](https://datatracker.ietf.org/doc/html/rfc5258) |
-| `STATUS (SIZE)` | `status(items = "SIZE")`, `list_folders_status(items = "SIZE")` | `STATUS=SIZE` | [8438](https://datatracker.ietf.org/doc/html/rfc8438) |
-| `FETCH (PREVIEW)` | `fetch_preview()`, `fetch_metadata(attribute = "PREVIEW")` | `PREVIEW` | [8970](https://datatracker.ietf.org/doc/html/rfc8970) |
-| `FETCH (SAVEDATE)`, `SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE` | `fetch_metadata(attribute = "SAVEDATE")`, `saved_before()` / `saved_on()` / `saved_since()` | `SAVEDATE` | [8514](https://datatracker.ietf.org/doc/html/rfc8514) |
-| `SELECT (CONDSTORE)`, `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `FETCH ... (CHANGEDSINCE)`, `STORE ... (UNCHANGEDSINCE)`, `SEARCH MODSEQ` | `select_folder(condstore = TRUE)`, `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ", changed_since = )`, `add_flags()`/`replace_flags()`/`remove_flags()` `(unchanged_since = )`, `modseq()` | `CONDSTORE` | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
-| `SELECT (QRESYNC ...)`, `UID FETCH ... (CHANGEDSINCE VANISHED)` | `resync_folder()`, `fetch_changes()` | `QRESYNC` | [7162](https://datatracker.ietf.org/doc/html/rfc7162) |
-| `GETMETADATA` / `SETMETADATA` | `get_metadata()` / `set_metadata()` | `METADATA` | [5464](https://datatracker.ietf.org/doc/html/rfc5464) |
-| `IDLE` | `idle()` (on a dedicated second connection) | `IDLE` | [2177](https://datatracker.ietf.org/doc/html/rfc2177) |
-| `APPEND` (multiple literals) | `append_msgs()` | `MULTIAPPEND` | [3502](https://datatracker.ietf.org/doc/html/rfc3502) |
-| `NOTIFY SET` / `NOTIFY NONE` | `notify()` | `NOTIFY` | [5465](https://datatracker.ietf.org/doc/html/rfc5465) |
-| `FETCH (BINARY.PEEK[...])` | `fetch_binary()` | `BINARY` | [3516](https://datatracker.ietf.org/doc/html/rfc3516) |
-| `APPEND ... CATENATE` | `append_catenate()`, `imap_url()` | `CATENATE` | [4469](https://datatracker.ietf.org/doc/html/rfc4469) |
-| `COMPRESS DEFLATE` | `compress = TRUE` in the raw-socket methods | `COMPRESS=DEFLATE` | [4978](https://datatracker.ietf.org/doc/html/rfc4978) |
-| `LIST ... RETURN (MYRIGHTS)` | `list_mail_folders(detailed = TRUE)` (`my_rights` column) | `LIST-MYRIGHTS` | [8440](https://datatracker.ietf.org/doc/html/rfc8440) |
-| `CREATE ... (USE (...))` | `create_folder(special_use = ...)` | `CREATE-SPECIAL-USE` | [6154](https://datatracker.ietf.org/doc/html/rfc6154) |
-| `AUTHENTICATE OAUTHBEARER` | `configure_imap(oauth_mechanism = "OAUTHBEARER")` | `AUTH=OAUTHBEARER` | [7628](https://datatracker.ietf.org/doc/html/rfc7628) |
-| `SORT` (display keys) | `sort(by = "DISPLAYFROM"/"DISPLAYTO")` | `SORT=DISPLAY` | [5957](https://datatracker.ietf.org/doc/html/rfc5957) |
-| `SEARCH RETURN (PARTIAL m:n)` | `esearch_partial()` | `PARTIAL` / `CONTEXT=SEARCH` | [9394](https://datatracker.ietf.org/doc/html/rfc9394) / [5267](https://datatracker.ietf.org/doc/html/rfc5267) |
-| `SORT RETURN (PARTIAL m:n)` | `esort_partial()` \* | `CONTEXT=SORT` | [5267](https://datatracker.ietf.org/doc/html/rfc5267) |
-| `REPLACE` | `replace_msg()` \* | `REPLACE` | [8508](https://datatracker.ietf.org/doc/html/rfc8508) |
-| `FETCH (EMAILID THREADID)`, `STATUS (MAILBOXID)` | `fetch_objectid()` \*, `status(items = "MAILBOXID")` \* | `OBJECTID` | [8474](https://datatracker.ietf.org/doc/html/rfc8474) |
-| `UIDBATCHES` | `uid_batches()` \* | `UIDBATCHES` | [10022](https://datatracker.ietf.org/doc/html/rfc10022) |
-| `ESEARCH IN (...)` | `esearch_multi()` \* | `MULTISEARCH` | [7377](https://datatracker.ietf.org/doc/html/rfc7377) |
-| `UNAUTHENTICATE` | `unauthenticate()` \* | `UNAUTHENTICATE` | [8437](https://datatracker.ietf.org/doc/html/rfc8437) |
-| `LANGUAGE` / `COMPARATOR` | `language()` \* / `comparator()` \* | `LANGUAGE` / `I18NLEVEL=2` | [5255](https://datatracker.ietf.org/doc/html/rfc5255) |
-| `GENURLAUTH` / `URLFETCH` | `genurlauth()` \* / `urlfetch()` \* | `URLAUTH` | [4467](https://datatracker.ietf.org/doc/html/rfc4467) |
-| `CONVERT` | `fetch_convert()` \* | `CONVERT` | [5259](https://datatracker.ietf.org/doc/html/rfc5259) |
-| `FETCH ANNOTATION` / `STORE ANNOTATION` | `fetch_annotation()` \* / `store_annotation()` \* | `ANNOTATE-EXPERIMENT-1` | [5257](https://datatracker.ietf.org/doc/html/rfc5257) |
-| `SEARCH ... FUZZY` | `fuzzy()` criterion modifier \* | `SEARCH=FUZZY` | [6203](https://datatracker.ietf.org/doc/html/rfc6203) |
-| `SEARCH ... FILTER` | `filter_stored()` criterion \* | `FILTERS` | [5466](https://datatracker.ietf.org/doc/html/rfc5466) |
-| `APPEND` size guard, `STATUS (APPENDLIMIT)` | automatic in `append_msg()`/`append_msgs()`; `status(items = "APPENDLIMIT")` | `APPENDLIMIT` | [7889](https://datatracker.ietf.org/doc/html/rfc7889) |
-| non-synchronizing literals | automatic on the raw-socket methods | `LITERAL+` / `LITERAL-` | [7888](https://datatracker.ietf.org/doc/html/rfc7888) |
+| IMAP command                                                                                                                                | `mRpostman` method(s)                                                                                                                                                                                               | Capability                                                    | RFC                                                                                                           |
+| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `SORT`                                                                                                                                      | `sort()`                                                                                                                                                                                                            | `SORT`                                                        | [5256](https://datatracker.ietf.org/doc/html/rfc5256)                                                         |
+| `THREAD`                                                                                                                                    | `thread()`                                                                                                                                                                                                          | `THREAD=REFERENCES` / `THREAD=ORDEREDSUBJECT` / `THREAD=REFS` | [5256](https://datatracker.ietf.org/doc/html/rfc5256)                                                         |
+| `GETQUOTA` / `GETQUOTAROOT`                                                                                                                 | `get_quota()` / `get_quota_root()`                                                                                                                                                                                  | `QUOTA`                                                       | [9208](https://datatracker.ietf.org/doc/html/rfc9208)                                                         |
+| `NAMESPACE`                                                                                                                                 | `namespace()`                                                                                                                                                                                                       | `NAMESPACE`                                                   | [2342](https://datatracker.ietf.org/doc/html/rfc2342)                                                         |
+| `ID`                                                                                                                                        | `id()`                                                                                                                                                                                                              | `ID`                                                          | [2971](https://datatracker.ietf.org/doc/html/rfc2971)                                                         |
+| `UNSELECT`                                                                                                                                  | `unselect_folder()`                                                                                                                                                                                                 | `UNSELECT`                                                    | [3691](https://datatracker.ietf.org/doc/html/rfc3691)                                                         |
+| `LIST` (special-use)                                                                                                                        | `list_special_use_folders()`                                                                                                                                                                                        | `SPECIAL-USE`                                                 | [6154](https://datatracker.ietf.org/doc/html/rfc6154)                                                         |
+| `MOVE`                                                                                                                                      | `move_msg()`                                                                                                                                                                                                        | `MOVE`                                                        | [6851](https://datatracker.ietf.org/doc/html/rfc6851)                                                         |
+| `SEARCH RETURN` (ESEARCH)                                                                                                                   | `search(esearch = TRUE)`, `esearch_count()`, `esearch_min_id()`, `esearch_max_id()`                                                                                                                                 | `ESEARCH`                                                     | [4731](https://datatracker.ietf.org/doc/html/rfc4731)                                                         |
+| `UID EXPUNGE`, `APPENDUID` / `COPYUID`                                                                                                      | `expunge(msg_uid = ...)`, `append_msg()` (returns the UID), `copy_msg()` / `move_msg()` (`"copyuid"` attribute)                                                                                                     | `UIDPLUS`                                                     | [4315](https://datatracker.ietf.org/doc/html/rfc4315)                                                         |
+| `LIST ... RETURN (STATUS ...)`                                                                                                              | `list_folders_status()`                                                                                                                                                                                             | `LIST-STATUS`                                                 | [5819](https://datatracker.ietf.org/doc/html/rfc5819)                                                         |
+| `SETQUOTA`                                                                                                                                  | `set_quota()`                                                                                                                                                                                                       | `QUOTA`                                                       | [9208](https://datatracker.ietf.org/doc/html/rfc9208)                                                         |
+| `GETACL` / `SETACL` / `DELETEACL` / `LISTRIGHTS` / `MYRIGHTS`                                                                               | `get_acl()` / `set_acl()` / `delete_acl()` / `list_rights()` / `my_rights()`                                                                                                                                        | `ACL`                                                         | [4314](https://datatracker.ietf.org/doc/html/rfc4314)                                                         |
+| `ENABLE`                                                                                                                                    | `enable()`                                                                                                                                                                                                          | `ENABLE`                                                      | [5161](https://datatracker.ietf.org/doc/html/rfc5161)                                                         |
+| `SEARCH RETURN (SAVE)`                                                                                                                      | `search(save = TRUE)`, then `msg_id = "$"` in fetch/flag/copy/move/delete methods                                                                                                                                   | `SEARCHRES`                                                   | [5182](https://datatracker.ietf.org/doc/html/rfc5182)                                                         |
+| `SORT RETURN (...)`                                                                                                                         | `sort(return = ...)`                                                                                                                                                                                                | `ESORT`                                                       | [5267](https://datatracker.ietf.org/doc/html/rfc5267)                                                         |
+| `LIST ... RETURN (CHILDREN SUBSCRIBED SPECIAL-USE)`                                                                                         | `list_mail_folders(detailed = TRUE)`                                                                                                                                                                                | `LIST-EXTENDED`                                               | [5258](https://datatracker.ietf.org/doc/html/rfc5258)                                                         |
+| `STATUS (SIZE)`                                                                                                                             | `status(items = "SIZE")`, `list_folders_status(items = "SIZE")`                                                                                                                                                     | `STATUS=SIZE`                                                 | [8438](https://datatracker.ietf.org/doc/html/rfc8438)                                                         |
+| `FETCH (PREVIEW)`                                                                                                                           | `fetch_preview()`, `fetch_metadata(attribute = "PREVIEW")`                                                                                                                                                          | `PREVIEW`                                                     | [8970](https://datatracker.ietf.org/doc/html/rfc8970)                                                         |
+| `FETCH (SAVEDATE)`, `SEARCH SAVEDBEFORE/SAVEDON/SAVEDSINCE`                                                                                 | `fetch_metadata(attribute = "SAVEDATE")`, `saved_before()` / `saved_on()` / `saved_since()`                                                                                                                         | `SAVEDATE`                                                    | [8514](https://datatracker.ietf.org/doc/html/rfc8514)                                                         |
+| `SELECT (CONDSTORE)`, `STATUS (HIGHESTMODSEQ)`, `FETCH (MODSEQ)`, `FETCH ... (CHANGEDSINCE)`, `STORE ... (UNCHANGEDSINCE)`, `SEARCH MODSEQ` | `select_folder(condstore = TRUE)`, `status(items = "HIGHESTMODSEQ")`, `fetch_metadata(attribute = "MODSEQ", changed_since = )`, `add_flags()`/`replace_flags()`/`remove_flags()` `(unchanged_since = )`, `modseq()` | `CONDSTORE`                                                   | [7162](https://datatracker.ietf.org/doc/html/rfc7162)                                                         |
+| `SELECT (QRESYNC ...)`, `UID FETCH ... (CHANGEDSINCE VANISHED)`                                                                             | `resync_folder()`, `fetch_changes()`                                                                                                                                                                                | `QRESYNC`                                                     | [7162](https://datatracker.ietf.org/doc/html/rfc7162)                                                         |
+| `GETMETADATA` / `SETMETADATA`                                                                                                               | `get_metadata()` / `set_metadata()`                                                                                                                                                                                 | `METADATA`                                                    | [5464](https://datatracker.ietf.org/doc/html/rfc5464)                                                         |
+| `IDLE`                                                                                                                                      | `idle()` (on a dedicated second connection)                                                                                                                                                                         | `IDLE`                                                        | [2177](https://datatracker.ietf.org/doc/html/rfc2177)                                                         |
+| `APPEND` (multiple literals)                                                                                                                | `append_msgs()`                                                                                                                                                                                                     | `MULTIAPPEND`                                                 | [3502](https://datatracker.ietf.org/doc/html/rfc3502)                                                         |
+| `NOTIFY SET` / `NOTIFY NONE`                                                                                                                | `notify()`                                                                                                                                                                                                          | `NOTIFY`                                                      | [5465](https://datatracker.ietf.org/doc/html/rfc5465)                                                         |
+| `FETCH (BINARY.PEEK[...])`                                                                                                                  | `fetch_binary()`                                                                                                                                                                                                    | `BINARY`                                                      | [3516](https://datatracker.ietf.org/doc/html/rfc3516)                                                         |
+| `APPEND ... CATENATE`                                                                                                                       | `append_catenate()`, `imap_url()`                                                                                                                                                                                   | `CATENATE`                                                    | [4469](https://datatracker.ietf.org/doc/html/rfc4469)                                                         |
+| `COMPRESS DEFLATE`                                                                                                                          | `compress = TRUE` in the raw-socket methods                                                                                                                                                                         | `COMPRESS=DEFLATE`                                            | [4978](https://datatracker.ietf.org/doc/html/rfc4978)                                                         |
+| `LIST ... RETURN (MYRIGHTS)`                                                                                                                | `list_mail_folders(detailed = TRUE)` (`my_rights` column)                                                                                                                                                           | `LIST-MYRIGHTS`                                               | [8440](https://datatracker.ietf.org/doc/html/rfc8440)                                                         |
+| `CREATE ... (USE (...))`                                                                                                                    | `create_folder(special_use = ...)`                                                                                                                                                                                  | `CREATE-SPECIAL-USE`                                          | [6154](https://datatracker.ietf.org/doc/html/rfc6154)                                                         |
+| `AUTHENTICATE OAUTHBEARER`                                                                                                                  | `configure_imap(oauth_mechanism = "OAUTHBEARER")`                                                                                                                                                                   | `AUTH=OAUTHBEARER`                                            | [7628](https://datatracker.ietf.org/doc/html/rfc7628)                                                         |
+| `SORT` (display keys)                                                                                                                       | `sort(by = "DISPLAYFROM"/"DISPLAYTO")`                                                                                                                                                                              | `SORT=DISPLAY`                                                | [5957](https://datatracker.ietf.org/doc/html/rfc5957)                                                         |
+| `SEARCH RETURN (PARTIAL m:n)`                                                                                                               | `esearch_partial()`                                                                                                                                                                                                 | `PARTIAL` / `CONTEXT=SEARCH`                                  | [9394](https://datatracker.ietf.org/doc/html/rfc9394) / [5267](https://datatracker.ietf.org/doc/html/rfc5267) |
+| `SORT RETURN (PARTIAL m:n)`                                                                                                                 | `esort_partial()` \*                                                                                                                                                                                                | `CONTEXT=SORT`                                                | [5267](https://datatracker.ietf.org/doc/html/rfc5267)                                                         |
+| `REPLACE`                                                                                                                                   | `replace_msg()` \*                                                                                                                                                                                                  | `REPLACE`                                                     | [8508](https://datatracker.ietf.org/doc/html/rfc8508)                                                         |
+| `FETCH (EMAILID THREADID)`, `STATUS (MAILBOXID)`                                                                                            | `fetch_objectid()` \*, `status(items = "MAILBOXID")` \*                                                                                                                                                             | `OBJECTID`                                                    | [8474](https://datatracker.ietf.org/doc/html/rfc8474)                                                         |
+| `UIDBATCHES`                                                                                                                                | `uid_batches()` \*                                                                                                                                                                                                  | `UIDBATCHES`                                                  | [10022](https://datatracker.ietf.org/doc/html/rfc10022)                                                       |
+| `ESEARCH IN (...)`                                                                                                                          | `esearch_multi()` \*                                                                                                                                                                                                | `MULTISEARCH`                                                 | [7377](https://datatracker.ietf.org/doc/html/rfc7377)                                                         |
+| `UNAUTHENTICATE`                                                                                                                            | `unauthenticate()` \*                                                                                                                                                                                               | `UNAUTHENTICATE`                                              | [8437](https://datatracker.ietf.org/doc/html/rfc8437)                                                         |
+| `LANGUAGE` / `COMPARATOR`                                                                                                                   | `language()` \* / `comparator()` \*                                                                                                                                                                                 | `LANGUAGE` / `I18NLEVEL=2`                                    | [5255](https://datatracker.ietf.org/doc/html/rfc5255)                                                         |
+| `GENURLAUTH` / `URLFETCH`                                                                                                                   | `genurlauth()` \* / `urlfetch()` \*                                                                                                                                                                                 | `URLAUTH`                                                     | [4467](https://datatracker.ietf.org/doc/html/rfc4467)                                                         |
+| `CONVERT`                                                                                                                                   | `fetch_convert()` \*                                                                                                                                                                                                | `CONVERT`                                                     | [5259](https://datatracker.ietf.org/doc/html/rfc5259)                                                         |
+| `FETCH ANNOTATION` / `STORE ANNOTATION`                                                                                                     | `fetch_annotation()` \* / `store_annotation()` \*                                                                                                                                                                   | `ANNOTATE-EXPERIMENT-1`                                       | [5257](https://datatracker.ietf.org/doc/html/rfc5257)                                                         |
+| `SEARCH ... FUZZY`                                                                                                                          | `fuzzy()` criterion modifier \*                                                                                                                                                                                     | `SEARCH=FUZZY`                                                | [6203](https://datatracker.ietf.org/doc/html/rfc6203)                                                         |
+| `SEARCH ... FILTER`                                                                                                                         | `filter_stored()` criterion \*                                                                                                                                                                                      | `FILTERS`                                                     | [5466](https://datatracker.ietf.org/doc/html/rfc5466)                                                         |
+| `APPEND` size guard, `STATUS (APPENDLIMIT)`                                                                                                 | automatic in `append_msg()`/`append_msgs()`; `status(items = "APPENDLIMIT")`                                                                                                                                        | `APPENDLIMIT`                                                 | [7889](https://datatracker.ietf.org/doc/html/rfc7889)                                                         |
+| non-synchronizing literals                                                                                                                  | automatic on the raw-socket methods                                                                                                                                                                                 | `LITERAL+` / `LITERAL-`                                       | [7888](https://datatracker.ietf.org/doc/html/rfc7888)                                                         |
 
 Every capability registered with IANA is covered. The methods marked with an asterisk (\*) are **experimental**: they follow the RFC grammars, but no widely deployed server advertises those capabilities (they are rare, brand new, or were never adopted), so they could not be exercised against a live server. Availability of the others varies by provider: Gmail, for instance, supports every non-experimental extension above **except `SORT` and `THREAD`**, which it has never implemented; to exercise `sort()` and `thread()` you need a server that advertises them (e.g. Dovecot-based hosts, Yandex, or Outlook/Office 365). Announcement-only capabilities (`AUTH=`, `LOGINDISABLED`, `RIGHTS=`, `QUOTA=`, `APPENDLIMIT=n`, `MESSAGELIMIT=`/`SAVELIMIT=`, `IMAPSIEVE=`, `JMAPACCESS`, `INPROGRESS`, `CHILDREN`, `I18NLEVEL=1`, referrals) require no dedicated command and are honored where they matter (folder listings, appends, error reporting). `UIDONLY` (RFC 9586) responses (`UIDFETCH`) are understood after `enable("UIDONLY")`. The raw-socket methods (`idle()`, `notify()`, `append_msgs()`, `append_catenate()`, `fetch_binary()`, `replace_msg()`, `esearch_multi()`, `urlfetch()`, `fetch_convert()`) need an `imaps://` URL for TLS, since STARTTLS is not available on that connection.
 
@@ -153,6 +160,8 @@ install.packages("mRpostman")
 if (!require('remotes')) install.packages('remotes')
 remotes::install_github("allanvc/mRpostman")
 ```
+
+`mRpostman` is built on the libcurl C library and requires libcurl \>= 7.58.0 (\>= 7.65.0 for OAuth2.0 authentication) — any recent Linux distribution satisfies this through `libcurl4-openssl-dev` (deb) or `libcurl-devel` (rpm); the macOS and Windows R builds already ship a suitable version.
 
 ## Trying it without a mail account
 
@@ -171,7 +180,7 @@ See the [*“A reproducible IMAP sandbox with Docker”*](https://allanvc.github
 
 ## Basic Usage
 
-### 1) Connect
+### 1\) Connect
 
 ``` r
 library(mRpostman)
@@ -186,7 +195,9 @@ con <- configure_imap(url = "imaps://outlook.office365.com",
 con$list_server_capabilities()
 ```
 
-### 2) Search with plain R expressions
+Most providers no longer accept plain account passwords from third-party apps: you will typically authenticate with OAuth2.0 (the `xoauth2_bearer` argument) or with an app-specific password generated in your account’s security settings. The [*“Using IMAP OAuth2.0 authentication in mRpostman”*](https://allanvc.github.io/mRpostman/articles/xoauth2.0.html) vignette covers the OAuth2.0 setup for Gmail and other providers.
+
+### 2\) Search with plain R expressions
 
 ``` r
 con$select_folder("INBOX")
@@ -200,7 +211,7 @@ ids <- con$query(sent >= "2021-10-01" & sent < "2022-01-01" & size > 5e6)
 
 Fields cover `subject`, `from`, `to`, `body`, `text`, `flag`, `size`, `age`, the date families, `modseq`, and `header("Name")`; see `?query` for the full table. Raw protocol fragments enter through `verbatim()`, as in `con$query(verbatim('X-GM-RAW "has:attachment"') & flag != "SEEN")` on Gmail. The pre-3.0.0 `search_*()` methods keep working as deprecated spellings.
 
-### 3) Fetch the matches as analysis-ready text
+### 3\) Fetch the matches as analysis-ready text
 
 ``` r
 texts <- con$query(subject == "invoice" & age < 30 * 86400) %>%
@@ -208,7 +219,7 @@ texts <- con$query(subject == "invoice" & age < 30 * 86400) %>%
   clean_msg_text() # transfer encoding and charset decoded, plain character vector
 ```
 
-### 4) Attachments
+### 4\) Attachments
 
 ``` r
 ids <- con$query(size > 1e6)
@@ -225,19 +236,19 @@ Server-side `sort()` and `thread()`, the `esearch_*()` aggregates, `idle()`/`not
 
 ## Future Improvements
 
-- a companion package with an interactive front-end for query building;
-- eliminate the {stringr} dependency in REGEX;
-- implement a progress bar in fetch operations;
+  - a companion package with an interactive front-end for query building;
+  - eliminate the {stringr} dependency in REGEX;
+  - implement a progress bar in fetch operations;
 
 ## Known bugs
 
-- *search results truncation*: This is a [libcurl’s known bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumvent this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
+  - *search results truncation*: This is a [libcurl’s known bug](https://curl.se/docs/knownbugs.html#IMAP_SEARCH_ALL_truncated_respon) which causes the search results to be truncated when there is a large number of message ids returned. To circumvent this problem, you can set a higher `buffersize` value, increasing the buffer capacity, and `verbose = TRUE` for monitoring the server response for truncated results when executing a search. When possible, `mRpostman` tries to issue a warning for possible truncated values.
 
-- *`verbose = TRUE` malfunction on Windows*: This seems to be related to the [{curl} R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
+  - *`verbose = TRUE` malfunction on Windows*: This seems to be related to the [{curl} R package](https://github.com/jeroen/curl/issues/230). When using the `verbose = TRUE` on Windows, the flow of information between the IMAP server and the R session presents an intermittent behavior, which causes it to not be shown on the console, or with a considerable delay.
 
-- *shared mailbox access not working*: This seems to be another [libcurl’s bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumvent this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
+  - *shared mailbox access not working*: This seems to be another [libcurl’s bug](https://github.com/allanvc/mRpostman/issues/2), although more tests need to be done to confirm it. It does not allow the user to connect to a shared mailbox. To circumvent this, if the shared mailbox has a password associated with it, you can try a direct regular connection.
 
-- *`xoauth2_bearer` SASL error*: This is related to [old libcurl’s versions](https://curl.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
+  - *`xoauth2_bearer` SASL error*: This is related to [old libcurl’s versions](https://curl.se/bug/?i=2487) which causes the access token to not be properly passed to the server. This bug was fixed in libcurl 7.65.0. The problem is that many Linux distributions, such as Ubuntu 18.04, still provide libcurl 7.58.0 in their official distribution (libcurl4-openssl-dev). If you use a newer Linux distro such as Ubuntu 20.04, you should be fine as the distributed libcurl’s version will be above 7.65.0. Another alternative is to use plain authentication instead of OAuth2.0.
 
 ## License
 

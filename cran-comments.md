@@ -27,10 +27,9 @@ Suggests (vignette only).
 ## R CMD check results
 * local (`--as-cran`) and Github Actions (all 5 platforms): 0 ERRORs, 0 WARNINGs, 0 NOTEs
 * win-builder (R-devel): 0 ERRORs, 0 WARNINGs, 1 NOTE (CRAN incoming
-  feasibility). The only content of the NOTE is "Possibly misspelled
-  words in DESCRIPTION: IANA" -- IANA is the Internet Assigned Numbers
-  Authority, the registry of IMAP capability extensions the package
-  implements.
+  feasibility). The only content of the NOTE was "Possibly misspelled
+  words in DESCRIPTION: IANA"; the acronym has since been spelled out
+  as "Internet Assigned Numbers Authority" in the Description field.
 
 ## Downstream dependencies
 There are no reverse dependencies on CRAN.
