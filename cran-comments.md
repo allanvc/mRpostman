@@ -25,11 +25,8 @@ Suggests (vignette only).
 * win-builder: R-devel, R-release, R-oldrelease
 
 ## R CMD check results
-* local (`--as-cran`) and Github Actions (all 5 platforms): 0 ERRORs, 0 WARNINGs, 0 NOTEs
-* win-builder (R-devel): 0 ERRORs, 0 WARNINGs, 1 NOTE (CRAN incoming
-  feasibility). The only content of the NOTE was "Possibly misspelled
-  words in DESCRIPTION: IANA"; the acronym has since been spelled out
-  as "Internet Assigned Numbers Authority" in the Description field.
+0 ERRORs, 0 WARNINGs, 0 NOTEs on all test environments above
+(win-builder: Status OK, including the CRAN incoming feasibility check).
 
 ## Downstream dependencies
 There are no reverse dependencies on CRAN.
