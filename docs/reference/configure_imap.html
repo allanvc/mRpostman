@@ -91,8 +91,12 @@ a password.</p></dd>
 
 
 <dt id="arg-use-ssl">use_ssl<a class="anchor" aria-label="anchor" href="#arg-use-ssl"></a></dt>
-<dd><p>A logical indicating the use or not of Secure Sockets Layer
-encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p></dd>
+<dd><p>A logical. <code>TRUE</code> (default) requires TLS: an
+<code>imaps://</code> URL is encrypted from the start, and an <code>imap://</code>
+URL is upgraded with <code>STARTTLS</code> before any credential is sent; if
+the server does not offer <code>STARTTLS</code>, the connection fails (there is
+no silent fallback to plaintext). <code>FALSE</code> sends everything
+unencrypted, for plain test servers such as the Docker sandbox.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>

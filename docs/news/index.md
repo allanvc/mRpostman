@@ -4,6 +4,46 @@
 
 ### New features
 
+  - **STARTTLS on the raw-socket connection.** The methods that run on a
+    dedicated second connection (`idle()`, `notify()`, `append_msgs()`,
+    `append_catenate()`, `fetch_binary()`, and the experimental
+    `replace_msg()`, `esearch_multi()`, `urlfetch()`, `fetch_convert()`)
+    now honor `use_ssl = TRUE` on an `imap://` URL: libcurl negotiates
+    `STARTTLS` before the socket is handed over, exactly as on the main
+    connection. Previously these methods required an `imaps://` URL for
+    TLS. A server that does not offer `STARTTLS` is an error (never a
+    plaintext login).
+
+### Security
+
+  - **`use_ssl = TRUE` now means TLS is required.** On an `imap://` URL,
+    libcurl used to be configured with `CURLUSESSL_TRY`: it attempted
+    `STARTTLS` and, when the server did not offer it, continued in
+    plaintext and sent the credentials unencrypted without any warning
+    (a downgrade a misconfigured server, or an on-path attacker
+    stripping `STARTTLS` from the capability list, could trigger). The
+    handle now uses `CURLUSESSL_ALL`: if `STARTTLS` is unavailable the
+    connection fails with an explicit error, on both the main connection
+    and the raw-socket one. `imaps://` URLs are unaffected. Every
+    connection object now also runs its libcurl transfers in a private
+    connection pool. Previously all handles of the R session shared one
+    pool, and libcurl 8.13.0 through 8.20.x (April 2025 to June 2026)
+    hands a handle that requires TLS a plaintext connection cached by
+    another object (or by the same object before `reset_use_ssl(TRUE)`),
+    because those releases dropped the TLS-upgrade check from their
+    connection matching (restored in libcurl 8.21.0). With a private
+    pool an object can only reuse the connections it opened itself,
+    under its own setting, whatever the libcurl version. Plain servers
+    (such as the Docker sandbox) need `use_ssl = FALSE`, as their
+    documentation already says.
+
+### Bug fixes
+
+  - Pressing Ctrl-C while a raw-socket method was waiting for the server
+    (typically inside `idle()`) surfaced as a spurious `"socket error
+    while receiving"` instead of a clean interrupt. The wait now treats
+    the signal as an interrupt.
+
 ### API modernization (the 2026 refactoring)
 
   - **Unified argument names**: every method that takes a mailbox name

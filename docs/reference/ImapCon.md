@@ -456,8 +456,12 @@ Configure and create a new IMAP connection.
 
   - `use_ssl`:
     
-    A logical indicating the use or not of Secure Sockets Layer
-    encryption when connecting to the IMAP server. Default is `TRUE`.
+    A logical. `TRUE` (default) requires TLS: an `imaps://` URL is
+    encrypted from the start, and an `imap://` URL is upgraded with
+    `STARTTLS` before any credential is sent; if the server does not
+    offer `STARTTLS`, the connection fails (there is no silent fallback
+    to plaintext). `FALSE` sends everything unencrypted, for plain test
+    servers such as the Docker sandbox.
 
   - `verbose`:
     
@@ -718,8 +722,9 @@ A second, dedicated connection is opened on a raw TLS socket (the main
 connection stays free), the folder is selected there, and the server's
 unsolicited notifications (`EXISTS`, `EXPUNGE`, `FETCH` flag changes,
 `RECENT`) are collected until `timeout` seconds elapse or `callback`
-returns `FALSE`. Requires the server `IDLE` capability and, for TLS, an
-`imaps://` URL.
+returns `FALSE`. Requires the server `IDLE` capability. TLS is used as
+on the main connection: an `imaps://` URL, or `use_ssl = TRUE` on an
+`imap://` URL (`STARTTLS`).
 
 #### Usage
 

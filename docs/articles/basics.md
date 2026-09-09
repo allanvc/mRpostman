@@ -1276,8 +1276,10 @@ capabilities.
 
 The second connection needs the credentials again: they are kept in a
 private field of the connection object (never printed, not part of
-`con_params`) and cleared by `disconnect()`. For TLS, the URL must be
-`imaps://` (STARTTLS is not available on the raw socket).
+`con_params`) and cleared by `disconnect()`. TLS works as on the main
+connection: an `imaps://` URL, or `use_ssl = TRUE` on an `imap://` URL,
+in which case the second connection is upgraded with `STARTTLS` before
+any command is sent.
 
 ## References
 

@@ -378,8 +378,12 @@ token: <code>"XOAUTH2"</code> (default; Gmail, Yahoo, Microsoft 365) or
 with a password.</p></dd>
 
       <dt><code>use_ssl</code></dt>
-<dd><p>A logical indicating the use or not of Secure Sockets Layer
-encryption when connecting to the IMAP server. Default is <code>TRUE</code>.</p></dd>
+<dd><p>A logical. <code>TRUE</code> (default) requires TLS: an
+<code>imaps://</code> URL is encrypted from the start, and an <code>imap://</code>
+URL is upgraded with <code>STARTTLS</code> before any credential is sent; if
+the server does not offer <code>STARTTLS</code>, the connection fails (there is
+no silent fallback to plaintext). <code>FALSE</code> sends everything
+unencrypted, for plain test servers such as the Docker sandbox.</p></dd>
 
       <dt><code>verbose</code></dt>
 <dd><p>If <code>FALSE</code>, mutes the flow of information between the
@@ -636,7 +640,9 @@ Default is <code>1</code>.</p></dd>
   (<code>EXISTS</code>, <code>EXPUNGE</code>, <code>FETCH</code> flag changes,
   <code>RECENT</code>) are collected until <code>timeout</code> seconds elapse or
   <code>callback</code> returns <code>FALSE</code>. Requires the server
-  <code>IDLE</code> capability and, for TLS, an <code>imaps://</code> URL.</p><div class="section">
+  <code>IDLE</code> capability. TLS is used as on the main connection: an
+  <code>imaps://</code> URL, or <code>use_ssl = TRUE</code> on an <code>imap://</code>
+  URL (<code>STARTTLS</code>).</p><div class="section">
 <h4 id="usage-12">Usage<a class="anchor" aria-label="anchor" href="#usage-12"></a></h4>
 <p></p><div class="r"><div class="sourceCode"><pre><code><span><span class="va">ImapCon</span><span class="op">$</span><span class="fu">idle</span><span class="op">(</span></span>
 <span>  timeout <span class="op">=</span> <span class="fl">300</span>,</span>

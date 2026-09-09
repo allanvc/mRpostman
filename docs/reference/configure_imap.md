@@ -51,8 +51,12 @@ configure_imap(
 
   - use\_ssl:
     
-    A logical indicating the use or not of Secure Sockets Layer
-    encryption when connecting to the IMAP server. Default is `TRUE`.
+    A logical. `TRUE` (default) requires TLS: an `imaps://` URL is
+    encrypted from the start, and an `imap://` URL is upgraded with
+    `STARTTLS` before any credential is sent; if the server does not
+    offer `STARTTLS`, the connection fails (there is no silent fallback
+    to plaintext). `FALSE` sends everything unencrypted, for plain test
+    servers such as the Docker sandbox.
 
   - verbose:
     

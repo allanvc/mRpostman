@@ -14,3 +14,4 @@
 ^C[A-Z]+.*\.md$
 ^src/Makevars$
 ^\.claude$
+^CRAN-SUBMISSION$
