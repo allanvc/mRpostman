@@ -6,13 +6,18 @@
 
 raw_session_open <- function(self, timeout_ms = 30000) {
   url <- self$con_params$url
-  if (grepl("^imap://", url) && isTRUE(self$con_params$use_ssl)) {
-    stop(paste0("The event connection needs an imaps:// URL for TLS ",
-                "(STARTTLS is not available on the raw socket); use ",
-                "url = \"imaps://...\" or use_ssl = FALSE."), call. = FALSE)
-  }
+  # imap:// with use_ssl = TRUE: STARTTLS, negotiated by libcurl before the
+  # socket is handed over (the same upgrade the main connection performs)
+  starttls <- grepl("^imap://", url) && isTRUE(self$con_params$use_ssl)
   sess <- new.env(parent = emptyenv())
-  sess$sock <- imap_socket_open(url, timeout_ms, verify_peer = TRUE)
+  sess$sock <- tryCatch(
+    imap_socket_open(url, timeout_ms, verify_peer = TRUE, use_ssl = starttls),
+    error = function(e) {
+      if (starttls && grepl("SSL level", conditionMessage(e))) {
+        stop(starttls_unavailable_msg(), call. = FALSE)
+      }
+      stop(e)
+    })
   sess$buffer <- raw(0)
   sess$tag <- 0L
   sess$timeout_ms <- timeout_ms

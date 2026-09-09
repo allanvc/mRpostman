@@ -33,6 +33,13 @@ test_that("the raw session logs in, appends with MULTIAPPEND, and idles (sandbox
   con$disconnect()
 })
 
+test_that("use_ssl = TRUE on a plain imap:// server is refused, never a plaintext login (sandbox)", {
+  skip_if_not(sandbox_up(), "Docker sandbox not reachable on localhost:1430")
+  con <- configure_imap(url = "imap://localhost:1430", username = "rawtest",
+                        password = "sandbox", use_ssl = TRUE)
+  expect_error(con$idle(timeout = 1, folder = "INBOX"), "does not offer STARTTLS")
+})
+
 test_that("the zlib streams round-trip data incrementally (COMPRESS=DEFLATE)", {
   d <- .Call(mRpostman:::C_zstream_new, FALSE, 6L)
   i <- .Call(mRpostman:::C_zstream_new, TRUE, 6L)

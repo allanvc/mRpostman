@@ -27,6 +27,9 @@ modify_con_handle <- function(self, ...) {
     assertthat::assert_that(
       is.logical(argg_list$use_ssl),
       msg='Argument "use_ssl" must be a logical.')
+    argg_list$use_ssl <- ssl_level(argg_list$use_ssl)
+    # the connections cached so far were opened under the previous setting
+    self$con_pool <- NULL
   }
 
   if ("verbose" %in% names(argg_list)) {

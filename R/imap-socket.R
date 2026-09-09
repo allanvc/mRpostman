@@ -5,8 +5,11 @@ NULL
 # Thin wrappers over the C helpers of src/imap_socket.c: a raw (TLS) socket to
 # an IMAP server, established by libcurl in CONNECT_ONLY mode.
 
-imap_socket_open <- function(url, timeout_ms = 30000, verify_peer = TRUE) {
-  .Call(C_imap_socket_open, as.character(url), as.integer(timeout_ms), as.logical(verify_peer))
+# use_ssl = TRUE on an imap:// URL upgrades the connection with STARTTLS before
+# the socket is handed over (imaps:// URLs are TLS from the start regardless)
+imap_socket_open <- function(url, timeout_ms = 30000, verify_peer = TRUE, use_ssl = FALSE) {
+  .Call(C_imap_socket_open, as.character(url), as.integer(timeout_ms),
+        as.logical(verify_peer), as.logical(use_ssl))
 }
 imap_socket_send <- function(sock, data, timeout_ms = 30000) {
   if (is.character(data)) data <- charToRaw(data)

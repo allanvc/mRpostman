@@ -43,7 +43,7 @@ fetch_in_chunks <- function(self, fetch_request, metadata_attribute = NULL,
       customrequest = sprintf("%s<%d.%d>", fetch_request, start, chunk_size))
 
     response <- tryCatch({
-      curl::curl_fetch_memory(url, handle = h)
+      curl_perform(url, h, self)
     }, error = function(e) NULL)
 
     if (is.null(response)) {

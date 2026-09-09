@@ -40,6 +40,12 @@ response_error_handling <- function(error_message, self = NULL) {
 
     stop_server_rejected(server_error)
 
+  } else if (grepl("SSL level failed", error_message)) {
+
+    # CURLE_USE_SSL_FAILED: use_ssl = TRUE on an imap:// URL, but the server
+    # does not offer STARTTLS on that port; never fall back to plaintext
+    stop_mrp(starttls_unavailable_msg(), "connection_error")
+
   } else if (grepl("grew larger than allowed", error_message)) {
 
     # libcurl >= 8.7 (CURLE_TOO_LARGE): one response line exceeded what
@@ -64,3 +70,10 @@ response_error_handling <- function(error_message, self = NULL) {
 
 }
 
+
+starttls_unavailable_msg <- function() {
+  paste0("The server does not offer STARTTLS on this port, so the TLS you asked ",
+         "for (use_ssl = TRUE) cannot be established. Use an imaps:// URL, or ",
+         "use_ssl = FALSE for a plain server such as the Docker sandbox ",
+         "(credentials are then sent unencrypted).")
+}

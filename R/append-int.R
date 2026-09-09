@@ -117,7 +117,7 @@ append_int <- function(self, message, folder, flags, mute, retries) {
       readfunction = function(nbytes, ...) readBin(con, raw(), nbytes)
     )
     tryCatch({
-      curl::curl_fetch_memory(url_append, handle = h)
+      curl_perform(url_append, h, self)
     }, error = function(e){
       # print(e$message)
       response_error_handling(e$message[1], self)

@@ -46,7 +46,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
     stop_dead_handle()
   })
   response <- tryCatch({
-    curl::curl_fetch_memory(url, handle = handle)
+    curl_perform(url, handle, self)
   }, error = function(e) e)
 
   if (inherits(response, "error")) {
@@ -61,7 +61,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
       for (alt in alternatives) {
         select_folder_int(self, name = self$con_params$folder, mute = TRUE, retries = 0)
         curl::handle_setopt(handle = handle, customrequest = alt)
-        response <- tryCatch(curl::curl_fetch_memory(url, handle = handle),
+        response <- tryCatch(curl_perform(url, handle, self),
                              error = function(e) NULL)
         if (!is.null(response)) {
           customrequest <- alt
@@ -82,7 +82,7 @@ execute_search <- function(self, url, handle, customrequest, esearch, retries) {
       self$enabled_epochs[["UTF8=ACCEPT"]] <- NULL
       ensure_utf8_enabled(self, toupper(get_server_capabilities(self, retries = retries)), retries)
       curl::handle_setopt(handle = handle, customrequest = customrequest)
-      response <- tryCatch(curl::curl_fetch_memory(url, handle = handle),
+      response <- tryCatch(curl_perform(url, handle, self),
                            error = function(e) response_error_handling(conditionMessage(e), self))
     } else {
       response <- response_error_handling(conditionMessage(response), self)

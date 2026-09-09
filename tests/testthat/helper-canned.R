@@ -1,5 +1,6 @@
-# Canned-transport helpers: mock curl_fetch_memory so the command layer
-# (request assembly, retry, error translation) is testable without a server.
+# Canned-transport helpers: mock the transfer (curl_perform, the package's
+# per-connection wrapper around libcurl) so the command layer (request
+# assembly, retry, error translation) is testable without a server.
 
 canned_response <- function(headers = "", content = "", status = 0L) {
   list(headers = charToRaw(headers), content = charToRaw(content),
@@ -22,12 +23,16 @@ local_imap_transport <- function(..., .env = parent.frame()) {
       }
       invisible(handle)
     },
-    curl_fetch_memory = function(url, handle) {
+    .package = "curl",
+    .env = .env
+  )
+  testthat::local_mocked_bindings(
+    curl_perform = function(url, handle, self) {
       i <<- i + 1L
       out <- outcomes[[min(i, length(outcomes))]]
       if (is.function(out)) out() else out
     },
-    .package = "curl",
+    .package = "mRpostman",
     .env = .env
   )
   recorder

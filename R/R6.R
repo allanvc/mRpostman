@@ -59,8 +59,12 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   token: \code{"XOAUTH2"} (default; Gmail, Yahoo, Microsoft 365) or
     #'   \code{"OAUTHBEARER"} (RFC 7628; Gmail). Ignored when authenticating
     #'   with a password.
-    #' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
-    #'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
+    #' @param use_ssl A logical. \code{TRUE} (default) requires TLS: an
+    #'   \code{imaps://} URL is encrypted from the start, and an \code{imap://}
+    #'   URL is upgraded with \code{STARTTLS} before any credential is sent; if
+    #'   the server does not offer \code{STARTTLS}, the connection fails (there is
+    #'   no silent fallback to plaintext). \code{FALSE} sends everything
+    #'   unencrypted, for plain test servers such as the Docker sandbox.
     #' @param verbose If \code{FALSE}, mutes the flow of information between the
     #'   server and the client. Default is \code{FALSE}.
     #' @param buffersize The size in bytes for the receive buffer. Default is
@@ -284,6 +288,7 @@ ImapCon <- R6::R6Class("ImapCon",
 
     disconnect = function() {
       self$con_handle <- NULL
+      self$con_pool <- NULL
       self$con_params$folder <- NA
       private$auth <- NULL
       invisible(TRUE)
@@ -296,7 +301,9 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   (\code{EXISTS}, \code{EXPUNGE}, \code{FETCH} flag changes,
     #'   \code{RECENT}) are collected until \code{timeout} seconds elapse or
     #'   \code{callback} returns \code{FALSE}. Requires the server
-    #'   \code{IDLE} capability and, for TLS, an \code{imaps://} URL.
+    #'   \code{IDLE} capability. TLS is used as on the main connection: an
+    #'   \code{imaps://} URL, or \code{use_ssl = TRUE} on an \code{imap://}
+    #'   URL (\code{STARTTLS}).
     #' @param timeout Maximum number of seconds to wait. Default is
     #'   \code{300}.
     #' @param callback \code{NULL} (default) or a function called with a

@@ -70,7 +70,7 @@ imap_exec <- function(self, customrequest, retries = 1, needs_folder = FALSE,
       stop_dead_handle()
     })
     response <- tryCatch({
-      curl::curl_fetch_memory(url, handle = h)
+      curl_perform(url, h, self)
     }, error = function(e) {
       response_error_handling(e$message[1], self) # NULL = retryable
     })

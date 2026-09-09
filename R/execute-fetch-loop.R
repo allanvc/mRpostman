@@ -60,7 +60,7 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
       }, error = function(e) {
         stop("The connection handle is dead. Please, configure a new IMAP connection with configure_imap().")
       })
-      curl::curl_fetch_memory(url, handle = h)
+      curl_perform(url, h, self)
     }
 
     too_large <- FALSE

@@ -7,12 +7,12 @@
  * IDLE (RFC 2177) and IMAP literals possible, which libcurl's one-shot
  * request model cannot express.
  *
- * The same functionality is proposed to the 'curl' R package as
- * curl_send()/curl_recv() (see dev/PR_curl_jeroen); once available there,
- * this file goes away.
+ * The same functionality is proposed to the 'curl' R package (see
+ * dev/PR_curl_jeroen); once available there, this file goes away.
  */
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <curl/curl.h>
@@ -71,17 +71,26 @@ static int wait_on_socket(curl_socket_t sockfd, int for_recv, long timeout_ms) {
     pfd.revents = 0;
     int r = poll(&pfd, 1, (int) slice);
 #endif
+    /* a signal (e.g. Ctrl-C) interrupts the wait with EINTR: that is not a
+     * socket error; fall through to R_CheckUserInterrupt() below */
+    if (r < 0 && errno == EINTR) r = 0;
     if (r != 0) return r; /* ready or error */
     waited += slice;
     R_CheckUserInterrupt();
   }
 }
 
-SEXP C_imap_socket_open(SEXP url, SEXP timeout_ms, SEXP verify_peer) {
+SEXP C_imap_socket_open(SEXP url, SEXP timeout_ms, SEXP verify_peer, SEXP use_ssl) {
   CURL *curl = curl_easy_init();
   if (!curl) error("curl_easy_init() failed");
   curl_easy_setopt(curl, CURLOPT_URL, CHAR(STRING_ELT(url, 0)));
   curl_easy_setopt(curl, CURLOPT_CONNECT_ONLY, 1L);
+  /* STARTTLS (imap:// URLs): libcurl runs the protocol's connect phase even
+   * in CONNECT_ONLY mode, so with USE_SSL it sends STARTTLS and completes
+   * the TLS handshake before handing the socket over. CURLUSESSL_ALL (not
+   * TRY) so that a server without STARTTLS is an error, never a plaintext
+   * login. */
+  if (asLogical(use_ssl)) curl_easy_setopt(curl, CURLOPT_USE_SSL, (long) CURLUSESSL_ALL);
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, asLogical(verify_peer) ? 1L : 0L);
   curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, asLogical(verify_peer) ? 2L : 0L);
   long tmo = (long) asInteger(timeout_ms);

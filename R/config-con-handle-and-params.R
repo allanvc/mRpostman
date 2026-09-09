@@ -166,6 +166,12 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
 
   handle_params <- default_params[-id_to_drop]
 
+  # use_ssl = TRUE means TLS is required: on imap:// URLs libcurl must upgrade
+  # the connection with STARTTLS and fail if the server does not offer it
+  # (CURLUSESSL_ALL = 3). A plain TRUE would map to CURLUSESSL_TRY, which
+  # silently falls back to a plaintext login when STARTTLS is unavailable.
+  handle_params$use_ssl <- ssl_level(handle_params$use_ssl)
+
   h <- curl::new_handle()
 
   do.call(curl::handle_setopt, c(h, handle_params))
@@ -217,3 +223,7 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   return(list("con_params" = con_params, "con_handle" = h,
               "con_debug" = con_debug))
 }
+
+# the CURLOPT_USE_SSL level for a use_ssl flag: 3 (CURLUSESSL_ALL, TLS
+# required) or 0 (no STARTTLS attempt)
+ssl_level <- function(use_ssl) if (isTRUE(use_ssl)) 3L else 0L

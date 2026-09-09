@@ -10,8 +10,12 @@
 #'   Microsoft 365 IMAP server). Check \code{list_server_capabilities()} for
 #'   the \code{AUTH=} tokens of your server. Ignored when authenticating with
 #'   a password.
-#' @param use_ssl A logical indicating the use or not of Secure Sockets Layer
-#'   encryption when connecting to the IMAP server. Default is \code{TRUE}.
+#' @param use_ssl A logical. \code{TRUE} (default) requires TLS: an
+#'   \code{imaps://} URL is encrypted from the start, and an \code{imap://}
+#'   URL is upgraded with \code{STARTTLS} before any credential is sent; if
+#'   the server does not offer \code{STARTTLS}, the connection fails (there is
+#'   no silent fallback to plaintext). \code{FALSE} sends everything
+#'   unencrypted, for plain test servers such as the Docker sandbox.
 #' @param verbose If \code{FALSE}, mutes the flow of information between the
 #'   server and the client. Default is \code{FALSE}.
 #' @param buffersize The size in bytes for the receive buffer. Default is
