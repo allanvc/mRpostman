@@ -519,7 +519,7 @@ All four remaining protocol extensions now run on the raw socket layer introduce
 
 ### Changes
 
-- modifies the behaviour for assigning names to the local folders. Instead of using the url, now the package uses the "/username/mailbox" as the 'root' directory for saving messages and attachments. For example: `./allanvcq@gmail.com/INBOX/UID1430/` instead of "imap.gmail.com/INBOX/UID1430". This will allow users to better differentiate between local folders, when using different mailboxes in the same server.
+- modifies the behavior for assigning names to the local folders. Instead of using the url, now the package uses the "/username/mailbox" as the 'root' directory for saving messages and attachments. For example: `./allanvcq@gmail.com/INBOX/UID1430/` instead of "imap.gmail.com/INBOX/UID1430". This will allow users to better differentiate between local folders, when using different mailboxes in the same server.
 
 ---
 
@@ -752,7 +752,7 @@ This is a summary of the main modifications in the package:
     + swapped the order between the arguments `use_uid` (former by) and `flag`    
 
 
-#### Behaviour changes
+#### Behavior changes
 
 * default value of arguments:
     

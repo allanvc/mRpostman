@@ -52,7 +52,7 @@ rename_folder_int <- function(self, name, new_name, reselect, mute, retries) {
     folder <- adjust_folder_name(name) # only here
   }
 
-  # quoting to guarantee the correct behaviour when folders have more than one name
+  # quoting to guarantee the correct behavior when folders have more than one name
   new_name2 <- adjust_folder_name(new_name) # new object, because we'll assign..
   # to imapconf (without \"INBOX\")
 

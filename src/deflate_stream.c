@@ -32,7 +32,7 @@ SEXP C_zstream_new(SEXP inflating, SEXP level) {
   z->inflating = asLogical(inflating) ? 1 : 0;
   int rc = z->inflating ? inflateInit2(&z->strm, -15)
                         : deflateInit2(&z->strm, asInteger(level), Z_DEFLATED, -15, 8, Z_DEFAULT_STRATEGY);
-  if (rc != Z_OK) { free(z); error("zlib initialisation failed (%d)", rc); }
+  if (rc != Z_OK) { free(z); error("zlib initialization failed (%d)", rc); }
   SEXP ptr = PROTECT(R_MakeExternalPtr(z, R_NilValue, R_NilValue));
   R_RegisterCFinalizerEx(ptr, zstate_finalizer, TRUE);
   UNPROTECT(1);
