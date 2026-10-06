@@ -98,6 +98,14 @@ modify_con_handle <- function(self, ...) {
 
   if (length(argg_list) > 0) {
     do.call(curl::handle_setopt, c(self$con_handle, argg_list)) # actually, argg_list will contain only one parameter
+    # mirror the change in the record renew_handle() rebuilds the handle from
+    if (!is.null(self$con_opts)) {
+      params <- self$con_opts$params
+      if ("password" %in% names(argg_list)) params$xoauth2_bearer <- NULL
+      if ("xoauth2_bearer" %in% names(argg_list)) params$password <- NULL
+      params[names(argg_list)] <- argg_list
+      self$con_opts$params <- params
+    }
   }
 
   invisible(TRUE)

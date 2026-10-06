@@ -184,8 +184,16 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   con_debug$lines <- character(0)
   con_debug$epoch <- 0L
   con_debug$last_in <- NULL
-  curl::handle_setopt(h, verbose = TRUE,
-                      debugfunction = make_debug_function(con_debug))
+  debugfunction <- make_debug_function(con_debug)
+  curl::handle_setopt(h, verbose = TRUE, debugfunction = debugfunction)
+
+  # everything the handle was configured with, so that renew_handle() can
+  # rebuild it in place (see curl-perform.R); kept in sync by
+  # modify_con_handle() and dropped by disconnect() together with the handle
+  con_opts <- new.env(parent = emptyenv())
+  con_opts$params <- handle_params
+  con_opts$debugfunction <- debugfunction
+  con_opts$renewals <- 0L
 
   # cleaning default_params to assign to self
 
@@ -221,7 +229,7 @@ config_con_handle_and_params <- function(url, username, password, xoauth2_bearer
   # print(con_params)
 
   return(list("con_params" = con_params, "con_handle" = h,
-              "con_debug" = con_debug))
+              "con_debug" = con_debug, "con_opts" = con_opts))
 }
 
 # the CURLOPT_USE_SSL level for a use_ssl flag: 3 (CURLUSESSL_ALL, TLS

@@ -15,6 +15,16 @@
 # that way is probed once per session (multi_headers_accumulate()); when it
 # does, the bytes already in the buffer before the transfer (visible through
 # handle_data()) are dropped from the result.
+#
+# Dropping them is not enough, though: the buffer itself keeps growing for the
+# life of the handle, and every transfer copies the whole of it out of libcurl
+# (handle_data(), the result) before the slice is taken, so a long run of
+# commands on one connection (a fetch loop, ingest_maildir()) gets slower with
+# every command, quadratically overall. Once the buffer passes
+# handle_buffer_limit() bytes, renew_handle() resets the handle and applies
+# its options again, which empties the buffer without touching the pool: the
+# TCP connection cached there, with its login and selected folder, is reused
+# by the next command exactly as before.
 curl_perform <- function(url, handle, self) {
   pool <- con_pool(self)
   curl::handle_setopt(handle, url = url)
@@ -31,7 +41,39 @@ curl_perform <- function(url, handle, self) {
   if (!is.null(err)) stop(err, call. = FALSE)
   if (is.null(out)) stop("The transfer did not complete.", call. = FALSE)
   if (seen > 0L && length(out$headers) > seen) out$headers <- out$headers[-seq_len(seen)]
+  if (seen > 0L && seen + length(out$headers) > handle_buffer_limit()) {
+    renew_handle(self, handle)
+  }
   out
+}
+
+# Bytes of accumulated response headers a handle may hold before it is
+# renewed. Measured on the Docker sandbox (200-message fetch_text() rounds on
+# one connection): with no limit the rounds grow 0.55 -> 3.0 s over six
+# rounds; at 1 MiB they still swing between 0.5 and 1.0 s (every transfer
+# copies up to 1 MiB); at 64 kB they hold at the 0.34 s a fresh connection
+# per round gives, with a renewal every ~40 transfers; 16 kB gains nothing
+# more. The option exists for diagnosis, not tuning.
+handle_buffer_limit <- function() {
+  lim <- getOption("mRpostman.handle_buffer_limit", 65536)
+  if (!is.numeric(lim) || length(lim) != 1 || is.na(lim)) 65536 else lim
+}
+
+# Reset the handle in place and configure it again from the record kept on
+# the connection object (con_opts: the libcurl options and the debug
+# callback). Nothing happens when the record is missing (a connection built
+# outside configure_imap(), or disconnected) or the handle is busy.
+renew_handle <- function(self, handle) {
+  opts <- self$con_opts
+  if (is.null(opts) || is.null(opts$params)) return(invisible(FALSE))
+  ok <- tryCatch({
+    curl::handle_reset(handle)
+    do.call(curl::handle_setopt, c(handle, opts$params))
+    curl::handle_setopt(handle, verbose = TRUE, debugfunction = opts$debugfunction)
+    TRUE
+  }, error = function(e) FALSE)
+  if (ok) opts$renewals <- opts$renewals + 1L
+  invisible(ok)
 }
 
 # Does multi_add() keep the response headers of previous transfers on the

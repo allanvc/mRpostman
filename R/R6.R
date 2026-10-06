@@ -119,6 +119,7 @@ ImapCon <- R6::R6Class("ImapCon",
       self$con_params <- out$con_params
       self$con_handle <- out$con_handle
       self$con_debug <- out$con_debug
+      self$con_opts <- out$con_opts
       private$auth <- list(password = password, xoauth2_bearer = xoauth2_bearer,
                            oauth_mechanism = toupper(oauth_mechanism)[1])
 
@@ -289,6 +290,7 @@ ImapCon <- R6::R6Class("ImapCon",
     disconnect = function() {
       self$con_handle <- NULL
       self$con_pool <- NULL
+      self$con_opts <- NULL
       self$con_params$folder <- NA
       private$auth <- NULL
       invisible(TRUE)
