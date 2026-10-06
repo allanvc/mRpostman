@@ -19,6 +19,10 @@
 #'   custodians' folder names. The default,
 #'   \code{"^_?sent(_items|_mail)?$"}, selects the sent-mail folder
 #'   variants. Use \code{".*"} for all folders of the selected custodians.
+#'   A handful of corpus files sit directly under a custodian's directory,
+#'   in no folder; they are taken when the pattern matches the empty string
+#'   (as \code{".*"} does) and their \code{path} is then
+#'   \code{custodian/file}.
 #' @param sent_since,sent_before Optional \code{Date} (or
 #'   \code{"YYYY-MM-DD"} string) limits applied to each message's
 #'   \code{Date:} header before ingestion. \code{NULL} (default) applies no
@@ -38,7 +42,8 @@
 #' @return Invisibly, a \code{data.frame} with one row per selected message:
 #'   \code{custodian}, \code{folder} (the destination folder on the server,
 #'   equal to the custodian name), \code{path} (relative to the corpus
-#'   root, i.e. \code{custodian/folder/file}, a stable message key),
+#'   root, i.e. \code{custodian/folder/file}, or \code{custodian/file}
+#'   for the few files that sit in no folder; a stable message key),
 #'   \code{size}, \code{date} (parsed from the header; \code{NA} when
 #'   unparseable), \code{appended}, and \code{uid} (the UID the server
 #'   assigned to the message, as reported by \code{\link{ingest_maildir}};
@@ -140,7 +145,14 @@ enron_sandbox <- function(con,
 
     dirs <- list.dirs(base, recursive = FALSE, full.names = TRUE)
     sel  <- dirs[grepl(folder_pattern, basename(dirs))]
-    files <- sort(list.files(sel, full.names = TRUE, recursive = TRUE))
+    files <- list.files(sel, full.names = TRUE, recursive = TRUE)
+    # a few corpus files sit directly under the custodian, in no folder: they
+    # belong to the "" folder and are taken when the pattern matches it
+    if (grepl(folder_pattern, "")) {
+      root <- list.files(base, full.names = TRUE, recursive = FALSE)
+      files <- c(files, root[!dir.exists(root)])
+    }
+    files <- sort(files)
 
     dates <- vapply(files, .enron_header_date, character(1))
     dates <- as.Date(dates)

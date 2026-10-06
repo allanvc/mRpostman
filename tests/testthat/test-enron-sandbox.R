@@ -20,6 +20,8 @@ fake_corpus <- function(custodians = c("kaminski-v", "lay-k")) {
     write_msg(cust, "sent", "2.", "Tue, 15 May 2001 09:00:00 -0700 (PDT)")
     write_msg(cust, "inbox", "3.", "Wed, 16 May 2001 09:00:00 -0700 (PDT)")
     write_msg(cust, "_sent_mail", "4.", "Thu, 2 Aug 2001 09:00:00 -0700 (PDT)")
+    # the corpus has a few files directly under the custodian, in no folder
+    write_msg(cust, "", "5.", "Fri, 3 Aug 2001 09:00:00 -0700 (PDT)")
   }
   cache_dir
 }
@@ -62,24 +64,27 @@ test_that("enron_sandbox() manifest carries folder and uid aligned to path", {
   expect_s3_class(man, "data.frame")
   expect_named(man, c("custodian", "folder", "path", "size", "date",
                       "appended", "uid"))
-  expect_equal(nrow(man), 4L)
+  expect_equal(nrow(man), 5L)
   expect_true(all(man$custodian == "kaminski-v"))
   expect_true(all(man$folder == "kaminski-v"))
-  # path is relative to the corpus root: custodian/folder/file
-  expect_identical(man$path, c("kaminski-v/_sent_mail/4.",
+  # path is relative to the corpus root: custodian/folder/file, or
+  # custodian/file for a file that sits in no folder (".*" matches "")
+  expect_identical(man$path, c("kaminski-v/5.",
+                               "kaminski-v/_sent_mail/4.",
                                "kaminski-v/inbox/3.",
                                "kaminski-v/sent/1.",
                                "kaminski-v/sent/2."))
   # uid is the one ingest_maildir() reported, row by row; NA on failure
-  expect_identical(man$uid, c(101L, 102L, 103L, NA_integer_))
-  expect_identical(man$appended, c(TRUE, TRUE, TRUE, FALSE))
+  expect_identical(man$uid, c(101L, 102L, 103L, 104L, NA_integer_))
+  expect_identical(man$appended, c(TRUE, TRUE, TRUE, TRUE, FALSE))
   expect_s3_class(man$date, "Date")
   expect_identical(as.character(man$date),
-                   c("2001-08-02", "2001-05-16", "2001-05-14", "2001-05-15"))
+                   c("2001-08-03", "2001-08-02", "2001-05-16", "2001-05-14",
+                     "2001-05-15"))
   # one ingest_maildir() call, into a folder named after the custodian
   expect_length(rec$calls, 1L)
   expect_identical(rec$calls[[1]]$folder, "kaminski-v")
-  expect_identical(basename(rec$calls[[1]]$files), c("4.", "3.", "1.", "2."))
+  expect_identical(basename(rec$calls[[1]]$files), c("5.", "4.", "3.", "1.", "2."))
 })
 
 test_that("enron_sandbox() default folder_pattern keeps only sent folders", {
@@ -97,6 +102,8 @@ test_that("enron_sandbox() default folder_pattern keeps only sent folders", {
                                            "kaminski-v/sent",
                                            "lay-k/_sent_mail", "lay-k/sent")))
   expect_false(any(grepl("/inbox/", man$path)))
+  # the default pattern does not match "", so the folderless files stay out
+  expect_false(any(basename(man$path) == "5."))
 })
 
 test_that("enron_sandbox() applies the Date: window and max_msgs", {
@@ -109,6 +116,11 @@ test_that("enron_sandbox() applies the Date: window and max_msgs", {
                        sent_since = "2001-05-15", sent_before = "2001-08-01",
                        cache_dir = cache_dir, ask = FALSE, mute = TRUE)
   expect_identical(man$path, c("lay-k/inbox/3.", "lay-k/sent/2."))
+  # a pattern that matches "" but no real folder name selects only the root files
+  man <- enron_sandbox(fake_imapcon(), custodians = "lay-k",
+                       folder_pattern = "^$",
+                       cache_dir = cache_dir, ask = FALSE, mute = TRUE)
+  expect_identical(man$path, "lay-k/5.")
 
   man <- enron_sandbox(fake_imapcon(), custodians = "lay-k",
                        folder_pattern = ".*", max_msgs = 1,
