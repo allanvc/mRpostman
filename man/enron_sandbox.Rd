@@ -54,10 +54,16 @@ Set to \code{FALSE} for non-interactive use.}
 Default is \code{FALSE}.}
 }
 \value{
-Invisibly, a \code{data.frame} with one row per ingested message:
-  \code{custodian}, \code{path} (relative to the corpus root),
+Invisibly, a \code{data.frame} with one row per selected message:
+  \code{custodian}, \code{folder} (the destination folder on the server,
+  equal to the custodian name), \code{path} (relative to the corpus
+  root, i.e. \code{custodian/folder/file}, a stable message key),
   \code{size}, \code{date} (parsed from the header; \code{NA} when
-  unparseable), and \code{appended}.
+  unparseable), \code{appended}, and \code{uid} (the UID the server
+  assigned to the message, as reported by \code{\link{ingest_maildir}};
+  \code{NA} when the upload failed or the server lacks \code{UIDPLUS}).
+  Together, \code{folder} and \code{uid} let every row be fetched back
+  from the server, and \code{path} ties it to the original file.
 }
 \description{
 Downloads the public Enron e-mail corpus (CMU, May 7 2015

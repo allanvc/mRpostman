@@ -35,10 +35,16 @@
 #'   Set to \code{FALSE} for non-interactive use.
 #' @param mute A \code{logical}. Passed to \code{\link{ingest_maildir}}.
 #'   Default is \code{FALSE}.
-#' @return Invisibly, a \code{data.frame} with one row per ingested message:
-#'   \code{custodian}, \code{path} (relative to the corpus root),
+#' @return Invisibly, a \code{data.frame} with one row per selected message:
+#'   \code{custodian}, \code{folder} (the destination folder on the server,
+#'   equal to the custodian name), \code{path} (relative to the corpus
+#'   root, i.e. \code{custodian/folder/file}, a stable message key),
 #'   \code{size}, \code{date} (parsed from the header; \code{NA} when
-#'   unparseable), and \code{appended}.
+#'   unparseable), \code{appended}, and \code{uid} (the UID the server
+#'   assigned to the message, as reported by \code{\link{ingest_maildir}};
+#'   \code{NA} when the upload failed or the server lacks \code{UIDPLUS}).
+#'   Together, \code{folder} and \code{uid} let every row be fetched back
+#'   from the server, and \code{path} ties it to the original file.
 #' @details The corpus was released into the public domain by the U.S.
 #'   Federal Energy Regulatory Commission and is curated at Carnegie Mellon
 #'   University (\url{https://www.cs.cmu.edu/~enron/}); it contains about
@@ -153,10 +159,12 @@ enron_sandbox <- function(con,
     man <- ingest_maildir(con, folder = cust, files = files, mute = TRUE)
     out[[k]] <- data.frame(
       custodian = cust,
+      folder = cust,
       path = sub(paste0("^", maildir, .Platform$file.sep), "", man$path),
       size = man$size,
       date = dates,
       appended = man$appended,
+      uid = man$uid,
       row.names = NULL,
       stringsAsFactors = FALSE)
     if (!mute) {

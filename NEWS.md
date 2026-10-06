@@ -1,3 +1,9 @@
+## mRpostman 3.0.1 (2026-10-06 patch)
+
+### Bug fixes
+
+- `enron_sandbox()` now actually returns the `uid` column that `ingest_maildir()` records (the 1.5.0 NEWS entry announced it, but the manifest built by `enron_sandbox()` dropped it), plus a `folder` column with the destination folder on the server. Each row of the manifest can therefore be fetched back from the server (`folder` + `uid`) and tied to its original corpus file (`path`), which is what a reproducible extraction of the corpus needs. A new offline test (`test-enron-sandbox.R`) covers the manifest.
+
 ## mRpostman 3.0.0 (2026-08-29 major release: the 2026 refactoring)
 
 ### New features
