@@ -12,13 +12,18 @@
 #' @noRd
 parse_thread <- function(content_char) {
 
-  m <- regmatches(content_char, regexpr("\\* THREAD .*", content_char))
+  # the untagged line only: with the default (TRE) engine "." also matches a
+  # newline, and the libcurl transport hands the same line twice (once among
+  # the headers, once as the body) with the tagged "OK ... (0.020 + 0.000
+  # secs)" line in between, so an open-ended match used to parse every
+  # thread twice plus the digits of the OK line as ids
+  m <- regmatches(content_char, regexpr("\\* THREAD[^\r\n]*", content_char))
 
   if (length(m) == 0) {
     return(list())
   }
 
-  s <- sub("^\\* THREAD ", "", m)
+  s <- sub("^\\* THREAD ?", "", m)
 
   threads <- list()
   depth <- 0L

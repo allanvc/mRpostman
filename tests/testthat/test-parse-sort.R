@@ -16,3 +16,9 @@ test_that("an empty or absent SORT result yields integer(0)", {
   expect_identical(mRpostman:::parse_sort("* SORT\r\nA1 OK\r\n"), integer(0))
   expect_identical(mRpostman:::parse_sort("A1 OK done\r\n"), integer(0))
 })
+
+test_that("only the SORT line is parsed, even when the transport repeats it", {
+  text <- paste0("* SORT 5 3 1\r\nA006 OK Sort completed (0.020 + 0.000 secs).\r\n",
+                 "\r\n* SORT 5 3 1\r\n")
+  expect_identical(mRpostman:::parse_sort(text), c(5L, 3L, 1L))
+})
