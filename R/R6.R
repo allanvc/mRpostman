@@ -1826,7 +1826,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return An \code{integer} vector of message ids in the server-provided
-    #'   (sorted) order.
+    #'   (sorted) order. The server answers in one line carrying every id;
+    #'   when that line is longer than libcurl accepts (a folder with tens of
+    #'   thousands of messages), the command is transparently re-issued on
+    #'   the raw-socket connection, which has no such limit.
     #' @examples
     #' \dontrun{
     #' con$select_folder("INBOX")
@@ -1838,7 +1841,7 @@ ImapCon <- R6::R6Class("ImapCon",
       use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
       out <- sort_int(self, by, reverse, criteria, use_uid, char_set, retries,
-                      return = return)
+                      return = return, auth = private$auth)
       return(out)
     },
 
@@ -1858,6 +1861,10 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @param retries Number of attempts to connect and execute the command.
     #'   Default is \code{1}.
     #' @return A \code{list} of \code{integer} vectors, one per top-level thread.
+    #'   The server answers in one line carrying every id; when that line is
+    #'   longer than libcurl accepts (a folder with tens of thousands of
+    #'   messages), the command is transparently re-issued on the raw-socket
+    #'   connection, which has no such limit.
     #' @examples
     #' \dontrun{
     #' con$select_folder("INBOX")
@@ -1867,7 +1874,8 @@ ImapCon <- R6::R6Class("ImapCon",
                       use_uid = NULL, char_set = "UTF-8", retries = NULL) {
       use_uid <- conn_default(use_uid, self, "use_uid", TRUE)
       retries <- conn_default(retries, self, "retries", 1)
-      out <- thread_int(self, algorithm, criteria, use_uid, char_set, retries)
+      out <- thread_int(self, algorithm, criteria, use_uid, char_set, retries,
+                        auth = private$auth)
       return(out)
     },
 

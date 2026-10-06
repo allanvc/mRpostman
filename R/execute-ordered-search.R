@@ -12,9 +12,40 @@
 #' @param parser A function applied to \code{rawToChar(response$content)} that
 #'   returns the parsed result (e.g. \code{parse_sort} or \code{parse_thread}).
 #' @param retries Number of attempts to connect and execute the command.
+#' @param auth The connection credentials (\code{private$auth} of the R6
+#'   object), used only when the response is too large for libcurl; see below.
+#' @details SORT and THREAD answer in a single untagged line carrying every
+#'   matching id, and neither has an ESEARCH-style condensed form. In a folder
+#'   with tens of thousands of messages that line exceeds libcurl's response
+#'   limit (CURLE_TOO_LARGE). When that happens and the credentials are
+#'   available, the very same command is re-issued once on the package's
+#'   raw-socket session (the one \code{idle()} and \code{append_msgs()} use),
+#'   which reads lines of any length, and its reply is parsed in the same way.
 #' @noRd
-execute_ordered_search <- function(self, url, handle, customrequest, parser, retries) {
-  out <- imap_exec(self, customrequest, retries = retries, needs_folder = TRUE)
+execute_ordered_search <- function(self, url, handle, customrequest, parser, retries,
+                                   auth = NULL) {
+  out <- tryCatch(
+    imap_exec(self, customrequest, retries = retries, needs_folder = TRUE),
+    mRpostman_response_too_large = function(e) {
+      if (is.null(auth)) stop(e)
+      NULL
+    })
+  if (is.null(out)) {
+    return(parser(ordered_search_raw(self, auth, customrequest)))
+  }
   # untagged lines may arrive through the header or the body callback
   parser(out$text)
+}
+
+# Run one SORT/THREAD command on the raw-socket session and return the
+# untagged lines of the reply as a single string (the parsers' input).
+ordered_search_raw <- function(self, auth, customrequest) {
+  timeout_ms <- max(30000, self$con_params$timeout_ms)
+  sess <- raw_session_start(self, auth, timeout_ms = timeout_ms)
+  on.exit(raw_session_close(sess), add = TRUE)
+  raw_select(sess, self$con_params$folder)
+  # the server may need a while to thread/sort a very large folder
+  r <- raw_command(sess, customrequest, timeout_ms = max(300000, timeout_ms))
+  raw_ok_or_stop(r, sub("^(UID )?(SORT|THREAD).*$", "\\1\\2", customrequest))
+  paste(r$lines, collapse = "\r\n")
 }

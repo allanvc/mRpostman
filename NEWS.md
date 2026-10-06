@@ -2,6 +2,7 @@
 
 ### Bug fixes
 
+- `thread()` and `sort()` no longer fail with `mRpostman_response_too_large` on large folders. Both commands answer in a single untagged line carrying every id (RFC 5256 has no ESEARCH-style condensed form), and in a folder with tens of thousands of messages that line exceeds what libcurl accepts (`CURLE_TOO_LARGE`, libcurl >= 8.7; the old error message even suggested `esearch = TRUE`, which these methods do not have). When this happens the command is now re-issued once, transparently, on the raw-socket connection that `idle()` and `append_msgs()` already use, which reads lines of any length. Reported from a `THREAD REFERENCES` over a 28,000-message folder of the Enron corpus on Dovecot. Covered offline by `test-ordered-search-fallback.R`.
 - `enron_sandbox()` now actually returns the `uid` column that `ingest_maildir()` records (the 1.5.0 NEWS entry announced it, but the manifest built by `enron_sandbox()` dropped it), plus a `folder` column with the destination folder on the server. Each row of the manifest can therefore be fetched back from the server (`folder` + `uid`) and tied to its original corpus file (`path`), which is what a reproducible extraction of the corpus needs. A new offline test (`test-enron-sandbox.R`) covers the manifest.
 
 ## mRpostman 3.0.0 (2026-08-29 major release: the 2026 refactoring)

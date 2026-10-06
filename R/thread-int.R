@@ -9,8 +9,11 @@
 #' @param char_set A string with the charset of the search criteria. Default is
 #'   \code{"UTF-8"}.
 #' @param retries Number of attempts to connect and execute the command.
+#' @param auth The connection credentials, for the raw-socket fallback of
+#'   \code{execute_ordered_search()} on responses too large for libcurl.
 #' @noRd
-thread_int <- function(self, algorithm, criteria, use_uid, char_set, retries) {
+thread_int <- function(self, algorithm, criteria, use_uid, char_set, retries,
+                       auth = NULL) {
 
   assertthat::assert_that(
     is.character(algorithm),
@@ -61,7 +64,8 @@ thread_int <- function(self, algorithm, criteria, use_uid, char_set, retries) {
 
   response <- execute_ordered_search(self = self, url = url, handle = h,
                                      customrequest = customrequest,
-                                     parser = parse_thread, retries = retries)
+                                     parser = parse_thread, retries = retries,
+                                     auth = auth)
 
   return(response)
 

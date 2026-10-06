@@ -4015,7 +4015,10 @@ Default is \code{1}.}
   }
   \subsection{Returns}{
     An \code{integer} vector of message ids in the server-provided
-  (sorted) order.
+  (sorted) order. The server answers in one line carrying every id;
+  when that line is longer than libcurl accepts (a folder with tens of
+  thousands of messages), the command is transparently re-issued on
+  the raw-socket connection, which has no such limit.
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}
@@ -4064,6 +4067,10 @@ Default is \code{1}.}
   }
   \subsection{Returns}{
     A \code{list} of \code{integer} vectors, one per top-level thread.
+  The server answers in one line carrying every id; when that line is
+  longer than libcurl accepts (a folder with tens of thousands of
+  messages), the command is transparently re-issued on the raw-socket
+  connection, which has no such limit.
   }
   \subsection{Examples}{
     \if{html}{\out{<div class="r example copy">}}

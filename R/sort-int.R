@@ -12,7 +12,7 @@
 #' @param retries Number of attempts to connect and execute the command.
 #' @noRd
 sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries,
-                     return = NULL) {
+                     return = NULL, auth = NULL) {
 
   if (!is.null(return)) {
     assertthat::assert_that(
@@ -92,7 +92,7 @@ sort_int <- function(self, by, reverse, criteria, use_uid, char_set, retries,
   response <- execute_ordered_search(self = self, url = url, handle = h,
                                      customrequest = customrequest,
                                      parser = if (is.null(return)) parse_sort else parse_esort,
-                                     retries = retries)
+                                     retries = retries, auth = auth)
 
   return(response)
 
