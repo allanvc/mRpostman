@@ -63,3 +63,21 @@ stop_request_failed <- function(self = NULL, command = NULL) {
                   ". Try to increase \"timeout_ms\" or \"retries\"."),
            "connection_error", command = command)
 }
+
+#' The reply of a command came back cut short (INTERNAL HELPER)
+#'
+#' Raised when libcurl ended a transfer before the tagged line of the command,
+#' or without the bytes of a literal the reply announces, and the flush in
+#' \code{curl_perform()} could not complete it either. The cached connection
+#' is dropped first, so that the next command starts on a fresh one instead
+#' of reading what was left behind.
+#' @noRd
+stop_incomplete_reply <- function(self = NULL, command = NULL) {
+  if (!is.null(self) && !is.null(self$con_pool)) {
+    self$con_pool <- NULL
+  }
+  stop_mrp(paste0("The server reply", if (!is.null(command)) paste0(" to \"", command, "\"") else "",
+                  " came back incomplete from libcurl (", curl::curl_version()$version,
+                  "). The connection was reset; please retry the command."),
+           "response_incomplete")
+}

@@ -79,6 +79,9 @@ imap_exec <- function(self, customrequest, retries = 1, needs_folder = FALSE,
   if (is.null(response)) {
     stop_request_failed(self, command)
   }
+  if (isFALSE(response$complete)) {
+    stop_incomplete_reply(self, customrequest)
+  }
 
   list(response = response,
        text = paste(rawToChar(response$headers), rawToChar(response$content),

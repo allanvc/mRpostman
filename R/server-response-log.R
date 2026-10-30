@@ -9,7 +9,7 @@
 #'
 #' The callback records the server response lines (CURLINFO_HEADER_IN) of the
 #' current exchange in \code{dbg$lines}, resetting them whenever a new command
-#' is sent (CURLINFO_HEADER_OUT), and mirrors libcurl's usual verbose output
+#' is sent (CURLINFO_HEADER_OUT, whose tag is kept in \code{dbg$tag}), and mirrors libcurl's usual verbose output
 #' to stderr when \code{dbg$verbose} is \code{TRUE}. The handle is therefore
 #' always created with \code{verbose = TRUE}, and the user-facing
 #' \code{verbose} setting only controls the printing.
@@ -23,12 +23,16 @@ make_debug_function <- function(dbg) {
       return(invisible(NULL))
     }
     txt <- rawToChar(msg[msg != as.raw(0)])
-    if (type == 0L && grepl("^Connected to ", txt)) {
+    if (type == 0L && grepl("^(Connected to|Established connection to) ", txt)) {
+      # "Connected to host" up to libcurl 8.13, "Established connection to
+      # host" from 8.14 on
       # a (re)connection: per-connection server state (ENABLE, selection) is lost
       dbg$epoch <- (if (is.null(dbg$epoch)) 0L else dbg$epoch) + 1L
     }
     if (type == 2L) {          # header out: a new command is being sent
       dbg$lines <- character(0)
+      # the tag alone (the line may carry credentials, e.g. AUTHENTICATE)
+      dbg$tag <- sub("^([A-Za-z0-9]+)\\s.*$", "\\1", sub("\r?\n.*$", "", txt))
     } else if (type == 1L) {   # header in: server response line(s)
       new <- strsplit(txt, "\r?\n")[[1]]
       dbg$lines <- c(dbg$lines, new[nzchar(new)])

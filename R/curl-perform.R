@@ -25,7 +25,87 @@
 # its options again, which empties the buffer without touching the pool: the
 # TCP connection cached there, with its login and selected folder, is reused
 # by the next command exactly as before.
+#
+# Finally, the reply is handed back in one layout whatever the libcurl
+# version: `headers` is the wire stream of the command's reply (literals in
+# place, leftovers of earlier replies removed) and `complete` says whether
+# the reply is whole. See wire-response.R.
 curl_perform <- function(url, handle, self) {
+  # the caller sets the command (customrequest) on the handle right before
+  # this call, every time: a flush below may leave a NOOP on it
+  tag_before <- debug_tag(self)
+  out <- perform_transfer(url, handle, self)
+  tag <- debug_tag(self)
+  if (identical(tag, tag_before)) tag <- NULL  # no command went out (unknown)
+
+  # one layout for every libcurl version: the wire, leftovers dropped (see
+  # wire-response.R)
+  built <- wire_rebuild(out$headers, out$content)
+  parts <- wire_split(built$raw, tag)
+  reply <- parts$reply
+  closed <- parts$closed
+  missing <- parts$missing
+
+  # libcurl 8.17 and later may end the transfer before reading the ")" and
+  # tagged line that close a literal reply (and the other literals of a
+  # multi-literal one); they come with the next command. When the reply is
+  # not closed, the connection is flushed with NOOPs until the tagged line
+  # of the command arrives, and everything read up to it is the rest of the
+  # reply. Each flush drains at least one literal, so the loop is short.
+  flushes <- 0L
+  reconnected <- FALSE
+  while (!closed && !is.null(tag) && flushes < 8L) {
+    flushes <- flushes + 1L
+    epoch <- debug_epoch(self)
+    curl::handle_setopt(handle, customrequest = "NOOP")
+    more <- tryCatch(perform_transfer(url, handle, self), error = function(e) NULL)
+    if (is.null(more)) break
+    if (!identical(debug_epoch(self), epoch)) {
+      # libcurl had closed the connection after the transfer (8.17 and 8.18
+      # do so for some literal replies): the NOOP went out on a new one, and
+      # nothing more of the reply can arrive. What was delivered is kept.
+      reconnected <- TRUE
+      break
+    }
+    more_raw <- wire_rebuild(more$headers, more$content)$raw
+    cut <- wire_tag_end(more_raw, tag)
+    if (cut > 0) {
+      reply <- c(reply, more_raw[seq_len(cut)])
+      closed <- TRUE
+    } else {
+      reply <- c(reply, more_raw)
+    }
+    missing <- wire_scan(reply)$missing
+  }
+  if (flushes > 0) {
+    q <- self$con_debug
+    if (!is.null(q)) q$flushes <- (if (is.null(q$flushes)) 0L else q$flushes) + flushes
+  }
+
+  out$headers <- reply
+  # whole: every announced literal is there and the reply ended with its
+  # tagged line, or could not go on at all (connection replaced)
+  out$complete <- !missing && (closed || reconnected)
+  out
+}
+
+# The tag of the command most recently sent on the connection, as seen by the
+# debug callback (NULL when unknown).
+debug_tag <- function(self) {
+  q <- self$con_debug
+  if (is.null(q) || is.null(q$tag) || !nzchar(q$tag)) NULL else q$tag
+}
+
+# The connection epoch counted by the debug callback (one more per
+# connection libcurl opened), or 0 when unknown.
+debug_epoch <- function(self) {
+  q <- self$con_debug
+  if (is.null(q) || is.null(q$epoch)) 0L else q$epoch
+}
+
+# One libcurl transfer on the connection's pool, headers of earlier transfers
+# removed (see above). Nothing of the reply is interpreted here.
+perform_transfer <- function(url, handle, self) {
   pool <- con_pool(self)
   curl::handle_setopt(handle, url = url)
   seen <- if (multi_headers_accumulate()) length(curl::handle_data(handle)$headers) else 0L

@@ -42,6 +42,18 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
   url <- self$con_params$url
   h <- self$con_handle
 
+  if (identical(msg_id, "$")) {
+    # SEARCHRES (RFC 5182): "$" is the result saved by search(save = TRUE).
+    # It is resolved into ids first (one ESEARCH round trip) and the loop
+    # below fetches them one at a time, like any other id: a single FETCH on
+    # "$" answers with one literal per message, which libcurl 8.17 and later
+    # cannot deliver (see wire-response.R)
+    msg_id <- resolve_searchres(self, use_uid, retries)
+    if (length(msg_id) == 0) {
+      return(list())
+    }
+  }
+
   msg_list <- list()
   idx = 0
 
@@ -110,17 +122,8 @@ execute_fetch_loop <- function(self, msg_id, fetch_request, use_uid, write_to_di
       stop('Fetch error: the server returned an error. Try to increase "timeout_ms".')
     }
 
-    if (identical(id, "$")) {
-      # SEARCHRES (RFC 5182): one FETCH on the saved result returns every
-      # matching message in a single reply; split it into one element per
-      # message and return, since "$" is necessarily the only id
-      msg_list <- split_fetch_responses(rawToChar(response$headers), fetch_type,
-                                        use_uid = use_uid,
-                                        metadata_attribute = metadata_attribute)
-      if (isTRUE(base64_decode)) {
-        msg_list <- lapply(msg_list, decode_base64_text_if_needed)
-      }
-      return(msg_list)
+    if (is.null(chunked_text) && isFALSE(response$complete)) {
+      stop_incomplete_reply(self, adjusted_fetch_request)
     }
 
     if (!is.null(chunked_text)) {
