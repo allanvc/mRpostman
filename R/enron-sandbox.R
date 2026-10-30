@@ -172,7 +172,7 @@ enron_sandbox <- function(con,
     out[[k]] <- data.frame(
       custodian = cust,
       folder = cust,
-      path = sub(paste0("^", maildir, .Platform$file.sep), "", man$path),
+      path = .relative_to(man$path, maildir),
       size = man$size,
       date = dates,
       appended = man$appended,
@@ -207,4 +207,15 @@ enron_sandbox <- function(con,
   months <- c(Jan = 1, Feb = 2, Mar = 3, Apr = 4, May = 5, Jun = 6,
               Jul = 7, Aug = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12)
   sprintf("%s-%02d-%02d", parts[3], months[[parts[2]]], as.integer(parts[1]))
+}
+
+# A path relative to `root` ("custodian/folder/file"), with "/" separators on
+# every platform. Both sides are normalized first: on Windows the two can
+# differ in separators ("\\" from tempdir(), "/" from list.files()) and in
+# short 8.3 directory names, and the root itself may hold regex
+# metacharacters, so no pattern matching is involved.
+.relative_to <- function(path, root) {
+  p <- normalizePath(path, winslash = "/", mustWork = FALSE)
+  r <- paste0(normalizePath(root, winslash = "/", mustWork = FALSE), "/")
+  ifelse(startsWith(p, r), substring(p, nchar(r) + 1L), p)
 }
