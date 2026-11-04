@@ -1287,32 +1287,33 @@ Babcock, N. (2016), *Introduction to IMAP*, Blog, May 2016,
 [http](https://nbsoftsolutions.com/blog/introduction-to-imap).
 
 Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*,
-RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
+RFC 3501, March 2003,
+[http](https://www.rfc-editor.org/rfc/rfc3501.html).
 
 Crispin, M. and Murchison, K. (2008), *Internet Message Access Protocol
 - SORT and THREAD Extensions*, RFC 5256, June 2008,
-[http](https://www.rfc-editor.org/rfc/rfc5256).
+[http](https://www.rfc-editor.org/rfc/rfc5256.html).
 
 Gahrns, M. and Newman, C. (2003), *IMAP4 Namespace*, RFC 2342, May 2003,
-[http](https://www.rfc-editor.org/rfc/rfc2342).
+[http](https://www.rfc-editor.org/rfc/rfc2342.html).
 
 Leiba, B. and Melnikov, A. (2011), *IMAP LIST Extension for Special-Use
 Mailboxes*, RFC 6154, March 2011,
-[http](https://www.rfc-editor.org/rfc/rfc6154).
+[http](https://www.rfc-editor.org/rfc/rfc6154.html).
 
 Myers, J. (1997), *IMAP4 QUOTA extension*, RFC 2087, January 1997,
-[http](https://www.rfc-editor.org/rfc/rfc2087).
+[http](https://www.rfc-editor.org/rfc/rfc2087.html).
 
 Showalter, T. (2003), *IMAP4 ID extension*, RFC 2971, October 2000,
-[http](https://www.rfc-editor.org/rfc/rfc2971).
+[http](https://www.rfc-editor.org/rfc/rfc2971.html).
 
 Melnikov, A. (2004), *Internet Message Access Protocol (IMAP) UNSELECT
 command*, RFC 3691, February 2004,
-[http](https://www.rfc-editor.org/rfc/rfc3691).
+[http](https://www.rfc-editor.org/rfc/rfc3691.html).
 
 Freed, N. and Borenstein, N. (1996), *Multipurpose Internet Mail
 Extensions (MIME) Part Two: Media Types*, RFC 2046, November 1996,
-[http](https://www.rfc-editor.org/rfc/rfc2046).
+[http](https://www.rfc-editor.org/rfc/rfc2046.html).
 
 Gungor, A. (2018), *Using IMAP Internal Date for Forensic Email
 Authentication*, Articles, Forensic Focus,
@@ -1323,10 +1324,10 @@ Mail Server with Courier and Cyrus*. No Starch Press. ISBN
 978-1-59327-177-0.
 
 Resnick, P. (2001), *Internet Message Format*, RFC 2822, April 2001,
-[http](https://www.rfc-editor.org/rfc/rfc2822).
+[http](https://www.rfc-editor.org/rfc/rfc2822.html).
 
 Resnick, P. (2008), *Internet Message Format*, RFC 5322, October 2008,
-[http](https://www.rfc-editor.org/rfc/rfc5322).
+[http](https://www.rfc-editor.org/rfc/rfc5322.html).
 
 Ooms, J. (2020), *curl: A Modern and Flexible Web Client for R*. R
 package version 4.3, [http](https://CRAN.R-project.org/package=curl).

@@ -1,6 +1,114 @@
 # Changelog
 
+## mRpostman 3.0.1 (2026-11-04 patch)
+
+### Bug fixes
+
+  - **Every fetch came back empty on Linux builds with libcurl 8.17.0 or
+    later** (GitHub issue
+    [\#18](https://github.com/allanvc/mRpostman/issues/18), reported
+    from imap.ionos.de with libcurl 8.18.0; Windows and macOS builds of
+    the `curl` package bundle libcurl 8.14 and were not affected).
+    libcurl 8.17.0 (curl/curl\#19246) changed the way it hands back the
+    reply of a custom `FETCH`: the message bytes announced by a literal
+    marker `{n}` are now written to the body callback, while every
+    earlier release delivered the whole reply through the header
+    callback, which is what the package read. 8.17 and later also end
+    such a transfer before reading the closing `)` and tagged `OK` line
+    whenever the whole reply fitted one read, so those lines showed up
+    at the head of the next command’s reply; a reply with more than one
+    literal (`fetch_metadata()` with two attributes answered with
+    literals, or a `FETCH` on the saved search result `$`) was cut after
+    the first one; and 8.19.0 exempted ranges and lists (`1:*`, `1,2`)
+    from all of this, with two upstream pull requests about to change
+    the classification again. The package no longer depends on any of
+    it: `curl_perform()` rebuilds every reply from the two callbacks in
+    wire order (`wire-response.R`), drops the leftovers of an earlier
+    reply (they are told apart by the tag of the command, which the
+    debug callback now records), and, when libcurl stopped before the
+    tagged line, flushes the connection with `NOOP` and completes the
+    reply with what comes back, one literal per round trip at most. A
+    reply that cannot be completed raises a classed
+    `mRpostman_response_incomplete` error after the cached connection is
+    dropped, instead of silently returning a fragment. `fetch_*("$")`
+    now resolves the saved result into ids first (`SEARCH RETURN (ALL)
+    $`, one round trip) and fetches them one at a time, like any other
+    id. Verified against the Docker sandbox with libcurl 8.14.1, 8.18.0
+    and 8.23.0 (text, header, body, metadata with literals, attachments,
+    a 158 kB part, `$`), the full test suite passing under each; the
+    layouts captured there are the fixtures of `test-wire-response.R`.
+    The reconnection detector of the debug callback also learned
+    libcurl’s newer “Established connection to” message (8.14 and
+    later said nothing it recognised, so ENABLEd extensions were not
+    restored after a reconnection on those versions).
+
+  - **Long runs of commands on one connection no longer slow down with
+    every command.** Since 3.0.0 every transfer runs on the connection
+    object’s private libcurl pool through curl’s multi interface, and
+    curl (up to 7.1.0 at least; a fix was submitted upstream) keeps the
+    response headers of every transfer on the handle instead of clearing
+    them. In IMAP the whole reply of a command arrives as headers, so
+    the buffer grew by one reply per command, and every command copied
+    the whole of it out of libcurl: a 200-message `fetch_text()`
+    repeated on one connection went 0.7 s, 1.2 s, 1.9 s, 2.7 s, 3.4 s
+    (quadratic overall), and an `ingest_maildir()` of thousands of files
+    fell from about 100 to 20 messages per second. The handle is now
+    renewed in place (reset and configured again from a record the
+    object keeps, mirrored by the `reset_*()` methods) once that buffer
+    passes 64 kB: the pool, its cached TCP connection, the login and the
+    selected folder are untouched, so nothing is re-negotiated. Measured
+    on the Docker sandbox, repeated rounds now hold at the time a fresh
+    connection per round gives. The threshold can be inspected through
+    `options(mRpostman.handle_buffer_limit = )` (bytes). Covered offline
+    by `test-handle-renewal.R`.
+
+  - **`thread()` returned every thread twice, plus spurious ids (such as
+    `0`), on every folder served through libcurl** (every folder except
+    the very large ones that take the raw-socket path below). The parser
+    matched from \`\* THREAD`to the end of the text with R's default
+    regex engine, where`.`also matches a newline, and the libcurl
+    transport hands the untagged line twice (among the headers and as
+    the body) with the tagged`OK … (0.020 + 0.000 secs)`line in between,
+    whose digits became ids. The parser now reads the`\* THREAD`line
+    alone;`sort()\` was not affected (its parser stops at the first
+    non-digit). Reported from the Enron corpus on Dovecot: a
+    3,034-message folder gave 3,487 threads over 6,074 ids instead of
+    1,743 threads over 3,034.
+
+  - `thread()` and `sort()` no longer fail with
+    `mRpostman_response_too_large` on large folders. Both commands
+    answer in a single untagged line carrying every id (RFC 5256 has no
+    ESEARCH-style condensed form), and in a folder with tens of
+    thousands of messages that line exceeds what libcurl accepts
+    (`CURLE_TOO_LARGE`, libcurl \>= 8.7; the old error message even
+    suggested `esearch = TRUE`, which these methods do not have). When
+    this happens the command is now re-issued once, transparently, on
+    the raw-socket connection that `idle()` and `append_msgs()` already
+    use, which reads lines of any length. Reported from a `THREAD
+    REFERENCES` over a 28,000-message folder of the Enron corpus on
+    Dovecot. Covered offline by `test-ordered-search-fallback.R`.
+
+  - `enron_sandbox()` now actually returns the `uid` column that
+    `ingest_maildir()` records (the 1.5.0 NEWS entry announced it, but
+    the manifest built by `enron_sandbox()` dropped it), plus a `folder`
+    column with the destination folder on the server. Each row of the
+    manifest can therefore be fetched back from the server (`folder` +
+    `uid`) and tied to its original corpus file (`path`), which is what
+    a reproducible extraction of the corpus needs. A new offline test
+    (`test-enron-sandbox.R`) covers the manifest. Also, the seven corpus
+    files that sit directly under a custodian’s directory, in no folder
+    (e.g. `richey-c/1.`), were never selected, even by `folder_pattern =
+    ".*"`; they are now taken whenever the pattern matches the empty
+    string, with `path = custodian/file`. On Windows the manifest’s
+    `path` column came back absolute (the corpus root was stripped with
+    a regular expression, which the drive letter and backslashes of a
+    Windows path defeat); it is now computed by prefix after normalizing
+    both sides, so it is `custodian/folder/file` with `/` separators on
+    every platform.
+
 ## mRpostman 3.0.0 (2026-08-29 major release: the 2026 refactoring)
+
+CRAN release: 2026-09-09
 
 ### New features
 
@@ -1277,7 +1385,7 @@ CRAN release: 2020-11-30
 
 ### Changes
 
-  - modifies the behaviour for assigning names to the local folders.
+  - modifies the behavior for assigning names to the local folders.
     Instead of using the url, now the package uses the
     “/username/mailbox” as the ‘root’ directory for saving messages
     and attachments. For example: `./allanvcq@gmail.com/INBOX/UID1430/`
@@ -1600,7 +1708,7 @@ This is a summary of the main modifications in the package:
       - swapped the order between the arguments `use_uid` (former by)
         and `flag`
 
-#### Behaviour changes
+#### Behavior changes
 
   - default value of arguments:
     

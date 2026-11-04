@@ -171,13 +171,13 @@ Courier and Cyrus. No Starch Press. ISBN 978-1-59327-177-0.
 [`ImapCon$get_attachments()`](#method-get_attachments): Troost, R.,
 Dorner, S., and K. Moore (1997), Communicating Presentation Information
 in Internet Messages: The Content-Disposition Header Field, RFC 2183,
-August 1997, https://www.rfc-editor.org/rfc/rfc2183.
+August 1997, https://www.rfc-editor.org/rfc/rfc2183.html.
 
 [`ImapCon$fetch_attachments()`](#method-fetch_attachments): Troost, R.,
 Dorner, S., and K. Moore (1997), Communicating Presentation Information
 in Internet Messages: The Content-Disposition Header Field, RFC 2183,
 DOI 10.17487/RFC2183, August 1997,
-https://www.rfc-editor.org/rfc/rfc2183.
+https://www.rfc-editor.org/rfc/rfc2183.html.
 
 ## See also
 
@@ -3203,7 +3203,10 @@ server to advertise the `SORT` capability (check with
 #### Returns
 
 An `integer` vector of message ids in the server-provided (sorted)
-order.
+order. The server answers in one line carrying every id; when that line
+is longer than libcurl accepts (a folder with tens of thousands of
+messages), the command is transparently re-issued on the raw-socket
+connection, which has no such limit.
 
 #### Examples
 
@@ -3257,7 +3260,11 @@ messages grouped into threads. Requires the server to advertise a
 
 #### Returns
 
-A `list` of `integer` vectors, one per top-level thread.
+A `list` of `integer` vectors, one per top-level thread. The server
+answers in one line carrying every id; when that line is longer than
+libcurl accepts (a folder with tens of thousands of messages), the
+command is transparently re-issued on the raw-socket connection, which
+has no such limit.
 
 #### Examples
 

@@ -25,7 +25,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +105,11 @@ root.</p></dd>
 <dd><p>A regular expression matched against the
 custodians' folder names. The default,
 <code>"^_?sent(_items|_mail)?$"</code>, selects the sent-mail folder
-variants. Use <code>".*"</code> for all folders of the selected custodians.</p></dd>
+variants. Use <code>".*"</code> for all folders of the selected custodians.
+A handful of corpus files sit directly under a custodian's directory,
+in no folder; they are taken when the pattern matches the empty string
+(as <code>".*"</code> does) and their <code>path</code> is then
+<code>custodian/file</code>.</p></dd>
 
 
 <dt id="arg-sent-since-sent-before">sent_since, sent_before<a class="anchor" aria-label="anchor" href="#arg-sent-since-sent-before"></a></dt>
@@ -144,10 +148,17 @@ Default is <code>FALSE</code>.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Invisibly, a <code>data.frame</code> with one row per ingested message:
-  <code>custodian</code>, <code>path</code> (relative to the corpus root),
+    <p>Invisibly, a <code>data.frame</code> with one row per selected message:
+  <code>custodian</code>, <code>folder</code> (the destination folder on the server,
+  equal to the custodian name), <code>path</code> (relative to the corpus
+  root, i.e. <code>custodian/folder/file</code>, or <code>custodian/file</code>
+  for the few files that sit in no folder; a stable message key),
   <code>size</code>, <code>date</code> (parsed from the header; <code>NA</code> when
-  unparseable), and <code>appended</code>.</p>
+  unparseable), <code>appended</code>, and <code>uid</code> (the UID the server
+  assigned to the message, as reported by <code><a href="ingest_maildir.html">ingest_maildir</a></code>;
+  <code>NA</code> when the upload failed or the server lacks <code>UIDPLUS</code>).
+  Together, <code>folder</code> and <code>uid</code> let every row be fetched back
+  from the server, and <code>path</code> ties it to the original file.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

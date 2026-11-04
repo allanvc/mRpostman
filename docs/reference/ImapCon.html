@@ -9,7 +9,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mRpostman</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">3.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -193,12 +193,12 @@
 <p><a href="#method-get_attachments"><code>ImapCon$get_attachments()</code></a>:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
-  Header Field, RFC 2183, August 1997, https://www.rfc-editor.org/rfc/rfc2183.</p>
+  Header Field, RFC 2183, August 1997, https://www.rfc-editor.org/rfc/rfc2183.html.</p>
 <p><a href="#method-fetch_attachments"><code>ImapCon$fetch_attachments()</code></a>:
   Troost, R., Dorner, S., and K. Moore (1997), Communicating
   Presentation Information in Internet Messages: The Content-Disposition
   Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-  https://www.rfc-editor.org/rfc/rfc2183.</p>
+  https://www.rfc-editor.org/rfc/rfc2183.html.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -2942,7 +2942,10 @@ Default is <code>1</code>.</p></dd>
 </div><p></p><div class="section">
 <h4 id="returns-56">Returns<a class="anchor" aria-label="anchor" href="#returns-56"></a></h4>
 <p>An <code>integer</code> vector of message ids in the server-provided
-  (sorted) order.</p>
+  (sorted) order. The server answers in one line carrying every id;
+  when that line is longer than libcurl accepts (a folder with tens of
+  thousands of messages), the command is transparently re-issued on
+  the raw-socket connection, which has no such limit.</p>
 </div><p></p><div class="section">
 <h4 id="examples-55">Examples<a class="anchor" aria-label="anchor" href="#examples-55"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>
@@ -2992,7 +2995,11 @@ Default is <code>1</code>.</p></dd>
 </dl><p></p></div>
 </div><p></p><div class="section">
 <h4 id="returns-57">Returns<a class="anchor" aria-label="anchor" href="#returns-57"></a></h4>
-<p>A <code>list</code> of <code>integer</code> vectors, one per top-level thread.</p>
+<p>A <code>list</code> of <code>integer</code> vectors, one per top-level thread.
+  The server answers in one line carrying every id; when that line is
+  longer than libcurl accepts (a folder with tens of thousands of
+  messages), the command is transparently re-issued on the raw-socket
+  connection, which has no such limit.</p>
 </div><p></p><div class="section">
 <h4 id="examples-56">Examples<a class="anchor" aria-label="anchor" href="#examples-56"></a></h4>
 <p></p><div class="r example copy"><div class="sourceCode"><pre><code><span><span class="va">con</span><span class="op">$</span><span class="fu">select_folder</span><span class="op">(</span><span class="st">"INBOX"</span><span class="op">)</span></span>

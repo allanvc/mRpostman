@@ -3602,7 +3602,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #' @references \href{#method-get_attachments}{\code{ImapCon$get_attachments()}}:
     #'   Troost, R., Dorner, S., and K. Moore (1997), Communicating
     #'   Presentation Information in Internet Messages: The Content-Disposition
-    #'   Header Field, RFC 2183, August 1997, https://www.rfc-editor.org/rfc/rfc2183.
+    #'   Header Field, RFC 2183, August 1997, https://www.rfc-editor.org/rfc/rfc2183.html.
     #' @return \code{TRUE} if the operation is successful. The files are saved
     #' locally.
     #' @family attachments
@@ -3776,7 +3776,7 @@ ImapCon <- R6::R6Class("ImapCon",
     #'   Troost, R., Dorner, S., and K. Moore (1997), Communicating
     #'   Presentation Information in Internet Messages: The Content-Disposition
     #'   Header Field, RFC 2183, DOI 10.17487/RFC2183, August 1997,
-    #'   https://www.rfc-editor.org/rfc/rfc2183.
+    #'   https://www.rfc-editor.org/rfc/rfc2183.html.
     #' @return A \code{list} with the fetch contents.
     #' @family fetch
     #' @examples

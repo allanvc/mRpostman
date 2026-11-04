@@ -1,23 +1,19 @@
-**mRpostman - Major release, v3.0.0**
+**mRpostman - Patch release, v3.0.1**
 
-This is a major release (CRAN currently has 1.4.0): the package went
-through a deep refactoring in 2026. All commands of IMAP4rev1 and
-IMAP4rev2 and every capability extension registered with IANA are now
-implemented; searches are written as plain R expressions through the new
-`query()` method; the attachment machinery was rebuilt on a real MIME
-parser; every command runs through a single execution engine with
-classed error conditions; and `use_uid`, `mute`, and `retries` became
-connection-level defaults.
+This is a bug-fix release (CRAN currently has 3.0.0). No API changes.
 
-Breaking change, documented in NEWS.md: `use_uid` now defaults to TRUE
-(UIDs are stable; sequence numbers renumber on expunge). The 14
-`search_*()` methods, `AND()`/`OR()`, and the old attachment entry
-points keep working as soft-deprecated spellings via the lifecycle
-package.
-
-Dependency changes: R >= 4.1.0 (the previous declaration was
-inaccurate); lifecycle added to Imports; httr replaced by httr2 in
-Suggests (vignette only).
+The main fix concerns GitHub issue #18: on Linux builds linked against
+libcurl 8.17.0 or later, every message fetch came back empty, because
+those libcurl versions hand back the literal part of a custom IMAP
+command reply through the body callback instead of the header callback,
+and may end the transfer before the tagged line. The package now
+rebuilds every reply in wire order from both callbacks and no longer
+depends on which libcurl version is linked (verified against libcurl
+8.14.1, 8.18.0 and 8.23.0). The other fixes are a quadratic slowdown on
+long command runs over one connection, a `thread()` parser bug, an
+automatic raw-socket fallback for `sort()`/`thread()` on very large
+folders, and three corrections to the `enron_sandbox()` manifest
+(including a Windows path issue). Details in NEWS.md.
 
 ## Test environments
 * local Ubuntu 22.04, R 4.4.1

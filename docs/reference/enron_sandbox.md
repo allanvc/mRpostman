@@ -44,7 +44,10 @@ enron_sandbox(
     A regular expression matched against the custodians' folder names.
     The default, `"^_?sent(_items|_mail)?$"`, selects the sent-mail
     folder variants. Use `".*"` for all folders of the selected
-    custodians.
+    custodians. A handful of corpus files sit directly under a
+    custodian's directory, in no folder; they are taken when the pattern
+    matches the empty string (as `".*"` does) and their `path` is then
+    `custodian/file`.
 
   - sent\_since, sent\_before:
     
@@ -79,9 +82,16 @@ enron_sandbox(
 
 ## Value
 
-Invisibly, a `data.frame` with one row per ingested message:
-`custodian`, `path` (relative to the corpus root), `size`, `date`
-(parsed from the header; `NA` when unparseable), and `appended`.
+Invisibly, a `data.frame` with one row per selected message:
+`custodian`, `folder` (the destination folder on the server, equal to
+the custodian name), `path` (relative to the corpus root, i.e.
+`custodian/folder/file`, or `custodian/file` for the few files that sit
+in no folder; a stable message key), `size`, `date` (parsed from the
+header; `NA` when unparseable), `appended`, and `uid` (the UID the
+server assigned to the message, as reported by `ingest_maildir`; `NA`
+when the upload failed or the server lacks `UIDPLUS`). Together,
+`folder` and `uid` let every row be fetched back from the server, and
+`path` ties it to the original file.
 
 ## Details
 

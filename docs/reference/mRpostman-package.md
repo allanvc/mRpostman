@@ -22,7 +22,7 @@ Author & Mantainer: Allan Quadros <allanvcq@gmail.com>
 ## References
 
 Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*,
-RFC 3501, March 2003, <https://www.rfc-editor.org/rfc/rfc3501>.
+RFC 3501, March 2003, <https://www.rfc-editor.org/rfc/rfc3501.html>.
 
 Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a
 Mail Server with Courier and Cyrus*. No Starch Press. ISBN

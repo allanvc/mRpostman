@@ -256,7 +256,7 @@ This package is licensed under the terms of the GPL-3 License.
 
 ## References
 
-Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501).
+Crispin, M. (2003), *INTERNET MESSAGE ACCESS PROTOCOL - VERSION 4rev1*, RFC 3501, March 2003, [http](https://www.rfc-editor.org/rfc/rfc3501.html).
 
 Heinlein, P. and Hartleben, P. (2008). *The Book of IMAP: Building a Mail Server with Courier and Cyrus*. No Starch Press. ISBN 978-1-59327-177-0.
 
