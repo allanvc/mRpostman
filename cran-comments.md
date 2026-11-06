@@ -20,7 +20,11 @@ folders, and three corrections to the `enron_sandbox()` manifest
 * Github Actions: macOS (release), Windows (release), Ubuntu (devel, release, oldrel-1)
 
 ## R CMD check results
-0 ERRORs, 0 WARNINGs, 0 NOTEs on all test environments above.
+0 ERRORs, 0 WARNINGs, 0 NOTEs on Github Actions. The local check gives
+1 WARNING and 1 NOTE that belong to the local machine, not to the
+package: "A complete check needs the 'checkbashisms' script" (the script
+is not installed there; the configure and cleanup scripts are plain POSIX
+sh) and "unable to verify current time".
 
 ## Downstream dependencies
 There are no reverse dependencies on CRAN.
